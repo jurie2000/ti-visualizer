@@ -3,14 +3,13 @@
 **Verantwortlich**
 
 Justin Riedel
-[Straße und Hausnummer]
-[PLZ Ort]
 E-Mail: contact.jriedel@gmail.com
 
 ## Über dieses Projekt
 
 Der TI Visualizer entsteht im Rahmen der Bachelorarbeit
-„[Titel der Bachelorarbeit]“ an der [Hochschule], [Studiengang], [Jahr].
+„Entwicklung einer Software zur Visualisierung der TI-Landschaft“ (Arbeitstitel)
+an der FH Dortmund, Studiengang Praktische Informatik, 2026.
 
 Es handelt sich um ein privates, nicht-kommerzielles Lernprojekt. Es ist
 **kein offizielles Angebot der gematik GmbH** und steht in keiner Verbindung

@@ -204,7 +204,7 @@ Tests: Axe-Prüfung in Playwright, plus ein E2E-Durchlauf ausschließlich per Ta
 - [ ] **Aktionsvoraussetzungen:** Die genauen `requires`-Bedingungen je Aktion (z. B. HBA nötig für QES) werden pro Aktion beim Anlegen der Daten abgestimmt.
 - [ ] **Zielbrowser:** Aktuelle Evergreen-Browser (Chrome, Firefox, Safari, Edge) als Annahme.
 - [x] **Lizenz:** MIT (D19).
-- [ ] **Impressum vervollständigen:** Anschrift, Titel der Bachelorarbeit, Hochschule, Studiengang und Jahr in `IMPRESSUM.md` eintragen, bevor die Seite öffentlich geht. Hinweis „kein offizielles gematik-Angebot“ ist enthalten.
+- [ ] **Impressum:** Angaben zur Bachelorarbeit eingetragen (Titel ist Arbeitstitel). Die Anschrift fehlt bewusst vorerst; vor dem öffentlichen Start klären, ob sie nötig ist.
 - [ ] **Vor dem Öffentlichstellen:** prüfen, dass keine privaten Daten oder Zugangsdaten in der Git-Historie stehen.
 - **Risiko:** Gespeicherte Topologien leben nur im Browser und gehen beim Löschen der Browserdaten verloren. Gegenmittel: sichtbarer Hinweis und Export als Datei.
 - **Risiko:** Katalogänderungen brauchen einen neuen Build. Bei Deployment per Actions ist das ein Push auf `main`, also unkritisch.

@@ -1,0 +1,27 @@
+# Impressum
+
+**Verantwortlich**
+
+Justin Riedel
+[Straße und Hausnummer]
+[PLZ Ort]
+E-Mail: contact.jriedel@gmail.com
+
+## Über dieses Projekt
+
+Der TI Visualizer entsteht im Rahmen der Bachelorarbeit
+„[Titel der Bachelorarbeit]“ an der [Hochschule], [Studiengang], [Jahr].
+
+Es handelt sich um ein privates, nicht-kommerzielles Lernprojekt. Es ist
+**kein offizielles Angebot der gematik GmbH** und steht in keiner Verbindung
+zu ihr. Die Darstellung der Telematikinfrastruktur ist bewusst vereinfacht und
+ersetzt nicht die Spezifikationen im [gematik-Fachportal](https://fachportal.gematik.de/).
+
+## Datenschutz
+
+Die Seite wird über GitHub Pages ausgeliefert. Die App selbst sendet keine
+Daten an einen Server. Gespeicherte Topologien liegen ausschließlich im
+Browser des Nutzers (IndexedDB) oder in von ihm exportierten Dateien.
+Beim Abruf der Seite verarbeitet GitHub technisch notwendige Daten
+(z. B. IP-Adresse), siehe die
+[Datenschutzerklärung von GitHub](https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement).

@@ -2,13 +2,13 @@
 
 Interaktiver Netzwerk-Baukasten zum Verstehen der deutschen **Telematikinfrastruktur (TI)**.
 
-Du baust dir eine vereinfachte TI-Landschaft (Praxis, Apotheke, Krankenhaus oder komplett frei) und siehst Schritt für Schritt, was bei typischen Vorgängen wie *eGK stecken*, *eRezept ausstellen* oder *KIM-Mail senden* zwischen den Komponenten passiert – ähnlich wie Cisco Packet Tracer, nur für die TI.
+Du baust dir eine vereinfachte TI-Landschaft (Praxis, Apotheke, Krankenhaus oder komplett frei) und siehst Schritt für Schritt, was bei typischen Vorgängen wie *eGK stecken*, *eRezept ausstellen* oder *KIM-Mail senden* zwischen den Komponenten passiert. Das Prinzip ähnelt Cisco Packet Tracer, nur eben für die TI.
 
-> **Status:** Spec in Überarbeitung, Regelwerk offen. Es gibt noch keinen lauffähigen Code.
+> **Status:** Spec, Regelwerk und Plan liegen als Entwurf vor. Es gibt noch keinen lauffähigen Code.
 
 Reine Web-App (React, ohne Backend), die später öffentlich unter
-`https://jurie2000.github.io/ti-visualizer/` erreichbar ist. Topologien werden im Browser gespeichert
-und lassen sich als JSON-Datei exportieren und importieren.
+`https://jurie2000.github.io/ti-visualizer/` erreichbar ist. Topologien werden als Datei
+gespeichert, auf Wunsch mit den eigenen Einstellungen, und lassen sich in jedem Browser wieder öffnen.
 
 Das Projekt entsteht im Rahmen einer Bachelorarbeit, siehe [Impressum](IMPRESSUM.md).
 
@@ -19,17 +19,20 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
 ## Was kann das Programm?
 
 - **Topologie bauen**: Geräte aus einer Palette auf die Canvas ziehen, beliebig viele je Typ.
-  - Primärsysteme (PVS, KIS, AVS)
-  - Smartcards (eGK, HBA, SMC-B)
+  - Primärsysteme und Clients (PVS, KIS, AVS, Pflege-Software, RIS, LIS, Arbeitsplatz-PC, Visite-Tablet)
   - Kartenterminals (stationär, mobil, eHealth-CardLink)
-  - Netzwerk-Komponenten (Konnektor, Highspeed-Konnektor, TI-Gateway, VPN-Zugangsdienst)
-  - Fachdienste (IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA)
-- **Presets**: Start mit *Arztpraxis*, *Apotheke*, *Krankenhaus* oder leer.
+  - Lokales Netz (Switch, Router, WLAN Access Point, Firewall)
+  - Zugang zur TI (Konnektor, Highspeed-Konnektor, TI-Gateway, VPN-Zugangsdienst)
+  - Zentrale Dienste und Fachdienste (IDP, VZD, VSDM, E-Rezept, KIM, TI-Messenger, ePA und weitere)
+- **Karten stecken**: eGK, HBA und SMC-B werden in Kartenterminals gesteckt, die eGK auch per NFC über eHealth-CardLink gelesen.
+- **Presets**: Start mit *Arztpraxis*, *Apotheke*, *Krankenhaus*, *Klinikum* oder leer.
+- **Modus Einfach und Erweitert**: Erweitert zeigt Anschlüsse, Netzwerkeinstellungen und typische Störungen.
 - **Nur gültige Verbindungen**: Das System prüft jede Verbindung fachlich und lehnt ungültige mit einer erklärenden Meldung ab. Beispiele: Ein Primärsystem darf nicht direkt an einen Fachdienst. Konnektor und TI-Gateway schließen sich in einer Topologie aus.
 - **Aktionen per Rechtsklick**: Das Kontextmenü eines Geräts zeigt alle möglichen Aktionen. Aktuell nicht ausführbare sind ausgegraut statt versteckt.
 - **Simulation-Modus**: Eine Aktion läuft verlangsamt, Schritt für Schritt und mit Erklärtext über den tatsächlichen Pfad des Geräts zur TI. Sie ist jederzeit abbrechbar.
 - **Details**: Ein Klick auf Gerät oder Verbindung zeigt Protokoll, Port, TLS-Stufe und Datenformat.
-- **Speichern und Laden**: Topologien unter einem Namen ablegen und später wieder öffnen.
+- **Lernen**: geführtes Tutorial, Herausforderungen mit eingebauten Fehlern und eine Sicherheitsprüfung.
+- **Speichern und Öffnen**: Topologie als Datei speichern, auf Wunsch mit den eigenen Einstellungen, und in jedem Browser wieder öffnen. Einstellungen aus einer Datei werden nur nach Rückfrage übernommen. Ein Autosave schützt vor Datenverlust beim Neuladen.
 
 ### Abgedeckte Abläufe (Auswahl)
 
@@ -44,18 +47,18 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
 
 ## Entwicklung: Spec-Driven
 
-Hier entsteht erst die Spec, dann der Code. Die Spec ist die Quelle der Wahrheit, nicht der Chat-Verlauf.
+Hier entsteht erst die Spec, dann der Code. Maßgeblich ist die Spec, nicht der Chat-Verlauf.
 
-1. `spec.md` – Was und warum
-2. `plan.md` – Architektur und Technologieentscheidungen
-3. `tasks.md` – überprüfbare Arbeitspakete
+1. `spec.md`: was und warum
+2. `plan.md`: Architektur und Technologieentscheidungen
+3. `tasks.md`: überprüfbare Arbeitspakete
 4. Umsetzung durch Coding-Agenten, jeder Commit referenziert die Task-ID
 
 Details: [specs/README.md](specs/README.md)
 
 | Nr. | Feature | Status |
 |---|---|---|
-| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec in Überarbeitung, Regelwerk offen |
+| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec, Regelwerk und Plan im Entwurf |
 
 ## Quellen
 

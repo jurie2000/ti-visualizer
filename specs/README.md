@@ -16,4 +16,4 @@ Ziel: nachvollziehbare, überprüfbare KI-gestützte Entwicklung statt
 
 | Nr. | Feature | Status |
 |---|---|---|
-| [001](./001-ti-visualizer-baukasten/spec.md) | TI Visualizer – interaktiver Netzwerk-Baukasten | Spec freigegeben, Plan im Entwurf |
+| [001](./001-ti-visualizer-baukasten/spec.md) | TI Visualizer – interaktiver Netzwerk-Baukasten | Spec in Überarbeitung, Regelwerk offen |

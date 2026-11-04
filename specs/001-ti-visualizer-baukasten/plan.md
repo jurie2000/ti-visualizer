@@ -1,6 +1,8 @@
 # Plan 001: TI Visualizer – interaktiver Netzwerk-Baukasten
 
 **Status:** Entwurf, überarbeitet am 2026-11-03 (reines Frontend ohne Backend, öffentliches Deployment als statische Seite), zur Freigabe durch Justin
+
+> **Hinweis:** Die Spec wurde am 2026-11-03 erweitert (Mockup-Funktionen, vollständiger Komponentenkatalog, eigenes [Regelwerk](./regelwerk.md)). Widersprüche zu Spec und Regelwerk sind aufgelöst (D12, Presets, Regel-Engine, `pathKind`, Tests). Noch nicht nachgezogen: Katalogformat für Anschlüsse, Zonen, Einstellungen, Tutorial, Herausforderungen und Prüfregeln sowie das Topologie-Schema dafür.
 **Basis:** [spec.md](./spec.md) (freigegeben)
 
 ## Leitentscheidungen
@@ -18,13 +20,13 @@
 | D9 | **Nur Deutsch** in v1, keine i18n-Infrastruktur | Vom Nutzer festgelegt. Texte liegen trotzdem im Katalog, nicht im Code verstreut. |
 | D10 | **Barrierefreiheit** als Anforderung: Rot-Grün-Schwäche und volle Tastaturbedienung | Vom Nutzer festgelegt, siehe eigener Abschnitt. |
 | D11 | **Optik zuerst als Mockup** (Claude Design), bevor UI-Tasks starten | Vom Nutzer festgelegt. Ergebnis wird in `design/` abgelegt und ist Vorlage für die Komponenten. |
-| D12 | **Karten sind freie Knoten**; die Aktion „Karte stecken“ am Kartenterminal wählt eine Karte und legt die Kante (Steckverbindung) an | Vom Nutzer bestätigt. Die Verbindungsregel „Smartcard → Kartenterminal“ bleibt gültig, die Aktion prüft sie über die Regel-Engine. |
+| D12 | **Karten sind Zustand des Kartenterminals**, keine eigenen Knoten; „Karte stecken“ am Terminal wählt eine freie Karte (Regelwerk K-1, K-2) | Geändert 2026-11-03 (vorher: Karten als freie Knoten), folgt Mockup und Regelwerk. |
 | D13 | **Zod-Schemas** als einzige Quelle für Katalog- und Topologie-Format | Ein Schema liefert Laufzeitprüfung (Katalog im Test, importierte Topologie-Dateien im Browser) und TypeScript-Typen. Ersetzt JSON Schema plus generierte OpenAPI-Typen. |
 | D14 | **Single-Page-App ohne Router**, Vite `base` auf den Repo-Pfad (`/ti-visualizer/`) gesetzt | GitHub Pages kennt kein Server-Routing; mit nur einer Ansicht entfallen 404-Probleme bei Deep Links. |
-| D15 | Kanten sind **ungerichtet**, ein Anschluss pro Gerät; die Pfadrichtung ergibt sich aus der Aktion | Vom Nutzer bestätigt. Regeln gelten symmetrisch. |
-| D16 | Katalog-JSON wird **von Claude aus der Spec abgeleitet** und von Justin fachlich geprüft | Vom Nutzer festgelegt. Die Spec bleibt Quelle der Wahrheit; Abweichungen werden in der Spec korrigiert, nicht nur im JSON. |
+| D15 | Kanten sind **ungerichtet**, Anschlüsse je Gerät laut Regelwerk (Spec FR-14, anzupassen); die Pfadrichtung ergibt sich aus der Aktion | Vom Nutzer bestätigt. Regeln gelten symmetrisch. |
+| D16 | Katalog-JSON wird **von Claude aus Spec und Regelwerk abgeleitet** und von Justin fachlich geprüft | Vom Nutzer festgelegt. Die Spec bleibt Quelle der Wahrheit; Abweichungen werden in der Spec korrigiert, nicht nur im JSON. |
 | D17 | **Mockup und `tasks.md` laufen parallel**; Tasks für Katalog und Regel-Engine hängen nicht von der Optik ab | Vom Nutzer bestätigt. UI-Tasks starten erst nach dem Mockup. |
-| D18 | **Jede Regel der Verbindungsmatrix ist ein eigener Testfall** | Vom Nutzer bestätigt, entspricht dem Erfolgskriterium der Spec. |
+| D18 | **Jede Regel des Regelwerks ist ein eigener Testfall** | Vom Nutzer bestätigt, entspricht dem Erfolgskriterium der Spec. |
 | D19 | **MIT-Lizenz** (`LICENSE`) und **Impressum** (`IMPRESSUM.md`) mit Justin Riedel als Verantwortlichem und Verweis auf die Bachelorarbeit | Vom Nutzer festgelegt (2026-11-03). Die App verlinkt das Impressum dauerhaft im Fußbereich und zeigt es als Dialog an (kein Router nötig, D14). |
 
 ## Technologie-Stack
@@ -89,10 +91,11 @@ Gebündelt wird nur die aktive Version. Ein Vitest-Test prüft jede Datei gegen 
 | Datei | Inhalt | Wichtige Felder |
 |---|---|---|
 | `device-types` | Gerätetypen | `key` (z. B. `egk`), `category` (Primärsystem, Smartcard, Kartenterminal, Netzwerk, Fachdienst), `label`, `icon`, `variant` (PVS/KIS/AVS) |
-| `connection-rules` | Verbindungsmatrix | `from`, `to`, `via` (physisch/NFC/TCP/VPN/Internet), `protocols[]`, `explanation` |
+| `connection-rules` | Erlaubnisliste (Regelwerk 4.2) | `from`, `to`, `via`, `protocols[]`, `mode` (Einfach/Erweitert), `source` |
+| `reason-rules` | Begründungsliste (Regelwerk 4.3) | `id`, `match`, `explanation`, `source` |
 | `exclusion-rules` | Gegenseitige Ausschlüsse | `groupA`, `groupB`, `explanation` (Konnektor vs. TI-Gateway) |
 | `protocols` | Details für FR-11 | `id`, `name`, `port`, `tlsLevel`, `dataFormat`, `description` |
-| `actions` | Operationskatalog | `key`, `label`, `appliesTo[]`, `pathKind` (`ti` oder `card_only`), `requires` (Bedingungen), `steps[]` (`order`, `fromRole`, `toRole`, `label`, `explanation`, `protocol`) |
+| `actions` | Operationskatalog | `key`, `label`, `appliesTo[]`, `pathKind` (`ti` oder `local`), `requires` (Bedingungen), `steps[]` (`order`, `fromRole`, `toRole`, `label`, `explanation`, `protocol`) |
 | `presets` | Arztpraxis, Apotheke, Krankenhaus | `key`, `label`, `topology` (gleiches Schema wie gespeicherte Topologie) |
 
 ### Topologie (IndexedDB und JSON-Datei)
@@ -116,21 +119,27 @@ Hinweis für Nutzer in der App: Gespeicherte Topologien bleiben nur in diesem Br
 
 ## Presets (Standardausstattung)
 
-Jedes Preset ist eine fertig verbundene Topologie; Karten stecken bereits an den Terminals, damit Aktionen sofort ausführbar sind. Die Kanten folgen der Verbindungsmatrix.
+Verbindlich ist die Tabelle im [Regelwerk, Abschnitt 13](./regelwerk.md#13-presets) (vier Presets inkl. Klinikum, Stand 2026-11-03). Die folgende Kurzfassung dient nur dem Überblick.
 
 | Preset | Geräte |
 |---|---|
-| Arztpraxis | 1 PVS, 1 Konnektor, 1 VPN-Zugangsdienst, 2 Kartenterminals, 1 SMC-B, 1 HBA, 1 eGK, Fachdienste: VSDM, E-Rezept, KIM, IDP, ePA |
-| Apotheke | 1 AVS, 1 Konnektor, 1 VPN-Zugangsdienst, 1 Kartenterminal, 1 SMC-B, 1 eGK, Fachdienste: VSDM, E-Rezept, KIM, IDP, ePA |
-| Krankenhaus | 2 KIS, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst, 2 Kartenterminals, 1 SMC-B, 1 HBA, 1 eGK, Fachdienste: VSDM, E-Rezept, KIM, TIM, IDP, ePA |
+| Arztpraxis | PVS, Konnektor, 2 Kartenterminals (SMC-B, HBA, eGK), Switch, VPN-Zugangsdienst, sechs Fachdienste |
+| Apotheke | AVS, Konnektor, 1 Kartenterminal (SMC-B, eGK), Switch, VPN-Zugangsdienst, IDP, E-Rezept, ePA |
+| Krankenhaus | KIS, 2 PCs, **TI-Gateway**, 2 Kartenterminals, Switches, Router, VPN-Zugangsdienst, sechs Fachdienste |
+| Klinikum | KIS, RIS, LIS, PCs, Tablet, **Highspeed-Konnektor**, 3 Kartenterminals, Switches, AP, Router, Zonen, sechs Fachdienste |
 
 ## Regel-Engine (FR-3, FR-4)
 
 `validateConnection(topology, fromNode, toNode, rules) → { ok } | { ok: false, reason }`
 
-1. Existiert eine `connection-rule` für `(from.type, to.type)`? Sonst ungültig, mit der `explanation` der passenden „explizit ungültig“-Regel.
-2. Verletzt das Hinzufügen eine `exclusion-rule` (Konnektor/TI-Gateway)? Dann ungültig.
-3. Anzahl pro Typ ist unbegrenzt (keine Prüfung).
+Umsetzung der Prüflogik aus [Regelwerk 4.0](./regelwerk.md#40-prüflogik-entschieden-2026-11-03):
+
+1. Grundprüfungen (Selbstverbindung, Doppelung, freier verträglicher Anschluss, Kartenterminal an höchstens einem Konnektor) und Ausschlüsse (Konnektor/TI-Gateway). Schlägt eine fehl: ungültig.
+2. Steht `(from.type, to.type)` in der Erlaubnisliste (`connection-rules`)? Dann gültig.
+3. Sonst ungültig; `reason` ist der Text der passenden Begründungsregel oder die allgemeine Meldung mit den erlaubten Partnern.
+4. Anzahl pro Typ ist unbegrenzt.
+
+Ein Test prüft, dass keine Begründungsregel ein erlaubtes Paar erfasst.
 
 `reason` ist immer ein erklärender deutscher Text aus den Daten (Spec: „mit Begründung“).
 
@@ -140,7 +149,7 @@ Jedes Preset ist eine fertig verbundene Topologie; Karten stecken bereits an den
 
 **Verfügbarkeit (FR-6, FR-7):** `availableActions(node, topology)` liefert alle Aktionen aus `appliesTo`, jeweils mit `enabled` und `disabledReason`. Eine Aktion ist aktiv, wenn ihr Pfad in der Topologie vollständig existiert, z. B. für „eRezept ausstellen“ auf einem PVS: Kartenterminal mit SMC-B und HBA, Konnektor oder TI-Gateway, VPN-Zugangsdienst, E-Rezept-Fachdienst.
 
-**Pfadauflösung (FR-8):** Der Pfad wird per Suche über die Kanten der Topologie vom auslösenden Gerät bestimmt, nicht aus einer festen Vorlage. Bei `card_only` (NFDM/eMP) endet die Suche an der eGK; Konnektor und Fachdienste sind nicht beteiligt.
+**Pfadauflösung (FR-8):** Der Pfad wird per Suche über die Kanten der Topologie vom auslösenden Gerät bestimmt, nicht aus einer festen Vorlage. Bei `local` (NFDM/eMP) läuft der Pfad über den Konnektor (Fachmodule NFDM/AMTS) bis zur eGK; VPN-Zugangsdienst und Fachdienste sind nicht beteiligt (Regelwerk 7).
 
 **Abspielen (FR-9, FR-10):** Die `steps` werden auf den aufgelösten Pfad abgebildet (Rollen wie `initiator`, `terminal`, `gateway` werden an konkrete Knoten gebunden). Der Player ist ein Zustandsautomat: `idle → running(step n) → done | cancelled`. Er bietet Play/Pause/Schritt, Tempo und Abbrechen; Erklärtext und Protokoll-Details je Schritt kommen aus dem Katalog.
 
@@ -190,18 +199,18 @@ Tests: Axe-Prüfung in Playwright, plus ein E2E-Durchlauf ausschließlich per Ta
 ## Teststrategie
 
 - **Katalog (Vitest):** Zod-Schema- und Referenzvalidierung; fehlerhafte Daten lassen die CI scheitern, es wird nicht deployt
-- **Regel-Engine (Vitest):** Tabellentest, ein eigener Testfall je Zeile der Verbindungsmatrix (jede erlaubte Regel gültig, jede „explizit ungültig“-Regel abgelehnt, Konnektor/TI-Gateway-Ausschluss)
+- **Regel-Engine (Vitest):** Tabellentest, ein eigener Testfall je Regel des Regelwerks (jedes erlaubte Paar gültig, jede Begründungsregel greift, Grundprüfungen, Konnektor/TI-Gateway-Ausschluss) plus Konsistenztest Erlaubnis- gegen Begründungsliste
 - **Aktionen:** je Katalog-Aktion ein Test mit Topologie, in der sie aktiv ist, und einer, in der sie ausgegraut ist
-- **Simulation:** Schrittfolge je Aktion, Abbruch mittendrin, `card_only` berührt weder Konnektor noch Fachdienst
+- **Simulation:** Schrittfolge je Aktion, Abbruch mittendrin, `local` berührt weder VPN-Zugangsdienst noch Fachdienst
 - **Persistenz:** Roundtrip speichern/laden, Export/Import einer Datei, Ablehnung kaputter Dateien mit Meldung, Migration alter `schemaVersion`
 - **Barrierefreiheit:** Axe-Checks, Tastatur-E2E, Kontrastprüfung der Design-Tokens
 - **E2E (Playwright, gegen `vite preview`):** Preset laden → Gerät ergänzen → ungültig verbinden (Meldung) → Aktion per Rechtsklick → Simulation abbrechen (entspricht den Erfolgskriterien der Spec)
 
 ## Risiken und offene Punkte
 
-- [ ] **Visuelles Konzept:** Mockup mit Claude Design (D11): Icon-Familie, Farbcodierung, Kantenstil, Hell/Dunkel. Ergebnis nach `design/`, vor dem ersten UI-Task.
+- [x] **Visuelles Konzept:** erledigt, Mockup liegt in `design/mockup/`. Ursprünglich: Mockup mit Claude Design (D11): Icon-Familie, Farbcodierung, Kantenstil, Hell/Dunkel. Ergebnis nach `design/`, vor dem ersten UI-Task.
 - [ ] **Inhalte je Aktion:** `steps`-Texte (Erklärtexte, Protokoll pro Schritt) sind Redaktionsarbeit und werden mit Justin fachlich abgenommen.
-- [ ] **Aktionsvoraussetzungen:** Die genauen `requires`-Bedingungen je Aktion (z. B. HBA nötig für QES) werden pro Aktion beim Anlegen der Daten abgestimmt.
+- [x] **Aktionsvoraussetzungen:** festgelegt in [Regelwerk, Abschnitt 6](./regelwerk.md#6-aktionen-und-voraussetzungen), jede mit Quelle.
 - [ ] **Zielbrowser:** Aktuelle Evergreen-Browser (Chrome, Firefox, Safari, Edge) als Annahme.
 - [x] **Lizenz:** MIT (D19).
 - [ ] **Impressum:** Angaben zur Bachelorarbeit eingetragen (Titel ist Arbeitstitel). Die Anschrift fehlt bewusst vorerst; vor dem öffentlichen Start klären, ob sie nötig ist.

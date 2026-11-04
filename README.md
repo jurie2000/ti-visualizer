@@ -4,7 +4,13 @@ Interaktiver Netzwerk-Baukasten zum Verstehen der deutschen **Telematikinfrastru
 
 Du baust dir eine vereinfachte TI-Landschaft (Praxis, Apotheke, Krankenhaus oder komplett frei) und siehst Schritt für Schritt, was bei typischen Vorgängen wie *eGK stecken*, *eRezept ausstellen* oder *KIM-Mail senden* zwischen den Komponenten passiert – ähnlich wie Cisco Packet Tracer, nur für die TI.
 
-> **Status:** Spec-Phase abgeschlossen, Plan-Phase folgt. Es gibt noch keinen lauffähigen Code.
+> **Status:** Spec in Überarbeitung, Regelwerk offen. Es gibt noch keinen lauffähigen Code.
+
+Reine Web-App (React, ohne Backend), die später öffentlich unter
+`https://jurie2000.github.io/ti-visualizer/` erreichbar ist. Topologien werden im Browser gespeichert
+und lassen sich als JSON-Datei exportieren und importieren.
+
+Das Projekt entsteht im Rahmen einer Bachelorarbeit, siehe [Impressum](IMPRESSUM.md).
 
 ## Für wen?
 
@@ -49,8 +55,13 @@ Details: [specs/README.md](specs/README.md)
 
 | Nr. | Feature | Status |
 |---|---|---|
-| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec freigegeben, Plan offen |
+| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec in Überarbeitung, Regelwerk offen |
 
 ## Quellen
 
 Fachliche Grundlage ist das [gematik-Fachportal](https://fachportal.gematik.de/).
+Dies ist kein offizielles Angebot der gematik GmbH.
+
+## Lizenz
+
+[MIT](LICENSE) © 2026 Justin Riedel

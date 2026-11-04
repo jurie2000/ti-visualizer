@@ -408,6 +408,6 @@ Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
   Beleg V-17, eAU-Dienstkennungen)
 - [ ] Herausforderungen und Tutorial-Texte fachlich abnehmen
 - [ ] Neue fachliche Freigabe der erweiterten Spec durch Justin
-- [ ] plan.md vollständig an die Erweiterung anpassen (Katalogformat,
-  Anschlüsse, Zonen, Modi, Tutorial, Herausforderungen, Einstellungen,
-  Sicherheitsprüfung)
+- [x] plan.md an die Erweiterung angepasst (2026-11-04): UI-Konzept nach
+  dem Mockup, Katalogformat, Speichern/Teilen über Dateien und Links,
+  Deployment

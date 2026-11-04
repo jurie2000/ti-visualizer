@@ -17,8 +17,8 @@ eine Quelle.
 | Status | Bedeutung |
 |---|---|
 | **bestätigt** | in einer gematik-Quelle ausdrücklich belegt |
-| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt; Prüfung durch Justin offen |
-| **Vereinfachung** | bewusst vereinfacht für den Lernzweck; die Quelle beschreibt den echten Sachverhalt |
+| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Prüfung durch Justin offen |
+| **Vereinfachung** | für den Lernzweck vereinfacht. Die Quelle beschreibt den echten Sachverhalt |
 | **offen** | noch ohne Beleg oder zu entscheiden |
 
 **Quellenkürzel** (alle Links in [quellen.md](./quellen.md)):
@@ -176,10 +176,10 @@ Kategorien haben je eine farbenblind-sichere Farbe und eine eigene Form
 
 ### 2.3 Verträglichkeit
 
-- **A-1** Gleiche Arten passen zusammen, außer `wan`–`wan`. (Mockup,
+- **A-1** Gleiche Arten passen zusammen, außer `wan` mit `wan`. (Mockup,
   Vereinfachung)
-- **A-2** Zusätzlich erlaubt: `eth`–`wan`, `wan`–`net`, `tun`–`net`,
-  `ti`–`ti`. (Vereinfachung nach Arch)
+- **A-2** Zusätzlich erlaubt: `eth` mit `wan`, `wan` mit `net`, `tun` mit `net`,
+  `ti` mit `ti`. (Vereinfachung nach Arch)
 - **A-3** Modus Einfach: Das System wählt das erste freie, verträgliche
   Anschlusspaar. Modus Erweitert: Der Nutzer wählt. (Mockup)
 - **A-4** Läuft eine Verbindung über `wifi`, ist sie eine
@@ -201,20 +201,20 @@ Protokoll-Beschriftungen (Auswahl, mit Beleg):
 
 | Verbindung | Beschriftung | Status | Quelle |
 |---|---|---|---|
-| Karte – eHealth-KT | gesteckt · ISO 7816 | bestätigt | gemSpec_KT |
-| eGK – Smartphone/CardLink | NFC · ISO 14443, mit CAN | bestätigt | gemSpec_eHealth-CardLink |
-| eHealth-KT – Konnektor | SICCT über TLS, nach Pairing | bestätigt | gemSpec_KT |
-| CardLink – Konnektor | wie Kartenterminal, über Internet (TLS) | bestätigt | gemSpec_eHealth-CardLink (A_24769) |
-| Primärsystem – Konnektor | SOAP/TLS | bestätigt | gemILF_PS |
-| Mobiles KT – Primärsystem | USB · CT-API | bestätigt | gemSpec_MobKT |
-| Konnektor – VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | bestätigt | Arch, gemSpec_VPN_ZugD |
-| Primärsystem – KIM-Clientmodul | SMTP / POP3 | bestätigt | gemSpec_CM_KOMLE |
-| KIM-Clientmodul – KIM-Fachdienst | SMTP / POP3 über mTLS | bestätigt | gemSpec_CM_KOMLE |
-| TI-Messenger-Client – TI-Messenger-FD | Matrix (Client-Server-API) | bestätigt | gemSpec_TI-M_Basis |
-| Konnektor – E-Rezept-FD, ePA | TLS · FHIR bzw. VAU | bestätigt | gemSpec_FD_eRp, gemSpec_Aktensystem_ePAfueralle |
-| Konnektor – VSDM-FD | SOAP | plausibel | gemSysL_VSDM |
-| Primärsystem – IDP | OAuth 2.0 / OIDC | bestätigt | gemSpec_IDP_FD |
-| KIS – RIS/LIS | HL7 v2 · TLS (außerhalb der TI) | plausibel | KH |
+| Karte ↔ eHealth-KT | gesteckt · ISO 7816 | bestätigt | gemSpec_KT |
+| eGK ↔ Smartphone/CardLink | NFC · ISO 14443, mit CAN | bestätigt | gemSpec_eHealth-CardLink |
+| eHealth-KT ↔ Konnektor | SICCT über TLS, nach Pairing | bestätigt | gemSpec_KT |
+| CardLink ↔ Konnektor | wie Kartenterminal, über Internet (TLS) | bestätigt | gemSpec_eHealth-CardLink (A_24769) |
+| Primärsystem ↔ Konnektor | SOAP/TLS | bestätigt | gemILF_PS |
+| Mobiles KT ↔ Primärsystem | USB · CT-API | bestätigt | gemSpec_MobKT |
+| Konnektor ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | bestätigt | Arch, gemSpec_VPN_ZugD |
+| Primärsystem ↔ KIM-Clientmodul | SMTP / POP3 | bestätigt | gemSpec_CM_KOMLE |
+| KIM-Clientmodul ↔ KIM-Fachdienst | SMTP / POP3 über mTLS | bestätigt | gemSpec_CM_KOMLE |
+| TI-Messenger-Client ↔ TI-Messenger-FD | Matrix (Client-Server-API) | bestätigt | gemSpec_TI-M_Basis |
+| Konnektor ↔ E-Rezept-FD, ePA | TLS · FHIR bzw. VAU | bestätigt | gemSpec_FD_eRp, gemSpec_Aktensystem_ePAfueralle |
+| Konnektor ↔ VSDM-FD | SOAP | plausibel | gemSysL_VSDM |
+| Primärsystem ↔ IDP | OAuth 2.0 / OIDC | bestätigt | gemSpec_IDP_FD |
+| KIS ↔ RIS/LIS | HL7 v2 · TLS (außerhalb der TI) | plausibel | KH |
 
 ## 4. Verbindungsregeln
 
@@ -238,10 +238,14 @@ Begründungsregel erfasst werden.
 
 ### 4.1 Grundprüfungen
 
+Die früheren Mockup-Regeln V-1, V-2 und V-11 sind hier als G-1 bis G-3
+aufgegangen. Ihre Nummern bleiben frei, damit alte Verweise eindeutig
+bleiben.
+
 | ID | Regel | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| G-1 | Keine Verbindung eines Geräts mit sich selbst | Ein Gerät kann nicht mit sich selbst verbunden werden. | Vereinfachung | – (Editorregel) |
-| G-2 | Keine doppelte Verbindung zwischen denselben Geräten | Diese beiden Geräte sind bereits verbunden. | Vereinfachung | – (Editorregel) |
+| G-1 | Keine Verbindung eines Geräts mit sich selbst | Ein Gerät kann nicht mit sich selbst verbunden werden. | Vereinfachung | keine (Editorregel) |
+| G-2 | Keine doppelte Verbindung zwischen denselben Geräten | Diese beiden Geräte sind bereits verbunden. | Vereinfachung | keine (Editorregel) |
 | G-3 | Es gibt ein freies, verträgliches Anschlusspaar (2.3) | ‹Gerät› hat keinen freien passenden Anschluss mehr. | Vereinfachung | DVO |
 | G-4 | Ein eHealth-KT ist mit höchstens **einem** Konnektor verbunden | Ein Kartenterminal arbeitet immer nur mit einem Konnektor zusammen. | bestätigt | gemSpec_KT |
 | G-5 | Eine Karte steckt in höchstens einem Terminal | Diese Karte steckt bereits in einem anderen Terminal. | bestätigt (physisch) | gemSpec_KT |
@@ -249,7 +253,7 @@ Begründungsregel erfasst werden.
 ### 4.2 Erlaubnisliste
 
 Verbindungen gelten in beide Richtungen. „E“ = im Modus Einfach als
-direkte logische Verbindung zulässig; „X“ = nur im Modus Erweitert.
+direkte logische Verbindung zulässig, „X“ = nur im Modus Erweitert.
 
 **Karten und Terminals**
 
@@ -277,7 +281,7 @@ direkte logische Verbindung zulässig; „X“ = nur im Modus Erweitert.
 | RIS, LIS | KIS (HL7-Schnittstelle) | E | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | E | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul | Konnektor, HS-Konnektor, TI-Gateway | E | bestätigt | gemSpec_CM_KOMLE |
-| PVS, KIS, AVS, Pflege | IDP (über Konnektor und TI; entschieden 2026-11-03) | E | plausibel | gemSpec_IDP_FD |
+| PVS, KIS, AVS, Pflege | IDP (über Konnektor und TI, entschieden 2026-11-03) | E | plausibel | gemSpec_IDP_FD |
 | TI-Messenger-Client | TI-Messenger-FD | E | bestätigt | gemSpec_TI-M_Basis |
 | TI-Messenger-Client | Internet | X | plausibel | gemSpec_TI-M_Basis |
 
@@ -318,21 +322,21 @@ direkte logische Verbindung zulässig; „X“ = nur im Modus Erweitert.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-3 | Smartcard an etwas anderes als ein Kartenterminal; ausgenommen eGK an Versicherten-App (NFC) | Smartcards werden ausschließlich in ein Kartenterminal gesteckt — nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch (Konnektor verwaltet Karten über Terminals) |
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Tablet, RIS, LIS) direkt an Fachdienst; ausgenommen PoPP-Service (TI 2.0, über ZETA). Der TI-Messenger-Client fällt nicht darunter | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
-| V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst — dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
-| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS; RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
+| V-3 | Smartcard an etwas anderes als ein Kartenterminal. Ausnahme: eGK an Versicherten-App (NFC) | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch (Konnektor verwaltet Karten über Terminals) |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Tablet, RIS, LIS) direkt an Fachdienst. Ausnahme: PoPP-Service (TI 2.0, über ZETA). Der TI-Messenger-Client fällt nicht darunter | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
+| V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
+| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
 | V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |
-| V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet — Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
-| V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden; sie hängen am Zentralen Netz. | bestätigt | Arch |
+| V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
+| V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |
 | V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway schließen sich in einer Topologie gegenseitig aus. | bestätigt | siehe X-1 |
 | V-12 | Primärsystem oder Kartenterminal direkt an VPN-Zugangsdienst | Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf. | bestätigt | Arch, gemSpec_VPN_ZugD |
 | V-13 | HBA oder SMC-B an eHealth-CardLink | Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal. | bestätigt | gemSpec_eHealth-CardLink |
 | V-14 | Mobiles KT an Konnektor oder Netzwerk | Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. Die Daten gehen später per USB ans Primärsystem. | bestätigt | gemSpec_MobKT |
 | V-15 | Versicherten-App an Konnektor oder Primärsystem | Versicherte nutzen ihre Apps über das Internet, nicht über die Infrastruktur der Praxis. | bestätigt | gemSpec_eRp_FdV |
 | V-16 | Zentrale Dienste direkt ins lokale Netz | Zentrale Dienste der TI liegen im Zentralen Netz und sind nur über den VPN-Zugangsdienst erreichbar. | bestätigt | Arch, gemSpec_Net |
-| V-17 | Konnektor an Konnektor | Eine Einrichtung nutzt ihre Konnektoren unabhängig voneinander; sie werden nicht miteinander verbunden. | plausibel | gemSpec_Kon |
-| V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet; jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
+| V-17 | Konnektor an Konnektor | Eine Einrichtung nutzt ihre Konnektoren unabhängig voneinander. Sie werden nicht miteinander verbunden. | plausibel | gemSpec_Kon |
+| V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 
 ### 4.4 Ausschlüsse
 
@@ -344,9 +348,9 @@ direkte logische Verbindung zulässig; „X“ = nur im Modus Erweitert.
 
 | ID | Regel | Status | Quelle |
 |---|---|---|---|
-| K-1 | Karten stecken in Terminals; ein eHealth-KT nimmt hier je Kartenart eine Karte auf | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT |
+| K-1 | Karten stecken in Terminals. Ein eHealth-KT nimmt hier je Kartenart eine Karte auf | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT |
 | K-2 | „Karte stecken“ bietet nur Kartenarten an, die im Terminal noch fehlen | Vereinfachung | gemSpec_KT |
-| K-3 | Jede Karte hat ein Ablaufdatum (Zertifikatslaufzeit); eine abgelaufene Karte zählt als nicht gesteckt | bestätigt | gemSpec_PKI |
+| K-3 | Jede Karte hat ein Ablaufdatum (Zertifikatslaufzeit). Eine abgelaufene Karte zählt als nicht gesteckt | bestätigt | gemSpec_PKI |
 | K-4 | HBA und SMC-B müssen per PIN freigeschaltet sein („erhöhter Sicherheitszustand“), sonst schlagen PIN-pflichtige Aktionen fehl | bestätigt | gemILF_PS_AMTS, gemILF_PS |
 | K-5 | Die SMC-B ist im Infomodell einem Mandanten zugeordnet und steckt dauerhaft | bestätigt | gemILF_PS |
 | K-6 | Über eHealth-CardLink wird nur die eGK genutzt, ohne PIN, mit CAN | bestätigt | gemSpec_eHealth-CardLink |
@@ -430,7 +434,7 @@ und „Arztbrief per KIM senden“ (plausibel, KH).
 ### 6.6 Alle Geräte
 
 - Details anzeigen (FR-11)
-- Ausfall simulieren / wieder in Betrieb nehmen (Mockup; FR-18)
+- Ausfall simulieren / wieder in Betrieb nehmen (Mockup, FR-18)
 - Einstellungen öffnen, nur Modus Erweitert (FR-17)
 
 ## 7. Abläufe
@@ -443,8 +447,8 @@ stehen im Mockup und werden in den Katalog übernommen.
 |---|---|---|---|
 | `erezept` | P→K Verordnung (SOAP/TLS) · K→T Signaturauftrag (SICCT) · T→K HBA signiert, QES (ISO 7816) · K→V (IPsec) · V→IDP Anmeldung mit SMC-B (OAuth 2.0) · V→E-Rezept (FHIR) · E-Rezept→P Rezept-ID | bestätigt | gemSpec_FD_eRp, gemSpec_KT, Arch |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V · V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
-| `notfalldaten` | P→K Fachmodul NFDM (SOAP/TLS) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P — **kein VPN, kein Fachdienst** | bestätigt | gemSpec_FM_NFDM |
-| `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P — **kein VPN, kein Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
+| `notfalldaten` | P→K Fachmodul NFDM (SOAP/TLS) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
+| `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur und Verschlüsselung · K→T HBA signiert (QES) · CM→V→KIM (mTLS) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |
 | `kim` | wie `eau` ohne HBA-Signatur, Empfänger aus dem VZD | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
 | `epa` | P→K · K→V · V→IDP (SMC-B) · Befugnis prüfen (eGK oder PoPP) · V→ePA (VAU, FHIR) · ePA→P | bestätigt | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
@@ -463,16 +467,16 @@ Gerät der Topologie“ wie im Mockup.
 | Einstellung | Standard | Regel | Status | Quelle |
 |---|---|---|---|---|
 | IP-Adresse | Router .1, Konnektor .2, sonst ab .10 im Netz 192.168.10.0/24 | Beispielwerte | Vereinfachung | DVO |
-| Netzmaske | 255.255.255.0 | – | Vereinfachung | DVO |
+| Netzmaske | 255.255.255.0 | keine | Vereinfachung | DVO |
 | Betriebsart Konnektor | Parallel, wenn Router vorhanden, sonst Reihe | Reihe: Konnektor zwischen LAN und Router. Parallel: Konnektor als Gerät im LAN, Router führt ins Internet | bestätigt | Betriebsarten, gemSpec_Kon (ANLW_ANBINDUNGS_MODUS) |
-| Gateway der Clients | Reihe: Konnektor. Parallel: Router | – | bestätigt | Betriebsarten, DVO |
+| Gateway der Clients | Reihe: Konnektor. Parallel: Router | keine | bestätigt | Betriebsarten, DVO |
 | Route in die TI (Parallel) | 100.102.0.0/15 über den Konnektor | für offene Fachdienste und WANDA | bestätigt | gemILF_PS (Abschnitt 3.2.3), gemSpec_Net |
 | Bestandsnetze | Routen laut Konnektor | aktive Bestandsnetze aus der Konnektor-Oberfläche | bestätigt | DVO |
 | DNS der Clients | Konnektor | TI-Namen löst der Konnektor auf | plausibel | gemILF_PS, gemSpec_Net |
 | SIS | aus | Reihe: Internet über SIS möglich. Parallel: SIS optional, Clients alternativ direkt über den Router (ANLW_INTERNET_MODUS) | bestätigt | gemSpec_Kon |
 | DHCP | aus | Konnektor kann DHCP-Server sein | plausibel | gemSpec_Kon |
 | VLAN | „TI“ | Geräte müssen im selben Segment wie der Konnektor liegen | Vereinfachung | DVO |
-| Arbeitsplatz | „AP-1“ | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet; Aufrufe tragen Mandant, Clientsystem, Arbeitsplatz | bestätigt | gemILF_PS |
+| Arbeitsplatz | „AP-1“ | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet. Aufrufe tragen Mandant, Clientsystem, Arbeitsplatz | bestätigt | gemILF_PS |
 | Pairing KT | ja | ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus | bestätigt | gemSpec_KT |
 | Zertifikat gSMC-K | gültig bis 31.03.2029 | authentisiert den Konnektor gegenüber VPN-Zugangsdienst, KT und HBA | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
 | Zeitabweichung | 0 s | Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s | bestätigt | gemSpec_Kon |
@@ -494,13 +498,13 @@ Erweitert.
 
 | ID | Regel | Schwere | Status | Quelle |
 |---|---|---|---|---|
-| P-1 | Gerät ist ausgefallen | Fehler | Vereinfachung | – (Simulation) |
-| P-2 | Verbindung ist unterbrochen | Fehler | Vereinfachung | – (Simulation) |
+| P-1 | Gerät ist ausgefallen | Fehler | Vereinfachung | keine (Simulation) |
+| P-2 | Verbindung ist unterbrochen | Fehler | Vereinfachung | keine (Simulation) |
 | P-3 | Gesteckte Karte ist abgelaufen | Fehler | bestätigt | gemSpec_PKI |
 | P-4 | Kein Konnektor und kein TI-Gateway | Warnung | bestätigt | Arch |
 | P-5 | Kartenterminal erreicht seinen Konnektor nicht | Warnung | bestätigt | gemSpec_KT |
 | P-6 | WLAN im selben Segment wie Kartenterminal oder Konnektor | Warnung | plausibel | DVO |
-| P-7 | Gerät ist mit nichts verbunden | Hinweis | Vereinfachung | – |
+| P-7 | Gerät ist mit nichts verbunden | Hinweis | Vereinfachung | keine |
 | P-31 | Kartenterminal mit mehr als einem Konnektor verbunden | Fehler | bestätigt | gemSpec_KT |
 | P-32 | Konnektor und TI-Gateway in derselben Topologie | Fehler | bestätigt | X-1 |
 
@@ -508,29 +512,29 @@ Erweitert.
 
 | ID | Regel | Schwere | Status | Quelle |
 |---|---|---|---|---|
-| P-8 | Ungültige IP-Adresse | Fehler | Vereinfachung | – (Netzwerkgrundlagen) |
-| P-9 | IP-Konflikt | Fehler | Vereinfachung | – |
-| P-10 | Ungültige Subnetzmaske | Fehler | Vereinfachung | – |
-| P-11 | Netz- oder Broadcast-Adresse als Geräteadresse | Fehler | Vereinfachung | – |
-| P-12 | Ungültiges Gateway | Fehler | Vereinfachung | – |
-| P-13 | Gateway nicht im eigenen Subnetz | Fehler | Vereinfachung | – |
-| P-14 | Gateway gibt es im Netz nicht | Fehler | Vereinfachung | – |
+| P-8 | Ungültige IP-Adresse | Fehler | Vereinfachung | keine (Netzwerkgrundlagen) |
+| P-9 | IP-Konflikt | Fehler | Vereinfachung | keine |
+| P-10 | Ungültige Subnetzmaske | Fehler | Vereinfachung | keine |
+| P-11 | Netz- oder Broadcast-Adresse als Geräteadresse | Fehler | Vereinfachung | keine |
+| P-12 | Ungültiges Gateway | Fehler | Vereinfachung | keine |
+| P-13 | Gateway nicht im eigenen Subnetz | Fehler | Vereinfachung | keine |
+| P-14 | Gateway gibt es im Netz nicht | Fehler | Vereinfachung | keine |
 | P-15 | Gerät in anderem Subnetz als sein Konnektor | Fehler | plausibel | DVO |
 
-P-8 bis P-14 sind allgemeine Netzwerkregeln ohne TI-Bezug; sie brauchen
+P-8 bis P-14 sind allgemeine Netzwerkregeln ohne TI-Bezug. Sie brauchen
 keinen gematik-Beleg.
 
 **Betrieb (E)**
 
 | ID | Regel | Schwere | Status | Quelle |
 |---|---|---|---|---|
-| P-16 | Kritisches Konnektor-Update nicht eingespielt — kein VPN-Tunnel | Fehler | bestätigt | Arch |
-| P-17 | Zeitabweichung des Konnektors über 3600 s — Fehlerzustand | Fehler | bestätigt | gemSpec_Kon (NTP_MAX_TIMEDIFFERENCE) |
+| P-16 | Kritisches Konnektor-Update nicht eingespielt, deshalb kein VPN-Tunnel | Fehler | bestätigt | Arch |
+| P-17 | Zeitabweichung des Konnektors über 3600 s führt zum Fehlerzustand | Fehler | bestätigt | gemSpec_Kon (NTP_MAX_TIMEDIFFERENCE) |
 | P-17a | Keine Zeitsynchronisation seit 30 Tagen (Warnung) bzw. 50 Tagen (kritisch) | Warnung / Fehler | bestätigt | gemSpec_Kon |
 | P-18 | Zertifikat der gSMC-K abgelaufen | Fehler | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
-| P-19 | Parallelbetrieb ohne Firewall — der Konnektor schützt das LAN nicht vor dem Internet | Warnung | bestätigt | Betriebsarten |
+| P-19 | Parallelbetrieb ohne Firewall. Der Konnektor schützt das LAN dann nicht vor dem Internet | Warnung | bestätigt | Betriebsarten |
 | P-20 | Parallelbetrieb ohne Router | Fehler | bestätigt | Betriebsarten |
-| P-21 | Router-Firewall blockiert IPsec — kein VPN-Tunnel | Fehler | plausibel | gemSpec_VPN_ZugD |
+| P-21 | Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel | Fehler | plausibel | gemSpec_VPN_ZugD |
 | P-22 | HBA oder SMC-B nicht freigeschaltet | Fehler | bestätigt | gemILF_PS_AMTS, gemILF_PS |
 | P-23 | DHCP aktiv, aber kein DHCP-Server im Segment | Fehler | Vereinfachung | gemSpec_Kon |
 | P-24 | Gerät in anderem VLAN als der Konnektor | Fehler | Vereinfachung | DVO |
@@ -539,10 +543,10 @@ keinen gematik-Beleg.
 | P-27 | Parallelbetrieb: Client ohne Route 100.102.0.0/15 über den Konnektor | Fehler | bestätigt | gemILF_PS |
 | P-28 | DNS eines Clients ist nicht der Konnektor | Fehler | plausibel | gemILF_PS |
 | P-29 | Arbeitsplatz eines Clients keinem Kartenterminal zugeordnet | Fehler | bestätigt | gemILF_PS |
-| P-30 | Kartenterminal nicht gepairt — Karten darin unsichtbar | Fehler | bestätigt | gemSpec_KT |
+| P-30 | Kartenterminal nicht gepairt, Karten darin sind unsichtbar | Fehler | bestätigt | gemSpec_KT |
 
 **Geändert gegenüber dem Mockup:** P-16 (statt „Firmware älter als 5“),
-P-17 (3600 s statt 5 Minuten), P-19 (SIS im Parallelbetrieb ist erlaubt;
+P-17 (3600 s statt 5 Minuten), P-19 (SIS im Parallelbetrieb ist erlaubt,
 die Regel prüft jetzt die fehlende Firewall). Neu: P-17a, P-31, P-32.
 
 ## 10. Herausforderungen
@@ -562,8 +566,8 @@ wenn ihre Prüfregeln nicht mehr anschlagen.
 
 | Modus | Sichtbar |
 |---|---|
-| **Einfach** | Komponenten mit Modus E (Abschnitt 1); Verbindungen mit Modus E (4.2), dabei vereinfachte Direktverbindungen (Konnektor–VPN, VPN–Fachdienst); Prüfregeln ohne „E“ |
-| **Erweitert** | alle Komponenten, Anschlüsse, Einstellungen (Abschnitt 8) und Prüfregeln; vereinfachte Direktverbindungen bleiben erlaubt, die Sicherheitsprüfung weist aber auf den realen Weg hin (Hinweis) |
+| **Einfach** | Komponenten mit Modus E (Abschnitt 1). Verbindungen mit Modus E (4.2), dabei vereinfachte Direktverbindungen (Konnektor direkt zum VPN-Zugangsdienst, VPN-Zugangsdienst direkt zum Fachdienst). Prüfregeln ohne „E“ |
+| **Erweitert** | alle Komponenten, Anschlüsse, Einstellungen (Abschnitt 8) und Prüfregeln. Vereinfachte Direktverbindungen bleiben erlaubt, die Sicherheitsprüfung weist aber auf den realen Weg hin (Hinweis) |
 
 Status: offen (Vorschlag), Grundlage FR-13.
 
@@ -575,11 +579,11 @@ Status: offen (Vorschlag), Grundlage FR-13.
 - [x] NFDM/eMP laufen über die Fachmodule im Konnektor, ohne VPN und
   Fachdienst (gemSpec_FM_NFDM, gemSysL_AMTS_A). **Spec ist angepasst.**
 - [x] Mobiles KT arbeitet offline, Übergabe per USB (gemSpec_MobKT).
-- [x] SIS im Parallelbetrieb ist erlaubt (gemSpec_Kon); P-19 umgebaut.
+- [x] SIS im Parallelbetrieb ist erlaubt (gemSpec_Kon), P-19 ist umgebaut.
 - [x] TI-Route 100.102.0.0/15 ist korrekt (gemILF_PS).
 - [x] Zeitgrenzwert 3600 s statt 5 Minuten (gemSpec_Kon).
 - [x] eMP lesen und schreiben braucht eGK und HBA oder SMC-B
-  (gemSysL_AMTS_A); AVS braucht für eMP die SMC-B.
+  (gemSysL_AMTS_A). Das AVS braucht für eMP die SMC-B.
 - [x] VSDM braucht neben der eGK die SMC-B oder den HBA (gemSysL_VSDM).
 - [x] KIM-Clientmodul und Krankenkasse sind im Ablauf `eau` ergänzt.
 
@@ -590,14 +594,14 @@ Status: offen (Vorschlag), Grundlage FR-13.
   TI-Messenger-Fachdienst (entschieden 2026-11-03). Quelle:
   gemSpec_TI-M_Basis.
 - [x] **Karten:** Zustand des Kartenterminals, keine eigenen Knoten
-  (entschieden 2026-11-03; Plan D12 angepasst).
+  (entschieden 2026-11-03, Plan D12 angepasst).
 - [x] **PoPP und VSDM 2.0:** in v1 nur als Komponente im Modus
   Erweitert, ohne eigenen Ablauf (entschieden 2026-11-03).
 - [x] **Preset Klinikum:** aus dem Mockup übernommen (Abschnitt 13).
 
 **Noch offen**
 
-- [ ] **CardLink–Konnektor:** Netzweg in gemSpec_eHealth-CardLink
+- [ ] **Weg von CardLink zum Konnektor:** Netzweg in gemSpec_eHealth-CardLink
   Kapitel 6.3 nachlesen.
 - [ ] Belege für V-17 (Konnektor an Konnektor) und die Portanzahlen der
   LAN-Geräte (Vereinfachung).
@@ -607,14 +611,14 @@ Status: offen (Vorschlag), Grundlage FR-13.
 
 Jedes Preset ist eine fertig verbundene Topologie nach der
 Erlaubnisliste. Karten stecken bereits, damit Aktionen sofort
-ausführbar sind. Grundlage ist das Mockup; Abweichungen sind markiert.
+ausführbar sind. Grundlage ist das Mockup, Abweichungen sind markiert.
 
 | Preset | Name im Mockup | Geräte | Karten | Abweichung vom Mockup |
 |---|---|---|---|---|
-| Arztpraxis | Arztpraxis Dr. Behrens | 1 PVS, 2 eHealth-KT, 1 Switch, 1 Konnektor, 1 VPN-Zugangsdienst; IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**; KT 2: eGK | HBA ergänzt, sonst ist „eRezept ausstellen“ nicht ausführbar (6.1) |
-| Apotheke | Apotheke am Markt | 1 AVS, 1 eHealth-KT, 1 Switch, 1 Konnektor, 1 VPN-Zugangsdienst; IDP, E-Rezept, **ePA** | KT: SMC-B, eGK | ePA ergänzt für „ePA-Medikationsliste einsehen“ (6.2) |
-| Krankenhaus | Kreiskrankenhaus Nord — TI 2.0 | 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, 2 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst; IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B; KT 2: HBA | keine; zeigt das TI-Gateway statt Konnektor (X-1) |
-| Klinikum | Klinikum St. Anna | 1 KIS, 6 Arbeitsplatz-PCs, 1 Visite-Tablet, RIS, LIS, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst; IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA; Zonen Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | keine |
+| Arztpraxis | Arztpraxis Dr. Behrens | 1 PVS, 2 eHealth-KT, 1 Switch, 1 Konnektor, 1 VPN-Zugangsdienst. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK | HBA ergänzt, sonst ist „eRezept ausstellen“ nicht ausführbar (6.1) |
+| Apotheke | Apotheke am Markt | 1 AVS, 1 eHealth-KT, 1 Switch, 1 Konnektor, 1 VPN-Zugangsdienst. Dienste: IDP, E-Rezept, **ePA** | KT: SMC-B, eGK | ePA ergänzt für „ePA-Medikationsliste einsehen“ (6.2) |
+| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, 2 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B. KT 2: HBA | keine. Zeigt das TI-Gateway statt Konnektor (X-1) |
+| Klinikum | Klinikum St. Anna | 1 KIS, 6 Arbeitsplatz-PCs, 1 Visite-Tablet, RIS, LIS, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | keine |
 
-Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`); Belege
+Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.

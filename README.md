@@ -4,7 +4,7 @@ Interaktiver Netzwerk-Baukasten zum Verstehen der deutschen **Telematikinfrastru
 
 Du baust dir eine vereinfachte TI-Landschaft (Praxis, Apotheke, Krankenhaus oder komplett frei) und siehst Schritt für Schritt, was bei typischen Vorgängen wie *eGK stecken*, *eRezept ausstellen* oder *KIM-Mail senden* zwischen den Komponenten passiert. Das Prinzip ähnelt Cisco Packet Tracer, nur eben für die TI.
 
-> **Status:** Spec, Regelwerk und Plan liegen als Entwurf vor. Es gibt noch keinen lauffähigen Code.
+> **Status:** Spec, Regelwerk, Plan und Tasks liegen als Entwurf vor. Es gibt noch keinen lauffähigen Code.
 
 Reine Web-App (React, ohne Backend), die später öffentlich unter
 `https://jurie2000.github.io/ti-visualizer/` erreichbar ist. Topologien werden als Datei
@@ -58,7 +58,7 @@ Details: [specs/README.md](specs/README.md)
 
 | Nr. | Feature | Status |
 |---|---|---|
-| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec, Regelwerk und Plan im Entwurf |
+| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | Spec, Regelwerk, Plan und Tasks im Entwurf |
 
 ## Quellen
 

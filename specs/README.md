@@ -16,4 +16,4 @@ lässt, statt „Prompt und hoffen“. Maßgeblich ist die Spec, nicht der Chat-
 
 | Nr. | Feature | Status |
 |---|---|---|
-| [001](./001-ti-visualizer-baukasten/spec.md) | TI Visualizer: interaktiver Netzwerk-Baukasten | Spec, Regelwerk und Plan im Entwurf |
+| [001](./001-ti-visualizer-baukasten/spec.md) | TI Visualizer: interaktiver Netzwerk-Baukasten | Spec, Regelwerk, Plan und Tasks im Entwurf |

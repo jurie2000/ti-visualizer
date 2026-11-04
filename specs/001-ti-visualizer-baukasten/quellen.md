@@ -63,7 +63,7 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 
 | Quelle | Inhalt | Bezug |
 |---|---|---|
-| [Implementierungsleitfaden Primärsysteme (gemILF_PS)](https://gemspec.gematik.de/docs/gemILF/gemILF_PS/latest/) | Infomodell: Mandant, Clientsystem, Arbeitsplatz, Kartenterminal; Aufrufkontext | Primärsysteme, P-29 |
+| [Implementierungsleitfaden Primärsysteme (gemILF_PS)](https://gemspec.gematik.de/docs/gemILF/gemILF_PS/latest/) | Infomodell: Mandant, Clientsystem, Arbeitsplatz, Kartenterminal, Aufrufkontext | Primärsysteme, P-29 |
 | [Implementierungsleitfaden PS NFDM](https://gemspec.gematik.de/docs/gemILF/gemILF_PS_NFDM/latest/) | Notfalldaten aus Sicht des Primärsystems | NFDM-Aktionen |
 | [Implementierungsleitfaden PS AMTS/eMP](https://gemspec.gematik.de/downloads/gemILF/gemILF_PS_AMTS/gemILF_PS_AMTS_V1.6.0.html) | Medikationsplan aus Sicht des Primärsystems | eMP-Aktionen |
 | [Implementierungsleitfaden PS AMTS V1.7.0 (PDF)](https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Implementierungsleitfaeden/gemILF_PS_AMTS_V1.7.0.pdf) | HBA oder SMC-B im „erhöhten Sicherheitszustand“, eGK-PIN als Einwilligung | K-4, K-7, eMP |
@@ -118,7 +118,7 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 
 | Quelle | Inhalt | Bezug |
 |---|---|---|
-| [KBV: Welche Dokumente stellen Praxen in die ePA ein?](https://www.kbv.de/praxis/tools-und-services/praxisnachrichten/2025/07-31/neue-serie-alles-nur-eine-frage-welche-dokumente-stellen-praxen-in-die-epa-ein) | eAU-Kopie in der ePA nur auf Wunsch. KBV ist Körperschaft des öffentlichen Rechts, kein Drittanbieter; bei Gelegenheit durch gematik-Quelle ersetzen | ePA-Aktionen |
+| [KBV: Welche Dokumente stellen Praxen in die ePA ein?](https://www.kbv.de/praxis/tools-und-services/praxisnachrichten/2025/07-31/neue-serie-alles-nur-eine-frage-welche-dokumente-stellen-praxen-in-die-epa-ein) | eAU-Kopie in der ePA nur auf Wunsch. KBV ist Körperschaft des öffentlichen Rechts, kein Drittanbieter. Bei Gelegenheit durch eine gematik-Quelle ersetzen | ePA-Aktionen |
 
 ## 8. Technik und Projekt (nicht fachlich)
 
@@ -135,16 +135,16 @@ Aus der Recherche. Eingearbeitet ins [Regelwerk](./regelwerk.md) am 2026-11-03 (
 | Erkenntnis | Quelle | Auswirkung |
 |---|---|---|
 | Die Fachmodule NFDM und AMTS (eMP) sind fester Teil des Konnektors | gemSpec_FM_NFDM, Produkttypsteckbrief Konnektor | Mockup ist richtig: NFDM/eMP laufen über den Konnektor, aber ohne VPN und Fachdienst. Spec korrigieren |
-| Der Konnektor verwaltet die Kartenterminals; die gSMC-K authentisiert ihn gegenüber VPN-Zugangsdienst, Kartenterminal und HBA | gemKPT_Arch_TIP | stützt P-18 (Zertifikat gSMC-K) |
-| Ein eHealth-KT braucht ein Pairing mit dem Konnektor und hält höchstens zu **einem** Konnektor gleichzeitig eine Verbindung | gemSpec_KT | stützt P-30; neue Regel: KT nur an einen Konnektor |
-| Ein Arbeitsplatz hat normalerweise genau ein Kartenterminal; Aufrufe tragen Mandant, Clientsystem und Arbeitsplatz | gemILF_PS | stützt P-29 (Infomodell) |
-| Der Konnektor kennt zwei Anbindungsmodi: in Reihe vor dem Internet-Router oder parallel als Gerät im Netz; im Parallelbetrieb schützt er nicht vor Angriffen aus dem Internet | gemSpec_Kon, Infoblatt Betriebsarten | stützt Abschnitt 8 und P-25 bis P-27 |
+| Der Konnektor verwaltet die Kartenterminals. Die gSMC-K authentisiert ihn gegenüber VPN-Zugangsdienst, Kartenterminal und HBA | gemKPT_Arch_TIP | stützt P-18 (Zertifikat gSMC-K) |
+| Ein eHealth-KT braucht ein Pairing mit dem Konnektor und hält höchstens zu **einem** Konnektor gleichzeitig eine Verbindung | gemSpec_KT | stützt P-30 und die neue Regel G-4 (KT nur an einem Konnektor) |
+| Ein Arbeitsplatz hat normalerweise genau ein Kartenterminal. Aufrufe tragen Mandant, Clientsystem und Arbeitsplatz | gemILF_PS | stützt P-29 (Infomodell) |
+| Der Konnektor kennt zwei Anbindungsmodi: in Reihe vor dem Internet-Router oder parallel als Gerät im Netz. Im Parallelbetrieb schützt er nicht vor Angriffen aus dem Internet | gemSpec_Kon, Infoblatt Betriebsarten | stützt Abschnitt 8 und P-25 bis P-27 |
 | SIS ist im Parallelbetrieb optional statt ausgeschlossen | gemSpec_Kon (Auszug) | **P-19 prüfen**: Mockup sagt „nur im Reihenbetrieb“ |
-| Der VPN-Zugangsdienst baut einen Tunnel ins TI-Netz und einen getrennten für SIS auf; ohne kritisches Update baut der Konnektor keinen Tunnel mehr auf | gemKPT_Arch_TIP | ergänzt P-16 (Firmware) |
+| Der VPN-Zugangsdienst baut einen Tunnel ins TI-Netz und einen getrennten für SIS auf. Ohne kritisches Update baut der Konnektor keinen Tunnel mehr auf | gemKPT_Arch_TIP | stützt P-16 (kritisches Update) |
 | Das mobile Kartenterminal arbeitet offline und übergibt Daten später ans Primärsystem | gemSpec_MobKT | klärt Frage zu `mkt` in Abschnitt 11 |
 | eHealth-CardLink erlaubt keine PIN-Prüfung | gemSpec_eHealth-CardLink | neue Regel: kein HBA/SMC-B über CardLink, keine PIN-pflichtigen Aktionen |
 | VSDM 2.0 und künftig ePA/E-Rezept nutzen PoPP-Token statt VSDM-Prüfungsnachweis | gemSpec_VSDM_2, PoPP | PoPP als Komponente aufnehmen |
 | Der Fachdienst gibt die Anmeldung an den IDP ab (Relying Party) | gemSpec_FD_eRp | Weg zum IDP (VPN oder Internet) weiter offen |
-| Das TI-Netz ist auf IPv6 umgestellt; ältere Fassungen nennen IPv4 aus 100.64.0.0/10 | gemSpec_Net | **Route 100.102.0.0/15 (P-27) prüfen** |
+| Das TI-Netz ist auf IPv6 umgestellt, ältere Fassungen nennen IPv4 aus 100.64.0.0/10. Die Route 100.102.0.0/15 für offene Fachdienste gilt weiter (gemILF_PS) | gemSpec_Net, gemILF_PS | bestätigt P-27 |
 | eAU geht per KIM an die Krankenkasse, deren Adresse über das Institutionskennzeichen gefunden wird | Pressemitteilung eAU, Dienstkennungen KIM | Krankenkasse als Gegenstelle, VZD im Ablauf `eau` |
-| TI-Messenger nutzt Matrix; Föderation läuft über den VZD | gemSpec_TI-M_Basis | VZD im Ablauf `tim` |
+| TI-Messenger nutzt Matrix, die Föderation läuft über den VZD | gemSpec_TI-M_Basis | VZD im Ablauf `tim` |

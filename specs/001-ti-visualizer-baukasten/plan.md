@@ -35,16 +35,17 @@ GitHub Pages. Zur Freigabe durch Justin.
 | D23 | **Eine Datei `.tiv.json` enthält immer eine Topologie, Einstellungen nur optional dazu.** Einstellungen werden nie allein gespeichert. Beim Speichern sind sie per Häkchen „Einstellungen mitspeichern“ wählbar (Standard aus). Beim Öffnen wird nur die Topologie übernommen. Enthält die Datei Einstellungen, fragt die App, ob sie übernommen werden sollen (Standard nein) | Vom Nutzer festgelegt (2026-11-04). Weitergegebene Dateien bringen nie ungefragt fremden Tutorial-Fortschritt, gelöste Herausforderungen oder eine fremde Ansicht mit. Eigene Einstellungen lassen sich trotzdem auf ein anderes Gerät mitnehmen. |
 | D24 | **Weitergeben nur als Datei.** Kein Link mit Topologie, keine Vorlagen-Bibliothek in v1 | Vom Nutzer festgelegt (2026-11-04). Ein einziger Weg ist einfacher zu bauen, zu testen und abzusichern. Die Datei lässt sich per E-Mail, Moodle oder USB weitergeben. |
 | D25 | **Undo/Redo** im Topologie-Store (Verlauf mit 80 Schritten, wie im Mockup) | FR-16. |
-| D26 | **CI/CD-Pipeline mit GitHub Actions** in festen Stufen: Statische Prüfung → Unit-Tests mit Coverage → Sonar-Analyse mit Quality Gate → Build-Test → E2E-Tests mit Playwright → Deployment | Vom Nutzer gewünscht (2026-11-04). Nur was alle Stufen besteht, wird veröffentlicht. |
+| D26 | **CI/CD-Pipeline mit GitHub Actions** in festen Stufen: Statische Prüfung → Unit-Tests mit Coverage → Sonar-Analyse mit Quality Gate → Build-Test → E2E-Tests mit Playwright → Deployment. **Schlanker Kern ab P0**, weitere Prüfungen erst nach P7 und optional (Ausbaustufen) | Vom Nutzer gewünscht (2026-11-04), Umfang nach dem Prüfbericht gekürzt. Die Zeit in P0 gehört dem fachlichen Kern. |
 | D27 | **SonarQube Cloud** (ehemals SonarCloud) für Codequalität, Sicherheit und Coverage | Für öffentliche Repos kostenlos, direkt mit GitHub verbunden, kommentiert Pull Requests. |
 | D28 | **Architekturdiagramme als Mermaid** in [architektur.md](./architektur.md) | GitHub zeigt Mermaid direkt an. Diagramme liegen versioniert als Text neben dem Plan. |
 | D29 | **KI-Review am Pull Request** mit der Claude Code GitHub Action (Modell Opus), nur als Kommentar, **kein Pflicht-Check** | Vom Nutzer gewünscht (2026-11-04). Prüft Spec- und Regelwerk-Treue, was Sonar und Tests nicht abdecken. Macht den KI-gestützten Entwicklungsprozess für die Bachelorarbeit auswertbar. |
 | D30 | **Rückverfolgbarkeit Regel → Test → Katalog wird automatisch geprüft** (Skripte in der CI) | Erzwingt D18 und hält Regelwerk und Katalog synchron. Liefert einen Nachweis für die Bachelorarbeit. |
-| D31 | **Testqualität wird zusätzlich zur Coverage gemessen**: Property-based Tests (`fast-check`) und Mutation-Testing (StrykerJS) für die Engines | Coverage zeigt nur, welcher Code läuft, nicht ob Tests Fehler finden. |
+| D31 | **Testqualität wird zusätzlich zur Coverage gemessen**: Property-based Tests (`fast-check`) ab P1, Mutation-Testing (StrykerJS) optional einmal für die Auswertung in der Arbeit | Coverage zeigt nur, welcher Code läuft, nicht ob Tests Fehler finden. |
 | D32 | **Architekturregeln werden erzwungen** (`dependency-cruiser`) | Die Schichten aus [architektur.md](./architektur.md) bleiben getrennt. Engines bleiben ohne React testbar. |
-| D33 | **Security by Design** nach OWASP: Abhängigkeiten mit SBOM und Schwachstellen-Tracking, statische und dynamische Sicherheitsprüfung, Injection-Tests für alle Eingabewege, abgesicherte Lieferkette | Die App öffnet Dateien von anderen Benutzern (D24) und ist öffentlich erreichbar. |
+| D33 | **Security by Design** nach OWASP: Schema-Prüfung und Injection-Tests für alle Eingabewege, CSP, gitleaks, Dependabot, Sonar. SBOM, Dependency-Track, ZAP, Scorecard und Provenienz optional nach P7 | Die App öffnet Dateien von anderen Benutzern (D24) und ist öffentlich erreichbar. |
 | D34 | **Speichern nur als Datei, Autosave nur als Sicherheitsnetz**: Der Browser hält ausschließlich den aktuellen Arbeitsstand und die Einstellungen. Es gibt keine Bibliothek gespeicherter Topologien im Browser | Vom Nutzer festgelegt (2026-11-04). Folgt aus D3. Schützt vor Datenverlust durch Neuladen oder Absturz, ohne dass Topologien von Browserdaten abhängen. |
 | D35 | **Datenmodell mit Basistypen und Varianten**: gemeinsame Felder in Basistypen (`Element`, `NetConfig`, `Card`), Varianten über ein Unterscheidungsfeld (`kind` bei Karten). Welche Geräte Karten oder Einstellungen haben, legen **Fähigkeiten im Katalog** fest, nicht eine Klasse pro Gerätetyp | Weniger doppelte Felder, ungültige Kombinationen sind schon vom Typ her ausgeschlossen. Fähigkeiten statt Unterklassen halten das Modell datengetrieben (D4). Diagramm: [architektur.md, Abschnitt 3](./architektur.md#3-datenmodell) |
+| D36 | **Der Modus ändert nur die Darstellung, nie die Topologie.** Im Modus Einfach sind Geräte mit „In Einfach sichtbar: nein“ ausgeblendet und ihre Wege als Sammelkanten zusammengefasst. Der Modus gehört zu den Einstellungen | Vom Nutzer festgelegt (2026-11-04, Prüfbericht Befund 2). So lassen sich alle Presets in beiden Modi zeigen, und der Moduswechsel verliert nichts. Regelwerk Abschnitt 11 |
 
 ## Technologie-Stack
 
@@ -52,12 +53,12 @@ GitHub Pages. Zur Freigabe durch Justin.
 |---|---|
 | Sprache, Build | TypeScript, Vite, pnpm |
 | UI | React, React Flow, CSS Modules, `lucide-react`, `@fontsource/*` |
-| Zustand | Zustand (Stores für Katalog, Topologie, Oberfläche, Simulation, Einstellungen) |
+| Zustand im Browser | Bibliothek „Zustand“ (Stores für Katalog, Topologie, Oberfläche, Simulation, Einstellungen) |
 | Schemas | Zod |
 | Speicher | Datei (`.tiv.json`, File System Access API mit Download/Upload als Rückfall), Autosave in IndexedDB über `idb-keyval` |
-| Tests | Vitest mit `@vitest/coverage-v8`, Playwright (Chromium, Firefox, WebKit), `@axe-core/playwright` |
-| Qualität | ESLint (`typescript-eslint` strict, `jsx-a11y`, `react-hooks`, `no-unsanitized`), Prettier, `tsc --noEmit` (strict), SonarQube Cloud, `dependency-cruiser`, `knip`, `fast-check`, StrykerJS, Lighthouse CI, `size-limit`, `lefthook`, `commitlint` |
-| Sicherheit | CodeQL, `gitleaks`, Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
+| Tests | Vitest mit `@vitest/coverage-v8`, `fast-check`, React Testing Library, Playwright (Chromium, Firefox), `@axe-core/playwright` |
+| Qualität | ESLint (`typescript-eslint` strict, `jsx-a11y`, `react-hooks`, `no-unsanitized`), Prettier, `tsc --noEmit` (strict), SonarQube Cloud, `dependency-cruiser`, `size-limit`, `lefthook`. Optional: StrykerJS, Lighthouse CI, `knip`, `commitlint` |
+| Sicherheit | `gitleaks`, GitHub Secret Scanning, Dependabot, Sonar. Optional: CodeQL, Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
 | CI/CD | GitHub Actions, Dependabot, Claude Code GitHub Action (KI-Review) |
 | Deployment | GitHub Pages |
 
@@ -85,14 +86,13 @@ tests/e2e/        Playwright-Suiten (smoke, datei, a11y, …)
 .github/review-richtlinien.md   Prüfpunkte für den KI-Review
 sonar-project.properties
 playwright.config.ts, vitest.config.ts, .size-limit.json
-stryker.config.json, .dependency-cruiser.cjs, knip.json, lighthouserc.json
-lefthook.yml, commitlint.config.ts
+  .dependency-cruiser.cjs, lefthook.yml
 .github/pull_request_template.md, .github/CODEOWNERS
 SECURITY.md
-.zap/rules.tsv                  begründete Ausnahmen für den ZAP-Scan
-scripts/                        check-traceability.ts, check-regelwerk-katalog.ts,
-                                metrics.ts
+scripts/                        check-traceability.ts, check-regelwerk-katalog.ts
 tests/security/                 Injection-Korpus und Sicherheits-E2E
+(optional nach P7: stryker.config.json, lighthouserc.json, knip.json,
+ commitlint.config.ts, .zap/rules.tsv, scripts/metrics.ts)
 design/mockup/    visuelle Vorlage (nicht im Build)
 ```
 
@@ -154,6 +154,7 @@ Zusatz.
 | Geräteknoten mit Kategorie-Leiste, Icon, Kurzname, Name | `DeviceNode` (+ Anschluss-Punkte im Modus Erweitert) | FR-1, FR-14 |
 | Karten-Chips im Terminal (z. B. „SMC-B“) | `CardChip` im `DeviceNode`, Dialog `PlugCardDialog` | FR-18 |
 | Kanten mit Label („SOAP/TLS“, „IPsec IKEv2“) | `ConnectionEdge` je Verbindungsart (Regelwerk 3) | FR-3, FR-11 |
+| neu: Sammelkante im Modus Einfach | `GroupEdge` (fasst Wege über ausgeblendete Geräte zusammen, Klick zeigt sie) | FR-13, D36 |
 | Zonen (z. B. „Telematikinfrastruktur“) | `ZoneNode` (Gruppe in React Flow) | FR-15 |
 | Ungültige Verbindung, Meldung | `Toast` mit Icon und Text | FR-4 |
 | Kontextmenü mit ausgegrauten Einträgen | `ContextMenu`, `MenuItem` (Schloss-Icon + Begründung) | FR-6, FR-7 |
@@ -166,7 +167,8 @@ Zusatz.
 | Speichern und Laden | `OpenDialog` (Datei öffnen oder Preset wählen), Speichern über Strg+S bzw. „Speichern“ | FR-2, FR-5 |
 | Tastaturkürzel | `ShortcutsDialog` | FR-22 |
 | Konnektor/TI-Gateway-Hinweis | `ExclusionDialog` | FR-4 |
-| neu | `ImpressumDialog`, Hinweis „nicht als Datei gespeichert“ | FR-5, D19, D34 |
+| neu | `ImpressumDialog` (mit Katalogversion und Stand der Fachdaten), Hinweis „nicht als Datei gespeichert“, `ImportFindingsDialog` (Importbefunde) | FR-5, D19, D34 |
+| neu: Textalternative zur Fläche | `TopologyList` (Geräte und Verbindungen als Liste, für Screenreader) | D10 |
 
 ### Design-Tokens und Stile
 
@@ -202,7 +204,7 @@ catalog/
   1/
     meta.json                Version, Datum, Notiz
     categories.json          Kategorien mit Farbe, Form, Reihenfolge
-    device-types.json        Regelwerk 1 (inkl. Modus, Icon, Anschlüsse, Fähigkeiten)
+    device-types.json        Regelwerk 1 (inkl. Sichtbarkeit in Einfach, Icon, Anschlüsse, Fähigkeiten)
     port-kinds.json          Regelwerk 2.1, 2.3
     connection-rules.json    Erlaubnisliste, Regelwerk 4.2
     reason-rules.json        Begründungsliste, Regelwerk 4.3
@@ -214,7 +216,7 @@ catalog/
     config-defaults.json     Einstellungen und Standardwerte, Regelwerk 8
     checks.json              Prüfregeln, Regelwerk 9
     challenges.json          Herausforderungen, Regelwerk 10
-    presets.json             Presets, Regelwerk 13
+    presets.json             Presets mit allen Kanten und festem simDate, Regelwerk 13
     tutorial.json            Tutorial-Schritte und Personas
     glossary.json            Begriffe aus dem Mockup-Glossar
     sources.json             Quellen-IDs → Links (aus quellen.md)
@@ -236,7 +238,7 @@ catalog/
 
 | Daten | Inhalt |
 |---|---|
-| **Einstellungen** | Hell/Dunkel/System, Modus Einfach/Erweitert, Simulationstempo, angepinnte Panels, Animationen reduzieren, Tutorial-Fortschritt, gelöste Herausforderungen |
+| **Einstellungen** | Hell/Dunkel/System, Modus Einfach/Erweitert, Simulationstempo, angepinnte Panels, Animationen reduzieren, Tutorial-Fortschritt, gelöste Herausforderungen, Wahl „Einstellungen mitspeichern“ |
 | **Topologie** | Geräte, Positionen, Kanten mit Anschlüssen, Zonen, gesteckte Karten mit Ablaufdatum und PIN-Status, Geräteeinstellungen, Störungen, Beschreibung |
 
 Die Topologie steht immer in der Datei, die Einstellungen nur, wenn der
@@ -303,13 +305,13 @@ Aufbau und Typen als Diagramm: [architektur.md, Abschnitt 3](./architektur.md#3-
 |---|---|---|
 | `TivFile` | `format`, `schemaVersion`, `exportedAt`, `catalogVersion`, `settings`, `topology` | |
 | `Settings` | Felder aus der Tabelle „Was gespeichert wird“ | |
-| `Topology` | `name`, `description`, `nodes`, `edges`, `zones` | |
+| `Topology` | `name`, `description`, `simDate` (Simulationsdatum für Ablaufdaten, Regelwerk K-3), `nodes`, `edges`, `zones` | |
 | `Element` | `id`, `label?` | |
 | `Node`, `Edge`, `Zone` | erweitern `Element`. Node und Edge haben zusätzlich `fault` (`Disruptable`) | |
 | `Point`, `Rect`, `Endpoint` | kleine Wertobjekte für Position, Fläche und Kantenende | |
-| `Card`, `PinCard` | `Card` für die eGK, `PinCard` (HBA, SMC-B) zusätzlich mit `unlocked` | `kind` |
+| `Card`, `PinCard` | `Card` für die eGK mit `expires` und `pinActive` (Regelwerk K-7), `PinCard` (HBA, SMC-B) mit `expires` und `unlocked` | `kind` |
 | `NetConfig` | `ip`, `mask`, `gateway`, `dns`, `vlan`, `dhcp` | |
-| `KonnektorConfig`, `TerminalConfig`, `ClientConfig`, `RouterConfig`, `InfraConfig` | erweitern `NetConfig` um die Felder aus Regelwerk 8. `InfraConfig` (Switch, Access Point) hat keine Zusatzfelder | Fähigkeit des Gerätetyps |
+| `KonnektorConfig`, `TerminalConfig`, `ClientConfig`, `RouterConfig`, `InfraConfig` | erweitern `NetConfig` um die Felder aus Regelwerk 8 (Spalte „Feld“). KonnektorConfig gilt auch für TI-Gateway und Highspeed-Konnektor. `InfraConfig` (Switch, Access Point, Firewall) hat keine Zusatzfelder | Fähigkeit des Gerätetyps (Regelwerk 1.9) |
 
 **Prüfungen gegen den Katalog:** `cards` nur bei Gerätetypen mit der
 Fähigkeit `cardSlots`, `config` nur bei einer Fähigkeit
@@ -319,20 +321,33 @@ genau zwei Enden, beide zeigen auf vorhandene Knoten und Anschlüsse.
 - Ein Schema (Zod) für die Datei, die Presets und den Autosave.
 - Eine Datei ohne `topology` wird abgelehnt. `settings` ist optional,
   eine Datei nur mit `settings` ist ungültig.
-- **Migration:** ältere `schemaVersion` laufen durch eine
-  Migrationskette. Weicht `catalogVersion` ab, wird gegen den aktuellen
-  Katalog geprüft. Verstöße werden gemeldet und markiert, nicht
-  stillschweigend entfernt.
+- **Versionen:**
+  - Ältere `schemaVersion` laufen durch eine Migrationskette.
+  - Eine neuere `schemaVersion` als die App kennt wird mit der Meldung
+    „Datei stammt aus einer neueren Version“ abgelehnt.
+  - Weicht `catalogVersion` ab (gebündelt ist nur der aktive Katalog),
+    wird gegen den aktiven Katalog geprüft. Verstöße stehen in den
+    Importbefunden und werden von der Sicherheitsprüfung angezeigt, nicht
+    stillschweigend entfernt.
 
 ### Sicherheit beim Öffnen fremder Dateien
 
-- Jede Datei läuft durch das Zod-Schema. Unbekannte Felder
-  werden verworfen, unbekannte Gerätetypen gemeldet.
-- Größenlimit 1 MB pro Datei.
+- Jede Datei läuft durch das Zod-Schema. Übernommen werden nur bekannte
+  Felder. Alles, was nicht übernommen wird (unbekannte Felder und
+  Gerätetypen, kaputte Verweise), steht in einer **Liste der
+  Importbefunde**, die der Benutzer nach dem Öffnen sieht. Nichts
+  verschwindet stillschweigend.
+- **Grenzen:** 1 MB pro Datei, höchstens 500 Knoten, 2 000 Kanten und
+  50 Zonen, Namen bis 100 Zeichen, Beschreibungen bis 2 000 Zeichen.
+- **Schema-Regeln:** IDs sind eindeutig, ein Einzelanschluss trägt
+  höchstens eine Kante, jede Kante zeigt auf vorhandene Knoten und
+  Anschlüsse.
 - Texte (Namen, Beschreibungen) werden nur als Text angezeigt, nie als
   HTML.
-- Fremde Inhalte ersetzen den aktuellen Stand nie ohne Rückfrage. Vorher
-  wird der aktuelle Stand automatisch gesichert.
+- **Vor dem Ersetzen:** Hat der aktuelle Stand ungespeicherte Änderungen,
+  bietet die App an, ihn zuerst als Datei zu speichern. Zusätzlich bleibt
+  der alte Stand als Rückgängig-Schritt erhalten. Der Autosave allein
+  reicht dafür nicht, weil er sofort den neuen Stand sichert.
 
 ## Presets (Standardausstattung)
 
@@ -354,15 +369,21 @@ Topologie-Schema wie Dateien.
 Umsetzung der Prüflogik aus [Regelwerk 4.0](./regelwerk.md#40-prüflogik-entschieden-2026-11-03):
 
 1. Grundprüfungen (Selbstverbindung, Doppelung, freier verträglicher
-   Anschluss, Kartenterminal an höchstens einem Konnektor) und
-   Ausschlüsse (Konnektor/TI-Gateway). Schlägt eine fehl: ungültig.
-2. Steht das Paar in der Erlaubnisliste (für den aktuellen Modus)? Dann
-   gültig.
+   Anschluss, Kartenterminal an höchstens einem Zugang) und Ausschlüsse
+   (Konnektor/TI-Gateway). Schlägt eine fehl: ungültig.
+2. Steht das Paar in der Erlaubnisliste? Dann gültig. Der Modus spielt
+   keine Rolle (D36). „Zugang“ steht für Konnektor,
+   Highspeed-Konnektor und TI-Gateway.
 3. Sonst ungültig. `reason` ist der Text der passenden Begründungsregel
    oder die allgemeine Meldung mit den erlaubten Partnern.
 
 Im Modus Einfach wählt `autoPorts` das erste freie, verträgliche
 Anschlusspaar. Im Modus Erweitert öffnet sich der `PortPicker`.
+
+Karten werden nicht verbunden, sondern gesteckt (`plugCard`, Regelwerk
+Abschnitt 5). Die Darstellung im Modus Einfach berechnet
+`collapseHidden(topology, catalog)`: Wege über ausgeblendete Geräte
+werden zu Sammelkanten (D36).
 
 ## Aktions- und Simulations-Engine (FR-6 bis FR-10, FR-18)
 
@@ -372,12 +393,18 @@ Anschlusspaar. Im Modus Erweitert öffnet sich der `PortPicker`.
   (Regelwerk 6), inklusive Kartenzustand, Störungen und, im Modus
   Erweitert, der Prüfregeln, die den Pfad unterbrechen (z. B. fehlende
   TI-Route).
-- **Pfadauflösung:** Suche über die Kanten vom auslösenden Gerät. Bei
-  `pathKind: local` (NFDM/eMP) über den Konnektor bis zur eGK, ohne VPN
-  und Fachdienst.
+- **Pfadauflösung:** Suche über die Kanten vom auslösenden Gerät nach
+  der Rollenfolge aus Regelwerk 6.0 (Auslöser, LAN, Zugang, Router und
+  Internet, VPN, Zentrales Netz, Dienst). Wege am Zugang vorbei zählen
+  nicht als TI-Pfad. Bei `pathKind: local` (NFDM/eMP) über den Zugang bis
+  zur eGK, ohne VPN und Fachdienst.
 - **Abspielen:** Schritte aus `flows.json` werden auf den Pfad gebunden.
   Zustandsautomat `idle → running(n) ⇄ paused → done | cancelled`.
   Play/Pause, Schritt vor/zurück, Tempo, Abbrechen.
+- **Während der Simulation** ist die Topologie gesperrt. Öffnen einer
+  Datei, Moduswechsel, Rückgängig und Störungen brechen sie ab.
+  Fachlicher Zustand (ob ein Rezept existiert) wird nicht geführt
+  (Regelwerk 7, Vereinfachung).
 - **Sicherheitsprüfung:** `runChecks(topology, mode)` liefert Befunde
   nach Regelwerk 9. Dieselbe Funktion erkennt gelöste Herausforderungen.
 
@@ -385,36 +412,46 @@ Anschlusspaar. Im Modus Erweitert öffnet sich der `PortPicker`.
 
 Übersicht als Diagramm: [architektur.md, Abschnitt 5](./architektur.md#5-cicd-pipeline).
 
+### Ausbaustufen (entschieden 2026-11-04)
+
+Die Pipeline wächst mit dem Projekt. Der Kern steht ab P0, alles andere
+kommt erst, wenn die App fachlich steht.
+
+| Stufe | Bausteine |
+|---|---|
+| **Kern ab P0** | ESLint, Prettier, `tsc` · Vitest mit Coverage · SonarQube Cloud · Build-Test mit Bundle-Größe · Playwright (Smoke) mit Axe · Deploy auf GitHub Pages · gitleaks · Dependabot · Branch-Schutz · KI-Review (kein Pflicht-Check) |
+| **ab P1** | Rückverfolgbarkeit Regel → Test (D30) · Architekturregeln mit `dependency-cruiser` (D32) · Property-based Tests mit `fast-check` (D31) |
+| **ab P3** | Injection-Suite und Fuzzing für das Öffnen von Dateien |
+| **optional nach P7** | Mutation-Testing (StrykerJS, einmal für die Auswertung in der Arbeit) · Lighthouse CI · `knip` · CodeQL · Dependency-Review und `pnpm audit` · SBOM mit OWASP Dependency-Track · OWASP ZAP · OpenSSF Scorecard · Build-Provenienz · Kennzahlen-Export · `commitlint` · E2E in allen Browsern nightly |
+
 ### Workflows
 
 | Datei | Auslöser | Zweck |
 |---|---|---|
 | `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch | Stufen 1 bis 5. Ergebnis als Status-Check am PR |
 | `.github/workflows/deploy.yml` | Push auf `main` (nach Merge), manuell | Stufen 1 bis 5, danach Stufe 6 Deployment |
-| `.github/workflows/nightly.yml` | täglich nachts | volle E2E-Suite in allen Browsern, Mutation-Testing, OWASP ZAP gegen die öffentliche Seite, OSV-Scanner, Kennzahlen |
-| `.github/workflows/codeql.yml` | PR, Push auf `main`, wöchentlich | CodeQL-Analyse (JavaScript/TypeScript) |
-| `.github/workflows/scorecard.yml` | wöchentlich | OpenSSF Scorecard für die Lieferkette |
 | `.github/dependabot.yml` | wöchentlich | Updates für npm-Pakete und Actions |
+| `.github/workflows/nightly.yml` | optional nach P7 | E2E in allen Browsern und die optionalen Prüfungen |
 
 Gemeinsame Schritte liegen in einem wiederverwendbaren Workflow
 (`.github/workflows/_pipeline.yml`, `workflow_call`), damit CI und Deploy
 sicher dasselbe prüfen.
 
-### Stufen
+### Stufen (Kern)
 
 | Stufe | Job | Inhalt | Bricht ab, wenn |
 |---|---|---|---|
-| 1 | `static` | `pnpm install --frozen-lockfile` · ESLint · Prettier-Check · `tsc --noEmit` · Architekturregeln (`dependency-cruiser`) · ungenutzter Code (`knip`) · Rückverfolgbarkeit Regelwerk ↔ Katalog | Lint-, Typ- oder Architekturfehler, Regelwerk und Katalog weichen ab |
-| 1b | `security` | Secret-Scan (`gitleaks`) · bei PRs `actions/dependency-review-action` (neue Abhängigkeiten mit Schwachstellen oder unerlaubter Lizenz) · `pnpm audit --audit-level=high` | Secret gefunden, Abhängigkeit mit hoher/kritischer Schwachstelle oder verbotener Lizenz |
-| 2 | `unit` | Vitest mit Coverage (`@vitest/coverage-v8`, Bericht `lcov`), Property-based Tests, Katalog- und Preset-Validierung, Regel-Tests (D18) mit Prüfung „jede Regel hat einen Test“, Kontrastprüfung der Tokens | ein Test fehlschlägt, eine Regel-ID ohne Test ist oder Coverage unter den Grenzen liegt (Engines 90 % Zeilen/85 % Zweige, gesamt 80 %) |
+| 1 | `static` | `pnpm install --frozen-lockfile` · ESLint · Prettier-Check · `tsc --noEmit` · gitleaks · ab P1 `dependency-cruiser` | Lint-, Typ- oder Architekturfehler, Secret gefunden |
+| 2 | `unit` | Vitest mit Coverage (`@vitest/coverage-v8`, Bericht `lcov`), Katalog- und Preset-Validierung (inklusive A-5), Regel-Tests (D18), Kontrastprüfung der Tokens. Ab P1 Property-based Tests und „jede Regel hat einen Test“ | ein Test fehlschlägt, eine Regel-ID ohne Test ist oder Coverage unter den Grenzen liegt (Engines 90 % Zeilen/85 % Zweige, gesamt 80 %) |
 | 3 | `sonar` | SonarQube-Cloud-Analyse mit dem Coverage-Bericht aus Stufe 2. Quality Gate wird abgewartet | Quality Gate rot |
 | 3b | `ai-review` | nur bei Pull Requests: KI-Review nach `.github/review-richtlinien.md`, Ergebnis als PR-Kommentar | bricht nie ab (nur Hinweise) |
-| 4 | `build` | `vite build` mit `BASE_PATH=/ti-visualizer/`. Prüfung der Bundle-Größe. CSP-Meta-Tag vorhanden. SBOM (CycloneDX) erzeugen. Lighthouse CI. `dist/` als Artefakt | Build-Fehler, Haupt-Bundle > 500 KB (gzip), Lighthouse unter 90 in Performance, Barrierefreiheit oder Best Practices |
-| 5 | `e2e` | Playwright gegen `vite preview` mit dem Build aus Stufe 4. Axe-Checks. Tastatur-Durchlauf. Export/Import zwischen zwei Browser-Kontexten. **Injection-Suite** (`tests/security/`) | ein E2E-, Axe- oder Injection-Test fehlschlägt |
-| 6 | `deploy` | nur in `deploy.yml`: Build-Provenienz signieren (`actions/attest-build-provenance`), `actions/upload-pages-artifact` mit `dist/`, `actions/deploy-pages`, danach Smoke-Test gegen die öffentliche Adresse | Upload, Deploy oder Smoke-Test schlägt fehl |
+| 4 | `build` | `vite build` mit `BASE_PATH=/ti-visualizer/`. Bundle-Größe (`size-limit`). CSP-Meta-Tag vorhanden. `dist/` als Artefakt | Build-Fehler, Haupt-Bundle > 500 KB (gzip) |
+| 5 | `e2e` | Playwright gegen `vite preview` mit dem Build aus Stufe 4. Axe-Checks. Ab P3 Injection-Suite (`tests/security/`) | ein E2E-, Axe- oder Injection-Test fehlschlägt |
+| 6 | `deploy` | nur in `deploy.yml`: `actions/upload-pages-artifact` mit `dist/`, `actions/deploy-pages`, danach Smoke-Test gegen die öffentliche Adresse | Upload, Deploy oder Smoke-Test schlägt fehl |
 
-Stufe 1 und 1b laufen zuerst. Danach laufen 2, 3b und 4 parallel. Stufe 3 wartet auf 2, Stufe 5 auf 4.
-Deploy startet nur, wenn alle anderen Jobs grün sind.
+Stufe 1 läuft zuerst. Danach laufen 2, 3b und 4 parallel. Stufe 3
+wartet auf 2, Stufe 5 auf 4. Deploy startet nur, wenn alle anderen Jobs
+grün sind.
 
 ### Sonar-Prüfung (D27)
 
@@ -423,26 +460,27 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
 - **Einbindung:** offizielle Action `SonarSource/sonarqube-scan-action`
   (Version gepinnt) mit `SONAR_TOKEN` als Repository-Secret.
   `sonar.qualitygate.wait=true`, damit der Job auf das Ergebnis wartet.
-- **Konfiguration** in `sonar-project.properties`:
-  - `sonar.sources=src`, `sonar.tests=src,tests`,
-    `sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,tests/**`
+- **Konfiguration** in `sonar-project.properties`. Quell- und Testdateien
+  müssen getrennte Mengen sein, sonst bricht die Analyse ab:
+  - `sonar.sources=src`
+  - `sonar.exclusions=**/*.test.ts,**/*.test.tsx,src/test/**`
+  - `sonar.tests=src,tests`
+  - `sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,src/test/**,tests/**`
   - `sonar.javascript.lcov.reportPaths=coverage/lcov.info`
-  - `sonar.exclusions=design/**,catalog/**,public/**`
 - **Quality Gate „Sonar way“** für neuen Code: keine neuen Bugs und
   Schwachstellen, Security Hotspots geprüft, Coverage auf neuem Code
   ≥ 80 %, Duplikate ≤ 3 %.
 - **Pull Requests:** Sonar kommentiert Befunde direkt im PR (PR-Decoration).
-- **Ergänzend:** CodeQL, Abhängigkeitsprüfung und weitere
-  Sicherheitsjobs siehe Abschnitt „Cyber-Security“.
+- Sonar ist zugleich die statische Sicherheitsprüfung (SAST) im Kern.
+  CodeQL ist optional.
 
 ### KI-Review (D29)
 
 - **Werkzeug:** offizielle Claude Code GitHub Action von Anthropic
   (`anthropics/claude-code-action`, Version gepinnt), Modell Opus.
 - **Auslöser:** automatisch bei geöffnetem oder aktualisiertem Pull
-  Request, wenn Dateien in `src/`, `catalog/` oder
-  `specs/` geändert sind. Zusätzlich auf Zuruf mit `@claude` in einem
-  PR-Kommentar.
+  Request, wenn Dateien in `src/`, `catalog/` oder `specs/` geändert
+  sind. Zusätzlich auf Zuruf mit `@claude` in einem PR-Kommentar.
 - **Prüfpunkte** in `.github/review-richtlinien.md`, mit Fokus auf das,
   was Sonar und Tests nicht sehen:
   - Stimmt die Änderung mit Spec und Regelwerk überein (Regel-IDs,
@@ -451,34 +489,30 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
   - Hat jeder neue Katalogeintrag `source` und `status`?
   - Werden Zustände nie nur über Farbe angezeigt, ist alles per Tastatur
     bedienbar (D10)?
-  - Werden geöffnete Dateien durch das Schema geprüft und Texte
-    nie als HTML ausgegeben?
+  - Werden geöffnete Dateien durch das Schema geprüft und Texte nie als
+    HTML ausgegeben?
   - Nennt der Pull Request die Task-ID?
   - Stil, Formatierung und allgemeine Codequalität sind **nicht**
     Aufgabe des KI-Reviews (das machen ESLint, Prettier, Sonar).
-- **Ausgabe:** ein zusammenfassender PR-Kommentar plus Inline-Kommentare
-  an den betroffenen Zeilen, auf Deutsch, Befunde nach Schwere sortiert.
-- **Kein Pflicht-Check:** Der Job ist im Branch-Schutz nicht als
-  erforderlich eingetragen. Über den Merge entscheidet ein Mensch.
-- **Sicherheit:**
-  - `ANTHROPIC_API_KEY` als Repository-Secret.
-  - Automatischer Lauf nur für Pull Requests aus diesem Repo. Pull
-    Requests aus Forks bekommen kein Secret und laufen nur nach
-    manueller Freigabe (Umgebung mit erforderlicher Freigabe).
-  - Rechte des Jobs minimal: Lesen des Codes, Schreiben nur von
-    PR-Kommentaren. Die KI darf keine Commits pushen und nicht mergen.
+- **Ausgabe:** ein zusammenfassender PR-Kommentar plus Inline-Kommentare,
+  auf Deutsch, Befunde nach Schwere sortiert.
+- **Kein Pflicht-Check:** Über den Merge entscheidet ein Mensch.
+- **Sicherheit:** `ANTHROPIC_API_KEY` als Repository-Secret. Automatischer
+  Lauf nur für Pull Requests aus diesem Repo, Forks nur nach manueller
+  Freigabe. Rechte minimal: Code lesen, PR-Kommentare schreiben, nicht
+  pushen, nicht mergen.
 - **Kosten begrenzen:** Pfadfilter, maximale Laufzeit und Zugzahl pro
   Lauf, kein Lauf bei Entwurfs-PRs.
 - **Auswertung für die Bachelorarbeit:** Befunde je PR werden mit Label
-  „KI-Befund übernommen“ bzw. „verworfen“ markiert. So lässt sich am Ende
-  zeigen, welchen Anteil der KI-Review hatte.
+  „KI-Befund übernommen“ bzw. „verworfen“ markiert.
 
 ### Unit- und Komponententests
 
 - **Vitest** für Engines, Schemas, Persistenz (mit `fake-indexeddb`) und
-  Stores.
+  Stores. Tests laufen mit fester Uhr, Ablaufdaten werden gegen das
+  `simDate` der Topologie geprüft.
 - **React Testing Library** für Komponenten mit Logik (Kontextmenü,
-  PortPicker, SimPlayer, Import-Dialog).
+  PortPicker, SimPlayer, Öffnen-Dialog).
 - Tests liegen neben dem Code (`*.test.ts`), Testdaten-Topologien in
   `src/test/fixtures/`.
 
@@ -486,31 +520,33 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
 
 - Produktions-Build mit genau der `BASE_PATH`, die auch deployt wird.
 - Prüfungen nach dem Build: `dist/index.html` existiert, alle Assets
-  liegen unter `/ti-visualizer/`,
-  Bundle-Größe unter der Grenze (`size-limit`).
+  liegen unter `/ti-visualizer/`, Bundle-Größe unter der Grenze
+  (`size-limit`).
 
 ### End-to-End-Tests mit Playwright
 
-| Suite | Inhalt | Browser in CI | Browser nightly |
-|---|---|---|---|
-| `smoke` | App lädt, Startansicht, Preset öffnen | Chromium | alle |
-| `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar | Chromium | alle |
-| `actions-sim` | Kontextmenü, ausgegraute Aktion, Simulation abspielen und abbrechen | Chromium | alle |
-| `datei` | Speichern in Kontext A → Öffnen in neuem Kontext B: Topologie kommt an, Einstellungen nur nach Zustimmung. Datei ohne Einstellungen. Autosave und Wiederherstellen | Chromium, Firefox | alle |
-| `a11y` | Axe auf Hauptansichten und Dialogen, Durchlauf nur per Tastatur | Chromium | alle |
-| `visual` | Screenshots Hell/Dunkel der Hauptansichten | nicht in CI | Chromium (Vergleich mit Referenzbildern) |
+| Suite | Inhalt | ab Phase |
+|---|---|---|
+| `smoke` | App lädt, Startansicht, Preset öffnen, Impressum erreichbar | P0 |
+| `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar, Moduswechsel mit Sammelkanten | P2 |
+| `datei` | Speichern in Kontext A → Öffnen in neuem Kontext B: Topologie kommt an, Einstellungen nur nach Zustimmung. Datei ohne Einstellungen. Autosave und Wiederherstellen | P3 |
+| `actions-sim` | Kontextmenü, ausgegraute Aktion, Simulation abspielen und abbrechen, Bearbeiten während der Simulation gesperrt | P4 |
+| `a11y` | Axe auf Hauptansichten und Dialogen, Durchlauf nur per Tastatur, Listenansicht | ab P0 wachsend |
 
-- Bei Fehlern lädt die Pipeline Trace, Video und Screenshots als
-  Artefakt hoch.
-- Nach dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
+In der CI läuft Chromium, für `datei` zusätzlich Firefox. Bei Fehlern
+lädt die Pipeline Trace, Video und Screenshots als Artefakt hoch. Nach
+dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 
 ### Branch-Schutz und Ablauf
 
 - `main` ist geschützt: Merge nur per Pull Request, Pflicht-Checks
-  `static`, `security`, `unit`, `sonar`, `build`, `e2e`, `codeql`. Der KI-Review (`ai-review`)
+  `static`, `unit`, `sonar`, `build`, `e2e`. Der KI-Review (`ai-review`)
   läuft mit, ist aber kein Pflicht-Check.
-- Arbeitsweise: Branch je Task (`task/T-xxx-…`), PR mit Task-ID,
-  Merge nach grünen Checks. Deploy läuft danach automatisch.
+- Arbeitsweise: Branch je Task (`task/T-xxx-…`), PR mit Task-ID, Merge
+  nach grünen Checks. Deploy läuft danach automatisch.
+- Keine Pflicht-Freigabe durch Code-Owner: Bei einem Entwickler kann
+  niemand die eigenen PRs freigeben. `CODEOWNERS` dient nur der
+  Benachrichtigung.
 
 ### GitHub Pages
 
@@ -523,38 +559,41 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
   GitHub Actions*. Umgebung `github-pages` nur für `main`. SonarQube
   Cloud mit dem Repo verbinden und `SONAR_TOKEN` hinterlegen.
   `ANTHROPIC_API_KEY` als Secret anlegen und die Claude GitHub App
-  installieren.
-  Branch-Schutz für `main` einrichten.
+  installieren. Branch-Schutz für `main` einrichten. GitHub Secret
+  Scanning mit Push Protection und „Private vulnerability reporting“
+  aktivieren.
 
 ## Codequalität und Testabdeckung (D30 bis D32)
 
-### Rückverfolgbarkeit (D30)
+### Rückverfolgbarkeit (D30, ab P1)
 
 | Prüfung | So funktioniert sie | Ergebnis |
 |---|---|---|
-| **Jede Regel hat einen Test** | `scripts/check-traceability.ts` liest alle Regel-IDs aus `regelwerk.md` (z. B. V-3, G-4, K-4, P-17) und sucht sie in den Testnamen (`it("[P-17] …")`) | CI bricht ab, wenn eine Regel-ID ohne Test ist. Bericht `traceability.md` als Artefakt (Regel → Test → Status) |
-| **Regelwerk und Katalog stimmen überein** | `scripts/check-regelwerk-katalog.ts` liest die Tabellen aus `regelwerk.md` (Erlaubnisliste, Begründungsliste, Aktionen, Prüfregeln) und vergleicht sie mit `catalog/*.json` | CI bricht ab bei fehlenden oder zusätzlichen Einträgen, abweichendem Status oder fehlender Quelle |
+| **Jede Regel hat einen Test** | `scripts/check-traceability.ts` liest alle Regel-IDs aus `regelwerk.md` (z. B. V-4, G-4, K-4, P-17) und sucht sie in den Testnamen (`it("[P-17] …")`) | CI bricht ab, wenn eine Regel-ID ohne Test ist. Bericht `traceability.md` als Artefakt (Regel → Test → Status) |
+| **Regelwerk und Katalog stimmen überein** | `scripts/check-regelwerk-katalog.ts` vergleicht nur Regel-IDs, Status und Quelle zwischen `regelwerk.md` und `catalog/*.json`. Inhalte wie Gerätelisten werden nicht aus dem Markdown gelesen, das wäre zu fehleranfällig | CI bricht ab bei fehlenden oder zusätzlichen IDs, abweichendem Status oder fehlender Quelle |
 | **Jede Anforderung ist abgedeckt** | Tests und Tasks tragen FR-IDs. Das Skript prüft FR-1 bis FR-22 | Bericht „FR → Tasks → Tests“ |
 
 ### Testarten und Ziele
 
-| Testart | Werkzeug | Gegenstand | Ziel |
-|---|---|---|---|
-| Unit | Vitest | Engines, Schemas, Persistenz, Stores | Engines ≥ 90 % Zeilen, ≥ 85 % Zweige. Gesamt ≥ 80 % |
-| Property-based (D31) | `fast-check` | Engines und Import | Grundsätze siehe unten |
-| Mutation (D31) | StrykerJS (Vitest-Runner) | `src/engine/`, `src/persistence/` | Mutation Score ≥ 80 % (nightly, Bericht als Artefakt) |
-| Komponenten | React Testing Library | Bausteine mit Logik | kritische Interaktionen abgedeckt |
-| E2E | Playwright | Nutzerabläufe, Speichern/Öffnen, a11y, Sicherheit | alle Suiten grün |
-| Visuell | Playwright `toHaveScreenshot` | Hauptansichten hell/dunkel | keine ungewollte Abweichung |
-| Performance/Qualität | Lighthouse CI | gebaute Seite | ≥ 90 in Performance, Barrierefreiheit, Best Practices |
+| Testart | Werkzeug | Gegenstand | Ziel | Stufe |
+|---|---|---|---|---|
+| Unit | Vitest | Engines, Schemas, Persistenz, Stores | Engines ≥ 90 % Zeilen, ≥ 85 % Zweige. Gesamt ≥ 80 % | Kern |
+| Property-based (D31) | `fast-check` | Engines und Öffnen von Dateien | Grundsätze siehe unten | ab P1 |
+| Komponenten | React Testing Library | Bausteine mit Logik | kritische Interaktionen abgedeckt | Kern |
+| E2E | Playwright | Nutzerabläufe, Speichern/Öffnen, a11y, Sicherheit | alle Suiten grün | Kern |
+| Mutation (D31) | StrykerJS (Vitest-Runner) | `src/engine/`, `src/persistence/` | Mutation Score ≥ 80 % | optional, einmal für die Arbeit |
+| Visuell | Playwright `toHaveScreenshot` | Hauptansichten hell/dunkel | keine ungewollte Abweichung | optional |
+| Performance/Qualität | Lighthouse CI | gebaute Seite | ≥ 90 in Performance, Barrierefreiheit, Best Practices | optional |
 
 **Grundsätze für Property-based Tests** (zufällige Topologien und Eingaben):
 - Verbinden ist symmetrisch: A mit B ergibt dasselbe wie B mit A (D15).
 - Kein Paar der Erlaubnisliste wird von einer Begründungsregel erfasst.
+- Jede Topologie ist im Modus Einfach und Erweitert dieselbe, nur die
+  Darstellung unterscheidet sich (D36).
 - Speichern → Öffnen ergibt dieselbe Topologie. Mitgespeicherte
   Einstellungen kommen nur nach Zustimmung an.
 - Migration ist idempotent: zweimal migrieren = einmal migrieren.
-- Beliebige, auch kaputte Eingaben bringen den Import nie zum Absturz.
+- Beliebige, auch kaputte Eingaben bringen das Öffnen nie zum Absturz.
   Sie werden angenommen oder mit Meldung abgelehnt (Fuzzing).
 - `runChecks` ist deterministisch und hängt nicht von der Reihenfolge
   der Knoten ab.
@@ -566,35 +605,22 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
 - **ESLint:** `typescript-eslint` (`strict-type-checked`),
   `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`,
   `eslint-plugin-no-unsanitized` (verbietet `innerHTML` & Co.).
-- **Architekturregeln (D32)** mit `dependency-cruiser`:
+- **Architekturregeln (D32, ab P1)** mit `dependency-cruiser`:
   - `engine/` importiert weder React noch `store/`, `persistence/` oder
     Browser-APIs.
   - `ui/`, `canvas/`, `panels/`, `dialogs/` greifen nicht direkt auf
     `persistence/` zu, nur über Stores.
   - keine zirkulären Abhängigkeiten.
-- **`knip`:** keine ungenutzten Dateien, Exporte oder Abhängigkeiten.
 - **Sonar** (D27) als übergreifende Bewertung.
 
 ### Arbeitsablauf
 
 - **Vor dem Commit:** `lefthook` mit `lint-staged` (ESLint, Prettier nur
   für geänderte Dateien) und `gitleaks` für Secrets.
-- **Commit-Nachrichten:** `commitlint` mit Conventional Commits und
-  Pflicht-Task-ID, z. B. `feat(engine): T-012 Erlaubnisliste prüfen`.
 - **Pull-Request-Vorlage** (`.github/pull_request_template.md`):
   Task-ID, betroffene FR- und Regel-IDs, Tests ergänzt, Screenshot bei
   UI-Änderung, Sicherheitsrelevanz ja/nein.
-- **`CODEOWNERS`:** Änderungen an `specs/`, `catalog/` und
-  `.github/workflows/` brauchen die Freigabe von Justin.
-
-### Kennzahlen für die Bachelorarbeit
-
-`scripts/metrics.ts` schreibt je Pipeline-Lauf eine Zeile in
-`metrics/verlauf.csv` (eigener Branch `metrics`): Datum, Commit,
-Coverage, Mutation Score, Sonar-Bewertungen, Anzahl Tests, Regeln mit
-Test, Lighthouse-Werte, offene Schwachstellen, KI-Review-Befunde
-übernommen/verworfen. Daraus entstehen die Verlaufsgrafiken für die
-Arbeit.
+- **`CODEOWNERS`:** nur zur Benachrichtigung, keine Pflicht-Freigabe.
 
 ## Cyber-Security (D33)
 
@@ -603,37 +629,33 @@ Arbeit.
 | Bedrohung | Wo | Gegenmaßnahme |
 |---|---|---|
 | **Tampering / Injection:** präparierte `.tiv.json` mit Skript- oder HTML-Inhalt | Öffnen | Zod-Schema mit festen Wertebereichen, Texte nur als Text, `no-unsanitized`, CSP, Injection-Tests |
-| **Denial of Service im Browser:** riesige Datei, tief verschachteltes JSON | Öffnen | Größenlimit 1 MB, Knoten-/Kantenlimit, Abbruch mit Meldung |
-| **Prototype Pollution:** Schlüssel wie `__proto__`, `constructor` | JSON-Import | Zod verwirft unbekannte Schlüssel. Test mit diesen Schlüsseln |
+| **Denial of Service im Browser:** riesige Datei, tief verschachteltes JSON | Öffnen | Grenzen aus „Sicherheit beim Öffnen“, Abbruch mit Meldung |
+| **Prototype Pollution:** Schlüssel wie `__proto__`, `constructor` | Öffnen | Zod übernimmt nur bekannte Schlüssel. Test mit diesen Schlüsseln |
 | **Spoofing:** weitergegebene Datei gibt sich als offizielles Preset aus | Öffnen | offizielle Presets kommen nur aus dem Katalog, geöffnete Dateien sind immer als eigene Datei gekennzeichnet und ersetzen den Stand nur nach Rückfrage |
 | **Information Disclosure:** Daten verlassen den Browser | gesamte App | keine Laufzeit-Netzwerkzugriffe außer zur eigenen Seite (Same-Origin). Keine Tracker. Schriften selbst ausgeliefert |
-| **Supply Chain:** kompromittierte Abhängigkeit oder Action | Build, CI | Lockfile, SBOM, Dependency-Review, gepinnte Actions, minimale Rechte, Provenienz |
+| **Supply Chain:** kompromittierte Abhängigkeit oder Action | Build, CI | Lockfile, Dependabot, gepinnte Actions, minimale Rechte. Optional: Dependency-Review, SBOM, Provenienz |
 | **Elevation of Privilege in der CI:** Fork-PR greift auf Secrets zu | GitHub Actions | keine Secrets für Fork-PRs, `permissions` minimal, kein `pull_request_target` mit Checkout fremden Codes |
 
-### Abhängigkeiten und SBOM
+### Abhängigkeiten
 
-| Baustein | Zweck | Wann |
+| Baustein | Zweck | Stufe |
 |---|---|---|
-| **SBOM (CycloneDX)** mit `@cyclonedx/cyclonedx-npm` | Stückliste aller Abhängigkeiten, als Artefakt an jedem Build und an jedem Release | Stufe 4 |
-| **OWASP Dependency-Track** | Dashboard, das SBOMs fortlaufend gegen neue Schwachstellen prüft und Lizenzen bewertet | nightly Upload der SBOM. Dependency-Track läuft lokal per Docker (`dependencytrack/apiserver` und `frontend`) oder auf einem eigenen Server. Ohne Server entfällt nur das Dashboard, die übrigen Prüfungen bleiben |
-| **Dependency-Review-Action** | blockiert PRs, die Abhängigkeiten mit bekannten Schwachstellen (ab „hoch“) oder unerlaubten Lizenzen einführen. Erlaubt: MIT, ISC, BSD, Apache-2.0, 0BSD, CC0 | Stufe 1b |
-| **`pnpm audit` und OSV-Scanner** | Abgleich mit GitHub Advisory DB und OSV | Stufe 1b bzw. nightly |
-| **Dependabot** | Sicherheits- und Versionsupdates für npm und Actions | wöchentlich und bei Warnungen sofort |
-| **GitHub Dependency Graph und Security Alerts** | Grundlage für Dependabot und Dependency-Review | dauerhaft aktiv |
+| **Dependabot** und GitHub Security Alerts | Sicherheits- und Versionsupdates für npm und Actions | Kern |
+| **Dependency-Review-Action** | blockiert PRs mit Abhängigkeiten ab Schwachstelle „hoch“ oder mit unerlaubter Lizenz. Erlaubt: MIT, ISC, BSD-2-Clause, BSD-3-Clause, Apache-2.0, 0BSD, CC0-1.0, **OFL-1.1** (Schriften, D21), **CC-BY-4.0** (z. B. `caniuse-lite` über Vite) | optional |
+| **`pnpm audit`, OSV-Scanner** | Abgleich mit GitHub Advisory DB und OSV | optional |
+| **SBOM (CycloneDX) und OWASP Dependency-Track** | Stückliste und Dashboard für neue Schwachstellen. Dependency-Track läuft lokal per Docker für die Auswertung in der Arbeit | optional |
 
 ### Statische und dynamische Sicherheitsprüfung
 
-- **SAST:** CodeQL (`security-extended`), Sonar-Sicherheitsregeln,
-  `eslint-plugin-no-unsanitized`.
-- **Secrets:** GitHub Secret Scanning mit Push Protection, `gitleaks` in
-  Pre-Commit und CI.
-- **DAST:** OWASP ZAP Baseline-Scan (`zaproxy/action-baseline`) nightly
-  gegen die öffentliche Seite und in der CI gegen `vite preview`.
-  Warnungen zu HTTP-Headern, die GitHub Pages nicht setzen lässt, stehen
-  begründet in `.zap/rules.tsv`.
-- **Lieferkette:** OpenSSF Scorecard wöchentlich. Ziel ≥ 7 von 10.
+- **Kern:** Sonar-Sicherheitsregeln, `eslint-plugin-no-unsanitized`,
+  gitleaks in Pre-Commit und CI, GitHub Secret Scanning mit Push
+  Protection.
+- **Optional nach P7:** CodeQL (`security-extended`), OWASP ZAP
+  Baseline-Scan nightly gegen die öffentliche Seite (Warnungen zu
+  HTTP-Headern, die GitHub Pages nicht setzen lässt, begründet in
+  `.zap/rules.tsv`), OpenSSF Scorecard.
 
-### Injection-Tests (`tests/security/`)
+### Injection-Tests (`tests/security/`, ab P3)
 
 Ein Korpus bösartiger Eingaben (angelehnt an OWASP XSS Filter Evasion
 und OWASP Testing Guide) wird über **jeden Eingabeweg** geschickt:
@@ -645,21 +667,20 @@ Beschreibung, Zonenname, Gerätebezeichnung, Einstellungen in der Datei.
 | `<script>`, `<img src=x onerror=…>`, `<svg onload=…>`, `javascript:`-URLs in Texten | Text erscheint wörtlich. Kein Skript läuft (Playwright prüft `window.__pwned`, Dialoge und Konsole) |
 | HTML/CSS in Zonenfarbe oder Tönen (`tone`) | abgelehnt, nur feste Werte erlaubt |
 | beliebige Parameter oder Fragmente in der URL (`?…`, `#…`) | ignoriert, es wird nichts geladen oder ausgeführt |
-| JSON mit `__proto__`, `constructor`, `prototype` | Schlüssel verworfen, `Object.prototype` unverändert |
+| JSON mit `__proto__`, `constructor`, `prototype` | Schlüssel nicht übernommen, in den Importbefunden genannt, `Object.prototype` unverändert |
 | 10 MB Datei, 100 000 Knoten, Verschachtelungstiefe 1 000 | Abbruch mit Meldung, App bleibt bedienbar |
-| unbekannte Gerätetypen, kaputte Referenzen (Kante zu fehlendem Knoten) | gemeldet, nicht stillschweigend übernommen |
+| doppelte IDs, zwei Kanten am selben Einzelanschluss, Kante zu fehlendem Knoten, unbekannte Gerätetypen | in den Importbefunden gemeldet, nicht stillschweigend übernommen |
 | Unicode-Tricks (Steuerzeichen, Rechts-nach-links-Zeichen) in Namen | sichtbar markiert oder entfernt |
 
-Zusätzlich deckt das Fuzzing mit `fast-check` (Abschnitt
-„Codequalität“) zufällige Eingaben ab.
+Zusätzlich deckt das Fuzzing mit `fast-check` zufällige Eingaben ab.
 
 ### Härtung der Seite
 
 - **Content Security Policy** als Meta-Tag in `index.html` (GitHub Pages
   erlaubt keine eigenen Header):
   `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'`.
-  In P0 wird geprüft, ob
-  React Flow ohne `'unsafe-inline'` bei `style-src` auskommt.
+  In P0 wird geprüft, ob React Flow ohne `'unsafe-inline'` bei
+  `style-src` auskommt.
 - **Referrer-Policy** als Meta-Tag (`no-referrer`).
 - Keine Drittanbieter-Skripte, keine Analyse-Tools, keine Cookies.
 - Externe Links mit `rel="noopener noreferrer"`.
@@ -671,7 +692,6 @@ Zusätzlich deckt das Fuzzing mit `fast-check` (Abschnitt
 - Fork-PRs ohne Secrets. KI-Review und Sonar für Forks nur nach
   Freigabe.
 - Umgebung `github-pages` nur für `main`.
-- Build-Provenienz per `actions/attest-build-provenance`.
 
 ### Meldeweg
 
@@ -698,7 +718,17 @@ im Repo „Private vulnerability reporting“ aktiviert.
   Erklärtext als `aria-live`.
 - Semantik: Rollen und Labels für Knoten und Kanten.
 
-Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
+**Screenreader**
+- Die Fläche allein ist für Screenreader kaum nutzbar. Deshalb gibt es
+  eine **Listenansicht** (`TopologyList`) als Textalternative: alle
+  Geräte mit Kategorie, gesteckten Karten und Verbindungen, bedienbar
+  wie eine Tabelle. Aktionen und Sicherheitsprüfung sind auch dort
+  erreichbar.
+- Persona-Bilder im Tutorial bekommen Alt-Texte, die in `tutorial.json`
+  stehen.
+
+Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
+über die Listenansicht.
 
 ## Abdeckung der Anforderungen
 
@@ -711,14 +741,14 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 | FR-6, FR-7 | `availableActions`, `ContextMenu` mit ausgegrauten Einträgen |
 | FR-8 | Pfadsuche, `pathKind` |
 | FR-9, FR-10 | `SimPlayer`, Zustandsautomat |
-| FR-11 | `DetailPanel` aus `protocols` und `sources` |
+| FR-11 | `DetailPanel` aus `protocols` (Protokoll, Netzport, TLS, Datenformat, soweit belegt) und `sources` |
 | FR-12 | Katalog in `catalog/`, `schemaVersion`, Migrationen |
-| FR-13 | `ModeSwitch`, Modus-Feld in Katalog und Erlaubnisliste |
+| FR-13 | `ModeSwitch`, Sichtbarkeit je Gerätetyp im Katalog, Sammelkanten (`GroupEdge`, `collapseHidden`, D36) |
 | FR-14 | Anschlüsse in `device-types`, `PortPicker`, `autoPorts` |
 | FR-15 | `ZoneNode` |
 | FR-16 | Undo/Redo (D25), Kopieren/Einfügen, automatisch anordnen, Minimap, Einpassen |
 | FR-17 | Einstellungen im `DetailPanel`, `config-defaults.json` |
-| FR-18 | `CardChip`, `PlugCardDialog`, Störung per Kontextmenü |
+| FR-18 | `CardChip`, `PlugCardDialog`, Störung an Gerät und Verbindung per Kontextmenü |
 | FR-19 | `runChecks`, `SecurityDialog` |
 | FR-20 | `TutorialCard`, `tutorial.json` |
 | FR-21 | `ChallengePanel`, `challenges.json`, Status in den Einstellungen |
@@ -739,16 +769,17 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
   und ohne Einstellungen, Rückfrage beim Übernehmen der Einstellungen. Kaputte und zu große Dateien werden mit Meldung
   abgelehnt. Migration alter `schemaVersion`
 - **Barrierefreiheit:** Axe, Tastatur-E2E, Kontraste der Tokens
-- **Testqualität:** Property-based Tests und Mutation-Testing (siehe
-  „Codequalität und Testabdeckung“)
-- **Sicherheit:** Injection-Suite über alle Eingabewege, ZAP-Scan,
-  Fuzzing (siehe „Cyber-Security“)
+- **Presets:** jede Kante gültig nach Erlaubnisliste und über Anschlüsse
+  herstellbar (Regelwerk A-5)
+- **Testqualität:** Property-based Tests, Mutation-Testing optional
+  (siehe „Codequalität und Testabdeckung“)
+- **Sicherheit:** Injection-Suite über alle Eingabewege, Fuzzing (siehe
+  „Cyber-Security“)
 - **E2E (Playwright):** Preset laden → Gerät ergänzen → ungültig
   verbinden → Aktion → Simulation abbrechen. Speichern in Browser A →
   Öffnen in neuem Browser-Kontext B (simuliert „anderer Browser“)
 - **Optischer Abgleich:** Screenshots der Hauptansichten im Vergleich
-  zu `design/mockup/screenshots/` (manuelle Abnahme), danach als
-  Referenzbilder für die `visual`-Suite
+  zu `design/mockup/screenshots/` (manuelle Abnahme)
 - **Wo die Tests laufen:** siehe Abschnitt „CI/CD-Pipeline und
   Deployment“
 
@@ -756,14 +787,15 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 
 | Phase | Inhalt | Ergebnis |
 |---|---|---|
-| P0 | Grundgerüst: Vite, React, TS, Lint, Vitest, Tokens, Schriften, App-Shell mit Impressum. **Komplette Pipeline** (Stufen 1 bis 6, Sonar, KI-Review, Playwright-Smoke, Branch-Schutz), Qualitätswerkzeuge (strict TS, ESLint-Regelsätze, dependency-cruiser, knip, lefthook, commitlint, PR-Vorlage), Sicherheitsgrundlagen (CSP, gitleaks, Dependency-Review, CodeQL, SBOM, `SECURITY.md`) | Leere App öffentlich erreichbar, jede Änderung läuft durch die Pipeline |
-| P1 | Zod-Schemas, Katalog aus dem Regelwerk, Regel-Engine, Tests. Rückverfolgbarkeits-Skripte, Property-based Tests, Mutation-Testing | Regeln vollständig und nachweisbar getestet |
-| P2 | Palette, Canvas, Knoten und Kanten im Mockup-Stil, Verbinden mit Begründung, Startansicht, Presets | Topologien bauen |
+| P0 | Grundgerüst: Vite, React, TS, Lint, Vitest, Tokens, Schriften, App-Shell mit Impressum. **Kern der Pipeline** (Ausbaustufe „Kern ab P0“), lefthook, PR-Vorlage, CSP, `SECURITY.md` | Leere App öffentlich erreichbar, jede Änderung läuft durch die Pipeline |
+| P1 | Zod-Schemas, Katalog aus dem Regelwerk, Regel-Engine, Pfadregel, Tests. Rückverfolgbarkeits-Skripte, `dependency-cruiser`, Property-based Tests | Regeln vollständig und nachweisbar getestet |
+| P2 | Palette, Canvas, Knoten und Kanten im Mockup-Stil, Verbinden mit Begründung, Karten stecken, Startansicht, Presets, Modus Einfach mit Sammelkanten | Topologien bauen |
 | P3 | Speichern und Öffnen als Datei (Topologie, optional Einstellungen), Autosave. Injection-Suite und Fuzzing für alle Eingabewege | Austausch mit anderen Browsern, abgesichert |
 | P4 | Kontextmenü, Aktionen, Pfade, Simulation, Detailpanel | Abläufe abspielen |
 | P5 | Modus Erweitert: Anschlüsse, Einstellungen, Zonen, Editor-Hilfen, Sicherheitsprüfung | Erweiterte Ansicht |
 | P6 | Tutorial, Herausforderungen | Lernfunktionen |
-| P7 | Barrierefreiheit-Feinschliff, Tablet-Layout, E2E, optische Abnahme. ZAP-Scan, Scorecard, Dependency-Track, Kennzahlen-Auswertung | Release v1 |
+| P7 | Barrierefreiheit-Feinschliff (Listenansicht), Tablet-Layout, E2E, optische Abnahme | Release v1 |
+| danach | optionale Ausbaustufen der Pipeline, z. B. Mutation-Testing für die Auswertung in der Arbeit | nach Bedarf |
 
 ## Risiken und offene Punkte
 
@@ -775,6 +807,12 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
   Access API nur in Chrome/Edge. Firefox/Safari nutzen Download/Upload.
 - [ ] Impressum: Anschrift vor dem öffentlichen Start klären.
 - [ ] Vor dem Öffentlichstellen: Git-Historie auf private Daten prüfen.
+- [ ] Datenschutzhinweis nach Art. 13 DSGVO vor dem Start rechtlich
+  prüfen lassen (Entwurf im Impressum).
+- [ ] Nutzungsrechte am Design-System „Organic“ aus Claude Design für die
+  Veröffentlichung klären.
+- [ ] Erklärtexte nicht wörtlich aus gematik-Dokumenten übernehmen, nur
+  sinngemäß mit Quellenangabe.
 - **Risiko:** Der Autosave geht beim Löschen der Browserdaten verloren.
   Abhilfe: Er ist nur Sicherheitsnetz. Hinweis „nicht als Datei
   gespeichert“ und Rückfrage beim Schließen (D34).
@@ -786,17 +824,32 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 - **Risiko:** Der KI-Review kostet API-Guthaben pro Pull Request und
   kann falsche Befunde liefern. Abhilfe: Pfadfilter, Laufzeitgrenze,
   nur Kommentar statt Pflicht-Check, Entscheidung beim Menschen.
-- **Risiko:** Mutation-Testing und ZAP brauchen lange. Abhilfe: nur
-  nightly, nur für `engine/` und `persistence/`.
-- **Risiko:** Dependency-Track braucht einen laufenden Server.
-  Abhilfe: lokal per Docker für die Auswertung in der Arbeit. Die
-  Pipeline-Prüfungen (Dependency-Review, audit, OSV) laufen unabhängig
-  davon.
+- **Risiko:** Zu viel Pipeline bindet Zeit, die dem fachlichen Kern
+  fehlt. Abhilfe: Ausbaustufen, nur der Kern ab P0 (D26).
 - **Risiko:** Eine strenge CSP kann Bibliotheken mit Inline-Styles
   stören. Abhilfe: Prüfung in P0, Ausnahme nur begründet.
-- **Risiko:** E2E-Tests in drei Browsern verlängern die Pipeline.
-  Abhilfe: in CI nur Chromium (Firefox für `datei`), alle Browser
-  nightly.
+- **Risiko:** Ablaufdaten machen Presets und Tests mit der Zeit
+  ungültig. Abhilfe: festes Simulationsdatum `simDate` in jeder Topologie
+  und feste Uhr in den Tests.
+
+## Glossar (Technik)
+
+| Begriff | Bedeutung hier |
+|---|---|
+| Komponente (React) | wiederverwendbarer Baustein der Oberfläche, z. B. ein Geräteknoten |
+| Store | gemeinsamer Speicher für den aktuellen Stand im Browser. Umgesetzt mit der Bibliothek „Zustand“ (Name der Bibliothek, nicht das deutsche Wort) |
+| Engine | reine Funktion ohne Oberfläche: Daten rein, Ergebnis raus, z. B. „ist diese Verbindung erlaubt?“ |
+| Zod | Bibliothek, die prüft, ob Daten (z. B. eine geöffnete Datei) das erwartete Format haben, und daraus TypeScript-Typen erzeugt |
+| IndexedDB | Speicher im Browser, hier nur für den Autosave |
+| Anschluss | Buchse an einem Gerät (`port`). Nicht zu verwechseln mit dem Netzport eines Protokolls |
+| Fähigkeit | Eintrag im Katalog, der festlegt, was ein Gerätetyp darf (z. B. Karten aufnehmen) |
+| Sammelkante | Linie im Modus Einfach, die einen Weg über ausgeblendete Geräte zusammenfasst |
+| Aktion / Ablauf | Aktion = Menüeintrag am Gerät. Ablauf = die Schritte, die die Simulation dazu zeigt |
+| Coverage | Anteil des Codes, den die Tests ausführen |
+| Mutation Score | Anteil absichtlich eingebauter Fehler, den die Tests finden |
+| CSP | Content Security Policy: Regel im Browser, welche Inhalte die Seite laden darf |
+| SBOM | Stückliste aller verwendeten Bibliotheken (optional) |
+| `Disruptable` | Basistyp für alles, was ausfallen kann (Feld `fault`) |
 
 ## Nächster Schritt
 

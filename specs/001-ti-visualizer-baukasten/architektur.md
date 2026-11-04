@@ -1,6 +1,6 @@
 # Architektur 001: TI Visualizer
 
-**Stand:** 2026-11-04 · **Bezug:** [plan.md](./plan.md) (D1 bis D35),
+**Stand:** 2026-11-04 · **Bezug:** [plan.md](./plan.md) (D1 bis D36),
 [spec.md](./spec.md), [regelwerk.md](./regelwerk.md)
 
 Die Diagramme sind in [Mermaid](https://mermaid.js.org/) geschrieben.
@@ -85,7 +85,7 @@ flowchart TB
         learn["Tutorial,<br/>Herausforderungen"]
     end
 
-    subgraph stores["Stores (Zustand)"]
+    subgraph stores["Stores (Bibliothek Zustand)"]
         direction LR
         sCat["Katalog"]
         sTopo["Topologie<br/>+ Undo/Redo"]
@@ -173,10 +173,13 @@ classDiagram
         reducedMotion: boolean
         tutorialStep: number
         solvedChallenges: string[]
+        pinnedPanels: string[]
+        saveSettingsByDefault: boolean
     }
     class Topology {
         name: string
         description: string
+        simDate: date
     }
     TivFile *-- "0..1" Settings : settings
     TivFile *-- "1" Topology : topology
@@ -204,9 +207,11 @@ ausführlich in 3.2.
     "simSpeed": 1.5,
     "reducedMotion": false,
     "tutorialStep": 4,
-    "solvedChallenges": ["kein-rezept-am-empfang"]
+    "solvedChallenges": ["kein-rezept-am-empfang"],
+    "pinnedPanels": ["palette"],
+    "saveSettingsByDefault": false
   },
-  "topology": { "name": "Kleine Arztpraxis", "description": "…", "nodes": [], "edges": [], "zones": [] }
+  "topology": { "name": "Kleine Arztpraxis", "description": "…", "simDate": "2026-11-01", "nodes": [], "edges": [], "zones": [] }
 }
 ```
 
@@ -218,6 +223,7 @@ classDiagram
     class Topology {
         name: string
         description: string
+        simDate: date
     }
     class Node {
         id: string
@@ -257,6 +263,7 @@ Knoten stehen in 3.3.
 {
   "name": "Kleine Arztpraxis",
   "description": "PVS und Kartenterminal am Konnektor",
+  "simDate": "2026-11-01",
   "nodes": [
     { "id": "pvs1", "type": "pvs", "label": "Sprechzimmer", "position": { "x": 80,  "y": 200 }, "fault": false },
     { "id": "kt1",  "type": "kt",  "label": "Empfang",      "position": { "x": 80,  "y": 60 },  "fault": false },
@@ -300,6 +307,7 @@ classDiagram
     class Card {
         kind = "egk"
         expires: date
+        pinActive: boolean
     }
     class PinCard {
         kind = "hba" | "smcb"
@@ -316,9 +324,12 @@ classDiagram
         timeOffset: number
         certExpires: date
         updateOk: boolean
+        lastTimeSync: date
+        dhcpServer: boolean
     }
     class TerminalConfig {
         paired: boolean
+        pairedWith: NodeId
         workplace: string
     }
     class ClientConfig {
@@ -327,6 +338,7 @@ classDiagram
     }
     class RouterConfig {
         ipsecAllowed: boolean
+        dhcpServer: boolean
     }
     class InfraConfig {
         keine Zusatzfelder
@@ -357,8 +369,9 @@ Welche Felder ein Knoten haben darf, hängt von seinem Gerätetyp ab
 | `kon` (Konnektor) | `netConfig:konnektor` | `config` als KonnektorConfig |
 | `pvs` (Praxisverwaltungssystem) | `netConfig:client` | `config` als ClientConfig |
 | `router` | `netConfig:router` | `config` als RouterConfig |
-| `switch`, `ap` (Switch, Access Point) | `netConfig:infra` | `config` als InfraConfig, nur die Grundfelder aus NetConfig |
-| `erp` (E-Rezept-Fachdienst) | keine | nur die Grundfelder |
+| `switch`, `ap`, `fw` (Switch, Access Point, Firewall) | `netConfig:infra` | `config` als InfraConfig, nur die Grundfelder aus NetConfig |
+| `hskon`, `gateway` | `netConfig:konnektor` | `config` als KonnektorConfig |
+| `erp` (E-Rezept-Fachdienst) | keine | keine Zusatzfelder, nur `id`, `label`, `type`, `position`, `fault` |
 
 **Beispiel:** dieselben Knoten wie in 3.2, jetzt mit ihren Zusatzfeldern
 (im Modus Erweitert).
@@ -370,12 +383,12 @@ Welche Felder ein Knoten haben darf, hängt von seinem Gerätetyp ab
     "cards": [
       { "kind": "smcb", "expires": "2028-06-30", "unlocked": true },
       { "kind": "hba",  "expires": "2027-03-31", "unlocked": false },
-      { "kind": "egk",  "expires": "2029-12-31" }
+      { "kind": "egk",  "expires": "2029-12-31", "pinActive": true }
     ],
     "config": {
       "ip": "192.168.10.13", "mask": "255.255.255.0", "gateway": "192.168.10.2",
       "dns": "192.168.10.2", "vlan": "TI", "dhcp": false,
-      "paired": true, "workplace": "AP-Empfang"
+      "paired": true, "pairedWith": "kon1", "workplace": "AP-Empfang"
     }
   },
   {
@@ -390,7 +403,8 @@ Welche Felder ein Knoten haben darf, hängt von seinem Gerätetyp ab
     "id": "kon1", "type": "kon", "position": { "x": 480, "y": 130 }, "fault": false,
     "config": {
       "ip": "192.168.10.2", "mask": "255.255.255.0", "gateway": "", "dns": "", "vlan": "TI", "dhcp": false,
-      "mode": "reihe", "sis": false, "timeOffset": 0, "certExpires": "2029-03-31", "updateOk": true
+      "mode": "reihe", "sis": false, "timeOffset": 0, "certExpires": "2029-03-31", "updateOk": true,
+      "lastTimeSync": "2026-11-01", "dhcpServer": false
     }
   },
   {
@@ -470,13 +484,10 @@ flowchart LR
     trigger(["Push / Pull Request"])
 
     subgraph s1["1 Statische Prüfung"]
-        lint["ESLint · Prettier · tsc<br/>dependency-cruiser · knip<br/>Regelwerk ↔ Katalog"]
-    end
-    subgraph s1b["1b Security"]
-        sec["gitleaks · Dependency-Review<br/>pnpm audit · CodeQL"]
+        lint["ESLint · Prettier · tsc · gitleaks<br/>ab P1: dependency-cruiser"]
     end
     subgraph s2["2 Unit-Tests"]
-        unit["Vitest + Coverage<br/>Property-based Tests<br/>jede Regel hat einen Test"]
+        unit["Vitest + Coverage<br/>ab P1: Property-based Tests,<br/>jede Regel hat einen Test"]
     end
     subgraph s3["3 Sonar"]
         sonar["SonarQube Cloud<br/>Quality Gate"]
@@ -485,22 +496,20 @@ flowchart LR
         ai["Claude Code Action<br/>Spec- und Regelwerk-Treue"]
     end
     subgraph s4["4 Build-Test"]
-        build["vite build · CSP<br/>SBOM · Lighthouse CI"]
+        build["vite build · CSP<br/>Bundle-Größe"]
     end
     subgraph s5["5 E2E"]
-        e2e["Playwright<br/>smoke, datei, a11y<br/>Injection-Suite"]
+        e2e["Playwright mit Axe<br/>ab P3: Injection-Suite"]
     end
     subgraph s6["6 Deploy (nur main)"]
-        deploy["Provenienz signieren<br/>GitHub Pages + Smoke-Test"]
+        deploy["GitHub Pages<br/>+ Smoke-Test"]
     end
 
     trigger --> lint
-    trigger --> sec
-    sec --> gate
     lint --> unit
     lint --> build
-    unit -- "lcov.info" --> sonar
     lint --> ai
+    unit -- "lcov.info" --> sonar
     ai -. "nur Kommentar,<br/>kein Pflicht-Check" .-> pr
     build -- "dist/" --> e2e
     sonar --> gate{"alle grün<br/>und main?"}
@@ -508,8 +517,8 @@ flowchart LR
     gate -- "ja" --> deploy
     gate -- "nein, PR" --> pr["Status am PR<br/>Merge gesperrt bis grün"]
 
-    nightly(["nightly"]) -.-> full["E2E alle Browser · visual<br/>Stryker · OWASP ZAP · OSV<br/>SBOM → Dependency-Track"]
-    weekly(["wöchentlich"]) -.-> score["OpenSSF Scorecard<br/>CodeQL · Dependabot"]
+    dependabot(["Dependabot wöchentlich"]) -.-> trigger
+    optional["optional nach P7:<br/>Stryker, Lighthouse, CodeQL,<br/>Dependency-Track, ZAP, Scorecard"]
 ```
 
 ## 6. Simulation

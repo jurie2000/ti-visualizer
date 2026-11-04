@@ -20,11 +20,11 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
 
 - **Topologie bauen**: Geräte aus einer Palette auf die Canvas ziehen, beliebig viele je Typ.
   - Primärsysteme und Clients (PVS, KIS, AVS, Pflege-Software, RIS, LIS, Arbeitsplatz-PC, Visite-Tablet)
-  - Smartcards (eGK, HBA, SMC-B)
   - Kartenterminals (stationär, mobil, eHealth-CardLink)
   - Lokales Netz (Switch, Router, WLAN Access Point, Firewall)
   - Zugang zur TI (Konnektor, Highspeed-Konnektor, TI-Gateway, VPN-Zugangsdienst)
   - Zentrale Dienste und Fachdienste (IDP, VZD, VSDM, E-Rezept, KIM, TI-Messenger, ePA und weitere)
+- **Karten stecken**: eGK, HBA und SMC-B werden in Kartenterminals gesteckt, die eGK auch per NFC über eHealth-CardLink gelesen.
 - **Presets**: Start mit *Arztpraxis*, *Apotheke*, *Krankenhaus*, *Klinikum* oder leer.
 - **Modus Einfach und Erweitert**: Erweitert zeigt Anschlüsse, Netzwerkeinstellungen und typische Störungen.
 - **Nur gültige Verbindungen**: Das System prüft jede Verbindung fachlich und lehnt ungültige mit einer erklärenden Meldung ab. Beispiele: Ein Primärsystem darf nicht direkt an einen Fachdienst. Konnektor und TI-Gateway schließen sich in einer Topologie aus.

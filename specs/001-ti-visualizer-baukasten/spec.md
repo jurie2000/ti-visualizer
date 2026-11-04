@@ -55,10 +55,11 @@ Log-Import und Replay gehören nicht dazu.
    schützt vor Datenverlust beim Neuladen.
 
 **Ansichten**
-7. Benutzer wechselt zwischen **Einfach** und **Erweitert**. Einfach zeigt
-   nur Geräte und logische Verbindungen. Erweitert zeigt zusätzlich die
-   Anschlüsse der Geräte (z. B. Ethernet, USB, WLAN) und erlaubt
-   Netzwerk- und Geräteeinstellungen (siehe FR-17).
+7. Benutzer wechselt zwischen **Einfach** und **Erweitert**. Die
+   Topologie bleibt dabei dieselbe. Einfach blendet Netzgeräte wie Switch
+   und Router aus und fasst Wege über sie als Sammelkanten zusammen.
+   Erweitert zeigt alle Geräte, ihre Anschlüsse (z. B. Ethernet, USB,
+   WLAN) und erlaubt Netzwerk- und Geräteeinstellungen (siehe FR-17).
 
 **Abläufe**
 8. Benutzer öffnet per Rechtsklick auf ein Gerät ein Kontextmenü mit allen
@@ -87,9 +88,9 @@ Log-Import und Replay gehören nicht dazu.
     Topologie: ausgefallene Geräte, abgelaufene Karten oder Zertifikate,
     fehlende PIN-Freischaltung, falsche Netzsegmente, fehlende
     Erreichbarkeit.
-15. Benutzer simuliert **Störungen**: Gerät ausfallen lassen, Karte
-    ablaufen lassen, PIN-Status ändern. Aktionen und Prüfung reagieren
-    darauf.
+15. Benutzer simuliert **Störungen**: Gerät ausfallen lassen, Verbindung
+    trennen, Karte ablaufen lassen, PIN-Status ändern. Aktionen und
+    Prüfung reagieren darauf, in beiden Modi.
 
 ## Funktionale Anforderungen
 
@@ -118,13 +119,17 @@ Log-Import und Replay gehören nicht dazu.
 - **FR-9**: Ablauf wird im Simulation-Modus (verlangsamt, Schritt für
   Schritt, mit Erklärtext) visualisiert.
 - **FR-10**: Laufende Aktion jederzeit abbrechbar.
-- **FR-11**: Klick auf Gerät/Verbindung zeigt Detailinformationen.
+- **FR-11**: Klick auf Gerät/Verbindung zeigt Detailinformationen:
+  Protokoll, Datenformat, TLS und Netzport, soweit belegt, dazu die
+  Quelle.
 - **FR-12**: Alle Fachdaten (Gerätetypen, Regeln, Protokolle, Aktionen,
   Presets, Herausforderungen, Tutorial) sowie gespeicherte Topologien
   persistent und versioniert.
 
 **Neu (aus dem Mockup, 2026-11-03)**
 - **FR-13**: Ansichtsmodus **Einfach/Erweitert**, jederzeit umschaltbar.
+  Der Modus ändert nur die Darstellung, nie die Topologie. Im Modus
+  Einfach werden Netzgeräte ausgeblendet und als Sammelkanten gezeigt.
 - **FR-14**: **Anschlüsse** je Gerätetyp (z. B. Ethernet, WAN, USB, WLAN,
   logischer VPN-/TI-Zugang). Im Modus Erweitert wählt der Nutzer beim
   Verbinden den Anschluss. Im Modus Einfach wählt das System einen freien
@@ -141,8 +146,9 @@ Log-Import und Replay gehören nicht dazu.
   Service (SIS), Update-Stand, Zertifikatslaufzeit, Zeitabweichung.
   Der genaue Umfang steht im Regelwerk.
 - **FR-18**: **Karten- und Gerätezustand**: Karten stecken und ziehen,
-  Ablaufdatum von Karten, PIN-Status (freigeschaltet oder nicht), Gerät
-  als ausgefallen markieren.
+  Ablaufdatum von Karten (gegen ein festes Simulationsdatum der
+  Topologie), PIN-Status (freigeschaltet oder nicht), Gerät als
+  ausgefallen markieren, Verbindung trennen.
 - **FR-19**: **Sicherheitsprüfung**: prüft die Topologie gegen die
   Prüfregeln des Regelwerks und listet Befunde mit Erklärung und
   betroffenem Gerät. Auswahl eines Befunds hebt das Gerät hervor.
@@ -194,9 +200,11 @@ stehen in **[quellen.md](./quellen.md)**.
 - eHealth-Kartenterminal (stationär) (F)
 - Mobiles Kartenterminal. Es arbeitet offline und gibt die Daten per USB
   ans Primärsystem (F)
-- eHealth-CardLink. Er liest nur die eGK per NFC über das Smartphone der
-  versicherten Person, ohne PIN, und verhält sich gegenüber dem
-  Konnektor/TI-Gateway wie ein eHealth-Kartenterminal (F)
+- eHealth-CardLink. Ein Dienst im Internet ohne Kartenslots. Er liest
+  nur die eGK per NFC über das Smartphone der versicherten Person, ohne
+  PIN, und verhält sich gegenüber dem Konnektor/TI-Gateway wie ein
+  eHealth-Kartenterminal. Gedacht vor allem für die E-Rezept-Einlösung in
+  der Fernversorgung durch Apotheken (F)
 
 **Lokales Netz** (N)
 - Switch, Internet-Router (mit WLAN), WLAN Access Point, Firewall
@@ -285,7 +293,10 @@ Grundsätze des Regelwerks:
 - Primärsysteme und Kartenterminals erreichen Fachdienste nie direkt,
   sondern über Konnektor/TI-Gateway und VPN-Zugangsdienst.
 - Konnektor/Highspeed-Konnektor und TI-Gateway schließen sich in einer
-  Topologie aus.
+  Topologie aus. Das ist eine Vereinfachung: Eine Topologie bildet in v1
+  eine Einrichtung ab.
+- Der Modus Einfach oder Erweitert ändert nur die Darstellung, nie die
+  Topologie.
 - NFDM/eMP laufen lokal über die Fachmodule im Konnektor bis zur eGK,
   ohne VPN und Fachdienst.
 - Der IDP wird über die TI erreicht, der TI-Messenger über das Internet.
@@ -300,7 +311,8 @@ Komponenten und die genauen Voraussetzungen je Aktion kommen ins
 [Regelwerk](./regelwerk.md).
 
 **Kartenterminal / eHealth-CardLink**
-- Karte stecken / ziehen (Auswahl einer freien Karte)
+- Karte stecken / ziehen: „Stecken“ legt eine neue Karte einer Art an,
+  die im Terminal noch fehlt, „Ziehen“ entfernt sie
 - eGK/HBA/SMC-B einlesen (Karte stecken, ggf. PIN-Eingabe). Über
   eHealth-CardLink nur die eGK per NFC, ohne PIN
 - VSDM-Prüfung/-Aktualisierung anstoßen: Konnektor/TI-Gateway gleicht Daten
@@ -334,27 +346,37 @@ Komponenten und die genauen Voraussetzungen je Aktion kommen ins
 - Medikationsplan (eMP) erstellen/aktualisieren. Die Erstanlage macht
   meist die Hausarztpraxis, auf Wunsch der versicherten Person
 - VSDM-Prüfung anstoßen (siehe Kartenterminal)
-- TIM-Nachricht senden (informelle Rückfrage an Kolleg:innen)
+- eArztbrief oder KIM-Nachricht senden
+
+**TI-Messenger-Client**
+- TIM-Nachricht senden (informelle Rückfrage an Kolleg:innen). Der Client
+  ist ein eigenes Gerät und spricht über das Internet mit dem
+  TI-Messenger-Fachdienst
 
 **AVS** (Apotheke)
-- eRezept einlösen, auf zwei Wegen: eGK einlesen oder Rezeptcode
-  (App/Ausdruck) scannen ([gematik E-Rezept Apotheken](https://www.gematik.de/anwendungen/e-rezept/apotheken))
+- eRezept einlösen, auf drei Wegen: eGK einlesen (mit
+  VSDM-Prüfungsnachweis), Rezeptcode (App/Ausdruck) scannen oder in der
+  Fernversorgung per eHealth-CardLink ([gematik E-Rezept Apotheken](https://www.gematik.de/anwendungen/e-rezept/apotheken))
 - Medikationsplan (eMP) auslesen, z. B. für Interaktionsprüfung oder
   Beratung. Apotheken sind laut gematik ausdrücklich dazu berechtigt
 - SMC-B-Authentifizierung für TI-Zugang (Voraussetzung jeder Apotheken-Aktion)
 
 **Konnektor / TI-Gateway**
-Sie laufen bei jeder Aktion mit Fachdienst im Hintergrund mit: Signatur,
-Verschlüsselung, VPN-Tunnel, ReadVSD, Rezept abrufen oder übermitteln.
-Ein eigenes Kontextmenü mit Nutzer-Aktionen haben sie nicht. Sie sind
-der Pfad, über den alles läuft. Bei NFDM/eMP arbeitet der Konnektor nur lokal über seine
+Sie laufen bei jeder Aktion mit Fachdienst im Hintergrund mit: Sie
+signieren mit HBA oder SMC-B, liefern die Authentisierung mit der SMC-B,
+bauen den VPN-Tunnel auf und leiten weiter. Für VSDM fragen sie selbst
+den Fachdienst ab (ReadVSD). Mit dem E-Rezept-Fachdienst und der ePA
+spricht dagegen das Primärsystem selbst, der Konnektor leitet die
+Verbindung nur durch den Tunnel (korrigiert 2026-11-04, gemILF_PS_eRp).
+Ein eigenes Kontextmenü mit Nutzer-Aktionen haben sie nicht. Bei NFDM/eMP arbeitet der Konnektor nur lokal über seine
 Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
 
 **Fachdienste** (Gegenstelle, kein eigener Nutzer-Trigger)
 - VSDM-Fachdienst: beantwortet ReadVSD
 - E-Rezept-Fachdienst: nimmt Rezepte entgegen, gibt sie bei Einlösung heraus
 - ePA-Aktensystem: nimmt Dokumente entgegen, verwaltet Zugriffsrechte
-  (Standard-Behandlungskontext 90 Tage, von Versicherten per App verlängerbar)
+  (Befugnis nach VSDM-Prüfung: 90 Tage in Praxis und Krankenhaus, 3 Tage
+  in der Apotheke, von Versicherten per App veränderbar)
 - KIM-/TIM-Fachdienst: übermitteln Nachrichten
 - IDP: stellt Token bereit, v. a. beim ePA-Zugriff
 
@@ -412,8 +434,14 @@ Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
   Komponente, Preset Klinikum aus dem Mockup
 - [x] Persona-Bilder: von Justin selbst generiert, zur Veröffentlichung
   freigegeben (2026-11-03)
+- [x] Prüfbericht (Fable, 2026-11-04) eingearbeitet: Anschlussmodell,
+  Modus nur als Darstellung mit Sammelkanten, Presets gegen die
+  Erlaubnisliste, Karten als Stecken-Regeln, Pfadregel, Rolle des
+  Konnektors, Prüfungsnachweis, CardLink, TI-Messenger, Simulationsdatum,
+  Importbefunde, gekürzte Pipeline, Datenschutzhinweis
 - [ ] Restpunkte im Regelwerk (Abschnitt 12 dort: CardLink-Netzweg,
-  Beleg V-17, eAU-Dienstkennungen)
+  Belege V-17 und V-20, eAU-Dienstkennungen, Befugnisdauer der ePA,
+  mobiles KT, Ablauf `epa`, offene Netzports)
 - [ ] Herausforderungen und Tutorial-Texte fachlich abnehmen
 - [ ] Neue fachliche Freigabe der erweiterten Spec durch Justin
 - [x] plan.md an die Erweiterung angepasst (2026-11-04): UI-Konzept nach

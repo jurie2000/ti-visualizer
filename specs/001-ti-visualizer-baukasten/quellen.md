@@ -52,8 +52,8 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 |---|---|---|
 | [Spezifikation eHealth-Kartenterminal (gemSpec_KT)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_KT/latest/) | SICCT, Pairing mit dem Konnektor, nur ein Konnektor gleichzeitig | `kt`, K-1, P-30 |
 | [Spezifikation Mobiles Kartenterminal (gemSpec_MobKT)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_MobKT/latest/) | offline nutzbar (z. B. Hausbesuch), Datenübergabe ans Primärsystem per CT-API | `mkt` |
-| [Fachportal: eHealth-CardLink](https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/ehealth-cardlink) | Überblick CardLink | `cardlink` |
-| [Spezifikation eHealth-CardLink](https://gemspec.gematik.de/docs/gemSpec/gemSpec_eHealth-CardLink/latest/) | eGK per Smartphone/NFC, Pairing wie KT, keine PIN-Prüfung über CardLink | `cardlink`, K-5 |
+| [Fachportal: eHealth-CardLink](https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/ehealth-cardlink) | CardLink als Dienst im Internet, E-Rezept-Einlösung in der Fernversorgung mit VSDM-Prüfungsnachweis | `cardlink` |
+| [Spezifikation eHealth-CardLink](https://gemspec.gematik.de/docs/gemSpec/gemSpec_eHealth-CardLink/latest/) | eGK per Smartphone/NFC, Pairing wie KT, keine PIN-Prüfung über CardLink | `cardlink`, K-6 |
 | [Implementierungsleitfaden eHealth-CardLink](https://gemspec.gematik.de/docs/gemILF/gemILF_eHealth-CardLink/gemILF_eHealth-CardLink_V1.1.1/) | Einbindung ins Primärsystem | `cardlink` |
 | [Objektsystem eGK G2.1](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_eGK_ObjSys_G2_1/gemSpec_eGK_ObjSys_G2_1_V4.5.0.pdf) | Aufbau der eGK, Datenbereiche | `egk` |
 | [Objektsystem HBA](https://gemspec.gematik.de/docs/gemSpec/gemSpec_HBA_ObjSys/latest/) | Aufbau des HBA, Signatur | `hba` |
@@ -68,7 +68,8 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 | [Implementierungsleitfaden PS AMTS/eMP](https://gemspec.gematik.de/downloads/gemILF/gemILF_PS_AMTS/gemILF_PS_AMTS_V1.6.0.html) | Medikationsplan aus Sicht des Primärsystems | eMP-Aktionen |
 | [Implementierungsleitfaden PS AMTS V1.7.0 (PDF)](https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Implementierungsleitfaeden/gemILF_PS_AMTS_V1.7.0.pdf) | HBA oder SMC-B im „erhöhten Sicherheitszustand“, eGK-PIN als Einwilligung | K-4, K-7, eMP |
 | [Änderung C_12389: Rückbau Split-DNS](https://gemspec.gematik.de/downloads/prereleases/Draft_ILF_PS_25_1/C_12389_Anlage_V1.0.0.html) | Split-DNS wird zurückgebaut | Abschnitt 8 |
-| [Implementierungsleitfaden PS ePA](https://gemspec.gematik.de/docs/gemILF/gemILF_PS_ePA/latest/) | ePA aus Sicht des Primärsystems | ePA-Aktionen |
+| [Implementierungsleitfaden PS ePA](https://gemspec.gematik.de/docs/gemILF/gemILF_PS_ePA/latest/) | ePA aus Sicht des Primärsystems | ePA-Aktionen, Ablauf `epa` |
+| [Implementierungsleitfaden PS E-Rezept (gemILF_PS_eRp)](https://gemspec.gematik.de/docs/gemILF/gemILF_PS_eRp/latest/) | Konnektor routet zu IDP und E-Rezept-Fachdienst, das Primärsystem spricht selbst mit dem Fachdienst | Abschnitt 3, Ablauf `erezept` |
 
 ## 5. Fachanwendungen und Fachdienste
 
@@ -81,12 +82,14 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 | [gematik News: Spezifikation PoPP-Dienst](https://www.gematik.de/newsroom/news-detail/gruenes-licht-fuer-spezifikation-des-popp-dienstes) | Einordnung PoPP | PoPP (neu) |
 | [Infoveranstaltung VSDM 2.0, ZETA, PoPP (16.09.2025)](https://fachportal.gematik.de/fachportal-import/files/2025_09_16_VSDM_ZETA_PoPP_Primaersystem_Infoveranstaltung.pdf) | Zusammenspiel VSDM 2.0, Zero Trust, PoPP aus Primärsystemsicht | VSDM, PoPP |
 | [Fachportal: NFDM](https://fachportal.gematik.de/anwendungen/notfalldaten-management) | Notfalldatenmanagement | NFDM-Aktionen |
-| [Fachmodul NFDM (gemSpec_FM_NFDM)](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_FM_NFDM/gemSpec_FM_NFDM_V1.6.0.html) | Fachmodul NFDM ist Teil des Konnektors | Ablauf `notfalldaten`, Abschnitt 11 |
+| [Fachmodul NFDM (gemSpec_FM_NFDM)](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_FM_NFDM/gemSpec_FM_NFDM_V1.6.0.html) | Fachmodul NFDM ist Teil des Konnektors | Ablauf `notfalldaten`, Regelwerk 12 |
 | [Fachportal: eMP](https://fachportal.gematik.de/anwendungen/elektronischer-medikationsplan) | Elektronischer Medikationsplan | eMP-Aktionen |
-| [gematik-Präsentation eMP und NFDM für PVS-Hersteller (2020)](https://fachportal.gematik.de/fileadmin/user_upload/fachportal/files/Veranstaltungen/Industrieforum_PVS-Hersteller_19.02.2020/20200219_Infoveranstaltung_Primaersystemhersteller_NFDM_eMP.pdf) | Architektur NFDM/eMP, Rolle des Konnektors | Abschnitt 11 |
+| [gematik-Präsentation eMP und NFDM für PVS-Hersteller (2020)](https://fachportal.gematik.de/fileadmin/user_upload/fachportal/files/Veranstaltungen/Industrieforum_PVS-Hersteller_19.02.2020/20200219_Infoveranstaltung_Primaersystemhersteller_NFDM_eMP.pdf) | Architektur NFDM/eMP, Rolle des Konnektors | Regelwerk 12 |
 | [Systemlösung AMTS (gemSysL_AMTS_A V1.3.0)](https://gemspec.gematik.de/docs/gemSysL/gemSysL_AMTS_A/gemSysL_AMTS_A_V1.3.0/) | ReadMP/WriteMP mit C2C-Authentisierung HBA/SMC-B | Ablauf `emp` |
 | [Spezifikation E-Rezept-Fachdienst (gemSpec_FD_eRp)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_FD_eRp/latest/index.html) | E-Rezept-Fachdienst, Anbindung an den IDP | `erp`, Ablauf `erezept` |
 | [E-Rezept-Frontend des Versicherten](https://gemspec.gematik.de/docs/gemSpec/gemSpec_eRp_FdV/latest/index.html) | E-Rezept-App | Versicherten-Apps (neu) |
+| [gematik: ePA für alle in Praxen (Folien)](https://www.gematik.de/media/gematik/Medien/Veranstaltungen/Folien/gematik_digital_epa-fuer-alle-Praxen.pdf) | Befugnis nach VSDM-Prüfung: 90 Tage | Baustein Befugnis |
+| [gematik: ePA für alle, Leitfaden Apotheken](https://www.gematik.de/media/gematik/Medien/ePA_fuer_alle/04_Apotheken/gematik_ePAfuerAlle_Apotheken_Leitfaden_Logo.pdf) | Befugnis in der Apotheke: 3 Tage | Baustein Befugnis, 6.3 |
 | [gematik: E-Rezept in Apotheken](https://www.gematik.de/anwendungen/e-rezept/apotheken) | Einlösen per eGK oder Rezeptcode | AVS-Aktionen |
 | [Feature E-Rezept Autorisierung Apotheken (gemF_eRp_Autorisierung_Apo V1.1.1)](https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Releases/Release_einzelner_Produkttypen_Anwendungstypen/gemF_eRp_Autorisierung_Apo_V1.1.1.pdf) | Abruf von E-Rezepten in der Apotheke per eGK | Ablauf `erezeptEinloesen` |
 | [Spezifikation Aktensystem ePA für alle](https://gemspec.gematik.de/docs/gemSpec/gemSpec_Aktensystem_ePAfueralle/latest/) | ePA-Aktensystem, Befugnis per eGK oder PoPP | `epa`, Ablauf `epa` |
@@ -105,7 +108,7 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 
 | Quelle | Inhalt | Bezug |
 |---|---|---|
-| [Spezifikation IDP für Fachdienste (gemSpec_IDP_FD)](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_IDP_FD/gemSpec_IDP_FD_V2.1.0.pdf) | Fachdienst als Relying Party, ACCESS_TOKEN | `idp`, Abschnitt 11 |
+| [Spezifikation IDP für Fachdienste (gemSpec_IDP_FD)](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_IDP_FD/gemSpec_IDP_FD_V2.1.0.pdf) | Fachdienst als Relying Party, ACCESS_TOKEN | `idp`, Abläufe `erezept` und `epa` |
 | [Produkttypsteckbrief IDP-Dienst](https://gemspec.gematik.de/docs/gemProdT/gemProdT_IDP-Dienst/latest/index.html) | verbindliche Dokumente des zentralen IDP | `idp` |
 | [Spezifikation Sektoraler IDP (gemSpec_IDP_Sek)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_IDP_Sek/latest/) | GesundheitsID der Versicherten | GesundheitsID (neu) |
 | [Fachportal: Verzeichnisdienst](https://fachportal.gematik.de/telematikinfrastruktur/komponenten-dienste/verzeichnisdienst) | Verzeichnisdienst im Überblick | VZD (neu) |
@@ -139,12 +142,12 @@ Aus der Recherche. Eingearbeitet ins [Regelwerk](./regelwerk.md) am 2026-11-03 (
 | Ein eHealth-KT braucht ein Pairing mit dem Konnektor und hält höchstens zu **einem** Konnektor gleichzeitig eine Verbindung | gemSpec_KT | stützt P-30 und die neue Regel G-4 (KT nur an einem Konnektor) |
 | Ein Arbeitsplatz hat normalerweise genau ein Kartenterminal. Aufrufe tragen Mandant, Clientsystem und Arbeitsplatz | gemILF_PS | stützt P-29 (Infomodell) |
 | Der Konnektor kennt zwei Anbindungsmodi: in Reihe vor dem Internet-Router oder parallel als Gerät im Netz. Im Parallelbetrieb schützt er nicht vor Angriffen aus dem Internet | gemSpec_Kon, Infoblatt Betriebsarten | stützt Abschnitt 8 und P-25 bis P-27 |
-| SIS ist im Parallelbetrieb optional statt ausgeschlossen | gemSpec_Kon (Auszug) | **P-19 prüfen**: Mockup sagt „nur im Reihenbetrieb“ |
+| SIS ist im Parallelbetrieb optional statt ausgeschlossen | gemSpec_Kon (Auszug) | P-19 umgebaut: prüft jetzt die fehlende Firewall |
 | Der VPN-Zugangsdienst baut einen Tunnel ins TI-Netz und einen getrennten für SIS auf. Ohne kritisches Update baut der Konnektor keinen Tunnel mehr auf | gemKPT_Arch_TIP | stützt P-16 (kritisches Update) |
-| Das mobile Kartenterminal arbeitet offline und übergibt Daten später ans Primärsystem | gemSpec_MobKT | klärt Frage zu `mkt` in Abschnitt 11 |
+| Das mobile Kartenterminal arbeitet offline und übergibt Daten später ans Primärsystem | gemSpec_MobKT | mobiles KT offline, Übergabe per USB (Regelwerk 12) |
 | eHealth-CardLink erlaubt keine PIN-Prüfung | gemSpec_eHealth-CardLink | neue Regel: kein HBA/SMC-B über CardLink, keine PIN-pflichtigen Aktionen |
 | VSDM 2.0 und künftig ePA/E-Rezept nutzen PoPP-Token statt VSDM-Prüfungsnachweis | gemSpec_VSDM_2, PoPP | PoPP als Komponente aufnehmen |
-| Der Fachdienst gibt die Anmeldung an den IDP ab (Relying Party) | gemSpec_FD_eRp | Weg zum IDP (VPN oder Internet) weiter offen |
-| Das TI-Netz ist auf IPv6 umgestellt, ältere Fassungen nennen IPv4 aus 100.64.0.0/10. Die Route 100.102.0.0/15 für offene Fachdienste gilt weiter (gemILF_PS) | gemSpec_Net, gemILF_PS | bestätigt P-27 |
+| Der Fachdienst gibt die Anmeldung an den IDP ab (Relying Party) | gemSpec_FD_eRp | IDP über die TI (entschieden 2026-11-03) |
+| Die Route 100.102.0.0/15 für offene Fachdienste und WANDA ist im Primärsystem einzurichten (gemILF_PS, Abschnitt 3.2.3) | gemILF_PS, gemSpec_Net | bestätigt P-27 |
 | eAU geht per KIM an die Krankenkasse, deren Adresse über das Institutionskennzeichen gefunden wird | Pressemitteilung eAU, Dienstkennungen KIM | Krankenkasse als Gegenstelle, VZD im Ablauf `eau` |
 | TI-Messenger nutzt Matrix, die Föderation läuft über den VZD | gemSpec_TI-M_Basis | VZD im Ablauf `tim` |

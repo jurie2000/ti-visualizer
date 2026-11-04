@@ -39,6 +39,10 @@ GitHub Pages. Zur Freigabe durch Justin.
 | D27 | **SonarQube Cloud** (ehemals SonarCloud) für Codequalität, Sicherheit und Coverage | Für öffentliche Repos kostenlos, direkt mit GitHub verbunden, kommentiert Pull Requests. |
 | D28 | **Architekturdiagramme als Mermaid** in [architektur.md](./architektur.md) | GitHub zeigt Mermaid direkt an; Diagramme liegen versioniert als Text neben dem Plan. |
 | D29 | **KI-Review am Pull Request** mit der Claude Code GitHub Action (Modell Opus), nur als Kommentar, **kein Pflicht-Check** | Vom Nutzer gewünscht (2026-11-04). Prüft Spec- und Regelwerk-Treue, was Sonar und Tests nicht abdecken; macht den KI-gestützten Entwicklungsprozess für die Bachelorarbeit auswertbar. |
+| D30 | **Rückverfolgbarkeit Regel → Test → Katalog wird automatisch geprüft** (Skripte in der CI) | Erzwingt D18 und hält Regelwerk und Katalog synchron; liefert einen Nachweis für die Bachelorarbeit. |
+| D31 | **Testqualität wird gemessen, nicht nur Coverage**: Property-based Tests (`fast-check`) und Mutation-Testing (StrykerJS) für die Engines | Coverage zeigt nur, welcher Code läuft, nicht ob Tests Fehler finden. |
+| D32 | **Architekturregeln werden erzwungen** (`dependency-cruiser`) | Die Schichten aus [architektur.md](./architektur.md) bleiben sauber getrennt; Engines bleiben ohne React testbar. |
+| D33 | **Security by Design** nach OWASP: Abhängigkeiten mit SBOM und Schwachstellen-Tracking, statische und dynamische Sicherheitsprüfung, Injection-Tests für alle Eingabewege, abgesicherte Lieferkette | Die App öffnet fremde Dateien und Links (D24) und ist öffentlich erreichbar. |
 
 ## Technologie-Stack
 
@@ -51,7 +55,8 @@ GitHub Pages. Zur Freigabe durch Justin.
 | Speicher | IndexedDB über `idb-keyval` |
 | Teilen per Link | `lz-string` (Komprimierung ins URL-Fragment) |
 | Tests | Vitest mit `@vitest/coverage-v8`, Playwright (Chromium, Firefox, WebKit), `@axe-core/playwright` |
-| Qualität | ESLint, Prettier, `tsc --noEmit`, SonarQube Cloud |
+| Qualität | ESLint (`typescript-eslint` strict, `jsx-a11y`, `react-hooks`, `no-unsanitized`), Prettier, `tsc --noEmit` (strict), SonarQube Cloud, `dependency-cruiser`, `knip`, `fast-check`, StrykerJS, Lighthouse CI, `size-limit`, `lefthook`, `commitlint` |
+| Sicherheit | CodeQL, `gitleaks`, Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
 | CI/CD | GitHub Actions, Dependabot, Claude Code GitHub Action (KI-Review) |
 | Deployment | GitHub Pages |
 
@@ -81,6 +86,14 @@ tests/e2e/        Playwright-Suiten (smoke, share, a11y, …)
 .github/review-richtlinien.md   Prüfpunkte für den KI-Review
 sonar-project.properties
 playwright.config.ts, vitest.config.ts, .size-limit.json
+stryker.config.json, .dependency-cruiser.cjs, knip.json, lighthouserc.json
+lefthook.yml, commitlint.config.ts
+.github/pull_request_template.md, .github/CODEOWNERS
+SECURITY.md
+.zap/rules.tsv                  begründete Ausnahmen für den ZAP-Scan
+scripts/                        check-traceability.ts, check-regelwerk-katalog.ts,
+                                metrics.ts
+tests/security/                 Injection-Korpus und Sicherheits-E2E
 design/mockup/    visuelle Vorlage (nicht im Build)
 ```
 
@@ -346,7 +359,9 @@ Anschlusspaar; im Modus Erweitert öffnet sich der `PortPicker`.
 |---|---|---|
 | `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch | Stufen 1 bis 5; Ergebnis als Status-Check am PR |
 | `.github/workflows/deploy.yml` | Push auf `main` (nach Merge), manuell | Stufen 1 bis 5, danach Stufe 6 Deployment |
-| `.github/workflows/nightly.yml` | täglich nachts | volle E2E-Suite in allen Browsern, Abhängigkeitsprüfung |
+| `.github/workflows/nightly.yml` | täglich nachts | volle E2E-Suite in allen Browsern, Mutation-Testing, OWASP ZAP gegen die öffentliche Seite, OSV-Scanner, Kennzahlen |
+| `.github/workflows/codeql.yml` | PR, Push auf `main`, wöchentlich | CodeQL-Analyse (JavaScript/TypeScript) |
+| `.github/workflows/scorecard.yml` | wöchentlich | OpenSSF Scorecard für die Lieferkette |
 | `.github/dependabot.yml` | wöchentlich | Updates für npm-Pakete und Actions |
 
 Gemeinsame Schritte liegen in einem wiederverwendbaren Workflow
@@ -357,15 +372,16 @@ garantiert dasselbe prüfen.
 
 | Stufe | Job | Inhalt | Bricht ab, wenn |
 |---|---|---|---|
-| 1 | `static` | `pnpm install --frozen-lockfile` · ESLint · Prettier-Check · `tsc --noEmit` | Lint- oder Typfehler |
-| 2 | `unit` | Vitest mit Coverage (`@vitest/coverage-v8`, Bericht `lcov`), Katalog- und Vorlagen-Validierung, Regel-Tests (D18), Kontrastprüfung der Tokens | ein Test fehlschlägt oder Coverage der Engines unter 90 % bzw. gesamt unter 80 % |
+| 1 | `static` | `pnpm install --frozen-lockfile` · ESLint · Prettier-Check · `tsc --noEmit` · Architekturregeln (`dependency-cruiser`) · ungenutzter Code (`knip`) · Rückverfolgbarkeit Regelwerk ↔ Katalog | Lint-, Typ- oder Architekturfehler, Regelwerk und Katalog weichen ab |
+| 1b | `security` | Secret-Scan (`gitleaks`) · bei PRs `actions/dependency-review-action` (neue Abhängigkeiten mit Schwachstellen oder unerlaubter Lizenz) · `pnpm audit --audit-level=high` | Secret gefunden, Abhängigkeit mit hoher/kritischer Schwachstelle oder verbotener Lizenz |
+| 2 | `unit` | Vitest mit Coverage (`@vitest/coverage-v8`, Bericht `lcov`), Property-based Tests, Katalog- und Vorlagen-Validierung, Regel-Tests (D18) mit Prüfung „jede Regel hat einen Test“, Kontrastprüfung der Tokens | ein Test fehlschlägt, eine Regel-ID ohne Test ist oder Coverage unter den Grenzen liegt (Engines 90 % Zeilen/85 % Zweige, gesamt 80 %) |
 | 3 | `sonar` | SonarQube-Cloud-Analyse mit dem Coverage-Bericht aus Stufe 2; Quality Gate wird abgewartet | Quality Gate rot |
 | 3b | `ai-review` | nur bei Pull Requests: KI-Review nach `.github/review-richtlinien.md`, Ergebnis als PR-Kommentar | bricht nie ab (nur Hinweise) |
-| 4 | `build` | `vite build` mit `BASE_PATH=/ti-visualizer/`; Prüfung der Bundle-Größe; `dist/` als Artefakt | Build-Fehler oder Haupt-Bundle > 500 KB (gzip) |
-| 5 | `e2e` | Playwright gegen `vite preview` mit dem Build aus Stufe 4; Axe-Checks; Tastatur-Durchlauf; Export/Import zwischen zwei Browser-Kontexten | ein E2E- oder Axe-Test fehlschlägt |
-| 6 | `deploy` | nur in `deploy.yml`: `actions/upload-pages-artifact` mit `dist/`, `actions/deploy-pages`, danach Smoke-Test gegen die öffentliche Adresse | Upload, Deploy oder Smoke-Test schlägt fehl |
+| 4 | `build` | `vite build` mit `BASE_PATH=/ti-visualizer/`; Prüfung der Bundle-Größe; CSP-Meta-Tag vorhanden; SBOM (CycloneDX) erzeugen; Lighthouse CI; `dist/` als Artefakt | Build-Fehler, Haupt-Bundle > 500 KB (gzip), Lighthouse unter 90 in Performance, Barrierefreiheit oder Best Practices |
+| 5 | `e2e` | Playwright gegen `vite preview` mit dem Build aus Stufe 4; Axe-Checks; Tastatur-Durchlauf; Export/Import zwischen zwei Browser-Kontexten; **Injection-Suite** (`tests/security/`) | ein E2E-, Axe- oder Injection-Test fehlschlägt |
+| 6 | `deploy` | nur in `deploy.yml`: Build-Provenienz signieren (`actions/attest-build-provenance`), `actions/upload-pages-artifact` mit `dist/`, `actions/deploy-pages`, danach Smoke-Test gegen die öffentliche Adresse | Upload, Deploy oder Smoke-Test schlägt fehl |
 
-Stufe 1 läuft zuerst; 2, 3b und 4 laufen parallel; 3 wartet auf 2, 5 auf 4.
+Stufe 1 und 1b laufen zuerst; 2, 3b und 4 laufen parallel; 3 wartet auf 2, 5 auf 4.
 Deploy startet nur, wenn alle anderen Jobs grün sind.
 
 ### Sonar-Prüfung (D27)
@@ -384,8 +400,8 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
   Schwachstellen, Security Hotspots geprüft, Coverage auf neuem Code
   ≥ 80 %, Duplikate ≤ 3 %.
 - **Pull Requests:** Sonar kommentiert Befunde direkt im PR (PR-Decoration).
-- **Ergänzend:** GitHub CodeQL für JavaScript/TypeScript und
-  `pnpm audit` im Nightly; Dependabot hält Abhängigkeiten aktuell.
+- **Ergänzend:** CodeQL, Abhängigkeitsprüfung und weitere
+  Sicherheitsjobs siehe Abschnitt „Cyber-Security“.
 
 ### KI-Review (D29)
 
@@ -459,7 +475,7 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
 ### Branch-Schutz und Ablauf
 
 - `main` ist geschützt: Merge nur per Pull Request, Pflicht-Checks
-  `static`, `unit`, `sonar`, `build`, `e2e`. Der KI-Review (`ai-review`)
+  `static`, `security`, `unit`, `sonar`, `build`, `e2e`, `codeql`. Der KI-Review (`ai-review`)
   läuft mit, ist aber kein Pflicht-Check.
 - Arbeitsweise: Branch je Task (`task/T-xxx-…`), PR mit Task-ID,
   Merge nach grünen Checks; Deploy läuft danach automatisch.
@@ -479,6 +495,158 @@ Deploy startet nur, wenn alle anderen Jobs grün sind.
   `ANTHROPIC_API_KEY` als Secret anlegen und die Claude GitHub App
   installieren;
   Branch-Schutz für `main` einrichten.
+
+## Codequalität und Testabdeckung (D30–D32)
+
+### Rückverfolgbarkeit (D30)
+
+| Prüfung | So funktioniert sie | Ergebnis |
+|---|---|---|
+| **Jede Regel hat einen Test** | `scripts/check-traceability.ts` liest alle Regel-IDs aus `regelwerk.md` (z. B. V-3, G-4, K-4, P-17) und sucht sie in den Testnamen (`it("[P-17] …")`) | CI bricht ab, wenn eine Regel-ID ohne Test ist; Bericht `traceability.md` als Artefakt (Regel → Test → Status) |
+| **Regelwerk und Katalog stimmen überein** | `scripts/check-regelwerk-katalog.ts` liest die Tabellen aus `regelwerk.md` (Erlaubnisliste, Begründungsliste, Aktionen, Prüfregeln) und vergleicht sie mit `catalog/*.json` | CI bricht ab bei fehlenden oder zusätzlichen Einträgen, abweichendem Status oder fehlender Quelle |
+| **Jede Anforderung ist abgedeckt** | Tests und Tasks tragen FR-IDs; das Skript prüft FR-1 bis FR-22 | Bericht „FR → Tasks → Tests“ |
+
+### Testarten und Ziele
+
+| Testart | Werkzeug | Gegenstand | Ziel |
+|---|---|---|---|
+| Unit | Vitest | Engines, Schemas, Persistenz, Stores | Engines ≥ 90 % Zeilen, ≥ 85 % Zweige; gesamt ≥ 80 % |
+| Property-based (D31) | `fast-check` | Engines und Import | Grundsätze siehe unten |
+| Mutation (D31) | StrykerJS (Vitest-Runner) | `src/engine/`, `src/persistence/` | Mutation Score ≥ 80 % (nightly, Bericht als Artefakt) |
+| Komponenten | React Testing Library | Bausteine mit Logik | kritische Interaktionen abgedeckt |
+| E2E | Playwright | Nutzerabläufe, Teilen, a11y, Sicherheit | alle Suiten grün |
+| Visuell | Playwright `toHaveScreenshot` | Hauptansichten hell/dunkel | keine ungewollte Abweichung |
+| Performance/Qualität | Lighthouse CI | gebaute Seite | ≥ 90 in Performance, Barrierefreiheit, Best Practices |
+
+**Grundsätze für Property-based Tests** (zufällige Topologien und Eingaben):
+- Verbinden ist symmetrisch: A–B ergibt dasselbe wie B–A (D15).
+- Kein Paar der Erlaubnisliste wird von einer Begründungsregel erfasst.
+- Export → Import ergibt dieselbe Topologie; Link hin und zurück ändert
+  nichts.
+- Migration ist idempotent: zweimal migrieren = einmal migrieren.
+- Beliebige, auch kaputte Eingaben bringen den Import nie zum Absturz;
+  sie werden angenommen oder mit Meldung abgelehnt (Fuzzing).
+- `runChecks` ist deterministisch und hängt nicht von der Reihenfolge
+  der Knoten ab.
+
+### Statische Qualität
+
+- **TypeScript** mit `strict`, `noUncheckedIndexedAccess`,
+  `exactOptionalPropertyTypes`, `noImplicitOverride`.
+- **ESLint:** `typescript-eslint` (`strict-type-checked`),
+  `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`,
+  `eslint-plugin-no-unsanitized` (verbietet `innerHTML` & Co.).
+- **Architekturregeln (D32)** mit `dependency-cruiser`:
+  - `engine/` importiert weder React noch `store/`, `persistence/` oder
+    Browser-APIs.
+  - `ui/`, `canvas/`, `panels/`, `dialogs/` greifen nicht direkt auf
+    `persistence/` zu, nur über Stores.
+  - keine zirkulären Abhängigkeiten.
+- **`knip`:** keine ungenutzten Dateien, Exporte oder Abhängigkeiten.
+- **Sonar** (D27) als übergreifende Bewertung.
+
+### Arbeitsablauf
+
+- **Vor dem Commit:** `lefthook` mit `lint-staged` (ESLint, Prettier nur
+  für geänderte Dateien) und `gitleaks` für Secrets.
+- **Commit-Nachrichten:** `commitlint` mit Conventional Commits und
+  Pflicht-Task-ID, z. B. `feat(engine): T-012 Erlaubnisliste prüfen`.
+- **Pull-Request-Vorlage** (`.github/pull_request_template.md`):
+  Task-ID, betroffene FR- und Regel-IDs, Tests ergänzt, Screenshot bei
+  UI-Änderung, Sicherheitsrelevanz ja/nein.
+- **`CODEOWNERS`:** Änderungen an `specs/`, `catalog/` und
+  `.github/workflows/` brauchen die Freigabe von Justin.
+
+### Kennzahlen für die Bachelorarbeit
+
+`scripts/metrics.ts` schreibt je Pipeline-Lauf eine Zeile in
+`metrics/verlauf.csv` (eigener Branch `metrics`): Datum, Commit,
+Coverage, Mutation Score, Sonar-Bewertungen, Anzahl Tests, Regeln mit
+Test, Lighthouse-Werte, offene Schwachstellen, KI-Review-Befunde
+übernommen/verworfen. Daraus entstehen die Verlaufsgrafiken für die
+Arbeit.
+
+## Cyber-Security (D33)
+
+### Bedrohungsmodell (kurz, nach STRIDE)
+
+| Bedrohung | Wo | Gegenmaßnahme |
+|---|---|---|
+| **Tampering / Injection:** präparierte `.tiv.json`, Link `#t=…` oder `?vorlage=` mit Skript- oder HTML-Inhalt | Import, Teilen | Zod-Schema mit festen Wertebereichen, Texte nur als Text, `no-unsanitized`, CSP, Injection-Tests |
+| **Denial of Service im Browser:** riesige oder stark komprimierte Daten, tief verschachteltes JSON | Import, Link | Größenlimit 1 MB, Limit für entpackte Link-Daten, Knoten-/Kantenlimit, Abbruch mit Meldung |
+| **Prototype Pollution:** Schlüssel wie `__proto__`, `constructor` | JSON-Import | Zod verwirft unbekannte Schlüssel; Test mit diesen Schlüsseln |
+| **Spoofing:** fremde Vorlage gibt sich als offizielle aus | `?vorlage=` | Herkunftsadresse sichtbar, Rückfrage, nur `https:` |
+| **Information Disclosure:** Daten verlassen den Browser | gesamte App | keine Laufzeit-Netzwerkzugriffe außer Same-Origin und bestätigtem `?vorlage=`; keine Tracker; Schriften selbst ausgeliefert |
+| **Supply Chain:** kompromittierte Abhängigkeit oder Action | Build, CI | Lockfile, SBOM, Dependency-Review, gepinnte Actions, minimale Rechte, Provenienz |
+| **Elevation of Privilege in der CI:** Fork-PR greift auf Secrets zu | GitHub Actions | keine Secrets für Fork-PRs, `permissions` minimal, kein `pull_request_target` mit Checkout fremden Codes |
+
+### Abhängigkeiten und SBOM
+
+| Baustein | Zweck | Wann |
+|---|---|---|
+| **SBOM (CycloneDX)** mit `@cyclonedx/cyclonedx-npm` | Stückliste aller Abhängigkeiten, als Artefakt an jedem Build und an jedem Release | Stufe 4 |
+| **OWASP Dependency-Track** | Dashboard, das SBOMs fortlaufend gegen neue Schwachstellen prüft und Lizenzen bewertet | nightly Upload der SBOM; Dependency-Track läuft lokal per Docker (`dependencytrack/apiserver` und `frontend`) oder auf einem eigenen Server. Ohne Server entfällt nur das Dashboard, die übrigen Prüfungen bleiben |
+| **Dependency-Review-Action** | blockiert PRs, die Abhängigkeiten mit bekannten Schwachstellen (ab „hoch“) oder unerlaubten Lizenzen einführen; erlaubt: MIT, ISC, BSD, Apache-2.0, 0BSD, CC0 | Stufe 1b |
+| **`pnpm audit` und OSV-Scanner** | Abgleich mit GitHub Advisory DB und OSV | Stufe 1b bzw. nightly |
+| **Dependabot** | Sicherheits- und Versionsupdates für npm und Actions | wöchentlich und bei Warnungen sofort |
+| **GitHub Dependency Graph und Security Alerts** | Grundlage für Dependabot und Dependency-Review | dauerhaft aktiv |
+
+### Statische und dynamische Sicherheitsprüfung
+
+- **SAST:** CodeQL (`security-extended`), Sonar-Sicherheitsregeln,
+  `eslint-plugin-no-unsanitized`.
+- **Secrets:** GitHub Secret Scanning mit Push Protection, `gitleaks` in
+  Pre-Commit und CI.
+- **DAST:** OWASP ZAP Baseline-Scan (`zaproxy/action-baseline`) nightly
+  gegen die öffentliche Seite und in der CI gegen `vite preview`.
+  Warnungen zu HTTP-Headern, die GitHub Pages nicht setzen lässt, stehen
+  begründet in `.zap/rules.tsv`.
+- **Lieferkette:** OpenSSF Scorecard wöchentlich; Ziel ≥ 7 von 10.
+
+### Injection-Tests (`tests/security/`)
+
+Ein Korpus bösartiger Eingaben (angelehnt an OWASP XSS Filter Evasion
+und OWASP Testing Guide) wird über **jeden Eingabeweg** geschickt:
+Datei-Import, Drag & Drop, Link `#t=…`, `?vorlage=`, Topologiename,
+Beschreibung, Zonenname, Gerätebezeichnung, Einstellungen-Datei.
+
+| Testfall | Erwartung |
+|---|---|
+| `<script>`, `<img src=x onerror=…>`, `<svg onload=…>`, `javascript:`-URLs in Texten | Text erscheint wörtlich; kein Skript läuft (Playwright prüft `window.__pwned`, Dialoge und Konsole) |
+| HTML/CSS in Zonenfarbe oder Tönen (`tone`) | abgelehnt, nur feste Werte erlaubt |
+| `?vorlage=javascript:…`, `data:…`, `http://…`, `file://…` | abgelehnt, nur `https:` |
+| JSON mit `__proto__`, `constructor`, `prototype` | Schlüssel verworfen, `Object.prototype` unverändert |
+| 10 MB Datei, Link-Bombe (klein komprimiert, riesig entpackt), 100 000 Knoten, Verschachtelungstiefe 1 000 | Abbruch mit Meldung, App bleibt bedienbar |
+| unbekannte Gerätetypen, kaputte Referenzen (Kante zu fehlendem Knoten) | gemeldet, nicht stillschweigend übernommen |
+| Unicode-Tricks (Steuerzeichen, Rechts-nach-links-Zeichen) in Namen | sichtbar markiert oder entfernt |
+
+Zusätzlich deckt das Fuzzing mit `fast-check` (Abschnitt
+„Codequalität“) zufällige Eingaben ab.
+
+### Härtung der Seite
+
+- **Content Security Policy** als Meta-Tag in `index.html` (GitHub Pages
+  erlaubt keine eigenen Header):
+  `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'none'`.
+  `connect-src https:` nur wegen `?vorlage=`; in P0 wird geprüft, ob
+  React Flow ohne `'unsafe-inline'` bei `style-src` auskommt.
+- **Referrer-Policy** als Meta-Tag (`no-referrer`).
+- Keine Drittanbieter-Skripte, keine Analyse-Tools, keine Cookies.
+- Externe Links mit `rel="noopener noreferrer"`.
+
+### CI-Härtung
+
+- Actions per Commit-SHA gepinnt (Dependabot aktualisiert sie).
+- `permissions:` je Workflow minimal, Standard `contents: read`.
+- Fork-PRs ohne Secrets; KI-Review und Sonar für Forks nur nach
+  Freigabe.
+- Umgebung `github-pages` nur für `main`.
+- Build-Provenienz per `actions/attest-build-provenance`.
+
+### Meldeweg
+
+`SECURITY.md` beschreibt, wie Schwachstellen gemeldet werden; dafür wird
+im Repo „Private vulnerability reporting“ aktiviert.
 
 ## Barrierefreiheit (D10)
 
@@ -541,6 +709,10 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
   Link-Roundtrip; kaputte und zu große Dateien werden mit Meldung
   abgelehnt; Migration alter `schemaVersion`
 - **Barrierefreiheit:** Axe, Tastatur-E2E, Kontraste der Tokens
+- **Testqualität:** Property-based Tests und Mutation-Testing (siehe
+  „Codequalität und Testabdeckung“)
+- **Sicherheit:** Injection-Suite über alle Eingabewege, ZAP-Scan,
+  Fuzzing (siehe „Cyber-Security“)
 - **E2E (Playwright):** Preset laden → Gerät ergänzen → ungültig
   verbinden → Aktion → Simulation abbrechen; Export in Browser A →
   Import in neuem Browser-Kontext B (simuliert „anderer Browser“);
@@ -555,14 +727,14 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 
 | Phase | Inhalt | Ergebnis |
 |---|---|---|
-| P0 | Grundgerüst: Vite, React, TS, Lint, Vitest, Tokens, Schriften, App-Shell mit Impressum; **komplette Pipeline** (Stufen 1–6, Sonar, KI-Review, Playwright-Smoke, Branch-Schutz) | Leere App öffentlich erreichbar, jede Änderung läuft durch die Pipeline |
-| P1 | Zod-Schemas, Katalog aus dem Regelwerk, Regel-Engine, Tests | Regeln vollständig getestet |
+| P0 | Grundgerüst: Vite, React, TS, Lint, Vitest, Tokens, Schriften, App-Shell mit Impressum; **komplette Pipeline** (Stufen 1–6, Sonar, KI-Review, Playwright-Smoke, Branch-Schutz), Qualitätswerkzeuge (strict TS, ESLint-Regelsätze, dependency-cruiser, knip, lefthook, commitlint, PR-Vorlage), Sicherheitsgrundlagen (CSP, gitleaks, Dependency-Review, CodeQL, SBOM, `SECURITY.md`) | Leere App öffentlich erreichbar, jede Änderung läuft durch die Pipeline |
+| P1 | Zod-Schemas, Katalog aus dem Regelwerk, Regel-Engine, Tests; Rückverfolgbarkeits-Skripte, Property-based Tests, Mutation-Testing | Regeln vollständig und nachweisbar getestet |
 | P2 | Palette, Canvas, Knoten und Kanten im Mockup-Stil, Verbinden mit Begründung, Startansicht, Presets | Topologien bauen |
-| P3 | IndexedDB, Datei-Export/-Import, Arbeitsstand, Einstellungen, Vorlagen-Bibliothek, Link-Teilen | Austausch mit anderen Browsern |
+| P3 | IndexedDB, Datei-Export/-Import, Arbeitsstand, Einstellungen, Vorlagen-Bibliothek, Link-Teilen; Injection-Suite und Fuzzing für alle Eingabewege | Austausch mit anderen Browsern, abgesichert |
 | P4 | Kontextmenü, Aktionen, Pfade, Simulation, Detailpanel | Abläufe abspielen |
 | P5 | Modus Erweitert: Anschlüsse, Einstellungen, Zonen, Editor-Hilfen, Sicherheitsprüfung | Erweiterte Ansicht |
 | P6 | Tutorial, Herausforderungen | Lernfunktionen |
-| P7 | Barrierefreiheit-Feinschliff, Tablet-Layout, E2E, optische Abnahme | Release v1 |
+| P7 | Barrierefreiheit-Feinschliff, Tablet-Layout, E2E, optische Abnahme; ZAP-Scan, Scorecard, Dependency-Track, Kennzahlen-Auswertung | Release v1 |
 
 ## Risiken und offene Punkte
 
@@ -590,6 +762,14 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 - **Risiko:** Der KI-Review kostet API-Guthaben pro Pull Request und
   kann falsche Befunde liefern. Gegenmittel: Pfadfilter, Laufzeitgrenze,
   nur Kommentar statt Pflicht-Check, Entscheidung beim Menschen.
+- **Risiko:** Mutation-Testing und ZAP brauchen lange. Gegenmittel: nur
+  nightly, nur für `engine/` und `persistence/`.
+- **Risiko:** Dependency-Track braucht einen laufenden Server.
+  Gegenmittel: lokal per Docker für die Auswertung in der Arbeit; die
+  Pipeline-Prüfungen (Dependency-Review, audit, OSV) laufen unabhängig
+  davon.
+- **Risiko:** Eine strenge CSP kann Bibliotheken mit Inline-Styles
+  stören. Gegenmittel: Prüfung in P0, Ausnahme nur begründet.
 - **Risiko:** E2E-Tests in drei Browsern verlängern die Pipeline.
   Gegenmittel: in CI nur Chromium (Firefox für `share`), alle Browser
   nightly.

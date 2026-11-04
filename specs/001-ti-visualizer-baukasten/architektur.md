@@ -234,10 +234,13 @@ flowchart LR
     trigger(["Push / Pull Request"])
 
     subgraph s1["1 Statische Prüfung"]
-        lint["ESLint · Prettier<br/>tsc --noEmit"]
+        lint["ESLint · Prettier · tsc<br/>dependency-cruiser · knip<br/>Regelwerk ↔ Katalog"]
+    end
+    subgraph s1b["1b Security"]
+        sec["gitleaks · Dependency-Review<br/>pnpm audit · CodeQL"]
     end
     subgraph s2["2 Unit-Tests"]
-        unit["Vitest + Coverage<br/>Katalog, Vorlagen, Regeln"]
+        unit["Vitest + Coverage<br/>Property-based Tests<br/>jede Regel hat einen Test"]
     end
     subgraph s3["3 Sonar"]
         sonar["SonarQube Cloud<br/>Quality Gate"]
@@ -246,16 +249,18 @@ flowchart LR
         ai["Claude Code Action<br/>Spec- und Regelwerk-Treue"]
     end
     subgraph s4["4 Build-Test"]
-        build["vite build<br/>Bundle-Größe, Pfade"]
+        build["vite build · CSP<br/>SBOM · Lighthouse CI"]
     end
     subgraph s5["5 E2E"]
-        e2e["Playwright<br/>smoke, share, a11y, …"]
+        e2e["Playwright<br/>smoke, share, a11y<br/>Injection-Suite"]
     end
     subgraph s6["6 Deploy (nur main)"]
-        deploy["GitHub Pages<br/>+ Smoke-Test"]
+        deploy["Provenienz signieren<br/>GitHub Pages + Smoke-Test"]
     end
 
     trigger --> lint
+    trigger --> sec
+    sec --> gate
     lint --> unit
     lint --> build
     unit -- "lcov.info" --> sonar
@@ -267,7 +272,8 @@ flowchart LR
     gate -- "ja" --> deploy
     gate -- "nein, PR" --> pr["Status am PR<br/>Merge gesperrt bis grün"]
 
-    nightly(["nightly"]) -.-> full["E2E alle Browser<br/>visual, CodeQL, audit"]
+    nightly(["nightly"]) -.-> full["E2E alle Browser · visual<br/>Stryker · OWASP ZAP · OSV<br/>SBOM → Dependency-Track"]
+    weekly(["wöchentlich"]) -.-> score["OpenSSF Scorecard<br/>CodeQL · Dependabot"]
 ```
 
 ## 6. Simulation

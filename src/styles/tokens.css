@@ -1,0 +1,232 @@
+/*
+ * Design-Tokens nach dem Organic-Design-System des Mockups (D20).
+ * Quelle: design/mockup/_ds/organic-…/styles.css sowie CAT, EDGEKIND und
+ * darkVars aus "TI Visualizer.dc.html". Abweichungen für WCAG AA stehen
+ * als Kommentar an der Stelle. Der Kontrasttest liest diese Datei.
+ *
+ * Dunkel: Standard folgt prefers-color-scheme, data-theme="light|dark"
+ * überschreibt. Der Dunkel-Block steht deshalb zweimal (identisch,
+ * vom Test geprüft).
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --color-bg: #f5ead8;
+  --color-surface: #ebddc5;
+  --color-text: #201e1d;
+  --color-text-muted: #645c50;
+  /* Mockup: #c67139 (3,0:1 auf bg). Für Text und Primärknopf auf 5,3:1 abgedunkelt. */
+  --color-accent: #944d1e;
+  --color-accent-2: #7a8a5e;
+  --color-divider: color-mix(in srgb, #201e1d 16%, transparent);
+
+  --color-neutral-100: #f9f4ed;
+  --color-neutral-200: #eee7db;
+  --color-neutral-300: #dcd3c4;
+  --color-neutral-400: #c0b6a5;
+  --color-neutral-500: #a19786;
+  --color-neutral-600: #82796a;
+  --color-neutral-700: #645c50;
+  --color-neutral-800: #474238;
+  --color-neutral-900: #2e2b25;
+
+  --color-accent-100: #fff2eb;
+  --color-accent-200: #ffe1d0;
+  --color-accent-300: #ffc6a5;
+  --color-accent-400: #f6a06b;
+  --color-accent-500: #d67f48;
+  --color-accent-600: #b2622d;
+  --color-accent-700: #8c491a;
+  --color-accent-800: #643312;
+  --color-accent-900: #402310;
+
+  --color-accent-2-100: #f0fae1;
+  --color-accent-2-200: #e1eecc;
+  --color-accent-2-300: #ccdbb2;
+  --color-accent-2-400: #aebf92;
+  --color-accent-2-500: #8fa073;
+  --color-accent-2-600: #728157;
+  --color-accent-2-700: #56633f;
+  --color-accent-2-800: #3d472b;
+  --color-accent-2-900: #272e1b;
+
+  /* Fokusrahmen; Mockup: #c67139 (3,0:1, auf surface 2,7:1), hier wie accent. */
+  --tiv-focus: #944d1e;
+  --tiv-focus-width: 3px;
+
+  /* Status: Text, Rand, Fläche */
+  --tiv-error-fg: #7a2c00;
+  --tiv-error-bd: #b3400b;
+  --tiv-error-bg: #fbe6db;
+  --tiv-ok-fg: #0b5a42;
+  --tiv-ok-bd: #00795c;
+  --tiv-ok-bg: #dff3ec;
+  --tiv-warn-fg: #6b4a00;
+  --tiv-warn-bd: #a66a00;
+  --tiv-warn-bg: #fbeed4;
+
+  /* Kategorien (CAT): Farbe + Form. Form nie nur über Farbe. */
+  --tiv-cat-primary: #0072b2;
+  --tiv-cat-primary-shape: round;
+  --tiv-cat-card: #a66a00;
+  --tiv-cat-card-shape: pill;
+  --tiv-cat-terminal: #b0568d;
+  --tiv-cat-terminal-shape: notch;
+  --tiv-cat-lan: #5e6e2c;
+  --tiv-cat-lan-shape: box;
+  --tiv-cat-network: #00795c;
+  --tiv-cat-network-shape: box;
+  --tiv-cat-service: #2c6fa8;
+  --tiv-cat-service-shape: hex;
+  /* Neu, Okabe-Ito (Vermillion, Gelb); hell abgedunkelt auf >= 3:1 gegen surface. */
+  --tiv-cat-central: #b04a00;
+  --tiv-cat-central-shape: tab;
+  --tiv-cat-insured: #786e00;
+  --tiv-cat-insured-shape: oval;
+
+  /* Kantenarten (EDGEKIND): Farbe, Strichstärke, Strichmuster */
+  --tiv-edge-phys: #4a4439;
+  --tiv-edge-phys-width: 3.6;
+  --tiv-edge-phys-dash: none;
+  --tiv-edge-nfc: #b0568d;
+  --tiv-edge-nfc-width: 3;
+  --tiv-edge-nfc-dash: 1 6;
+  --tiv-edge-tcp: #2c6fa8;
+  --tiv-edge-tcp-width: 2.2;
+  --tiv-edge-tcp-dash: none;
+  --tiv-edge-vpn: #00795c;
+  --tiv-edge-vpn-width: 3.2;
+  --tiv-edge-vpn-dash: 11 6;
+  --tiv-edge-wlan: #5e6e2c;
+  --tiv-edge-wlan-width: 2.6;
+  --tiv-edge-wlan-dash: 3 5;
+  --tiv-edge-inet: #7b7263;
+  --tiv-edge-inet-width: 2.2;
+  --tiv-edge-inet-dash: 12 4 2 4;
+
+  --font-heading: "Caprasimo", system-ui, sans-serif;
+  --font-heading-weight: 400;
+  --font-body: "Figtree", system-ui, sans-serif;
+
+  --space-1: 4.4px;
+  --space-2: 8.8px;
+  --space-3: 13.2px;
+  --space-4: 17.6px;
+  --space-6: 26.4px;
+  --space-8: 35.2px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2e2b25 22%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: #221f1c;
+    --color-surface: #2c2925;
+    --color-text: #f4ede2;
+    --color-text-muted: #aba292;
+    --color-accent: #e0975d;
+    --color-divider: #413c34;
+    --color-neutral-100: #2c2925;
+    --color-neutral-200: #332f2a;
+    --color-neutral-300: #3d3831;
+    --color-neutral-400: #4a443c;
+    --color-neutral-500: #5e574d;
+    --color-neutral-600: #8c8474;
+    --color-neutral-700: #aba292;
+    --color-neutral-800: #d6cdbd;
+    --color-neutral-900: #f4ede2;
+    --color-accent-700: #f0b37f;
+    --color-accent-900: #f8d2ae;
+    --color-accent-2-100: #2a3122;
+    --color-accent-2-300: #4a5639;
+    --color-accent-2-800: #c6d3ac; /* Mockup lässt 800 hell: 1,4:1 auf dunklem 100 */
+    --color-accent-2-900: #c6d3ac;
+    --tiv-focus: #f0b37f;
+    --tiv-error-fg: #ffc2a0;
+    --tiv-error-bd: #e8845a;
+    --tiv-error-bg: #3b2219;
+    --tiv-ok-fg: #8fe9c6;
+    --tiv-ok-bd: #44d7ac;
+    --tiv-ok-bg: #14332a;
+    --tiv-warn-fg: #f5ce86;
+    --tiv-warn-bd: #d9a441;
+    --tiv-warn-bg: #3a2e15;
+    --tiv-cat-primary: #63bdf2;
+    --tiv-cat-card: #f0b84a;
+    --tiv-cat-terminal: #e79cc4;
+    --tiv-cat-lan: #b6c77a;
+    --tiv-cat-network: #44d7ac;
+    --tiv-cat-service: #7cbdea;
+    --tiv-cat-central: #e8743b;
+    --tiv-cat-insured: #f0e442;
+    --tiv-edge-phys: #cec5b5;
+    --tiv-edge-nfc: #e79cc4;
+    --tiv-edge-tcp: #7cbdea;
+    --tiv-edge-vpn: #44d7ac;
+    --tiv-edge-wlan: #b6c77a;
+    --tiv-edge-inet: #a79e8e;
+    --shadow-sm: 0 0 0 1px #413c34;
+    --shadow-md: 0 3px 10px #0006;
+    --shadow-lg: 0 12px 32px #0008;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #221f1c;
+  --color-surface: #2c2925;
+  --color-text: #f4ede2;
+  --color-text-muted: #aba292;
+  --color-accent: #e0975d;
+  --color-divider: #413c34;
+  --color-neutral-100: #2c2925;
+  --color-neutral-200: #332f2a;
+  --color-neutral-300: #3d3831;
+  --color-neutral-400: #4a443c;
+  --color-neutral-500: #5e574d;
+  --color-neutral-600: #8c8474;
+  --color-neutral-700: #aba292;
+  --color-neutral-800: #d6cdbd;
+  --color-neutral-900: #f4ede2;
+  --color-accent-700: #f0b37f;
+  --color-accent-900: #f8d2ae;
+  --color-accent-2-100: #2a3122;
+  --color-accent-2-300: #4a5639;
+  --color-accent-2-800: #c6d3ac; /* Mockup lässt 800 hell: 1,4:1 auf dunklem 100 */
+  --color-accent-2-900: #c6d3ac;
+  --tiv-focus: #f0b37f;
+  --tiv-error-fg: #ffc2a0;
+  --tiv-error-bd: #e8845a;
+  --tiv-error-bg: #3b2219;
+  --tiv-ok-fg: #8fe9c6;
+  --tiv-ok-bd: #44d7ac;
+  --tiv-ok-bg: #14332a;
+  --tiv-warn-fg: #f5ce86;
+  --tiv-warn-bd: #d9a441;
+  --tiv-warn-bg: #3a2e15;
+  --tiv-cat-primary: #63bdf2;
+  --tiv-cat-card: #f0b84a;
+  --tiv-cat-terminal: #e79cc4;
+  --tiv-cat-lan: #b6c77a;
+  --tiv-cat-network: #44d7ac;
+  --tiv-cat-service: #7cbdea;
+  --tiv-cat-central: #e8743b;
+  --tiv-cat-insured: #f0e442;
+  --tiv-edge-phys: #cec5b5;
+  --tiv-edge-nfc: #e79cc4;
+  --tiv-edge-tcp: #7cbdea;
+  --tiv-edge-vpn: #44d7ac;
+  --tiv-edge-wlan: #b6c77a;
+  --tiv-edge-inet: #a79e8e;
+  --shadow-sm: 0 0 0 1px #413c34;
+  --shadow-md: 0 3px 10px #0006;
+  --shadow-lg: 0 12px 32px #0008;
+}

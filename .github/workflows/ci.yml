@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
   push:
+    # Auf `main` prüft und deployt deploy.yml (sonst liefe die Pipeline doppelt).
+    branches-ignore: [main]
 
 # Neuer Lauf für denselben Branch ersetzt den alten.
 concurrency:

@@ -150,7 +150,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
 Ziel: Regeln vollständig und nachweisbar getestet. Alles ohne UI (D17).
 Vorher: T-907 (fachliche Freigabe).
 
-- [ ] **T-101 Schemas für Datei und Topologie** [P] · FR: FR-5, FR-12, FR-18 · Regeln: – · nach: T-001
+- [x] **T-101 Schemas für Datei und Topologie** [P] · FR: FR-5, FR-12, FR-18 · Regeln: – · nach: T-001
   - Umfang: Zod-Schemas in `src/schema/`: `TivFile`, `Settings`,
     `Topology` (mit `simDate`), `Element`, `Node`, `Edge`, `Zone`, `Point`,
     `Rect`, `Endpoint`, `Card`, `PinCard` (über `kind`), `NetConfig` und

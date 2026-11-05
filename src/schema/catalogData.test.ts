@@ -271,7 +271,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "prot-timc-tim",
     ]);
     expect(byId("prot-mkt-ps")?.b).toEqual({
-      types: ["pvs", "kis", "avs", "pflege"],
+      types: ["pvs", "kis", "avs", "pflege", "pc"],
     });
   });
 });

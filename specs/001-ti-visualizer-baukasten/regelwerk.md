@@ -236,7 +236,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | eHealth-KT ↔ Zugang | SICCT, nach Pairing | 4742 | ja | bestätigt (Netzport plausibel) | gemSpec_KT |
 | CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | plausibel | gemSpec_eHealth-CardLink (A_24769); Netzweg offen (12) |
 | Primärsystem ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
-| Mobiles KT ↔ Primärsystem | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
+| Mobiles KT ↔ Primärsystem oder PC | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |
 | Primärsystem ↔ KIM-Clientmodul | SMTP und POP3 | offen | ja | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul ↔ KIM-Fachdienst | SMTP und POP3, über die Route des Zugangs | offen | ja (mTLS) | bestätigt | gemSpec_CM_KOMLE |
@@ -411,11 +411,19 @@ Zentrales Netz (optional) → **Dienst**
 - Wege, die den Zugang oder den VPN-Zugangsdienst auslassen, zählen
   nicht als TI-Pfad, auch wenn sie über das Internet zum Dienst führen.
 - Wege nur über das Internet gelten ausschließlich für
-  Versicherten-Apps, TI-Messenger, CardLink und PoPP.
+  Versicherten-Apps, TI-Messenger, CardLink und PoPP, und zwar nur für
+  diese Paare (Vereinfachung, abgeleitet aus 4.2):
+  E-Rezept-App ↔ E-Rezept-Dienst, IdP, sektoraler IdP ·
+  ePA-App ↔ ePA-Dienst, sektoraler IdP ·
+  TI-Messenger-Client ↔ TI-Messenger ·
+  CardLink ↔ sein Zugang · jeder Auslöser ↔ PoPP.
 - Ausgeblendete Geräte (Modus Einfach) zählen voll mit.
 - **Mehrere Zugänge im Netz:** Ein Kartenterminal gehört zu dem Zugang,
   mit dem es gepairt ist (`pairedWith` in der TerminalConfig). Bei einer
-  direkten Verbindung ist das der verbundene Zugang.
+  direkten Verbindung ist das der verbundene Zugang. Fehlt beides und gibt
+  es im Netz nur einen Zugang, gehört das Kartenterminal zu diesem
+  (Vereinfachung, etwa für ein KT am Switch ohne Pairing). Dasselbe gilt
+  für CardLink.
 - **Mehrere passende Karten:** Es zählt das Terminal, das dem
   Arbeitsplatz des Auslösers zugeordnet ist (P-29). Gibt es keine
   Zuordnung, fragt die App, welches Terminal genutzt wird.

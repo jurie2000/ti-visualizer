@@ -64,7 +64,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     in Hell und Dunkel auf WCAG AA prüft und grün ist. Keine Anfrage an
     fremde Server beim Laden (geprüft in T-006).
 
-- [ ] **T-003 App-Shell mit Impressum** [P] · FR: FR-22 · Regeln: – · nach: T-001
+- [x] **T-003 App-Shell mit Impressum** [P] · FR: FR-22 · Regeln: – · nach: T-001
   - Umfang: Layout nach plan.md („Layout“): Kopfleiste, Platzhalter für
     Palette, Canvas und Detailpanel, Fußzeile mit dauerhaftem
     Impressum-Link. `ImpressumDialog` mit Katalogversion (vorerst

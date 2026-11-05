@@ -21,7 +21,10 @@
     },
     "visibleSimple": false,
     "source": ["gemSpec_KT", "DVO"],
-    "status": "bestätigt"
+    "status": "bestätigt",
+    "kinds": {
+      "b": ["eth"]
+    }
   },
   {
     "id": "erl-cardlink-zugang",
@@ -93,7 +96,10 @@
     },
     "visibleSimple": false,
     "source": ["DVO"],
-    "status": "plausibel"
+    "status": "plausibel",
+    "kinds": {
+      "b": ["eth"]
+    }
   },
   {
     "id": "erl-tab-wlan",
@@ -189,7 +195,10 @@
     },
     "visibleSimple": false,
     "source": ["DVO"],
-    "status": "plausibel"
+    "status": "plausibel",
+    "kinds": {
+      "b": ["eth"]
+    }
   },
   {
     "id": "erl-switch-zugang",
@@ -225,7 +234,10 @@
     },
     "visibleSimple": false,
     "source": ["Betriebsarten"],
-    "status": "bestätigt"
+    "status": "bestätigt",
+    "kinds": {
+      "b": ["eth"]
+    }
   },
   {
     "id": "erl-fw-zugang",
@@ -249,7 +261,11 @@
     },
     "visibleSimple": false,
     "source": ["Betriebsarten", "gemSpec_Kon"],
-    "status": "bestätigt"
+    "status": "bestätigt",
+    "kinds": {
+      "a": ["wan"],
+      "b": ["eth"]
+    }
   },
   {
     "id": "erl-zugang-vpn",

@@ -53,14 +53,14 @@ export function plugCard(
     return { ok: false, message: MESSAGES.noSlot };
   if (!slots && card.kind !== "egk")
     return { ok: false, message: MESSAGES.nfcOnlyEgk };
+  const cards = node.cards ?? [];
+  if (cards.some((c) => c.kind === card.kind))
+    return { ok: false, message: MESSAGES.full };
   if (
     card.id !== undefined &&
     topology.nodes.some((n) => n.cards?.some((c) => c.id === card.id))
   )
     return { ok: false, message: MESSAGES.elsewhere };
-  const cards = node.cards ?? [];
-  if (cards.some((c) => c.kind === card.kind))
-    return { ok: false, message: MESSAGES.full };
   return {
     ok: true,
     topology: {

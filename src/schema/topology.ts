@@ -145,6 +145,23 @@ export const Topology = z
         used.add(slot);
       });
     });
+
+    // K-1: je Gerät eine Karte pro Art. K-9: eine Karte (id) steckt in einem Gerät.
+    const cardIds = new Set<string>();
+    t.nodes.forEach((n, i) => {
+      const kinds = new Set<string>();
+      n.cards?.forEach((c, j) => {
+        const path = ["nodes", i, "cards", j];
+        if (kinds.has(c.kind))
+          issue(path, `Gerät „${n.id}“ hat zwei Karten der Art ${c.kind}`);
+        kinds.add(c.kind);
+        if (c.id !== undefined) {
+          if (cardIds.has(c.id))
+            issue(path, `Karte „${c.id}“ steckt in mehr als einem Gerät`);
+          cardIds.add(c.id);
+        }
+      });
+    });
   });
 
 export type Point = z.infer<typeof Point>;

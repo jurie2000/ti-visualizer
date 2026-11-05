@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loadCatalog, type AnyCard, type Topology } from "../schema";
+import { Topology, loadCatalog, type AnyCard } from "../schema";
 import { MESSAGES, cardState, plugCard, unplugCard } from "./cards";
 
 const catalog = loadCatalog();
@@ -109,13 +109,30 @@ describe("Karten-Engine (T-106)", () => {
     ).toBe("ready");
   });
 
-  it("[K-5] SMC-B steckt im Terminal und bleibt über Zustandsabfragen erhalten", () => {
+  it("[K-5] SMC-B steckt dauerhaft: bleibt gesteckt, ohne Meldung; Ziehen nur ausdrücklich", () => {
     const t = plugged(topo(node("kt1", "kt")), "kt1", smcb);
     expect(cardState(t, "kt1", "smcb")).toMatchObject({
       plugged: true,
       state: "ready",
     });
     expect(cardState(t, "kt1", "smcb").message).toBeUndefined();
+    // Auslegung: unplugCard zieht die SMC-B auf ausdrücklichen Wunsch (Herausforderung „SMC-B fehlt“)
+    expect(cardState(unplugCard(t, "kt1", "smcb"), "kt1", "smcb").plugged).toBe(
+      false,
+    );
+  });
+
+  it("[K-1] Datei mit zwei Karten einer Art oder doppelter Karten-id wird abgelehnt", () => {
+    const twice = topo(
+      node("kt1", "kt", [hba, { ...hba, expires: "2030-01-01" }]),
+    );
+    expect(Topology.safeParse(twice).success).toBe(false);
+    const same: AnyCard = { ...egk, id: "c1" };
+    const two = topo(node("kt1", "kt", [same]), node("kt2", "kt", [same]));
+    expect(Topology.safeParse(two).success).toBe(false);
+    expect(
+      Topology.safeParse(topo(node("kt1", "kt", [hba, smcb]))).success,
+    ).toBe(true);
   });
 
   it("[K-6] NFC-Geräte nehmen nur die eGK, ohne PIN", () => {
@@ -159,6 +176,12 @@ describe("Karten-Engine (T-106)", () => {
     const moved = plugged(unplugCard(t, "kt1", "hba"), "kt2", card);
     expect(moved.nodes[0]?.cards).toEqual([]);
     expect(moved.nodes[1]?.cards).toEqual([card]);
+  });
+
+  it("[K-9] dieselbe Karte erneut ins selbe Terminal: Meldung aus K-2", () => {
+    const card: AnyCard = { ...hba, id: "hba-1" };
+    const t = plugged(topo(node("kt1", "kt")), "kt1", card);
+    expect(fail(t, "kt1", card)).toBe(MESSAGES.full);
   });
 
   it("Stecken in unbekanntes Gerät wird abgelehnt", () => {

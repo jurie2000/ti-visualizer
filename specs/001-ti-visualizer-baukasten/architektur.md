@@ -307,10 +307,13 @@ classDiagram
     class Card {
         kind = "egk"
         expires: date
+        id: key (optional, K-9)
         pinActive: boolean
     }
     class PinCard {
         kind = "hba" | "smcb"
+        expires: date
+        id: key (optional, K-9)
         unlocked: boolean
     }
     class NetConfig {

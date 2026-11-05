@@ -309,7 +309,7 @@ Aufbau und Typen als Diagramm: [architektur.md, Abschnitt 3](./architektur.md#3-
 | `Element` | `id`, `label?` | |
 | `Node`, `Edge`, `Zone` | erweitern `Element`. Node und Edge haben zusätzlich `fault` (`Disruptable`) | |
 | `Point`, `Rect`, `Endpoint` | kleine Wertobjekte für Position, Fläche und Kantenende | |
-| `Card`, `PinCard` | `Card` für die eGK mit `expires`, `pinActive` (Regelwerk K-7) und optionaler `id` (K-9), `PinCard` (HBA, SMC-B) mit `expires` und `unlocked` | `kind` |
+| `Card`, `PinCard` | `Card` für die eGK mit `expires`, `pinActive` (Regelwerk K-7) und optionaler `id` (K-9), `PinCard` (HBA, SMC-B) mit `expires`, `unlocked` und optionaler `id` | `kind` |
 | `NetConfig` | `ip`, `mask`, `gateway`, `dns`, `vlan`, `dhcp` | |
 | `KonnektorConfig`, `TerminalConfig`, `ClientConfig`, `RouterConfig`, `InfraConfig` | erweitern `NetConfig` um die Felder aus Regelwerk 8 (Spalte „Feld“). KonnektorConfig gilt auch für TI-Gateway und Highspeed-Konnektor. `InfraConfig` (Switch, Access Point, Firewall) hat keine Zusatzfelder | Fähigkeit des Gerätetyps (Regelwerk 1.9) |
 

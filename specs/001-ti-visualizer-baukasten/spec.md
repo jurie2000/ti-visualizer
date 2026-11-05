@@ -1,12 +1,12 @@
 # Spec 001: TI Visualizer, interaktiver Netzwerk-Baukasten
 
-**Status:** In Überarbeitung (2026-11-03). Die fachlich freigegebene Fassung
+**Status:** Freigegeben (2026-11-05). Die fachlich freigegebene Fassung
 vom 2026-09-20 ist erweitert um die Funktionen aus dem Mockup
 (`design/mockup/`) und einen vollständigen Katalog der gängigen
 TI-Komponenten. Die Kombinationsregeln stehen im
 [Regelwerk](./regelwerk.md), jede mit Quelle. Widersprüche zwischen Spec,
-Regelwerk und Plan sind aufgelöst (2026-11-03). Neue Freigabe durch
-Justin offen.
+Regelwerk und Plan sind aufgelöst (2026-11-03). Fachlich freigegeben
+durch Justin am 2026-11-05 (T-907).
 **Feature:** 001-ti-visualizer-baukasten
 **Projekt:** ti-visualizer (komplett neues Repo, ersetzt nicht das bestehende
 `ti-network-visualizer`, das als Referenz/Prototyp bestehen bleibt)
@@ -258,7 +258,7 @@ für den Lernzweck zu speziell. Das Regelwerk kann sie neu bewerten.
 ## Regelwerk
 
 Wie die Komponenten kombiniert werden dürfen, wird in einem eigenen
-Dokument erarbeitet: **[regelwerk.md](./regelwerk.md)** (Entwurf, jede
+Dokument erarbeitet: **[regelwerk.md](./regelwerk.md)** (freigegeben 2026-11-05, jede
 Regel mit Quelle). Es ist die fachliche Quelle für die Regel-Engine und den
 Datenkatalog und umfasst:
 
@@ -439,11 +439,12 @@ Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
   Erlaubnisliste, Karten als Stecken-Regeln, Pfadregel, Rolle des
   Konnektors, Prüfungsnachweis, CardLink, TI-Messenger, Simulationsdatum,
   Importbefunde, gekürzte Pipeline, Datenschutzhinweis
-- [ ] Restpunkte im Regelwerk (Abschnitt 12 dort: CardLink-Netzweg,
+- [x] Restpunkte im Regelwerk (Abschnitt 12 dort, gehen bewusst mit Status
+  „offen“ in den Katalog, T-905: CardLink-Netzweg,
   Belege V-17 und V-20, eAU-Dienstkennungen, Befugnisdauer der ePA,
   mobiles KT, Ablauf `epa`, offene Netzports)
 - [ ] Herausforderungen und Tutorial-Texte fachlich abnehmen
-- [ ] Neue fachliche Freigabe der erweiterten Spec durch Justin
+- [x] Neue fachliche Freigabe der erweiterten Spec durch Justin
 - [x] plan.md an die Erweiterung angepasst (2026-11-04): UI-Konzept nach
   dem Mockup, Katalogformat, Speichern über Dateien,
   Deployment

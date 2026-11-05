@@ -1,11 +1,12 @@
 # Regelwerk 001: Kombinationsregeln der TI-Komponenten
 
-**Status:** Entwurf, überarbeitet am 2026-11-04 nach dem Prüfbericht
+**Status:** Überarbeitet am 2026-11-04 nach dem Prüfbericht
 (Fable). Ausgangsbasis waren die
 Regeln aus dem Mockup (`design/mockup/TI Visualizer.dc.html`) und die
 freigegebene Matrix der [Spec](./spec.md). Alle Regeln sind jetzt mit
 mindestens einer offiziellen Quelle belegt oder ausdrücklich als
-Vereinfachung bzw. offen markiert. Fachliche Freigabe durch Justin offen.
+Vereinfachung bzw. offen markiert. Fachlich freigegeben durch Justin am
+2026-11-05 (T-907).
 **Bezug:** Spec FR-4, FR-7, FR-14, FR-17 bis FR-21
 **Quellen:** [quellen.md](./quellen.md)
 
@@ -693,6 +694,10 @@ mit ausgeblendeten Geräten lässt sich daher in jedem Modus öffnen.
 - [x] Modus nur als Darstellung, Sammelkanten im Modus Einfach (11).
 
 **Noch offen**
+
+Diese Punkte gehen bewusst mit Status „offen“ in den Katalog (T-905,
+abgeschlossen am 2026-11-05). Sie bleiben hier sichtbar, bis ein Beleg
+vorliegt.
 
 - [ ] Netzweg von CardLink zum Konnektor in gemSpec_eHealth-CardLink
   Kapitel 6.3 nachlesen.

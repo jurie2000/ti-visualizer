@@ -505,6 +505,7 @@ grün sind.
   Lauf, kein Lauf bei Entwurfs-PRs.
 - **Auswertung für die Bachelorarbeit:** Befunde je PR werden mit Label
   „KI-Befund übernommen“ bzw. „verworfen“ markiert.
+  Anlegen einmalig mit `gh label create "KI-Befund übernommen" --color 0E8A16 --description "KI-Review-Befund wurde umgesetzt"` und `gh label create "KI-Befund verworfen" --color B60205 --description "KI-Review-Befund wurde bewusst nicht umgesetzt"`.
 
 ### Unit- und Komponententests
 

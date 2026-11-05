@@ -428,9 +428,10 @@ kommt erst, wenn die App fachlich steht.
 
 | Datei | Auslöser | Zweck |
 |---|---|---|
-| `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch | Stufen 1 bis 5. Ergebnis als Status-Check am PR |
+| `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch außer `main` | Stufen 1 bis 5. Ergebnis als Status-Check am PR |
 | `.github/workflows/deploy.yml` | Push auf `main` (nach Merge), manuell | Stufen 1 bis 5, danach Stufe 6 Deployment |
 | `.github/dependabot.yml` | wöchentlich | Updates für npm-Pakete und Actions |
+| CodeQL Default-Setup (Repo-Einstellung, keine Datei) | Pull Request, Push auf `main`, wöchentlich | SAST für JavaScript/TypeScript und Actions, Suite `extended`. Kein Pflicht-Check |
 | `.github/workflows/nightly.yml` | optional nach P7 | E2E in allen Browsern und die optionalen Prüfungen |
 
 Gemeinsame Schritte liegen in einem wiederverwendbaren Workflow

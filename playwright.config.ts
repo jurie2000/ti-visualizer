@@ -3,6 +3,8 @@ import { defineConfig, devices } from "@playwright/test";
 const basePath = process.env["BASE_PATH"] ?? "/ti-visualizer/";
 const port = 4173;
 const origin = `http://localhost:${String(port)}`;
+// Öffentliche Adresse (mit Pfad und abschließendem „/“): kein lokaler Server.
+const externeUrl = process.env["E2E_BASE_URL"];
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -12,7 +14,7 @@ export default defineConfig({
     ? [["list"], ["html", { open: "never" }]]
     : "list",
   use: {
-    baseURL: `${origin}${basePath}`,
+    baseURL: externeUrl ?? `${origin}${basePath}`,
     trace: "retain-on-failure",
     video: "retain-on-failure",
     screenshot: "only-on-failure",
@@ -30,12 +32,17 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    // In der CI liegt `dist/` schon aus der Stufe `build` vor (E2E_SKIP_BUILD).
-    command: `${process.env["E2E_SKIP_BUILD"] ? "" : "pnpm build && "}pnpm exec vite preview --port ${String(port)} --strictPort`,
-    url: `${origin}${basePath}`,
-    reuseExistingServer: !process.env["CI"],
-    timeout: 120_000,
-    env: { BASE_PATH: basePath },
-  },
+  // Mit E2E_BASE_URL (öffentliche Adresse) startet kein lokaler Server.
+  ...(externeUrl
+    ? {}
+    : {
+        webServer: {
+          // In der CI liegt `dist/` schon aus der Stufe `build` vor (E2E_SKIP_BUILD).
+          command: `${process.env["E2E_SKIP_BUILD"] ? "" : "pnpm build && "}pnpm exec vite preview --port ${String(port)} --strictPort`,
+          url: `${origin}${basePath}`,
+          reuseExistingServer: !process.env["CI"],
+          timeout: 120_000,
+          env: { BASE_PATH: basePath },
+        },
+      }),
 });

@@ -53,5 +53,9 @@ describe("Rückverfolgbarkeits-Skripte (T-109)", () => {
       k("K-9", "offen", []),
     ]);
     expect(fehler).toHaveLength(4);
+    // ganze Familie V fehlt im Katalog
+    expect(pruefeRegelwerkKatalog(regelwerk, [])).toEqual([
+      expect.stringContaining("V-3"),
+    ]);
   });
 });

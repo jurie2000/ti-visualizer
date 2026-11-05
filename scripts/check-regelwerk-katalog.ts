@@ -3,6 +3,9 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { ID, regelwerkRows } from "./regelwerk.ts";
 
+// Familien, die der Katalog immer führt (T-104). Weitere kommen über die Katalogdaten dazu.
+const KATALOG_FAMILIEN = ["G", "V", "X"];
+
 export type KatalogRegel = { id: string; status?: string; source?: string[] };
 
 /**
@@ -16,7 +19,10 @@ export function pruefeRegelwerkKatalog(
 ): string[] {
   const fehler: string[] = [];
   const soll = regelwerkRows(regelwerk);
-  const familien = new Set(katalog.map((r) => r.id[0]));
+  const familien = new Set([
+    ...KATALOG_FAMILIEN,
+    ...katalog.map((r) => r.id[0]),
+  ]);
   const sortiert = (q: string[]) => [...q].sort().join(", ");
   for (const r of soll.filter((s) => familien.has(s.id[0]))) {
     const k = katalog.find((x) => x.id === r.id);

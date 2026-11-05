@@ -131,18 +131,12 @@ export const Topology = z
     }
 
     const nodeIds = new Set(t.nodes.map((n) => n.id));
-    const used = new Set<string>();
+    // Wie viele Kanten ein Anschluss trägt, legt der Katalog fest (`multi`,
+    // Regelwerk 2.2). Diese Prüfung steht beim Öffnen mit dem Katalog.
     t.edges.forEach((e, i) => {
       e.ends.forEach((end, j) => {
-        const path = ["edges", i, "ends", j];
-        if (!nodeIds.has(end.node)) issue(path, `Knoten „${end.node}“ fehlt`);
-        const slot = `${end.node}\0${end.port}`;
-        if (used.has(slot))
-          issue(
-            path,
-            `Anschluss „${end.node}.${end.port}“ trägt mehr als eine Kante`,
-          );
-        used.add(slot);
+        if (!nodeIds.has(end.node))
+          issue(["edges", i, "ends", j], `Knoten „${end.node}“ fehlt`);
       });
     });
 

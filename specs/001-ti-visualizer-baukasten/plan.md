@@ -339,9 +339,11 @@ genau zwei Enden, beide zeigen auf vorhandene Knoten und Anschlüsse.
   verschwindet stillschweigend.
 - **Grenzen:** 1 MB pro Datei, höchstens 500 Knoten, 2 000 Kanten und
   50 Zonen, Namen bis 100 Zeichen, Beschreibungen bis 2 000 Zeichen.
-- **Schema-Regeln:** IDs sind eindeutig, ein Einzelanschluss trägt
-  höchstens eine Kante, jede Kante zeigt auf vorhandene Knoten und
-  Anschlüsse.
+- **Schema-Regeln:** IDs sind eindeutig, jede Kante zeigt auf vorhandene
+  Knoten. Ob ein Anschluss existiert und ob er mehrere Kanten tragen darf
+  (`multi`, Regelwerk 2.2), weiß nur der Katalog: diese Prüfung läuft
+  beim Öffnen immer gegen den Katalog der Datei bzw. den aktiven, nicht
+  nur bei abweichender `catalogVersion` (Presets: `checkReferences`).
 - Texte (Namen, Beschreibungen) werden nur als Text angezeigt, nie als
   HTML.
 - **Vor dem Ersetzen:** Hat der aktuelle Stand ungespeicherte Änderungen,

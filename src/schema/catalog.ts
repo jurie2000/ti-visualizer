@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Topology } from "./topology";
 
 // Zod-Schemas des Katalogs (D13, plan.md „Katalog“). Alle Objekte sind strikt,
 // damit Tippfehler in den JSON-Dateien auffallen (D5).
@@ -239,19 +240,9 @@ export const challenges = z.array(
   }),
 );
 
-const PresetPort = z.strictObject({ node: Id, port: Id });
-
+/** Ein Preset ist eine fertige Topologie im Format der Dateien (plan.md, „Presets“). */
 export const presets = z.array(
-  z.strictObject({
-    id: Id,
-    name: Text,
-    simDate: z.iso.date(),
-    nodes: z.array(z.strictObject({ id: Id, type: Id, name: Text })),
-    edges: z.array(
-      z.strictObject({ id: Id, a: PresetPort, b: PresetPort, kind: Id }),
-    ),
-    ...sourced,
-  }),
+  z.strictObject({ id: Id, topology: Topology, ...sourced }),
 );
 
 export const tutorial = z.strictObject({
@@ -315,7 +306,6 @@ export function checkReferences(c: Catalog): string[] {
   const kinds = ids(c.portKinds.kinds);
   const srcs = ids(c.sources);
   const protos = ids(c.protocols.protocols);
-  const connKinds = ids(c.protocols.connectionKinds);
   const cats = ids(c.categories);
   const actionIds = ids(c.actions);
   const checkIds = ids(c.checks);
@@ -423,20 +413,27 @@ export function checkReferences(c: Catalog): string[] {
   }
   for (const p of c.presets) {
     const w = `Preset ${p.id}`;
-    const typeOf = new Map(p.nodes.map((n) => [n.id, n.type]));
-    for (const n of p.nodes) ref(w, n.type, types, "Gerätetyp");
-    for (const e of p.edges) {
-      ref(w, e.kind, connKinds, "Verbindungsart");
-      for (const end of [e.a, e.b]) {
-        const known = c.deviceTypes
+    const typeOf = new Map(p.topology.nodes.map((n) => [n.id, n.type]));
+    for (const n of p.topology.nodes) ref(w, n.type, types, "Gerätetyp");
+    const taken = new Set<string>();
+    for (const e of p.topology.edges)
+      for (const end of e.ends) {
+        const port = c.deviceTypes
           .find((t) => t.id === typeOf.get(end.node))
-          ?.ports.some((q) => q.id === end.port);
-        if (!known)
+          ?.ports.find((q) => q.id === end.port);
+        if (!port)
           errors.push(
             `${w}: Kante ${e.id} endet an unbekanntem Anschluss ${end.node}.${end.port}`,
           );
+        else if (!port.multi) {
+          const slot = `${end.node}.${end.port}`;
+          if (taken.has(slot))
+            errors.push(
+              `${w}: Anschluss ${slot} trägt mehr als eine Kante, ist aber nicht mehrfach`,
+            );
+          taken.add(slot);
+        }
       }
-    }
   }
 
   withSource("Gerätetyp", c.deviceTypes);

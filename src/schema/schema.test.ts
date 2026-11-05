@@ -139,15 +139,6 @@ describe("Topology", () => {
     expect(topoOk({ edges: [{ ...e1, ends }] })).toBe(false);
   });
 
-  it("lehnt einen Anschluss mit zwei Kanten ab", () => {
-    const e2 = {
-      ...e1,
-      id: "e2",
-      ends: [e1.ends[0], { node: "sw1", port: "p2" }],
-    };
-    expect(topoOk({ edges: [e1, e2] })).toBe(false);
-  });
-
   it("verlangt genau zwei Kantenenden", () => {
     expect(topoOk({ edges: [{ ...e1, ends: [e1.ends[0]] }] })).toBe(false);
     expect(

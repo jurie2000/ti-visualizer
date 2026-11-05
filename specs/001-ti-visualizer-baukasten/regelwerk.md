@@ -19,7 +19,7 @@ eine Quelle.
 | Status | Bedeutung |
 |---|---|
 | **bestätigt** | in einer gematik-Quelle ausdrücklich belegt |
-| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Prüfung durch Justin offen |
+| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Von Justin fachlich geprüft (T-907, 2026-11-05) |
 | **Vereinfachung** | für den Lernzweck vereinfacht. Die Quelle beschreibt den echten Sachverhalt |
 | **offen** | noch ohne Beleg oder zu entscheiden |
 
@@ -234,7 +234,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Verbindung | Protokoll und Datenformat | Netzport | TLS | Status | Quelle |
 |---|---|---|---|---|---|
 | eHealth-KT ↔ Zugang | SICCT, nach Pairing | 4742 | ja | bestätigt (Netzport plausibel) | gemSpec_KT |
-| CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | bestätigt | gemSpec_eHealth-CardLink (A_24769) |
+| CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | plausibel | gemSpec_eHealth-CardLink (A_24769); Netzweg offen (12) |
 | Primärsystem ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
 | Mobiles KT ↔ Primärsystem | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |

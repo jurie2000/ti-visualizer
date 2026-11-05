@@ -506,9 +506,10 @@ flowchart LR
     end
 
     trigger --> lint
-    lint --> unit
-    lint --> build
-    lint --> ai
+    trigger --> unit
+    trigger --> build
+    trigger --> ai
+    lint --> gate
     unit -- "lcov.info" --> sonar
     ai -. "nur Kommentar,<br/>kein Pflicht-Check" .-> pr
     build -- "dist/" --> e2e

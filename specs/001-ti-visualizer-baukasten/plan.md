@@ -450,9 +450,10 @@ sicher dasselbe prüfen.
 | 5 | `e2e` | Playwright gegen `vite preview` mit dem Build aus Stufe 4. Axe-Checks. Ab P3 Injection-Suite (`tests/security/`) | ein E2E-, Axe- oder Injection-Test fehlschlägt |
 | 6 | `deploy` | nur in `deploy.yml`: `actions/upload-pages-artifact` mit `dist/`, `actions/deploy-pages`, danach Smoke-Test gegen die öffentliche Adresse | Upload, Deploy oder Smoke-Test schlägt fehl |
 
-Stufe 1 läuft zuerst. Danach laufen 2, 3b und 4 parallel. Stufe 3
-wartet auf 2, Stufe 5 auf 4. Deploy startet nur, wenn alle anderen Jobs
-grün sind.
+Stufen 1, 2, 3b und 4 starten gleichzeitig. Stufe 3 wartet auf 2,
+Stufe 5 auf 4. Deploy startet nur, wenn alle anderen Jobs grün sind.
+Caches: pnpm-Store, `~/.sonar/cache` (Java und Plugins) und die
+Playwright-Headless-Shell je Playwright-Version.
 
 ### Sonar-Prüfung (D27)
 

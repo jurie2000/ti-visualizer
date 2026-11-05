@@ -60,7 +60,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: pnpm exec playwright install --with-deps chromium
+      - uses: ./.github/actions/playwright
       - name: Smoke-Test gegen die öffentliche Adresse
         env:
           PAGE_URL: ${{ needs.deploy.outputs.page_url }}

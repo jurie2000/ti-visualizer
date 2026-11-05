@@ -136,8 +136,9 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Umfang: einmalige Einstellungen aus plan.md („GitHub Pages“): Repo
     öffentlich, Pages-Quelle „GitHub Actions“, SonarQube Cloud verbinden,
     `SONAR_TOKEN` und `CLAUDE_CODE_OAUTH_TOKEN` als Secrets, Claude GitHub App,
-    Branch-Schutz für `main` (Pflicht-Checks `static`, `unit`, `sonar`,
-    `build`, `e2e`), Secret Scanning mit Push Protection, Private
+    Branch-Schutz für `main` (Pflicht-Checks `pipeline / static`,
+    `pipeline / unit`, `pipeline / sonar`, `pipeline / build`,
+    `pipeline / e2e`), Secret Scanning mit Push Protection, Private
     vulnerability reporting.
   - Fertig, wenn: die leere App öffentlich erreichbar ist und ein Direkt-Push
     auf `main` abgelehnt wird. **Ergebnis von P0.**

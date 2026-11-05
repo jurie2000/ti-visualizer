@@ -495,7 +495,9 @@ grün sind.
   - Stil, Formatierung und allgemeine Codequalität sind **nicht**
     Aufgabe des KI-Reviews (das machen ESLint, Prettier, Sonar).
 - **Ausgabe:** ein zusammenfassender PR-Kommentar plus Inline-Kommentare,
-  auf Deutsch, Befunde nach Schwere sortiert.
+  auf Deutsch. Der Kommentar beginnt mit einem Überblick zum schnellen
+  Überfliegen (Task-ID, Soll laut `tasks.md`, Ist laut Diff, Abweichung),
+  danach die Befunde nach Schwere sortiert.
 - **Kein Pflicht-Check:** Über den Merge entscheidet ein Mensch.
 - **Sicherheit:** `CLAUDE_CODE_OAUTH_TOKEN` als Repository-Secret
   (Token aus dem Claude-Abo über `claude setup-token`, kein API-Key mit

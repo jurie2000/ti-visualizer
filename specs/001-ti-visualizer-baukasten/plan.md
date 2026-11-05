@@ -58,7 +58,7 @@ GitHub Pages. Zur Freigabe durch Justin.
 | Speicher | Datei (`.tiv.json`, File System Access API mit Download/Upload als Rückfall), Autosave in IndexedDB über `idb-keyval` |
 | Tests | Vitest mit `@vitest/coverage-v8`, `fast-check`, React Testing Library, Playwright (Chromium, Firefox), `@axe-core/playwright` |
 | Qualität | ESLint (`typescript-eslint` strict, `jsx-a11y`, `react-hooks`, `no-unsanitized`), Prettier, `tsc --noEmit` (strict), SonarQube Cloud, `dependency-cruiser`, `size-limit`, `lefthook`. Optional: StrykerJS, Lighthouse CI, `knip`, `commitlint` |
-| Sicherheit | `gitleaks`, GitHub Secret Scanning, Dependabot, Sonar. Optional: CodeQL, Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
+| Sicherheit | `gitleaks`, GitHub Secret Scanning, Dependabot, Sonar, CodeQL. Optional: Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
 | CI/CD | GitHub Actions, Dependabot, Claude Code GitHub Action (KI-Review) |
 | Deployment | GitHub Pages |
 
@@ -419,18 +419,19 @@ kommt erst, wenn die App fachlich steht.
 
 | Stufe | Bausteine |
 |---|---|
-| **Kern ab P0** | ESLint, Prettier, `tsc` · Vitest mit Coverage · SonarQube Cloud · Build-Test mit Bundle-Größe · Playwright (Smoke) mit Axe · Deploy auf GitHub Pages · gitleaks · Dependabot · Branch-Schutz · KI-Review (kein Pflicht-Check) |
+| **Kern ab P0** | ESLint, Prettier, `tsc` · Vitest mit Coverage · SonarQube Cloud · Build-Test mit Bundle-Größe · Playwright (Smoke) mit Axe · Deploy auf GitHub Pages · gitleaks · Dependabot · CodeQL (seit 2026-11-05, kein Pflicht-Check) · Branch-Schutz · KI-Review (kein Pflicht-Check) |
 | **ab P1** | Rückverfolgbarkeit Regel → Test (D30) · Architekturregeln mit `dependency-cruiser` (D32) · Property-based Tests mit `fast-check` (D31) |
 | **ab P3** | Injection-Suite und Fuzzing für das Öffnen von Dateien |
-| **optional nach P7** | Mutation-Testing (StrykerJS, einmal für die Auswertung in der Arbeit) · Lighthouse CI · `knip` · CodeQL · Dependency-Review und `pnpm audit` · SBOM mit OWASP Dependency-Track · OWASP ZAP · OpenSSF Scorecard · Build-Provenienz · Kennzahlen-Export · `commitlint` · E2E in allen Browsern nightly |
+| **optional nach P7** | Mutation-Testing (StrykerJS, einmal für die Auswertung in der Arbeit) · Lighthouse CI · `knip` · Dependency-Review und `pnpm audit` · SBOM mit OWASP Dependency-Track · OWASP ZAP · OpenSSF Scorecard · Build-Provenienz · Kennzahlen-Export · `commitlint` · E2E in allen Browsern nightly |
 
 ### Workflows
 
 | Datei | Auslöser | Zweck |
 |---|---|---|
-| `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch | Stufen 1 bis 5. Ergebnis als Status-Check am PR |
+| `.github/workflows/ci.yml` | Pull Request, Push auf jeden Branch außer `main` | Stufen 1 bis 5. Ergebnis als Status-Check am PR |
 | `.github/workflows/deploy.yml` | Push auf `main` (nach Merge), manuell | Stufen 1 bis 5, danach Stufe 6 Deployment |
 | `.github/dependabot.yml` | wöchentlich | Updates für npm-Pakete und Actions |
+| CodeQL Default-Setup (Repo-Einstellung, keine Datei) | Pull Request, Push auf `main`, wöchentlich | SAST für JavaScript/TypeScript und Actions, Suite `extended`. Kein Pflicht-Check |
 | `.github/workflows/nightly.yml` | optional nach P7 | E2E in allen Browsern und die optionalen Prüfungen |
 
 Gemeinsame Schritte liegen in einem wiederverwendbaren Workflow
@@ -474,7 +475,9 @@ grün sind.
   ≥ 80 %, Duplikate ≤ 3 %.
 - **Pull Requests:** Sonar kommentiert Befunde direkt im PR (PR-Decoration).
 - Sonar ist zugleich die statische Sicherheitsprüfung (SAST) im Kern.
-  CodeQL ist optional.
+  Ergänzend läuft seit 2026-11-05 CodeQL im Default-Setup von GitHub
+  (Query-Suite `extended`, JavaScript/TypeScript und Actions; T-804a).
+  CodeQL prüft auch die Workflow-Dateien. Kein Pflicht-Check.
 
 ### KI-Review (D29)
 
@@ -657,8 +660,8 @@ dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 
 - **Kern:** Sonar-Sicherheitsregeln, `eslint-plugin-no-unsanitized`,
   gitleaks in Pre-Commit und CI, GitHub Secret Scanning mit Push
-  Protection.
-- **Optional nach P7:** CodeQL (`security-extended`), OWASP ZAP
+  Protection, CodeQL (`extended`, seit 2026-11-05).
+- **Optional nach P7:** OWASP ZAP
   Baseline-Scan nightly gegen die öffentliche Seite (Warnungen zu
   HTTP-Headern, die GitHub Pages nicht setzen lässt, begründet in
   `.zap/rules.tsv`), OpenSSF Scorecard.

@@ -518,7 +518,8 @@ flowchart LR
     gate -- "nein, PR" --> pr["Status am PR<br/>Merge gesperrt bis grün"]
 
     dependabot(["Dependabot wöchentlich"]) -.-> trigger
-    optional["optional nach P7:<br/>Stryker, Lighthouse, CodeQL,<br/>Dependency-Track, ZAP, Scorecard"]
+    trigger -.-> codeql(["CodeQL extended<br/>parallel, kein Pflicht-Check"])
+    optional["optional nach P7:<br/>Stryker, Lighthouse,<br/>Dependency-Track, ZAP, Scorecard"]
 ```
 
 ## 6. Simulation

@@ -16,11 +16,13 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
     "noEmit": true
   },
   "include": [
     "src",
     "tests",
+    "scripts",
     "vite.config.ts",
     "vitest.config.ts",
     "playwright.config.ts"

@@ -230,7 +230,7 @@ Vorher: T-907 (fachliche Freigabe).
     `validateConnection` und ist über Anschlüsse herstellbar, und jede
     erlaubte Verbindung aus 4.2 ist über Anschlüsse herstellbar.
 
-- [ ] **T-109 Rückverfolgbarkeits-Skripte** · FR: – · Regeln: – · nach: T-104
+- [x] **T-109 Rückverfolgbarkeits-Skripte** · FR: – · Regeln: – · nach: T-104
   - Umfang: `scripts/check-traceability.ts` (Regel-IDs aus regelwerk.md
     gegen Testnamen, nur für abgehakte Tasks dieser Datei, frei gewordene
     IDs V-1, V-2, V-3, V-11, V-13, G-5 ausgenommen),

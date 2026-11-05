@@ -7,3 +7,4 @@ coverage/
 design/mockup/*.zip
 test-results/
 playwright-report/
+reports/

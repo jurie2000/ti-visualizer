@@ -1,7 +1,7 @@
 name: Pipeline
 
 # Wiederverwendbare Stufen 1 bis 5 (plan.md, „CI/CD-Pipeline“).
-# Aufgerufen von ci.yml (und später deploy.yml).
+# Aufgerufen von ci.yml und deploy.yml.
 on:
   workflow_call:
     inputs:
@@ -47,9 +47,9 @@ jobs:
       - name: gitleaks (gesamter Verlauf)
         run: '"$RUNNER_TEMP/gitleaks" git --redact --no-banner --verbose'
 
+  # unit und build warten nicht auf static, damit alle drei parallel laufen.
   unit:
     name: unit
-    needs: static
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -94,11 +94,16 @@ jobs:
           name: coverage
           path: coverage/
       - if: steps.token.outputs.vorhanden == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.sonar/cache
+          key: sonar-${{ runner.os }}-${{ hashFiles('sonar-project.properties') }}
+          restore-keys: sonar-${{ runner.os }}-
+      - if: steps.token.outputs.vorhanden == 'true'
         uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
 
   build:
     name: build
-    needs: static
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -134,7 +139,7 @@ jobs:
         with:
           name: dist
           path: dist/
-      - run: pnpm exec playwright install --with-deps chromium
+      - uses: ./.github/actions/playwright
       - run: pnpm e2e
       - name: Bericht, Trace und Video bei Fehlern
         if: failure()

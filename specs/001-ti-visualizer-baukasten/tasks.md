@@ -53,7 +53,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     `pnpm build` lokal grün sind. Ein Beispieltest läuft mit Coverage-Bericht
     `coverage/lcov.info`.
 
-- [ ] **T-002 Design-Tokens und Schriften** [P] · FR: FR-22 · Regeln: – · nach: T-001
+- [x] **T-002 Design-Tokens und Schriften** [P] · FR: FR-22 · Regeln: – · nach: T-001
   - Umfang: `src/styles/tokens.css` aus dem Organic-Design-System des
     Mockups, Dunkelmodus als `:root[data-theme="dark"]`, Standard nach
     `prefers-color-scheme`. Kategorie-Farben und Formen aus `CAT`,

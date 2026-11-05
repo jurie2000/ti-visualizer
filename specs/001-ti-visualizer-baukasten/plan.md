@@ -1,9 +1,9 @@
 # Plan 001: TI Visualizer, interaktiver Netzwerk-Baukasten
 
-**Status:** Entwurf, überarbeitet am 2026-11-04: UI-Konzept nach dem
+**Status:** Überarbeitet am 2026-11-04: UI-Konzept nach dem
 Mockup, Speichern über Dateien, Deployment auf
-GitHub Pages. Zur Freigabe durch Justin.
-**Basis:** [spec.md](./spec.md) (in Überarbeitung),
+GitHub Pages. Fachlich freigegeben durch Justin am 2026-11-05 (T-907).
+**Basis:** [spec.md](./spec.md) (freigegeben 2026-11-05),
 [regelwerk.md](./regelwerk.md), Mockup in `design/mockup/`
 
 ## Leitentscheidungen

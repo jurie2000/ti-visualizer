@@ -1,11 +1,12 @@
 # Regelwerk 001: Kombinationsregeln der TI-Komponenten
 
-**Status:** Entwurf, überarbeitet am 2026-11-04 nach dem Prüfbericht
+**Status:** Überarbeitet am 2026-11-04 nach dem Prüfbericht
 (Fable). Ausgangsbasis waren die
 Regeln aus dem Mockup (`design/mockup/TI Visualizer.dc.html`) und die
 freigegebene Matrix der [Spec](./spec.md). Alle Regeln sind jetzt mit
 mindestens einer offiziellen Quelle belegt oder ausdrücklich als
-Vereinfachung bzw. offen markiert. Fachliche Freigabe durch Justin offen.
+Vereinfachung bzw. offen markiert. Fachlich freigegeben durch Justin am
+2026-11-05 (T-907).
 **Bezug:** Spec FR-4, FR-7, FR-14, FR-17 bis FR-21
 **Quellen:** [quellen.md](./quellen.md)
 
@@ -18,7 +19,7 @@ eine Quelle.
 | Status | Bedeutung |
 |---|---|
 | **bestätigt** | in einer gematik-Quelle ausdrücklich belegt |
-| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Prüfung durch Justin offen |
+| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Von Justin fachlich geprüft (T-907, 2026-11-05) |
 | **Vereinfachung** | für den Lernzweck vereinfacht. Die Quelle beschreibt den echten Sachverhalt |
 | **offen** | noch ohne Beleg oder zu entscheiden |
 
@@ -233,7 +234,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Verbindung | Protokoll und Datenformat | Netzport | TLS | Status | Quelle |
 |---|---|---|---|---|---|
 | eHealth-KT ↔ Zugang | SICCT, nach Pairing | 4742 | ja | bestätigt (Netzport plausibel) | gemSpec_KT |
-| CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | bestätigt | gemSpec_eHealth-CardLink (A_24769) |
+| CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | plausibel | gemSpec_eHealth-CardLink (A_24769); Netzweg offen (12) |
 | Primärsystem ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
 | Mobiles KT ↔ Primärsystem | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |
@@ -693,6 +694,11 @@ mit ausgeblendeten Geräten lässt sich daher in jedem Modus öffnen.
 - [x] Modus nur als Darstellung, Sammelkanten im Modus Einfach (11).
 
 **Noch offen**
+
+Diese Punkte präzisieren nur die Belege. Die betroffenen Einträge behalten
+ihren Status aus den Tabellen (plausibel, Vereinfachung bzw. bestätigt) und
+gehen so in den Katalog (T-905, abgeschlossen am 2026-11-05). Die Punkte
+bleiben hier sichtbar, bis ein Beleg vorliegt.
 
 - [ ] Netzweg von CardLink zum Konnektor in gemSpec_eHealth-CardLink
   Kapitel 6.3 nachlesen.

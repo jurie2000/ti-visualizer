@@ -1,6 +1,6 @@
 # Tasks 001: TI Visualizer, interaktiver Netzwerk-Baukasten
 
-**Status:** Entwurf vom 2026-11-04. Zur Freigabe durch Justin.
+**Status:** Fachlich freigegeben durch Justin am 2026-11-05 (T-907).
 **Basis:** [spec.md](./spec.md), [regelwerk.md](./regelwerk.md),
 [plan.md](./plan.md) (Abschnitt „Umsetzungsphasen“),
 [architektur.md](./architektur.md)
@@ -606,13 +606,14 @@ Sie blockieren die genannten Tasks.
 - [x] **T-902 Impressum: Anschrift klären** · blockiert: T-010
 - [x] **T-903 Datenschutzhinweis (Art. 13 DSGVO) rechtlich prüfen lassen** · blockiert: T-010
 - [x] **T-904 Nutzungsrechte am Design-System „Organic“ klären** · blockiert: T-010 (die Tokens werden mit P0 öffentlich)
-- [ ] **T-905 Restpunkte Regelwerk 12** (CardLink-Netzweg, Belege V-17
+- [x] **T-905 Restpunkte Regelwerk 12** (CardLink-Netzweg, Belege V-17
   und V-20, eAU-Dienstkennungen, ePA-Befugnisdauer, mobiles KT, Ablauf
-  `epa`, offene Netzports) · blockiert: T-104, T-401. Regeln ohne Beleg
-  dürfen mit Status „offen“ in den Katalog, der Task hält sie sichtbar.
+  `epa`, offene Netzports) · blockiert: T-104, T-401. Abgeschlossen am 2026-11-05:
+  die Einträge behalten ihren Status aus dem Regelwerk, die Punkte bleiben
+  in Regelwerk 12 („Noch offen“) sichtbar.
 - [ ] **T-906 Fachliche Abnahme der Erklär-, Tutorial- und
   Herausforderungstexte** · blockiert: T-705
-- [ ] **T-907 Fachliche Freigabe von Spec, Regelwerk, Plan und Tasks durch
+- [x] **T-907 Fachliche Freigabe von Spec, Regelwerk, Plan und Tasks durch
   Justin** · blockiert: P1 (ab T-103)
 
 ---

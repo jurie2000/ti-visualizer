@@ -113,7 +113,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     Lint-Fehler wird rot. Die Sonar-Stufe läuft erst nach T-010 (bis dahin
     als übersprungen markiert, nicht entfernt).
 
-- [ ] **T-008 KI-Review am Pull Request** [P] · FR: – · Regeln: – · nach: T-005, T-007
+- [x] **T-008 KI-Review am Pull Request** [P] · FR: – · Regeln: – · nach: T-005, T-007
   - Umfang: Job `ai-review` mit `anthropics/claude-code-action`
     (gepinnt, Modell Opus) nach plan.md („KI-Review“): Pfadfilter
     `src/`, `catalog/`, `specs/`, nicht bei Entwurfs-PRs, Laufzeitgrenze,
@@ -123,7 +123,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: ein Test-PR mit Änderung in `src/` einen deutschen
     Review-Kommentar bekommt und ein PR nur mit `README.md` keinen.
 
-- [ ] **T-009 Deployment auf GitHub Pages** · FR: – · Regeln: – · nach: T-007
+- [x] **T-009 Deployment auf GitHub Pages** · FR: – · Regeln: – · nach: T-007
   - Umfang: `deploy.yml` bei Push auf `main` und manuell: dieselbe
     Pipeline, danach `upload-pages-artifact`, `deploy-pages` und
     `smoke` gegen die öffentliche Adresse. Umgebung `github-pages` nur
@@ -132,7 +132,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     `https://jurie2000.github.io/ti-visualizer/` bereitstellt und der
     Smoke-Test danach grün ist.
 
-- [ ] **T-010 Repo öffentlich schalten und einrichten** (manuell) · FR: – · Regeln: – · nach: T-009, T-901, T-902, T-903, T-904
+- [x] **T-010 Repo öffentlich schalten und einrichten** (manuell) · FR: – · Regeln: – · nach: T-009, T-901, T-902, T-903, T-904
   - Umfang: einmalige Einstellungen aus plan.md („GitHub Pages“): Repo
     öffentlich, Pages-Quelle „GitHub Actions“, SonarQube Cloud verbinden,
     `SONAR_TOKEN` und `CLAUDE_CODE_OAUTH_TOKEN` als Secrets, Claude GitHub App,

@@ -122,7 +122,7 @@ describe("Karten-Engine (T-106)", () => {
     );
   });
 
-  it("[K-1] Datei mit zwei Karten einer Art oder doppelter Karten-id wird abgelehnt", () => {
+  it("[K-1] [K-9] Datei mit zwei Karten einer Art oder doppelter Karten-id wird abgelehnt", () => {
     const twice = topo(
       node("kt1", "kt", [hba, { ...hba, expires: "2030-01-01" }]),
     );

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Bundle (JS und CSS, gzip)",
+    "path": "dist/**/*.{js,css}",
+    "limit": "500 kB",
+    "gzip": true
+  }
+]

@@ -31,7 +31,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && pnpm exec vite preview --port ${String(port)} --strictPort`,
+    // In der CI liegt `dist/` schon aus der Stufe `build` vor (E2E_SKIP_BUILD).
+    command: `${process.env["E2E_SKIP_BUILD"] ? "" : "pnpm build && "}pnpm exec vite preview --port ${String(port)} --strictPort`,
     url: `${origin}${basePath}`,
     reuseExistingServer: !process.env["CI"],
     timeout: 120_000,

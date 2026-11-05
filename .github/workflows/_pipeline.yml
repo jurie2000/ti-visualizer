@@ -1,0 +1,148 @@
+name: Pipeline
+
+# Wiederverwendbare Stufen 1 bis 5 (plan.md, „CI/CD-Pipeline“).
+# Aufgerufen von ci.yml (und später deploy.yml).
+on:
+  workflow_call:
+    inputs:
+      base-path:
+        description: Basispfad der App (BASE_PATH)
+        type: string
+        default: /ti-visualizer/
+    secrets:
+      SONAR_TOKEN:
+        description: Token für SonarQube Cloud. Fehlt er, wird `sonar` übersprungen.
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  BASE_PATH: ${{ inputs.base-path }}
+
+jobs:
+  static:
+    name: static
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - name: gitleaks installieren (Release-Binary, Prüfsumme fest)
+        env:
+          GITLEAKS_VERSION: 8.30.1
+          GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          curl -fsSL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum --check
+          tar -xzf gitleaks.tar.gz -C "$RUNNER_TEMP" gitleaks
+          rm gitleaks.tar.gz
+      - name: gitleaks (gesamter Verlauf)
+        run: '"$RUNNER_TEMP/gitleaks" git --redact --no-banner --verbose'
+
+  unit:
+    name: unit
+    needs: static
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm test
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  sonar:
+    name: sonar
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      # Ohne Token (T-010 noch offen, Fork-PR) laufen die Schritte nicht;
+      # der Job selbst gilt dann als erfolgreich.
+      - name: Token prüfen
+        id: token
+        run: |
+          if [ -n "$SONAR_TOKEN" ]; then
+            echo "vorhanden=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::SONAR_TOKEN fehlt, Sonar-Analyse wird übersprungen."
+            echo "vorhanden=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.token.outputs.vorhanden == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - if: steps.token.outputs.vorhanden == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: coverage
+          path: coverage/
+      - if: steps.token.outputs.vorhanden == 'true'
+        uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
+
+  build:
+    name: build
+    needs: static
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - run: pnpm build
+      - name: Bundle-Größe (size-limit, gzip)
+        run: pnpm size
+      - name: CSP-Meta-Tag vorhanden
+        run: grep -q 'Content-Security-Policy' dist/index.html
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  e2e:
+    name: e2e
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      E2E_SKIP_BUILD: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm e2e
+      - name: Bericht, Trace und Video bei Fehlern
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-fehler
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

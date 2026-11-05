@@ -1,2 +1,6 @@
 allowBuilds:
   lefthook: true
+overrides:
+  # GHSA-g3hv-75wg-m249 (DoS): ESLint zieht minimatch 10 transitiv. Entfernen,
+  # sobald eslint und typescript-eslint selbst minimatch >= 11.0.1 verlangen.
+  "minimatch@>=7.0.0 <11.0.1": "^11.0.1"

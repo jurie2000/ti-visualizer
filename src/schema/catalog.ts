@@ -162,6 +162,8 @@ export const protocols = z.strictObject({
       label: Text,
       protocol: Text,
       netPort: z.string().nullable(),
+      // Nur gesetzt, wenn der Netzport schwächer belegt ist als die Zeile selbst
+      netPortStatus: Status.optional(),
       tls: z.boolean().nullable(),
       ...sourced,
     }),

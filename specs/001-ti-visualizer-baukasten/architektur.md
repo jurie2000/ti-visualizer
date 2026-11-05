@@ -277,7 +277,7 @@ Knoten stehen in 3.3.
       "label": "Kabel abgezogen" }
   ],
   "zones": [
-    { "id": "z1", "label": "Praxisnetz", "area": { "x": 40, "y": 20, "w": 560, "h": 260 }, "tone": "accent-2" }
+    { "id": "z1", "label": "Praxisnetz", "area": { "x": 40, "y": 20, "w": 560, "h": 260 }, "tone": "sage" }
   ]
 }
 ```

@@ -23,7 +23,7 @@ export const Rect = z.object({
 });
 export const Endpoint = z.object({ node: key, port: key });
 
-export const Tone = z.enum(["accent", "accent-2", "neutral"]);
+export const Tone = z.enum(["sage", "accent", "neutral"]);
 
 const Element = z.object({ id: key, label: text(LIMITS.name).optional() });
 

@@ -292,7 +292,7 @@ Aufbau und Typen als Diagramm: [architektur.md, Abschnitt 3](./architektur.md#3-
         "ends": [ { "node": "kt1", "port": "lan0" }, { "node": "sw1", "port": "p1" } ] }
     ],
     "zones": [
-      { "id": "z1", "label": "Praxisnetz", "tone": "accent-2",
+      { "id": "z1", "label": "Praxisnetz", "tone": "sage",
         "area": { "x": 0, "y": 0, "w": 600, "h": 400 } }
     ]
   }

@@ -19,7 +19,7 @@ eine Quelle.
 | Status | Bedeutung |
 |---|---|
 | **bestätigt** | in einer gematik-Quelle ausdrücklich belegt |
-| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Von Justin fachlich geprüft (T-907, 2026-11-05) |
+| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Einträge bis zur Freigabe am 2026-11-05 von Justin fachlich geprüft (T-907); neue Einträge brauchen eine eigene Prüfung |
 | **Vereinfachung** | für den Lernzweck vereinfacht. Die Quelle beschreibt den echten Sachverhalt |
 | **offen** | noch ohne Beleg oder zu entscheiden |
 

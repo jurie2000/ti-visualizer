@@ -436,7 +436,25 @@ describe("Terminal und Zugang 6.0", () => {
     });
   });
 
-  it("KT ohne Pairing und ohne direkten Zugang gehört zu keinem", () => {
+  it("KT am Switch ohne Pairing gehört zum einzigen Zugang im Netz", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+        ["kon", "kon"],
+        ["kt", "kt"],
+      ],
+      [
+        ["pvs", "sw"],
+        ["sw", "kon"],
+        ["sw", "kt"],
+      ],
+    );
+    expect(zugangOf(t, "kt", catalog)).toBe("kon");
+    expect(resolvePath(t, "pvs", "kt", catalog, "local").ok).toBe(true);
+  });
+
+  it("KT ohne Pairing und ohne direkten Zugang bei zwei Zugängen gehört zu keinem", () => {
     const t = zwei();
     expect(zugangOf(t, "kt", catalog)).toBeUndefined();
     expect(resolvePath(t, "pvs", "kt", catalog, "local").ok).toBe(false);

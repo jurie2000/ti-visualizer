@@ -35,7 +35,7 @@ function roleOf(node: Node, catalog: Catalogue): Role {
   return t.category === "primary" ? "local" : "end";
 }
 
-/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene. */
+/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz. */
 export function zugangOf(
   topology: Topology,
   terminalId: string,
@@ -53,7 +53,9 @@ export function zugangOf(
     if (a.node === terminalId && isZugang(b.node)) return b.node;
     if (b.node === terminalId && isZugang(a.node)) return a.node;
   }
-  return undefined;
+  // Normalfall: nur ein Zugang im Netz, dann gehört das Terminal zu ihm.
+  const only = topology.nodes.filter((n) => roleOf(n, catalog) === "zugang");
+  return only.length === 1 ? only[0]?.id : undefined;
 }
 
 function search(

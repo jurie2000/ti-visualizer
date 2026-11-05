@@ -91,7 +91,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: ein Commit mit einem Test-Secret lokal abgelehnt wird
     und ein neuer PR die Vorlage zeigt.
 
-- [ ] **T-006 Playwright-Smoke und Axe** · FR: – · Regeln: – · nach: T-003
+- [x] **T-006 Playwright-Smoke und Axe** · FR: – · Regeln: – · nach: T-003
   - Umfang: `playwright.config.ts` gegen `vite preview` (Chromium). Suite
     `smoke`: App lädt, Impressum erreichbar, keine CSP-Verletzung und
     keine Anfrage an fremde Domains in der Konsole bzw. im Netzwerk.

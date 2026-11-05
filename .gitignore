@@ -5,3 +5,5 @@ dist/
 coverage/
 *.local
 design/mockup/*.zip
+test-results/
+playwright-report/

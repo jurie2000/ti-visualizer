@@ -111,3 +111,8 @@ body {
   color: var(--tiv-bg, #fff);
   border-radius: var(--tiv-radius, 8px);
 }
+
+a {
+  color: var(--tiv-link, inherit);
+  text-decoration: underline;
+}

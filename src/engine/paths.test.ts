@@ -211,6 +211,27 @@ describe("Pfadregel 6.0", () => {
     });
   });
 
+  it("Ausgefallener Auslöser findet keinen Pfad und wird genannt", () => {
+    const t = praxis();
+    (t.nodes.find((n) => n.id === "pvs") as Node).fault = true;
+    expect(resolvePath(t, "pvs", "erp", catalog)).toEqual({
+      ok: false,
+      reason: "ausgefallen",
+      at: "pvs",
+    });
+  });
+
+  it("Bei mehreren Ausfällen nennt at das erste Element entlang des Weges", () => {
+    const t = praxis();
+    (t.nodes.find((n) => n.id === "vpn") as Node).fault = true;
+    (t.edges.find((e) => e.id === "pvs-sw") as Topology["edges"][0]).fault =
+      true;
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
+      reason: "ausgefallen",
+      at: "pvs-sw",
+    });
+  });
+
   it("Unbekannter Knoten und gleicher Auslöser und Ziel liefern keinen Weg", () => {
     expect(resolvePath(praxis(), "x", "erp", catalog).ok).toBe(false);
     expect(resolvePath(praxis(), "pvs", "pvs", catalog).ok).toBe(false);
@@ -301,6 +322,32 @@ describe("Internet-Wege 6.0", () => {
       ],
     );
     expect(resolvePath(t, "pvs", "popp", catalog).ok).toBe(true);
+  });
+
+  it("Internet-Gerät im LAN ohne Internet-Strecke hat keinen Weg (pvs - sw - popp)", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+        ["popp", "popp"],
+      ],
+      [
+        ["pvs", "sw"],
+        ["sw", "popp"],
+      ],
+    );
+    expect(resolvePath(t, "pvs", "popp", catalog).ok).toBe(false);
+  });
+
+  it("Direkte Kante der App zum Dienst gilt (Vereinfachung 4.2)", () => {
+    const t = topo(
+      [
+        ["app", "erpapp"],
+        ["erp", "erp"],
+      ],
+      [["app", "erp"]],
+    );
+    expect(resolvePath(t, "app", "erp", catalog).ok).toBe(true);
   });
 
   it("Andere Dienste sind über das Internet allein nicht erreichbar", () => {

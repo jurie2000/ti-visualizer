@@ -68,6 +68,7 @@ function search(
   const start = byId.get(trigger);
   const goal = byId.get(target);
   if (!start || !goal || trigger === target) return undefined;
+  if (start.fault && !ignoreFaults) return undefined;
   const internetOnly =
     kind === "ti" &&
     (INTERNET_ONLY.includes(start.type) || INTERNET_ONLY.includes(goal.type));
@@ -76,7 +77,7 @@ function search(
   if (kind === "local" && goalZugang === undefined) return undefined;
 
   /** Phase nach dem Schritt auf `n`, oder -1, wenn die Rollenfolge es verbietet. */
-  const next = (phase: number, n: Node): number => {
+  const next = (phase: number, n: Node, direct: boolean): number => {
     const isGoal = n.id === target;
     switch (roleOf(n, catalog)) {
       case "local":
@@ -99,8 +100,10 @@ function search(
         if (!isGoal) return -1;
         if (kind === "local") return phase === POST ? phase : -1;
         if (phase === VPN || phase === ZENTRAL) return phase;
-        // Internet-Wege: direkt (Vereinfachung), über Internet oder hinter dem Zugang
-        return internetOnly ? phase : -1;
+        // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
+        // ist die Vereinfachung aus Regelwerk 4.2 (z. B. E-Rezept-App ↔ E-Rezept-FD).
+        if (!internetOnly) return -1;
+        return phase === LAN && !direct ? -1 : phase;
     }
   };
 
@@ -131,7 +134,7 @@ function search(
       const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
       const n = other === undefined ? undefined : byId.get(other);
       if (!n || (n.fault && !ignoreFaults)) continue;
-      const p = next(phase, n);
+      const p = next(phase, n, id === trigger);
       if (p < 0 || prev.has(key(n.id, p))) continue;
       prev.set(key(n.id, p), { from: key(id, phase), edge: e.id });
       queue.push([n.id, p]);
@@ -168,9 +171,9 @@ export function resolvePath(
       .filter((x) => x.fault)
       .map((x) => x.id),
   );
-  const at = [...ignoring.nodes, ...ignoring.edges].find((id) =>
-    faulty.has(id),
-  );
+  // in Wegreihenfolge: Knoten, Kante, Knoten, ...
+  const inOrder = ignoring.nodes.flatMap((n, i) => [n, ignoring.edges[i]]);
+  const at = inOrder.find((id) => id !== undefined && faulty.has(id));
   return { ok: false, reason: "ausgefallen", at: at as string };
 }
 

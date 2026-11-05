@@ -608,8 +608,7 @@ Sie blockieren die genannten Tasks.
 - [x] **T-904 Nutzungsrechte am Design-System „Organic“ klären** · blockiert: T-010 (die Tokens werden mit P0 öffentlich)
 - [x] **T-905 Restpunkte Regelwerk 12** (CardLink-Netzweg, Belege V-17
   und V-20, eAU-Dienstkennungen, ePA-Befugnisdauer, mobiles KT, Ablauf
-  `epa`, offene Netzports) · blockiert: T-104, T-401. Regeln ohne Beleg
-  dürfen mit Status „offen“ in den Katalog. Abgeschlossen am 2026-11-05:
+  `epa`, offene Netzports) · blockiert: T-104, T-401. Abgeschlossen am 2026-11-05:
   die Einträge behalten ihren Status aus dem Regelwerk, die Punkte bleiben
   in Regelwerk 12 („Noch offen“) sichtbar.
 - [ ] **T-906 Fachliche Abnahme der Erklär-, Tutorial- und

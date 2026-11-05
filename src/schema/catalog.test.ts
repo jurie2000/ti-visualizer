@@ -197,6 +197,8 @@ describe("Katalog-Schema (D5, D13)", () => {
     ["leeres source", "connectionRules.0.source", []],
     ["fehlender status", "reasonRules.0.status", undefined],
     ["unbekannter status", "checks.0.status", "geraten"],
+    ["leere Anschlussarten", "connectionRules.0.kinds", { a: [] }],
+    ["Tippfehler in kinds", "connectionRules.0.kinds", { c: ["eth"] }],
     ["Code statt Ausdruck", "actions.0.requires", "return true"],
     ["unbekanntes Feld", "categories.0.farbe", "rot"],
     ["Anschluss ohne Quelle", "deviceTypes.0.ports.0.source", undefined],
@@ -232,6 +234,12 @@ describe("Referenzen (D5)", () => {
       "Anschluss mit unbekannter Art",
       "deviceTypes.0.ports.0.kind",
       "nix",
+      "Anschlussart",
+    ],
+    [
+      "Erlaubnisregel mit unbekannter Anschlussart",
+      "connectionRules.0.kinds",
+      { b: ["nix"] },
       "Anschlussart",
     ],
     [

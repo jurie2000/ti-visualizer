@@ -191,7 +191,7 @@ Vorher: T-907 (fachliche Freigabe).
     dahin ein Vitest-Test zeigt: jede dieser Regel-IDs steht im Katalog
     mit Status und Quelle wie im Regelwerk.
 
-- [ ] **T-105 Regel-Engine `validateConnection`** · FR: FR-3, FR-4, FR-14 · Regeln: G-1 bis G-4, V-4 bis V-10, V-12, V-14 bis V-20, X-1, A-3, A-4 · nach: T-101, T-104
+- [x] **T-105 Regel-Engine `validateConnection`** · FR: FR-3, FR-4, FR-14 · Regeln: G-1 bis G-4, V-4 bis V-10, V-12, V-14 bis V-20, X-1, A-3, A-4 · nach: T-101, T-104
   - Umfang: `src/engine/rules.ts` nach Regelwerk 4.0: Grundprüfungen und
     Ausschlüsse, dann Erlaubnisliste, sonst Begründungsregel oder
     allgemeine Meldung mit erlaubten Partnern. Rückgabe

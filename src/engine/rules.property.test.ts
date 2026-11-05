@@ -65,18 +65,34 @@ const scenario = fc
       extra: fc.constant(extra),
       px: portArb(x),
       py: portArb(y),
+      links: fc.array(fc.tuple(fc.nat(3), fc.nat(3)), { maxLength: 3 }),
     }),
   );
 
 describe("Regel-Engine: Eigenschaften (T-110)", () => {
   it("Verbinden ist symmetrisch: (a,b) und (b,a) liefern dasselbe ok und ruleId", () => {
     fc.assert(
-      fc.property(scenario, ({ x, y, extra, px, py }) => {
-        const t = topo([
+      fc.property(scenario, ({ x, y, extra, px, py, links }) => {
+        const nodes: [string, string][] = [
           ["a", x],
           ["b", y],
           ...extra.map((e, i): [string, string] => [`e${String(i)}`, e]),
-        ]);
+        ];
+        // zufällige Kanten (G-2, G-4 hängen an bestehenden Kanten)
+        const end = (i: number) => {
+          const [id, type] = nodes[i % nodes.length] ?? ["a", x];
+          const port =
+            catalog.deviceTypes.find((t) => t.id === type)?.ports[0]?.id ?? "p";
+          return { node: id, port };
+        };
+        const t: Topology = {
+          ...topo(nodes),
+          edges: links.map(([i, j], k) => ({
+            id: `k${String(k)}`,
+            ends: [end(i), end(j)],
+            fault: false,
+          })),
+        };
         const ab = validateConnection(t, "a", px, "b", py, catalog);
         const ba = validateConnection(t, "b", py, "a", px, catalog);
         expect(ba.ok).toBe(ab.ok);

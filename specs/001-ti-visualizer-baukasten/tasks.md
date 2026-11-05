@@ -74,7 +74,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     Esc schließt ihn, der Fokus kehrt zurück. Der Theme-Schalter setzt
     `data-theme`.
 
-- [ ] **T-004 Seitenhärtung und CSP-Probe** [P] · FR: – · Regeln: – · nach: T-001
+- [x] **T-004 Seitenhärtung und CSP-Probe** [P] · FR: – · Regeln: – · nach: T-001
   - Umfang: CSP- und Referrer-Policy-Meta-Tag in `index.html` (Wortlaut
     aus plan.md, „Härtung der Seite“). `SECURITY.md` mit Meldeweg. Probe:
     React Flow mit einem Knoten unter der CSP im `vite preview` rendern

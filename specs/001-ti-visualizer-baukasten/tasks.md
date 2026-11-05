@@ -595,9 +595,9 @@ Sie blockieren die genannten Tasks.
   - Fertig, wenn: `gitleaks` über alle Commits ohne Fund läuft, die
     manuelle Durchsicht als Checkliste im PR von T-010 dokumentiert ist
     und Justin sie bestätigt hat.
-- [ ] **T-902 Impressum: Anschrift klären** · blockiert: T-010
-- [ ] **T-903 Datenschutzhinweis (Art. 13 DSGVO) rechtlich prüfen lassen** · blockiert: T-010
-- [ ] **T-904 Nutzungsrechte am Design-System „Organic“ klären** · blockiert: T-010 (die Tokens werden mit P0 öffentlich)
+- [x] **T-902 Impressum: Anschrift klären** · blockiert: T-010
+- [x] **T-903 Datenschutzhinweis (Art. 13 DSGVO) rechtlich prüfen lassen** · blockiert: T-010
+- [x] **T-904 Nutzungsrechte am Design-System „Organic“ klären** · blockiert: T-010 (die Tokens werden mit P0 öffentlich)
 - [ ] **T-905 Restpunkte Regelwerk 12** (CardLink-Netzweg, Belege V-17
   und V-20, eAU-Dienstkennungen, ePA-Befugnisdauer, mobiles KT, Ablauf
   `epa`, offene Netzports) · blockiert: T-104, T-401. Regeln ohne Beleg

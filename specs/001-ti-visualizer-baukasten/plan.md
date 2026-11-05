@@ -806,11 +806,11 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
 - [ ] Inhalte je Ablauf (Erklärtexte) fachlich abnehmen.
 - [ ] Zielbrowser: aktuelle Chrome, Edge, Firefox, Safari. File System
   Access API nur in Chrome/Edge. Firefox/Safari nutzen Download/Upload.
-- [ ] Impressum: Anschrift vor dem öffentlichen Start klären.
+- [x] Impressum: Anschrift vor dem öffentlichen Start klären.
 - [ ] Vor dem Öffentlichstellen: Git-Historie auf private Daten prüfen.
-- [ ] Datenschutzhinweis nach Art. 13 DSGVO vor dem Start rechtlich
+- [x] Datenschutzhinweis nach Art. 13 DSGVO vor dem Start rechtlich
   prüfen lassen (Entwurf im Impressum).
-- [ ] Nutzungsrechte am Design-System „Organic“ aus Claude Design für die
+- [x] Nutzungsrechte am Design-System „Organic“ aus Claude Design für die
   Veröffentlichung klären.
 - [ ] Erklärtexte nicht wörtlich aus gematik-Dokumenten übernehmen, nur
   sinngemäß mit Quellenangabe.

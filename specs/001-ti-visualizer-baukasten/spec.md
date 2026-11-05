@@ -439,8 +439,8 @@ Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
   Erlaubnisliste, Karten als Stecken-Regeln, Pfadregel, Rolle des
   Konnektors, Prüfungsnachweis, CardLink, TI-Messenger, Simulationsdatum,
   Importbefunde, gekürzte Pipeline, Datenschutzhinweis
-- [x] Restpunkte im Regelwerk (Abschnitt 12 dort, gehen bewusst mit Status
-  „offen“ in den Katalog, T-905: CardLink-Netzweg,
+- [x] Restpunkte im Regelwerk (Abschnitt 12 dort, bleiben als Präzisierung
+  der Belege sichtbar, die Einträge behalten ihren Status, T-905: CardLink-Netzweg,
   Belege V-17 und V-20, eAU-Dienstkennungen, Befugnisdauer der ePA,
   mobiles KT, Ablauf `epa`, offene Netzports)
 - [ ] Herausforderungen und Tutorial-Texte fachlich abnehmen

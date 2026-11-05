@@ -695,9 +695,10 @@ mit ausgeblendeten Geräten lässt sich daher in jedem Modus öffnen.
 
 **Noch offen**
 
-Diese Punkte gehen bewusst mit Status „offen“ in den Katalog (T-905,
-abgeschlossen am 2026-11-05). Sie bleiben hier sichtbar, bis ein Beleg
-vorliegt.
+Diese Punkte präzisieren nur die Belege. Die betroffenen Einträge behalten
+ihren Status aus den Tabellen (plausibel, Vereinfachung bzw. bestätigt) und
+gehen so in den Katalog (T-905, abgeschlossen am 2026-11-05). Die Punkte
+bleiben hier sichtbar, bis ein Beleg vorliegt.
 
 - [ ] Netzweg von CardLink zum Konnektor in gemSpec_eHealth-CardLink
   Kapitel 6.3 nachlesen.

@@ -466,6 +466,8 @@ grün sind.
   - `sonar.exclusions=**/*.test.ts,**/*.test.tsx,src/test/**`
   - `sonar.tests=src,tests`
   - `sonar.test.inclusions=**/*.test.ts,**/*.test.tsx,src/test/**,tests/**`
+  - `sonar.coverage.exclusions=src/main.tsx` (Einstiegspunkt ohne Logik,
+    wie in `vitest.config.ts`)
   - `sonar.javascript.lcov.reportPaths=coverage/lcov.info`
 - **Quality Gate „Sonar way“** für neuen Code: keine neuen Bugs und
   Schwachstellen, Security Hotspots geprüft, Coverage auf neuem Code

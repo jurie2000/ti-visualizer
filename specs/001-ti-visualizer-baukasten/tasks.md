@@ -99,7 +99,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: `pnpm e2e` lokal grün ist. Ein absichtlich eingebauter
     Axe-Fehler lässt die Suite scheitern.
 
-- [ ] **T-007 CI-Pipeline Kern** · FR: – · Regeln: – · nach: T-002, T-004, T-005, T-006
+- [x] **T-007 CI-Pipeline Kern** · FR: – · Regeln: – · nach: T-002, T-004, T-005, T-006
   - Umfang: `.github/workflows/_pipeline.yml` (`workflow_call`) mit den
     Stufen `static` (Install mit Lockfile, ESLint, Prettier, `tsc`,
     gitleaks), `unit` (Vitest mit Coverage), `sonar` (Quality Gate

@@ -566,8 +566,13 @@ Fertig-Kriterium.
   `src/persistence/` (Ziel ≥ 80 %)
 - [ ] **T-802** `nightly.yml`: E2E in allen Browsern
 - [ ] **T-803** Lighthouse CI und `knip`
-- [x] **T-804a** CodeQL (Default-Setup von GitHub, Query-Suite `extended`,
-  JavaScript/TypeScript und Actions), vorgezogen am 2026-11-05
+- [x] **T-804a** CodeQL, vorgezogen am 2026-11-05 (gehört damit zum Kern,
+  siehe plan.md „Ausbaustufen“)
+  - Umfang: Default-Setup von GitHub, Query-Suite `extended`,
+    JavaScript/TypeScript und Actions. Kein Pflicht-Check.
+  - Fertig, wenn: `code-scanning/default-setup` meldet `configured` und
+    `extended`, und die Checks `Analyze (actions)` und
+    `Analyze (javascript-typescript)` laufen am PR grün.
 - [ ] **T-804b** Dependency-Review-Action, `pnpm audit`, OSV-Scanner
 - [ ] **T-805** SBOM (CycloneDX) und OWASP Dependency-Track
 - [ ] **T-806** OWASP ZAP Baseline-Scan und OpenSSF Scorecard

@@ -419,7 +419,7 @@ kommt erst, wenn die App fachlich steht.
 
 | Stufe | Bausteine |
 |---|---|
-| **Kern ab P0** | ESLint, Prettier, `tsc` · Vitest mit Coverage · SonarQube Cloud · Build-Test mit Bundle-Größe · Playwright (Smoke) mit Axe · Deploy auf GitHub Pages · gitleaks · Dependabot · Branch-Schutz · KI-Review (kein Pflicht-Check) |
+| **Kern ab P0** | ESLint, Prettier, `tsc` · Vitest mit Coverage · SonarQube Cloud · Build-Test mit Bundle-Größe · Playwright (Smoke) mit Axe · Deploy auf GitHub Pages · gitleaks · Dependabot · CodeQL (seit 2026-11-05, kein Pflicht-Check) · Branch-Schutz · KI-Review (kein Pflicht-Check) |
 | **ab P1** | Rückverfolgbarkeit Regel → Test (D30) · Architekturregeln mit `dependency-cruiser` (D32) · Property-based Tests mit `fast-check` (D31) |
 | **ab P3** | Injection-Suite und Fuzzing für das Öffnen von Dateien |
 | **optional nach P7** | Mutation-Testing (StrykerJS, einmal für die Auswertung in der Arbeit) · Lighthouse CI · `knip` · Dependency-Review und `pnpm audit` · SBOM mit OWASP Dependency-Track · OWASP ZAP · OpenSSF Scorecard · Build-Provenienz · Kennzahlen-Export · `commitlint` · E2E in allen Browsern nightly |

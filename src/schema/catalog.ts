@@ -73,23 +73,29 @@ export const categories = z.array(
     id: Id,
     name: Text,
     color: Text,
+    colorDark: Text,
     shape: Text,
     order: z.number().int(),
   }),
 );
 
+// Anschlüsse tragen eigene Quelle und eigenen Status (Regelwerk 2.2).
 const Port = z.strictObject({
   id: Id,
   name: Text,
   kind: Id,
   multi: z.boolean().default(false),
+  ...sourced,
 });
 
 export const deviceTypes = z.array(
   z.strictObject({
     id: Id,
+    abbr: Text,
     name: Text,
     category: Id,
+    // false für Smartcards: Karten sind keine Knoten (D12), nicht in der Palette
+    placeable: z.boolean().default(true),
     icon: Id,
     visibleSimple: z.boolean(),
     capabilities: z.array(Id),
@@ -411,6 +417,12 @@ export function checkReferences(c: Catalog): string[] {
   }
 
   withSource("Gerätetyp", c.deviceTypes);
+  withSource(
+    "Anschluss",
+    c.deviceTypes.flatMap((t) =>
+      t.ports.map((p) => ({ ...p, id: `${t.id}.${p.id}` })),
+    ),
+  );
   withSource("Anschlussart", c.portKinds.kinds);
   withSource("Verträglichkeit", c.portKinds.compatible);
   withSource("Regel", [

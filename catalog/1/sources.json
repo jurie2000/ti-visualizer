@@ -1,1 +1,382 @@
-[]
+[
+  {
+    "id": "FP",
+    "title": "gematik-Fachportal",
+    "url": "https://fachportal.gematik.de/"
+  },
+  {
+    "id": "FP_Komponenten",
+    "title": "Komponenten & Dienste",
+    "url": "https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste"
+  },
+  {
+    "id": "FP_Anwendungen",
+    "title": "Liste der Anwendungen",
+    "url": "https://fachportal.gematik.de/anwendungen"
+  },
+  {
+    "id": "Arch",
+    "title": "Architektur der TI-Plattform (gemKPT_Arch_TIP)",
+    "url": "https://gemspec.gematik.de/downloads/gemKPT/gemKPT_Arch_TIP/gemKPT_Arch_TIP_V2.10.0.html"
+  },
+  {
+    "id": "DVO",
+    "title": "Anschluss medizinischer Einrichtungen an die TI (gemInfo_Anschluss_TI_DVO, V2.4.0)",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/DVO/gemInfo_Anschluss_TI_DVO_V2.4.0.pdf"
+  },
+  {
+    "id": "Betriebsarten",
+    "title": "Infoblatt Betriebsarten des Konnektors",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/Leistungserbringer/gematik_Infoblatt_Betriebsarten_des_Konnektors_web_20220615.pdf"
+  },
+  {
+    "id": "KH",
+    "title": "Anschluss von Krankenhäusern an die TI (gemInfo_Anschluss_KH_TI, V1.4.2)",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/Krankenhaeuser/gemInfo_Anschluss_KH_TI_V1.4.2.pdf"
+  },
+  {
+    "id": "gemKPT_TI-Foderation",
+    "title": "Konzept TI-Föderation",
+    "url": "https://gemspec.gematik.de/docs/gemKPT/gemKPT_TI-Foderation/latest/"
+  },
+  {
+    "id": "gemKPT_Zero_Trust",
+    "title": "Zero-Trust-Architektur (gemKPT_Zero_Trust)",
+    "url": "https://gemspec.gematik.de/docs/TI2.0/gemKPT_Zero_Trust/gemKPT_Zero_Trust_V1.0.0/"
+  },
+  {
+    "id": "gemSpec_ZETA",
+    "title": "Spezifikation ZETA (Entwurf V1.2.0_CC)",
+    "url": "https://gemspec.gematik.de/downloads/prereleases/Draft_ZETA_25_3/gemSpec_ZETA_V1.2.0_CC.pdf"
+  },
+  {
+    "id": "Whitepaper_TI20",
+    "title": "Whitepaper „Arena für digitale Medizin“ (TI 2.0)",
+    "url": "https://www.gematik.de/media/gematik/Medien/Telematikinfrastruktur/Dokumente/gematik_Whitepaper_Arena_digitale_Medizin_TI_2.0_Web.pdf"
+  },
+  {
+    "id": "gemGlossar",
+    "title": "Glossar der TI",
+    "url": "https://fachportal.gematik.de/glossar"
+  },
+  {
+    "id": "gemSpec_Uebersicht",
+    "title": "Spezifikationsübersicht",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/"
+  },
+  {
+    "id": "FP_Konnektor",
+    "title": "Fachportal: Konnektor / TI-Gateway",
+    "url": "https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/konnektor"
+  },
+  {
+    "id": "gemSpec_Kon",
+    "title": "Spezifikation Konnektor (gemSpec_Kon)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_Kon/latest/"
+  },
+  {
+    "id": "gemF_TI-Gateway",
+    "title": "Feature TI-Gateway (gemF_TI-Gateway)",
+    "url": "https://gemspec.gematik.de/docs/gemF/gemF_TI-Gateway/gemF_TI-Gateway_V1.7.0/index.html"
+  },
+  {
+    "id": "gemF_Highspeed-Konnektor",
+    "title": "Feature Highspeed-Konnektor (gemF_Highspeed-Konnektor)",
+    "url": "https://gemspec.gematik.de/docs/gemF/gemF_Highspeed-Konnektor/gemF_Highspeed-Konnektor_V1.2.0/"
+  },
+  {
+    "id": "gemProdT_Kon_Highspeed",
+    "title": "Produkttypsteckbrief Highspeed-Konnektor",
+    "url": "https://gemspec.gematik.de/docs/gemProdT/gemProdT_Kon_Highspeed/latest/"
+  },
+  {
+    "id": "gemProdT_Kon_PTV6",
+    "title": "Produkttypsteckbrief Konnektor",
+    "url": "https://gemspec.gematik.de/docs/gemProdT/gemProdT_Kon_PTV6/latest/index.html"
+  },
+  {
+    "id": "gemSpec_Net",
+    "title": "Übergreifende Spezifikation Netzwerk (gemSpec_Net)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_Net/latest/"
+  },
+  {
+    "id": "gemSpec_Systemprozesse_dezTI",
+    "title": "Systemprozesse der dezentralen TI",
+    "url": "https://gemspec.gematik.de/downloads/gemSpec/gemSpec_Systemprozesse_dezTI/gemSpec_Systemprozesse_dezTI_V1.0.0.html"
+  },
+  {
+    "id": "gemSpec_VPN_ZugD",
+    "title": "Spezifikation VPN-Zugangsdienst (gemSpec_VPN_ZugD)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_VPN_ZugD/latest/index.html"
+  },
+  {
+    "id": "gemF_Laufzeitverlaengerung_gSMC-K",
+    "title": "Laufzeitverlängerung gSMC-K (gemF, Entwurf)",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Vorabveroeffentlichungen/VorabV_Konn_Maintenance_21.3/gemF_Laufzeitverlaengerung_gSMC-K_V1.0.0_CC.pdf"
+  },
+  {
+    "id": "gemSpec_KT",
+    "title": "Spezifikation eHealth-Kartenterminal (gemSpec_KT)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_KT/latest/"
+  },
+  {
+    "id": "gemSpec_MobKT",
+    "title": "Spezifikation Mobiles Kartenterminal (gemSpec_MobKT)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_MobKT/latest/"
+  },
+  {
+    "id": "FP_eHealth-CardLink",
+    "title": "Fachportal: eHealth-CardLink",
+    "url": "https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/ehealth-cardlink"
+  },
+  {
+    "id": "gemSpec_eHealth-CardLink",
+    "title": "Spezifikation eHealth-CardLink",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_eHealth-CardLink/latest/"
+  },
+  {
+    "id": "gemILF_eHealth-CardLink",
+    "title": "Implementierungsleitfaden eHealth-CardLink",
+    "url": "https://gemspec.gematik.de/docs/gemILF/gemILF_eHealth-CardLink/gemILF_eHealth-CardLink_V1.1.1/"
+  },
+  {
+    "id": "gemSpec_eGK_ObjSys_G2_1",
+    "title": "Objektsystem eGK G2.1",
+    "url": "https://gemspec.gematik.de/downloads/gemSpec/gemSpec_eGK_ObjSys_G2_1/gemSpec_eGK_ObjSys_G2_1_V4.5.0.pdf"
+  },
+  {
+    "id": "gemSpec_HBA_ObjSys",
+    "title": "Objektsystem HBA",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_HBA_ObjSys/latest/"
+  },
+  {
+    "id": "gemSpec_SMC-B_ObjSys_G2_1",
+    "title": "Objektsystem SMC-B G2.1",
+    "url": "https://gemspec.gematik.de/downloads/gemSpec/gemSpec_SMC-B_ObjSys_G2_1/gemSpec_SMC-B_ObjSys_G2_1_V5.2.0.pdf"
+  },
+  {
+    "id": "gemILF_PS",
+    "title": "Implementierungsleitfaden Primärsysteme (gemILF_PS)",
+    "url": "https://gemspec.gematik.de/docs/gemILF/gemILF_PS/latest/"
+  },
+  {
+    "id": "gemILF_PS_NFDM",
+    "title": "Implementierungsleitfaden PS NFDM",
+    "url": "https://gemspec.gematik.de/docs/gemILF/gemILF_PS_NFDM/latest/"
+  },
+  {
+    "id": "gemILF_PS_AMTS",
+    "title": "Implementierungsleitfaden PS AMTS/eMP",
+    "url": "https://gemspec.gematik.de/downloads/gemILF/gemILF_PS_AMTS/gemILF_PS_AMTS_V1.6.0.html"
+  },
+  {
+    "id": "gemILF_PS_AMTS_V1.7.0",
+    "title": "Implementierungsleitfaden PS AMTS V1.7.0 (PDF)",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Implementierungsleitfaeden/gemILF_PS_AMTS_V1.7.0.pdf"
+  },
+  {
+    "id": "C_12389",
+    "title": "Änderung C_12389: Rückbau Split-DNS",
+    "url": "https://gemspec.gematik.de/downloads/prereleases/Draft_ILF_PS_25_1/C_12389_Anlage_V1.0.0.html"
+  },
+  {
+    "id": "gemILF_PS_ePA",
+    "title": "Implementierungsleitfaden PS ePA",
+    "url": "https://gemspec.gematik.de/docs/gemILF/gemILF_PS_ePA/latest/"
+  },
+  {
+    "id": "gemILF_PS_eRp",
+    "title": "Implementierungsleitfaden PS E-Rezept (gemILF_PS_eRp)",
+    "url": "https://gemspec.gematik.de/docs/gemILF/gemILF_PS_eRp/latest/"
+  },
+  {
+    "id": "FP_VSDM",
+    "title": "Fachportal: VSDM",
+    "url": "https://fachportal.gematik.de/anwendungen/versichertenstammdaten-management"
+  },
+  {
+    "id": "gemSysL_VSDM",
+    "title": "Systemlösung VSDM (gemSysL_VSDM V1.5.0)",
+    "url": "https://www.ina.gematik.de/fileadmin/user_upload/gemSysL_VSDM_V1.5.0.pdf"
+  },
+  {
+    "id": "gemSpec_VSDM_2",
+    "title": "Spezifikation VSDM 2.0",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_VSDM_2/latest/"
+  },
+  {
+    "id": "gemSpec_PoPP_Service",
+    "title": "Spezifikation PoPP-Service",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_PoPP_Service/latest/"
+  },
+  {
+    "id": "News_PoPP",
+    "title": "gematik News: Spezifikation PoPP-Dienst",
+    "url": "https://www.gematik.de/newsroom/news-detail/gruenes-licht-fuer-spezifikation-des-popp-dienstes"
+  },
+  {
+    "id": "Info_VSDM2_ZETA_PoPP",
+    "title": "Infoveranstaltung VSDM 2.0, ZETA, PoPP (16.09.2025)",
+    "url": "https://fachportal.gematik.de/fachportal-import/files/2025_09_16_VSDM_ZETA_PoPP_Primaersystem_Infoveranstaltung.pdf"
+  },
+  {
+    "id": "FP_NFDM",
+    "title": "Fachportal: NFDM",
+    "url": "https://fachportal.gematik.de/anwendungen/notfalldaten-management"
+  },
+  {
+    "id": "gemSpec_FM_NFDM",
+    "title": "Fachmodul NFDM (gemSpec_FM_NFDM)",
+    "url": "https://gemspec.gematik.de/downloads/gemSpec/gemSpec_FM_NFDM/gemSpec_FM_NFDM_V1.6.0.html"
+  },
+  {
+    "id": "FP_eMP",
+    "title": "Fachportal: eMP",
+    "url": "https://fachportal.gematik.de/anwendungen/elektronischer-medikationsplan"
+  },
+  {
+    "id": "Praes_eMP_NFDM",
+    "title": "gematik-Präsentation eMP und NFDM für PVS-Hersteller (2020)",
+    "url": "https://fachportal.gematik.de/fileadmin/user_upload/fachportal/files/Veranstaltungen/Industrieforum_PVS-Hersteller_19.02.2020/20200219_Infoveranstaltung_Primaersystemhersteller_NFDM_eMP.pdf"
+  },
+  {
+    "id": "gemSysL_AMTS_A",
+    "title": "Systemlösung AMTS (gemSysL_AMTS_A V1.3.0)",
+    "url": "https://gemspec.gematik.de/docs/gemSysL/gemSysL_AMTS_A/gemSysL_AMTS_A_V1.3.0/"
+  },
+  {
+    "id": "gemSpec_FD_eRp",
+    "title": "Spezifikation E-Rezept-Fachdienst (gemSpec_FD_eRp)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_FD_eRp/latest/index.html"
+  },
+  {
+    "id": "gemSpec_eRp_FdV",
+    "title": "E-Rezept-Frontend des Versicherten",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_eRp_FdV/latest/index.html"
+  },
+  {
+    "id": "ePA_Praxen",
+    "title": "gematik: ePA für alle in Praxen (Folien)",
+    "url": "https://www.gematik.de/media/gematik/Medien/Veranstaltungen/Folien/gematik_digital_epa-fuer-alle-Praxen.pdf"
+  },
+  {
+    "id": "ePA_Apotheken",
+    "title": "gematik: ePA für alle, Leitfaden Apotheken",
+    "url": "https://www.gematik.de/media/gematik/Medien/ePA_fuer_alle/04_Apotheken/gematik_ePAfuerAlle_Apotheken_Leitfaden_Logo.pdf"
+  },
+  {
+    "id": "gematik_eRp_Apotheken",
+    "title": "gematik: E-Rezept in Apotheken",
+    "url": "https://www.gematik.de/anwendungen/e-rezept/apotheken"
+  },
+  {
+    "id": "gemF_eRp_Autorisierung_Apo",
+    "title": "Feature E-Rezept Autorisierung Apotheken (gemF_eRp_Autorisierung_Apo V1.1.1)",
+    "url": "https://fachportal.gematik.de/fileadmin/Fachportal/Downloadcenter/Releases/Release_einzelner_Produkttypen_Anwendungstypen/gemF_eRp_Autorisierung_Apo_V1.1.1.pdf"
+  },
+  {
+    "id": "gemSpec_Aktensystem_ePAfueralle",
+    "title": "Spezifikation Aktensystem ePA für alle",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_Aktensystem_ePAfueralle/latest/"
+  },
+  {
+    "id": "Release_ePA",
+    "title": "Release ePA für alle",
+    "url": "https://gemspec.gematik.de/releases/ePA_fuer_alle/"
+  },
+  {
+    "id": "gematik_KIM",
+    "title": "gematik: KIM",
+    "url": "https://www.gematik.de/anwendungen/kim/faq"
+  },
+  {
+    "id": "gemSpec_CM_KOMLE",
+    "title": "Spezifikation KOM-LE-Clientmodul (gemSpec_CM_KOMLE)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_CM_KOMLE/latest/index.html"
+  },
+  {
+    "id": "gemSpec_FD_KOMLE",
+    "title": "Spezifikation KOM-LE-Fachdienst (gemSpec_FD_KOMLE)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_FD_KOMLE/latest/"
+  },
+  {
+    "id": "KIM-DK",
+    "title": "Fachverfahren und Dienstkennungen KIM",
+    "url": "https://fachportal.gematik.de/test-und-serviceprodukte/fachverfahren-und-dienstkennungen-kim"
+  },
+  {
+    "id": "PM_eAU",
+    "title": "gematik-Pressemitteilung eAU",
+    "url": "https://www.gematik.de/newsroom/news-detail/pressemitteilung-krankmeldung-an-krankenkasse-jetzt-digital"
+  },
+  {
+    "id": "gematik_TIM",
+    "title": "gematik: TI-Messenger",
+    "url": "https://www.gematik.de/anwendungen/ti-messenger"
+  },
+  {
+    "id": "FP_TIM",
+    "title": "Fachportal: TI-Messenger",
+    "url": "https://fachportal.gematik.de/anwendungen/ti-messenger"
+  },
+  {
+    "id": "Pflege-FAQ",
+    "title": "gematik: Pflege-FAQ",
+    "url": "https://www.gematik.de/pflege/faq"
+  },
+  {
+    "id": "gemSpec_TI-M_Basis",
+    "title": "Spezifikation TI-Messenger Basis (gemSpec_TI-M_Basis)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_TI-M_Basis/latest/"
+  },
+  {
+    "id": "gemSpec_IDP_FD",
+    "title": "Spezifikation IDP für Fachdienste (gemSpec_IDP_FD)",
+    "url": "https://gemspec.gematik.de/downloads/gemSpec/gemSpec_IDP_FD/gemSpec_IDP_FD_V2.1.0.pdf"
+  },
+  {
+    "id": "gemProdT_IDP-Dienst",
+    "title": "Produkttypsteckbrief IDP-Dienst",
+    "url": "https://gemspec.gematik.de/docs/gemProdT/gemProdT_IDP-Dienst/latest/index.html"
+  },
+  {
+    "id": "gemSpec_IDP_Sek",
+    "title": "Spezifikation Sektoraler IDP (gemSpec_IDP_Sek)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_IDP_Sek/latest/"
+  },
+  {
+    "id": "FP_VZD",
+    "title": "Fachportal: Verzeichnisdienst",
+    "url": "https://fachportal.gematik.de/telematikinfrastruktur/komponenten-dienste/verzeichnisdienst"
+  },
+  {
+    "id": "gemSpec_VZD",
+    "title": "Spezifikation Verzeichnisdienst (gemSpec_VZD)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_VZD/latest/index.html"
+  },
+  {
+    "id": "gemSpec_VZD_FHIR_Directory",
+    "title": "Spezifikation VZD-FHIR-Directory",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_VZD_FHIR_Directory/gemSpec_VZD_FHIR_Directory_V1.4.0/"
+  },
+  {
+    "id": "gemSpec_TSL",
+    "title": "Spezifikation TSL-Dienst (gemSpec_TSL)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_TSL/latest/index.html"
+  },
+  {
+    "id": "gemSpec_PKI",
+    "title": "Spezifikation PKI (gemSpec_PKI)",
+    "url": "https://gemspec.gematik.de/docs/gemSpec/gemSpec_PKI/latest/"
+  },
+  {
+    "id": "KBV_ePA",
+    "title": "KBV: Welche Dokumente stellen Praxen in die ePA ein?",
+    "url": "https://www.kbv.de/praxis/tools-und-services/praxisnachrichten/2025/07-31/neue-serie-alles-nur-eine-frage-welche-dokumente-stellen-praxen-in-die-epa-ein"
+  },
+  {
+    "id": "editor",
+    "title": "Editorregel des Projekts (keine externe Quelle, Regelwerk: „keine“ bzw. Mockup)",
+    "url": "https://github.com/jurie2000/ti-visualizer"
+  }
+]

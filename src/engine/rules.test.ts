@@ -306,18 +306,10 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
 });
 
 describe("Regel-Engine: Erlaubnisliste (T-105)", () => {
-  // Offene Frage (siehe PR T-105): Regelwerk 4.2 erlaubt Mobiles KT – KIS per
-  // USB, das KIS hat nach 2.2 aber nur LAN-Anschlüsse. T-108 (A-5) deckt das auf.
-  const gap = (x: string, y: string) => x === "mkt" && y === "kis";
   const allowed = catalog.connectionRules.flatMap((rule) =>
     placeable.flatMap((x) =>
       placeable
-        .filter(
-          (y) =>
-            members(rule.a).has(x.id) &&
-            members(rule.b).has(y.id) &&
-            !gap(x.id, y.id),
-        )
+        .filter((y) => members(rule.a).has(x.id) && members(rule.b).has(y.id))
         .map((y) => ({ rule: rule.id, x: x.id, y: y.id })),
     ),
   );
@@ -337,13 +329,6 @@ describe("Regel-Engine: Erlaubnisliste (T-105)", () => {
       }
     },
   );
-
-  it("offene Frage: Mobiles KT – KIS ist erlaubt, scheitert aber am fehlenden USB-Anschluss", () => {
-    expect(check(pair("mkt", "kis"), "x", "y")).toMatchObject({
-      ok: false,
-      ruleId: "G-3",
-    });
-  });
 
   it("Konsistenz: keine Begründungsregel erfasst ein erlaubtes Paar", () => {
     for (const x of placeable)

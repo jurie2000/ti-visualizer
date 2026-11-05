@@ -94,6 +94,14 @@
         "multi": false,
         "source": ["KH"],
         "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemSpec_MobKT"],
+        "status": "plausibel"
       }
     ],
     "source": ["gemILF_PS", "KH"],

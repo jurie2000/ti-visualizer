@@ -181,7 +181,7 @@ Abschnitt 5.
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
 | PVS, AVS, Pflege, PC | Ethernet0, USB0, USB1 | Mockup, plausibel | gemILF_PS |
-| KIS | LAN0 bis LAN5 | Mockup, plausibel | KH |
+| KIS | LAN0 bis LAN5, USB0 (für das mobile KT, ergänzt 2026-11-05) | Mockup, plausibel | KH, gemSpec_MobKT |
 | RIS, LIS | LAN0, LAN1 (KIS-Schnittstelle) | Mockup, plausibel | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
 | KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang) | Vereinfachung | gemSpec_CM_KOMLE |
@@ -263,11 +263,21 @@ erlaubte Verbindung in beiden Modi.
 | **Begründungsliste** (4.3) | Erklärtexte für typische Fehlversuche | nein, nur Meldungstext |
 | **Ausschlüsse** (4.4) | Komponenten, die nicht gemeinsam vorkommen dürfen | ja |
 
-Ablauf: (1) Grundprüfungen und Ausschlüsse, (2) Paar in der
-Erlaubnisliste? Dann gültig. (3) Sonst abgelehnt mit dem Text der
-passenden Begründungsregel, (4) ohne passende Regel mit der Meldung
-„Diese Verbindung gibt es in der TI nicht. ‹Gerät› kann verbunden werden
-mit: …“.
+Ablauf: (1) Grundprüfungen G-1, G-2, G-4 und Ausschlüsse, (2) Paar in der
+Erlaubnisliste? Dann G-3 mit den Anschlussarten dieser Regel, danach
+gültig. (3) Sonst abgelehnt mit dem Text der passenden Begründungsregel,
+(4) ohne passende Regel mit der Meldung „Diese Verbindung gibt es in der
+TI nicht. ‹Gerät› kann verbunden werden mit: …“.
+
+Ergänzt 2026-11-05 (T-105):
+
+- G-3 läuft erst nach der Paarfrage, weil die Regel festlegt, welche
+  Anschlussarten zählen. Sonst käme etwa bei PVS ↔ Fachdienst die
+  Meldung von G-3 statt der Begründung V-4.
+- Steht ein Paar mehrfach in der Erlaubnisliste (z. B. Switch ↔ Firewall),
+  gilt die Regel mit dem stärkeren Status: bestätigt vor plausibel vor
+  Vereinfachung vor offen. Bei Gleichstand gilt die erste im Katalog.
+- Passen mehrere Begründungsregeln, gilt die erste im Katalog.
 
 **Konsistenztests:** Kein Paar der Erlaubnisliste darf von einer
 Begründungsregel erfasst werden. Eine im Modus Einfach sichtbare
@@ -289,6 +299,11 @@ alte Verweise eindeutig bleiben.
 ### 4.2 Erlaubnisliste
 
 Verbindungen gelten in beide Richtungen.
+
+Angaben wie „Router-LAN“, „Router (WAN)“ oder „Zugang (WAN)“ meinen
+Anschlussarten: LAN ist `eth`, WAN ist `wan` (2.1). Der Katalog hält sie je
+Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
+(A-2), etwa für KT, PVS oder Switch am Zugang.
 
 **Kartenterminals**
 
@@ -321,7 +336,7 @@ Verbindungen gelten in beide Richtungen.
 |---|---|---|---|---|
 | Switch | Switch, Router-LAN, Access Point, Firewall, Zugang | nein | plausibel | DVO |
 | Router (WAN) | Internet | nein | bestätigt | Betriebsarten |
-| Firewall | Router, Switch, Zugang | nein | bestätigt (Parallelbetrieb) | Betriebsarten |
+| Firewall | Router-LAN, Switch, Zugang | nein | bestätigt (Parallelbetrieb) | Betriebsarten |
 
 **Zugang zur TI**
 

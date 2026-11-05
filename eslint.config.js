@@ -23,8 +23,21 @@ export default defineConfig(
     },
   },
   {
+    // engine/ ist reine Logik: keine Browser-Globals (plan.md, D32)
+    files: ["src/engine/**/*.ts"],
+    ignores: ["**/*.test.ts"],
+    rules: {
+      "no-restricted-globals": [
+        "error",
+        ...Object.keys(globals.browser)
+          .filter((g) => !(g in globals.builtin) && !(g in globals.es2021))
+          .map((name) => ({ name, message: "Keine Browser-API in engine/." })),
+      ],
+    },
+  },
+  {
     // Konfigurationsdatei selbst: ohne Typinformationen prüfen
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.cjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: { globals: { ...globals.node } },
   },

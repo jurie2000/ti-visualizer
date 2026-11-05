@@ -34,6 +34,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm typecheck
+      - run: pnpm check:architektur
       - name: gitleaks installieren (Release-Binary, Prüfsumme fest)
         env:
           GITLEAKS_VERSION: 8.30.1

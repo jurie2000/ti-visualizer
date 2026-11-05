@@ -239,7 +239,7 @@ Vorher: T-907 (fachliche Freigabe).
   - Fertig, wenn: eine abgehakte Regel ohne Test die CI rot macht und der
     Bericht als Artefakt am PR hängt.
 
-- [ ] **T-110 Architekturregeln und Property-based Tests** [P] · FR: FR-3, FR-13 · Regeln: – · nach: T-105
+- [x] **T-110 Architekturregeln und Property-based Tests** [P] · FR: FR-3, FR-13 · Regeln: – · nach: T-105
   - Umfang: `.dependency-cruiser.cjs` nach plan.md („Statische Qualität“),
     in Stufe `static`. `fast-check`-Tests: Verbinden ist symmetrisch,
     Erlaubnis- und Begründungsliste überschneiden sich nie.

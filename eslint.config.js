@@ -24,7 +24,7 @@ export default defineConfig(
   },
   {
     // Konfigurationsdatei selbst: ohne Typinformationen prüfen
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.cjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: { globals: { ...globals.node } },
   },

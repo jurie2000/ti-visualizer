@@ -40,7 +40,7 @@ Pipeline. Vor T-010 müssen T-901 bis T-904 erledigt sein, weil das Repo
 dann öffentlich wird. Insbesondere wird vorher das ganze Projekt samt
 Git-Historie auf private Daten und Secrets durchsucht (T-901).
 
-- [ ] **T-001 Projekt aufsetzen** · FR: – · Regeln: – · nach: –
+- [x] **T-001 Projekt aufsetzen** · FR: – · Regeln: – · nach: –
   - Umfang: Vite, React, TypeScript, pnpm. `tsconfig` mit `strict`,
     `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
     `noImplicitOverride`. Ordner nach Repo-Layout (`src/app`, `ui`,
@@ -53,7 +53,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     `pnpm build` lokal grün sind. Ein Beispieltest läuft mit Coverage-Bericht
     `coverage/lcov.info`.
 
-- [ ] **T-002 Design-Tokens und Schriften** [P] · FR: FR-22 · Regeln: – · nach: T-001
+- [x] **T-002 Design-Tokens und Schriften** [P] · FR: FR-22 · Regeln: – · nach: T-001
   - Umfang: `src/styles/tokens.css` aus dem Organic-Design-System des
     Mockups, Dunkelmodus als `:root[data-theme="dark"]`, Standard nach
     `prefers-color-scheme`. Kategorie-Farben und Formen aus `CAT`,
@@ -64,7 +64,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     in Hell und Dunkel auf WCAG AA prüft und grün ist. Keine Anfrage an
     fremde Server beim Laden (geprüft in T-006).
 
-- [ ] **T-003 App-Shell mit Impressum** [P] · FR: FR-22 · Regeln: – · nach: T-001
+- [x] **T-003 App-Shell mit Impressum** [P] · FR: FR-22 · Regeln: – · nach: T-001
   - Umfang: Layout nach plan.md („Layout“): Kopfleiste, Platzhalter für
     Palette, Canvas und Detailpanel, Fußzeile mit dauerhaftem
     Impressum-Link. `ImpressumDialog` mit Katalogversion (vorerst
@@ -74,7 +74,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
     Esc schließt ihn, der Fokus kehrt zurück. Der Theme-Schalter setzt
     `data-theme`.
 
-- [ ] **T-004 Seitenhärtung und CSP-Probe** [P] · FR: – · Regeln: – · nach: T-001
+- [x] **T-004 Seitenhärtung und CSP-Probe** [P] · FR: – · Regeln: – · nach: T-001
   - Umfang: CSP- und Referrer-Policy-Meta-Tag in `index.html` (Wortlaut
     aus plan.md, „Härtung der Seite“). `SECURITY.md` mit Meldeweg. Probe:
     React Flow mit einem Knoten unter der CSP im `vite preview` rendern
@@ -82,7 +82,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: der Build enthält beide Meta-Tags. Das Ergebnis der
     Probe steht in plan.md unter „Risiken“ (Ausnahme nur mit Begründung).
 
-- [ ] **T-005 Pre-Commit und PR-Vorlagen** [P] · FR: – · Regeln: – · nach: T-001
+- [x] **T-005 Pre-Commit und PR-Vorlagen** [P] · FR: – · Regeln: – · nach: T-001
   - Umfang: `lefthook` mit `lint-staged` (ESLint, Prettier) und `gitleaks`.
     `.github/pull_request_template.md` (Task-ID, FR- und Regel-IDs, Tests,
     Screenshot bei UI, Sicherheitsrelevanz). `.github/CODEOWNERS` (nur
@@ -91,7 +91,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: ein Commit mit einem Test-Secret lokal abgelehnt wird
     und ein neuer PR die Vorlage zeigt.
 
-- [ ] **T-006 Playwright-Smoke und Axe** · FR: – · Regeln: – · nach: T-003
+- [x] **T-006 Playwright-Smoke und Axe** · FR: – · Regeln: – · nach: T-003
   - Umfang: `playwright.config.ts` gegen `vite preview` (Chromium). Suite
     `smoke`: App lädt, Impressum erreichbar, keine CSP-Verletzung und
     keine Anfrage an fremde Domains in der Konsole bzw. im Netzwerk.
@@ -99,7 +99,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: `pnpm e2e` lokal grün ist. Ein absichtlich eingebauter
     Axe-Fehler lässt die Suite scheitern.
 
-- [ ] **T-007 CI-Pipeline Kern** · FR: – · Regeln: – · nach: T-002, T-004, T-005, T-006
+- [x] **T-007 CI-Pipeline Kern** · FR: – · Regeln: – · nach: T-002, T-004, T-005, T-006
   - Umfang: `.github/workflows/_pipeline.yml` (`workflow_call`) mit den
     Stufen `static` (Install mit Lockfile, ESLint, Prettier, `tsc`,
     gitleaks), `unit` (Vitest mit Coverage), `sonar` (Quality Gate

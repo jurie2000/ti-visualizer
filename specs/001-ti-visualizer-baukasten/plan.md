@@ -505,6 +505,7 @@ grün sind.
   Lauf, kein Lauf bei Entwurfs-PRs.
 - **Auswertung für die Bachelorarbeit:** Befunde je PR werden mit Label
   „KI-Befund übernommen“ bzw. „verworfen“ markiert.
+  Anlegen einmalig mit `gh label create "KI-Befund übernommen" --color 0E8A16 --description "KI-Review-Befund wurde umgesetzt"` und `gh label create "KI-Befund verworfen" --color B60205 --description "KI-Review-Befund wurde bewusst nicht umgesetzt"`.
 
 ### Unit- und Komponententests
 
@@ -828,6 +829,21 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
   fehlt. Abhilfe: Ausbaustufen, nur der Kern ab P0 (D26).
 - **Risiko:** Eine strenge CSP kann Bibliotheken mit Inline-Styles
   stören. Abhilfe: Prüfung in P0, Ausnahme nur begründet.
+  **Probe T-004 (2026-11-05):** `@xyflow/react` 12.12.1 mit zwei Knoten und
+  einer Kante, `vite build` plus `vite preview`, Chromium (Playwright),
+  CSP nach „Härtung der Seite“ ohne `'unsafe-inline'`. Ergebnis: keine
+  CSP-Verletzung, Knoten und Kante sichtbar und richtig positioniert
+  (`transform: matrix(1, 0, 0, 1, 100, 80)`). `style-src 'self'` reicht,
+  keine Ausnahme nötig. Grund: React Flow liefert sein CSS als Datei, und
+  Inline-Styles setzt React über das CSSOM, das `style-src` nicht
+  blockiert. Gegenprobe: ein per HTML eingefügtes `style`-Element und
+  `style`-Attribut wird blockiert, die CSP ist also wirksam. Vorbehalt:
+  nur Chromium geprüft. Firefox und Safari laufen später in den
+  E2E-Tests.
+- **Risiko:** `vite dev` setzt importiertes CSS als Inline-`<style>` ein,
+  das `style-src 'self'` blockiert (in der Probe belegt). Abhilfe: Die
+  beiden Meta-Tags setzt ein kleines Vite-Plugin (`vite.config.ts`,
+  `apply: 'build'`) nur im Build. Die Dev-Seite hat keine CSP.
 - **Risiko:** Ablaufdaten machen Presets und Tests mit der Zeit
   ungültig. Abhilfe: festes Simulationsdatum `simDate` in jeder Topologie
   und feste Uhr in den Tests.

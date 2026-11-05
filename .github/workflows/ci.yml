@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    # Auf `main` prüft und deployt deploy.yml (sonst liefe die Pipeline doppelt).
+    branches-ignore: [main]
+
+# Neuer Lauf für denselben Branch ersetzt den alten.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Check-Namen am PR: `pipeline / static`, `pipeline / unit`, ...
+  pipeline:
+    uses: ./.github/workflows/_pipeline.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -1,0 +1,97 @@
+.tiv-shell {
+  display: grid;
+  grid-template-rows: 62px 1fr auto;
+  min-height: 100vh;
+}
+.tiv-header,
+.tiv-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--color-surface);
+}
+.tiv-header {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+.tiv-footer {
+  border-top: 1px solid var(--color-neutral-300);
+  min-height: 40px;
+}
+.tiv-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.tiv-main {
+  display: grid;
+  grid-template-columns: 240px 1fr 280px;
+}
+.tiv-palette,
+.tiv-detail,
+.tiv-canvas {
+  padding: 16px;
+}
+.tiv-palette {
+  border-right: 1px solid var(--color-neutral-300);
+}
+.tiv-detail {
+  border-left: 1px solid var(--color-neutral-300);
+}
+@media (max-width: 1100px) {
+  .tiv-main {
+    grid-template-columns: 1fr;
+  }
+  .tiv-palette,
+  .tiv-detail {
+    display: none;
+  }
+}
+.tiv-btn {
+  font: inherit;
+  color: inherit;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-neutral-300);
+  background: transparent;
+  cursor: pointer;
+}
+.tiv-btn--primary,
+.tiv-btn[aria-pressed="true"] {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: transparent;
+}
+.tiv-theme {
+  display: flex;
+  gap: 4px;
+}
+.tiv-dialog {
+  max-width: 640px;
+  width: calc(100% - 32px);
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-sm);
+}
+.tiv-dialog__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tiv-toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+}
+.tiv-toast {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}

@@ -163,7 +163,7 @@ Vorher: T-907 (fachliche Freigabe).
     darunter: Datei ohne `topology` abgelehnt, Datei nur mit `settings`
     abgelehnt, doppelte IDs abgelehnt, `__proto__` nicht übernommen.
 
-- [ ] **T-102 Katalog-Schemas und Loader** [P] · FR: FR-12 · Regeln: – · nach: T-001
+- [x] **T-102 Katalog-Schemas und Loader** [P] · FR: FR-12 · Regeln: – · nach: T-001
   - Umfang: Zod-Schemas für alle Dateien aus plan.md („Katalog“),
     `catalog/active.json`, `catalog/1/meta.json`. Loader bündelt den
     aktiven Katalog beim Build. Deklarative Ausdrücke für Voraussetzungen

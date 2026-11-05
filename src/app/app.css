@@ -1,0 +1,113 @@
+/* Fallback-Werte, bis die Tokens aus T-002 (src/styles/tokens.css) greifen. */
+body {
+  margin: 0;
+  font-family: var(--tiv-font-body, system-ui, sans-serif);
+  background: var(--tiv-bg, #f7f5f0);
+  color: var(--tiv-text, #1d2433);
+}
+:root[data-theme="dark"] body {
+  --tiv-bg: #14181f;
+  --tiv-text: #e8eaf0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body {
+    --tiv-bg: #14181f;
+    --tiv-text: #e8eaf0;
+  }
+}
+:focus-visible {
+  outline: 3px solid var(--tiv-focus, #0072b2);
+  outline-offset: 2px;
+}
+.tiv-shell {
+  display: grid;
+  grid-template-rows: 62px 1fr auto;
+  min-height: 100vh;
+}
+.tiv-header,
+.tiv-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--tiv-surface, rgba(128, 128, 128, 0.08));
+}
+.tiv-header {
+  border-bottom: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.35));
+}
+.tiv-footer {
+  border-top: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.35));
+  min-height: 40px;
+}
+.tiv-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.tiv-main {
+  display: grid;
+  grid-template-columns: 240px 1fr 280px;
+}
+.tiv-palette,
+.tiv-detail,
+.tiv-canvas {
+  padding: 16px;
+}
+.tiv-palette {
+  border-right: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.35));
+}
+.tiv-detail {
+  border-left: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.35));
+}
+@media (max-width: 1100px) {
+  .tiv-main {
+    grid-template-columns: 1fr;
+  }
+  .tiv-palette,
+  .tiv-detail {
+    display: none;
+  }
+}
+.tiv-btn {
+  font: inherit;
+  color: inherit;
+  padding: 6px 12px;
+  border-radius: var(--tiv-radius, 8px);
+  border: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.5));
+  background: transparent;
+  cursor: pointer;
+}
+.tiv-btn--primary,
+.tiv-btn[aria-pressed="true"] {
+  background: var(--tiv-accent, #0072b2);
+  color: var(--tiv-on-accent, #fff);
+  border-color: transparent;
+}
+.tiv-theme {
+  display: flex;
+  gap: 4px;
+}
+.tiv-dialog {
+  max-width: 640px;
+  width: calc(100% - 32px);
+  color: var(--tiv-text, #1d2433);
+  background: var(--tiv-bg, #fff);
+  border: 1px solid var(--tiv-border, rgba(128, 128, 128, 0.5));
+  border-radius: var(--tiv-radius, 8px);
+}
+.tiv-dialog__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tiv-toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+}
+.tiv-toast {
+  margin: 4px 0 0;
+  padding: 8px 12px;
+  background: var(--tiv-text, #1d2433);
+  color: var(--tiv-bg, #fff);
+  border-radius: var(--tiv-radius, 8px);
+}

@@ -35,7 +35,7 @@ const e1 = {
 const zone = {
   id: "z1",
   label: "Praxisnetz",
-  tone: "accent-2",
+  tone: "sage",
   area: { x: 0, y: 0, w: 600, h: 400 },
 };
 
@@ -159,6 +159,7 @@ describe("Topology", () => {
 
   it("lehnt unbekannten tone ab", () => {
     expect(topoOk({ zones: [{ ...zone, tone: "<script>" }] })).toBe(false);
+    expect(topoOk({ zones: [{ ...zone, tone: "accent-2" }] })).toBe(false);
   });
 
   it("prüft Karten", () => {

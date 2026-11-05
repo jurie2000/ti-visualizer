@@ -210,7 +210,7 @@ Vorher: T-907 (fachliche Freigabe).
   - Fertig, wenn: je Regel K-1 bis K-9 ein Test mit ID und erwarteter
     Meldung grün ist. Eine abgelaufene Karte zählt als nicht gesteckt.
 
-- [ ] **T-107 Pfad-Engine** [P] · FR: FR-8 · Regeln: Regelwerk 6.0 (Pfadregel) · nach: T-101, T-103
+- [x] **T-107 Pfad-Engine** [P] · FR: FR-8 · Regeln: Regelwerk 6.0 (Pfadregel) · nach: T-101, T-103
   - Umfang: `resolvePath(topology, trigger, target, catalog)` in
     `src/engine/paths.ts` nach der Rollenfolge Auslöser → LAN → Zugang →
     Router/Internet → VPN → Zentrales Netz → Dienst. Wege am Zugang vorbei

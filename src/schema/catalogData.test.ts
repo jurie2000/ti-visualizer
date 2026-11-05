@@ -148,7 +148,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     ]);
   });
 
-  it("[G-1][G-2][G-3][G-4][V-4][V-5][V-6][V-7][V-8][V-9][V-10][V-12][V-14][V-15][V-16][V-17][V-18][V-19][V-20][X-1] Meldung im Katalog wie im Regelwerk (ID, Status, Quelle: check-regelwerk-katalog.ts)", () => {
+  it("Meldung im Katalog wie im Regelwerk (ID, Status, Quelle: check-regelwerk-katalog.ts)", () => {
     for (const rule of expected) {
       const found = catalogRows.find((r) => r.id === rule.id);
       expect(found, `${rule.id} fehlt`).toBeDefined();

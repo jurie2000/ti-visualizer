@@ -207,39 +207,78 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
 });
 
 describe("Regel-Engine: Begründungsregeln (T-105)", () => {
-  const cases: [id: string, a: string, b: string][] = [
-    ["V-4", "pvs", "vsdm"],
-    ["V-5", "kt", "erp"],
-    ["V-6", "pvs", "kis"],
-    ["V-7", "switch", "erp"],
-    ["V-8", "switch", "internet"],
-    ["V-9", "erp", "kim"],
-    ["V-10", "kon", "gateway"],
-    ["V-12", "pvs", "vpn"],
-    ["V-14", "mkt", "switch"],
-    ["V-15", "erpapp", "pvs"],
-    ["V-16", "dns", "switch"],
-    ["V-17", "kon", "hskon"],
-    ["V-18", "kt", "mkt"],
-    ["V-19", "tim", "vpn"],
-    ["V-20", "router", "router"],
-  ];
+  const rejected = (id: string, a: string, b: string) => {
+    for (const [x, y] of [
+      [a, b],
+      [b, a],
+    ] as const) {
+      expect(check(pair(x, y), "x", "y")).toEqual({
+        ok: false,
+        reason: msg(id).message,
+        ruleId: id,
+      });
+    }
+  };
 
-  it.each(cases)(
-    "[%s] %s an %s wird mit der Regelmeldung abgelehnt",
-    (id, a, b) => {
-      for (const [x, y] of [
-        [a, b],
-        [b, a],
-      ] as const) {
-        expect(check(pair(x, y), "x", "y")).toEqual({
-          ok: false,
-          reason: msg(id).message,
-          ruleId: id,
-        });
-      }
-    },
-  );
+  it("[V-4] pvs an vsdm wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-4", "pvs", "vsdm");
+  });
+
+  it("[V-5] kt an erp wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-5", "kt", "erp");
+  });
+
+  it("[V-6] pvs an kis wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-6", "pvs", "kis");
+  });
+
+  it("[V-7] switch an erp wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-7", "switch", "erp");
+  });
+
+  it("[V-8] switch an internet wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-8", "switch", "internet");
+  });
+
+  it("[V-9] erp an kim wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-9", "erp", "kim");
+  });
+
+  it("[V-10] kon an gateway wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-10", "kon", "gateway");
+  });
+
+  it("[V-12] pvs an vpn wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-12", "pvs", "vpn");
+  });
+
+  it("[V-14] mkt an switch wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-14", "mkt", "switch");
+  });
+
+  it("[V-15] erpapp an pvs wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-15", "erpapp", "pvs");
+  });
+
+  it("[V-16] dns an switch wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-16", "dns", "switch");
+  });
+
+  it("[V-17] kon an hskon wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-17", "kon", "hskon");
+  });
+
+  it("[V-18] kt an mkt wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-18", "kt", "mkt");
+  });
+
+  it("[V-19] tim an vpn wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-19", "tim", "vpn");
+  });
+
+  it("[V-20] router an router wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-20", "router", "router");
+  });
 
   it("[V-6] die erlaubten Primärsystem-Paare sind ausgenommen", () => {
     expect(check(pair("pc", "kis"), "x", "y").ok).toBe(true);

@@ -114,6 +114,15 @@ export const connectionRules = z.array(
     id: Id,
     a: Selector,
     b: Selector,
+    // Nennt das Regelwerk konkrete Anschlüsse (z. B. „Router-LAN“, „Zugang
+    // (WAN)“), beschränkt dies die Anschlussarten je Seite. Ohne Angabe gilt
+    // jeder verträgliche Anschluss.
+    kinds: z
+      .strictObject({
+        a: z.array(Id).min(1).optional(),
+        b: z.array(Id).min(1).optional(),
+      })
+      .optional(),
     visibleSimple: z.boolean(),
     ...sourced,
   }),
@@ -380,6 +389,10 @@ export function checkReferences(c: Catalog): string[] {
     sel(`Regel ${r.id}`, r.a);
     sel(`Regel ${r.id}`, r.b);
   }
+  for (const r of c.connectionRules)
+    [...(r.kinds?.a ?? []), ...(r.kinds?.b ?? [])].forEach((k) => {
+      ref(`Regel ${r.id}`, k, kinds, "Anschlussart");
+    });
   for (const r of c.reasonRules)
     r.except?.forEach((e) => {
       sel(`Regel ${r.id}`, e.a);

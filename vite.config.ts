@@ -36,4 +36,9 @@ const haertung = (): Plugin => ({
 export default defineConfig({
   base: process.env["BASE_PATH"] ?? "/ti-visualizer/",
   plugins: [react(), haertung()],
+  build: {
+    // Schriften nie als data:-URL einbetten, sonst blockiert `font-src 'self'` sie.
+    assetsInlineLimit: (file) =>
+      /\.(woff2?|ttf|otf)$/.test(file) ? false : undefined,
+  },
 });

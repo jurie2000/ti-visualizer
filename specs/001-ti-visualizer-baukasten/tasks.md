@@ -577,7 +577,7 @@ Fertig-Kriterium.
 Offene Punkte aus spec.md, regelwerk.md (12) und plan.md („Risiken“).
 Sie blockieren die genannten Tasks.
 
-- [ ] **T-901 Projekt auf private Daten und Secrets durchsuchen** · blockiert: T-010
+- [x] **T-901 Projekt auf private Daten und Secrets durchsuchen** · blockiert: T-010
   - Umfang: Arbeitsstand **und** die gesamte Git-Historie aller Branches
     prüfen, bevor das Repo öffentlich wird.
     - Secrets: `gitleaks detect` über die volle Historie (`--log-opts="--all"`)

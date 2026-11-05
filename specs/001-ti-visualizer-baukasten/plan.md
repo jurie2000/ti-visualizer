@@ -807,7 +807,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
 - [ ] Zielbrowser: aktuelle Chrome, Edge, Firefox, Safari. File System
   Access API nur in Chrome/Edge. Firefox/Safari nutzen Download/Upload.
 - [x] Impressum: Anschrift vor dem öffentlichen Start klären.
-- [ ] Vor dem Öffentlichstellen: Git-Historie auf private Daten prüfen.
+- [x] Vor dem Öffentlichstellen: Git-Historie auf private Daten prüfen.
 - [x] Datenschutzhinweis nach Art. 13 DSGVO vor dem Start rechtlich
   prüfen lassen (Entwurf im Impressum).
 - [x] Nutzungsrechte am Design-System „Organic“ aus Claude Design für die

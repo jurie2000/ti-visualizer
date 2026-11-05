@@ -30,11 +30,13 @@ const Element = z.object({ id: key, label: text(LIMITS.name).optional() });
 // Karten (D35): eGK als Card, HBA und SMC-B als PinCard, unterschieden über `kind`
 export const Card = z.object({
   kind: z.literal("egk"),
+  id: key.optional(),
   expires: date,
   pinActive: z.boolean().optional(),
 });
 export const PinCard = z.object({
   kind: z.enum(["hba", "smcb"]),
+  id: key.optional(),
   expires: date,
   unlocked: z.boolean().optional(),
 });
@@ -141,6 +143,23 @@ export const Topology = z
             `Anschluss „${end.node}.${end.port}“ trägt mehr als eine Kante`,
           );
         used.add(slot);
+      });
+    });
+
+    // K-1: je Gerät eine Karte pro Art. K-9: eine Karte (id) steckt in einem Gerät.
+    const cardIds = new Set<string>();
+    t.nodes.forEach((n, i) => {
+      const kinds = new Set<string>();
+      n.cards?.forEach((c, j) => {
+        const path = ["nodes", i, "cards", j];
+        if (kinds.has(c.kind))
+          issue(path, `Gerät „${n.id}“ hat zwei Karten der Art ${c.kind}`);
+        kinds.add(c.kind);
+        if (c.id !== undefined) {
+          if (cardIds.has(c.id))
+            issue(path, `Karte „${c.id}“ steckt in mehr als einem Gerät`);
+          cardIds.add(c.id);
+        }
       });
     });
   });

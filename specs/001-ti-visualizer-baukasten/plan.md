@@ -495,9 +495,13 @@ grün sind.
   - Stil, Formatierung und allgemeine Codequalität sind **nicht**
     Aufgabe des KI-Reviews (das machen ESLint, Prettier, Sonar).
 - **Ausgabe:** ein zusammenfassender PR-Kommentar plus Inline-Kommentare,
-  auf Deutsch, Befunde nach Schwere sortiert.
+  auf Deutsch. Der Kommentar beginnt mit einem Überblick zum schnellen
+  Überfliegen (Task-ID, Soll laut `tasks.md`, Ist laut Diff, Abweichung),
+  danach die Befunde nach Schwere sortiert.
 - **Kein Pflicht-Check:** Über den Merge entscheidet ein Mensch.
-- **Sicherheit:** `ANTHROPIC_API_KEY` als Repository-Secret. Automatischer
+- **Sicherheit:** `CLAUDE_CODE_OAUTH_TOKEN` als Repository-Secret
+  (Token aus dem Claude-Abo über `claude setup-token`, kein API-Key mit
+  Abrechnung nach Verbrauch). Automatischer
   Lauf nur für Pull Requests aus diesem Repo, Forks nur nach manueller
   Freigabe. Rechte minimal: Code lesen, PR-Kommentare schreiben, nicht
   pushen, nicht mergen.
@@ -541,7 +545,8 @@ dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 ### Branch-Schutz und Ablauf
 
 - `main` ist geschützt: Merge nur per Pull Request, Pflicht-Checks
-  `static`, `unit`, `sonar`, `build`, `e2e`. Der KI-Review (`ai-review`)
+  `static`, `unit`, `sonar`, `build`, `e2e` (auf GitHub mit dem Präfix
+  des Aufrufer-Jobs, z. B. `pipeline / static`). Der KI-Review (`ai-review`)
   läuft mit, ist aber kein Pflicht-Check.
 - Arbeitsweise: Branch je Task (`task/T-xxx-…`), PR mit Task-ID, Merge
   nach grünen Checks. Deploy läuft danach automatisch.
@@ -559,7 +564,7 @@ dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 - **Einmalig:** Repo öffentlich stellen. *Settings → Pages → Source:
   GitHub Actions*. Umgebung `github-pages` nur für `main`. SonarQube
   Cloud mit dem Repo verbinden und `SONAR_TOKEN` hinterlegen.
-  `ANTHROPIC_API_KEY` als Secret anlegen und die Claude GitHub App
+  `CLAUDE_CODE_OAUTH_TOKEN` als Secret anlegen und die Claude GitHub App
   installieren. Branch-Schutz für `main` einrichten. GitHub Secret
   Scanning mit Push Protection und „Private vulnerability reporting“
   aktivieren.

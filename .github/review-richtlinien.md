@@ -25,4 +25,6 @@ Prettier und Sonar.
 ## Ausgabe
 
 - Ein zusammenfassender PR-Kommentar plus Inline-Kommentare, auf Deutsch.
-- Befunde nach Schwere sortiert.
+- Der PR-Kommentar beginnt mit `## Überblick` (höchstens 6 Stichpunkte):
+  Task-ID, Soll laut `tasks.md`, Ist laut Diff, Abweichung.
+- Danach `## Befunde`, nach Schwere sortiert.

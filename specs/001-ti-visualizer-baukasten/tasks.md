@@ -173,7 +173,7 @@ Vorher: T-907 (fachliche Freigabe).
   - Fertig, wenn: ein kaputter Verweis oder ein fehlendes `source` den
     Test `unit` rot macht (D5).
 
-- [ ] **T-103 Katalog: Geräte, Anschlüsse, Quellen** · FR: FR-1, FR-12, FR-13, FR-14 · Regeln: A-1, A-2 · nach: T-102
+- [x] **T-103 Katalog: Geräte, Anschlüsse, Quellen** · FR: FR-1, FR-12, FR-13, FR-14 · Regeln: A-1, A-2 · nach: T-102
   - Umfang: `categories.json`, `device-types.json` (Regelwerk 1 mit
     Fähigkeiten, Icon, „In Einfach sichtbar“, Anschlüssen aus 2.2),
     `port-kinds.json` (2.1, 2.3), `sources.json` aus quellen.md. Abgeleitet

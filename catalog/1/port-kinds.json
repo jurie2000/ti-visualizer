@@ -1,1 +1,102 @@
-{ "kinds": [], "compatible": [] }
+{
+  "kinds": [
+    {
+      "id": "eth",
+      "name": "Ethernet (RJ45)",
+      "source": ["DVO"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "wan",
+      "name": "WAN-Seite zum Router bzw. Internet",
+      "source": ["Betriebsarten"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "usb",
+      "name": "USB",
+      "source": ["gemSpec_MobKT"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "wifi",
+      "name": "WLAN (Funk)",
+      "source": ["DVO"],
+      "status": "plausibel"
+    },
+    {
+      "id": "net",
+      "name": "Anschluss an ein Netz (Internet, Zentrales Netz)",
+      "source": ["Arch"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "tun",
+      "name": "VPN-Zugang (logisch)",
+      "source": ["Arch", "gemSpec_VPN_ZugD"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "ti",
+      "name": "Anschluss am Zentralen Netz (logisch)",
+      "source": ["Arch"],
+      "status": "bestätigt"
+    }
+  ],
+  "compatible": [
+    {
+      "a": "eth",
+      "b": "eth",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "usb",
+      "b": "usb",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "wifi",
+      "b": "wifi",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "net",
+      "b": "net",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "tun",
+      "b": "tun",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "ti",
+      "b": "ti",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "eth",
+      "b": "wan",
+      "source": ["Arch"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "wan",
+      "b": "net",
+      "source": ["Arch"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "tun",
+      "b": "net",
+      "source": ["Arch"],
+      "status": "Vereinfachung"
+    }
+  ]
+}

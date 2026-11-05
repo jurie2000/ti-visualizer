@@ -1,1 +1,1273 @@
-[]
+[
+  {
+    "id": "pvs",
+    "abbr": "PVS",
+    "name": "Praxisverwaltungssystem",
+    "category": "primary",
+    "icon": "screen",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "Ethernet0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb1",
+        "name": "USB1",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kis",
+    "abbr": "KIS",
+    "name": "Krankenhausinformationssystem",
+    "category": "primary",
+    "icon": "server",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth1",
+        "name": "LAN1",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth2",
+        "name": "LAN2",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth3",
+        "name": "LAN3",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth4",
+        "name": "LAN4",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth5",
+        "name": "LAN5",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemILF_PS", "KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "avs",
+    "abbr": "AVS",
+    "name": "Apothekenverwaltungssystem",
+    "category": "primary",
+    "icon": "screen",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "Ethernet0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb1",
+        "name": "USB1",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemILF_PS", "gemF_eRp_Autorisierung_Apo"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "pflege",
+    "abbr": "Pflege",
+    "name": "Pflege-Software (Pflegeeinrichtung)",
+    "category": "primary",
+    "icon": "screen",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "Ethernet0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb1",
+        "name": "USB1",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["Pflege-FAQ"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "ris",
+    "abbr": "RIS",
+    "name": "Radiologie-Informationssystem",
+    "category": "primary",
+    "icon": "scan",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth1",
+        "name": "LAN1 · KIS-Schnittstelle",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "lis",
+    "abbr": "LIS",
+    "name": "Labor-Informationssystem",
+    "category": "primary",
+    "icon": "flask",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth1",
+        "name": "LAN1 · KIS-Schnittstelle",
+        "kind": "eth",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "pc",
+    "abbr": "PC",
+    "name": "Arbeitsplatz-PC",
+    "category": "primary",
+    "icon": "screen",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "Ethernet0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb1",
+        "name": "USB1",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemILF_PS"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "tab",
+    "abbr": "Visite-Tablet",
+    "name": "Visite-Tablet (KIS-Client per WLAN)",
+    "category": "primary",
+    "icon": "tablet",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "wlan0",
+        "name": "WLAN0",
+        "kind": "wifi",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      },
+      {
+        "id": "usb0",
+        "name": "USB-C",
+        "kind": "usb",
+        "multi": false,
+        "source": ["KH"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemILF_PS", "KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "kimcm",
+    "abbr": "KIM-Clientmodul",
+    "name": "KIM-Clientmodul",
+    "category": "primary",
+    "icon": "mail",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "lan0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": true,
+        "source": ["gemSpec_CM_KOMLE"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemSpec_CM_KOMLE"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "timc",
+    "abbr": "TI-Messenger-Client",
+    "name": "TI-Messenger-Client",
+    "category": "primary",
+    "icon": "chat",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "wan",
+        "name": "WAN (Internet)",
+        "kind": "wan",
+        "multi": false,
+        "source": ["gemSpec_TI-M_Basis"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "egk",
+    "abbr": "eGK",
+    "name": "elektronische Gesundheitskarte",
+    "category": "card",
+    "icon": "card",
+    "visibleSimple": true,
+    "placeable": false,
+    "capabilities": [],
+    "ports": [],
+    "source": ["gemSpec_eGK_ObjSys_G2_1"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "hba",
+    "abbr": "HBA",
+    "name": "Heilberufsausweis",
+    "category": "card",
+    "icon": "key",
+    "visibleSimple": true,
+    "placeable": false,
+    "capabilities": [],
+    "ports": [],
+    "source": ["gemSpec_HBA_ObjSys"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "smcb",
+    "abbr": "SMC-B",
+    "name": "Institutionskarte SMC-B",
+    "category": "card",
+    "icon": "card",
+    "visibleSimple": true,
+    "placeable": false,
+    "capabilities": [],
+    "ports": [],
+    "source": ["gemSpec_SMC-B_ObjSys_G2_1"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kt",
+    "abbr": "eHealth-KT",
+    "name": "eHealth-Kartenterminal",
+    "category": "terminal",
+    "icon": "term",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["cardSlots", "netConfig:terminal"],
+    "ports": [
+      {
+        "id": "lan0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemSpec_KT"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "mkt",
+    "abbr": "Mobiles KT",
+    "name": "Mobiles Kartenterminal (offline)",
+    "category": "terminal",
+    "icon": "term",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["cardSlots"],
+    "ports": [
+      {
+        "id": "usb0",
+        "name": "USB0",
+        "kind": "usb",
+        "multi": false,
+        "source": ["gemSpec_MobKT"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "cardlink",
+    "abbr": "CardLink",
+    "name": "eHealth-CardLink",
+    "category": "terminal",
+    "icon": "nfc",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["nfcCard", "netConfig:terminal"],
+    "ports": [
+      {
+        "id": "wan",
+        "name": "WAN (Internet)",
+        "kind": "wan",
+        "multi": true,
+        "source": ["gemSpec_eHealth-CardLink", "FP_eHealth-CardLink"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_eHealth-CardLink", "FP_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "switch",
+    "abbr": "Switch",
+    "name": "Switch",
+    "category": "lan",
+    "icon": "sw",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:infra"],
+    "ports": [
+      {
+        "id": "p1",
+        "name": "Port 1",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p2",
+        "name": "Port 2",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p3",
+        "name": "Port 3",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p4",
+        "name": "Port 4",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p5",
+        "name": "Port 5",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p6",
+        "name": "Port 6",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p7",
+        "name": "Port 7",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "p8",
+        "name": "Port 8",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "router",
+    "abbr": "Router",
+    "name": "Internet-Router (IAG) mit WLAN",
+    "category": "lan",
+    "icon": "wrouter",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:router"],
+    "ports": [
+      {
+        "id": "lan1",
+        "name": "LAN1",
+        "kind": "eth",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "lan2",
+        "name": "LAN2",
+        "kind": "eth",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "lan3",
+        "name": "LAN3",
+        "kind": "eth",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "lan4",
+        "name": "LAN4",
+        "kind": "eth",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "wlan",
+        "name": "WLAN",
+        "kind": "wifi",
+        "multi": true,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "wan",
+        "name": "WAN",
+        "kind": "wan",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["Betriebsarten", "gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "ap",
+    "abbr": "WLAN-AP",
+    "name": "WLAN Access Point",
+    "category": "lan",
+    "icon": "wifi",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:infra"],
+    "ports": [
+      {
+        "id": "lan",
+        "name": "LAN (PoE)",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "plausibel"
+      },
+      {
+        "id": "wlan",
+        "name": "WLAN",
+        "kind": "wifi",
+        "multi": true,
+        "source": ["DVO"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "fw",
+    "abbr": "Firewall",
+    "name": "Firewall",
+    "category": "lan",
+    "icon": "shield",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:infra"],
+    "ports": [
+      {
+        "id": "lan",
+        "name": "LAN",
+        "kind": "eth",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      },
+      {
+        "id": "wan",
+        "name": "WAN",
+        "kind": "wan",
+        "multi": false,
+        "source": ["Betriebsarten"],
+        "status": "plausibel"
+      }
+    ],
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kon",
+    "abbr": "Konnektor",
+    "name": "Konnektor",
+    "category": "network",
+    "icon": "router",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:konnektor", "zugang"],
+    "ports": [
+      {
+        "id": "lan",
+        "name": "LAN",
+        "kind": "eth",
+        "multi": true,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "wan",
+        "name": "WAN",
+        "kind": "wan",
+        "multi": false,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "vpn",
+        "name": "VPN",
+        "kind": "tun",
+        "multi": false,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "hskon",
+    "abbr": "HS-Konnektor",
+    "name": "Highspeed-Konnektor",
+    "category": "network",
+    "icon": "router",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:konnektor", "zugang"],
+    "ports": [
+      {
+        "id": "lan0",
+        "name": "LAN0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["gemF_Highspeed-Konnektor"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "lan1",
+        "name": "LAN1",
+        "kind": "eth",
+        "multi": true,
+        "source": ["gemF_Highspeed-Konnektor"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "wan",
+        "name": "WAN",
+        "kind": "wan",
+        "multi": false,
+        "source": ["gemF_Highspeed-Konnektor"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "vpn",
+        "name": "VPN",
+        "kind": "tun",
+        "multi": false,
+        "source": ["gemF_Highspeed-Konnektor"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemF_Highspeed-Konnektor"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "gateway",
+    "abbr": "TI-Gateway",
+    "name": "TI-Gateway (Zugangsmodul + HSK-Instanz)",
+    "category": "network",
+    "icon": "gate",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["netConfig:konnektor", "zugang"],
+    "ports": [
+      {
+        "id": "lan",
+        "name": "LAN",
+        "kind": "eth",
+        "multi": true,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "wan",
+        "name": "WAN",
+        "kind": "wan",
+        "multi": false,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "vpn",
+        "name": "VPN",
+        "kind": "tun",
+        "multi": false,
+        "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemF_TI-Gateway"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "vpn",
+    "abbr": "VPN-Zugang",
+    "name": "VPN-Zugangsdienst",
+    "category": "network",
+    "icon": "shield",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "zugang",
+        "name": "Zugangspunkt",
+        "kind": "tun",
+        "multi": true,
+        "source": ["Arch"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "zentral",
+        "name": "Zentrales Netz",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "internet",
+        "name": "Internet",
+        "kind": "net",
+        "multi": false,
+        "source": ["Arch"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["Arch", "gemSpec_VPN_ZugD"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "internet",
+    "abbr": "Internet",
+    "name": "Internet (Transportnetz)",
+    "category": "network",
+    "icon": "globe",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "netz",
+        "name": "Netz",
+        "kind": "net",
+        "multi": true,
+        "source": ["Arch"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "zentral",
+    "abbr": "Zentrales Netz",
+    "name": "Zentrales Netz der TI",
+    "category": "network",
+    "icon": "layers",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "netz",
+        "name": "Netz",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["Arch", "gemSpec_Net"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "dns",
+    "abbr": "DNS",
+    "name": "Namensdienst",
+    "category": "zentral",
+    "icon": "server",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_Net"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "ntp",
+    "abbr": "NTP",
+    "name": "Zeitdienst",
+    "category": "zentral",
+    "icon": "server",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_Net"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "vzd",
+    "abbr": "VZD",
+    "name": "Verzeichnisdienst (FHIR-Directory)",
+    "category": "zentral",
+    "icon": "folder",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_VZD", "gemSpec_VZD_FHIR_Directory"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "tsl",
+    "abbr": "TSL",
+    "name": "TSL-Dienst mit OCSP-Responder",
+    "category": "zentral",
+    "icon": "shield",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_TSL", "gemSpec_PKI"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "idp",
+    "abbr": "IDP",
+    "name": "Identity Provider (zentral)",
+    "category": "zentral",
+    "icon": "key",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_IDP_FD", "gemSpec_FD_eRp"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "idpsek",
+    "abbr": "Sektoraler IDP",
+    "name": "Sektoraler IDP (GesundheitsID)",
+    "category": "zentral",
+    "icon": "key",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "vsdm",
+    "abbr": "VSDM",
+    "name": "VSDM-Fachdienst der Krankenkasse",
+    "category": "service",
+    "icon": "server",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSysL_VSDM", "gemSpec_VSDM_2"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erp",
+    "abbr": "E-Rezept",
+    "name": "E-Rezept-Fachdienst",
+    "category": "service",
+    "icon": "pill",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_FD_eRp"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kim",
+    "abbr": "KIM",
+    "name": "KIM-Fachdienst",
+    "category": "service",
+    "icon": "mail",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_FD_KOMLE"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "tim",
+    "abbr": "TI-Messenger",
+    "name": "TI-Messenger-Fachdienst",
+    "category": "service",
+    "icon": "chat",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "epa",
+    "abbr": "ePA",
+    "name": "ePA-Aktensystem",
+    "category": "service",
+    "icon": "folder",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_Aktensystem_ePAfueralle"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "popp",
+    "abbr": "PoPP",
+    "name": "PoPP-Service",
+    "category": "service",
+    "icon": "shield",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      },
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": [
+          "gemSpec_eRp_FdV",
+          "gemSpec_Aktensystem_ePAfueralle",
+          "gemSpec_IDP_Sek",
+          "gemSpec_PoPP_Service",
+          "gemSpec_TI-M_Basis"
+        ],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_PoPP_Service"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kk",
+    "abbr": "Krankenkasse",
+    "name": "Krankenkasse (Empfänger z. B. der eAU)",
+    "category": "versicherte",
+    "icon": "mail",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "ti",
+        "name": "TI-Zugang",
+        "kind": "ti",
+        "multi": true,
+        "source": ["Arch", "gemSpec_Net"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["PM_eAU", "KIM-DK"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erpapp",
+    "abbr": "E-Rezept-App",
+    "name": "E-Rezept-App der Versicherten",
+    "category": "versicherte",
+    "icon": "tablet",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": ["nfcCard"],
+    "ports": [
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": ["gemSpec_eRp_FdV"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_eRp_FdV"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "epaapp",
+    "abbr": "ePA-App",
+    "name": "ePA-App der Versicherten",
+    "category": "versicherte",
+    "icon": "tablet",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["nfcCard"],
+    "ports": [
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": ["gemSpec_eRp_FdV"],
+        "status": "bestätigt"
+      }
+    ],
+    "source": ["gemSpec_Aktensystem_ePAfueralle"],
+    "status": "bestätigt"
+  }
+]

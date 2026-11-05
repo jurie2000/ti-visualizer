@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "id": "primary",
+    "name": "Primärsysteme",
+    "color": "#0072B2",
+    "colorDark": "#63BDF2",
+    "shape": "round",
+    "order": 1
+  },
+  {
+    "id": "card",
+    "name": "Smartcards",
+    "color": "#A66A00",
+    "colorDark": "#F0B84A",
+    "shape": "pill",
+    "order": 2
+  },
+  {
+    "id": "terminal",
+    "name": "Kartenterminals",
+    "color": "#B0568D",
+    "colorDark": "#E79CC4",
+    "shape": "notch",
+    "order": 3
+  },
+  {
+    "id": "lan",
+    "name": "Lokales Netz",
+    "color": "#5E6E2C",
+    "colorDark": "#B6C77A",
+    "shape": "box",
+    "order": 4
+  },
+  {
+    "id": "network",
+    "name": "Netzwerk",
+    "color": "#00795C",
+    "colorDark": "#44D7AC",
+    "shape": "box",
+    "order": 5
+  },
+  {
+    "id": "service",
+    "name": "Fachdienste",
+    "color": "#2C6FA8",
+    "colorDark": "#7CBDEA",
+    "shape": "hex",
+    "order": 6
+  },
+  {
+    "id": "zentral",
+    "name": "Zentrale Dienste",
+    "color": "#B34E00",
+    "colorDark": "#F08A4B",
+    "shape": "diamond",
+    "order": 7
+  },
+  {
+    "id": "versicherte",
+    "name": "Versicherte und Gegenstellen",
+    "color": "#7A6D00",
+    "colorDark": "#F0E442",
+    "shape": "bubble",
+    "order": 8
+  }
+]

@@ -9,27 +9,38 @@ const valid = {
   active: { version: "1" },
   meta: { version: "1", date: "2026-11-05", note: "" },
   categories: [
-    { id: "lokal", name: "Lokal", color: "#0a0", shape: "rect", order: 1 },
+    {
+      id: "lokal",
+      name: "Lokal",
+      color: "#0a0",
+      colorDark: "#6c6",
+      shape: "rect",
+      order: 1,
+    },
   ],
   deviceTypes: [
     {
       id: "pvs",
+      abbr: "PVS",
       name: "PVS",
       category: "lokal",
       icon: "monitor",
       visibleSimple: true,
       capabilities: ["netConfig:client"],
-      ports: [{ id: "eth0", name: "Ethernet0", kind: "eth", multi: false }],
+      ports: [
+        { id: "eth0", name: "Ethernet0", kind: "eth", multi: false, ...base },
+      ],
       ...base,
     },
     {
       id: "kon",
+      abbr: "Kon",
       name: "Konnektor",
       category: "lokal",
       icon: "box",
       visibleSimple: true,
       capabilities: ["zugang"],
-      ports: [{ id: "lan", name: "LAN", kind: "eth", multi: true }],
+      ports: [{ id: "lan", name: "LAN", kind: "eth", multi: true, ...base }],
       ...base,
     },
   ],
@@ -188,6 +199,9 @@ describe("Katalog-Schema (D5, D13)", () => {
     ["unbekannter status", "checks.0.status", "geraten"],
     ["Code statt Ausdruck", "actions.0.requires", "return true"],
     ["unbekanntes Feld", "categories.0.farbe", "rot"],
+    ["Anschluss ohne Quelle", "deviceTypes.0.ports.0.source", undefined],
+    ["Kategorie ohne Dunkelfarbe", "categories.0.colorDark", undefined],
+    ["Gerätetyp ohne Kurzname", "deviceTypes.0.abbr", undefined],
     ["Quellen-URL ohne https", "sources.0.url", "http://x.de"],
   ])("lehnt ab: %s", (_, path, value) => {
     expect(() => parse(patch(path, value))).toThrow();
@@ -219,6 +233,12 @@ describe("Referenzen (D5)", () => {
       "portKinds.compatible.0.b",
       "nix",
       "Anschlussart",
+    ],
+    [
+      "Anschluss mit unbekannter Quelle",
+      "deviceTypes.0.ports.0.source",
+      ["nix"],
+      "Quelle",
     ],
     [
       "Eintrag mit unbekannter Quelle",

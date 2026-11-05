@@ -135,7 +135,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
 - [ ] **T-010 Repo öffentlich schalten und einrichten** (manuell) · FR: – · Regeln: – · nach: T-009, T-901, T-902, T-903, T-904
   - Umfang: einmalige Einstellungen aus plan.md („GitHub Pages“): Repo
     öffentlich, Pages-Quelle „GitHub Actions“, SonarQube Cloud verbinden,
-    `SONAR_TOKEN` und `ANTHROPIC_API_KEY` als Secrets, Claude GitHub App,
+    `SONAR_TOKEN` und `CLAUDE_CODE_OAUTH_TOKEN` als Secrets, Claude GitHub App,
     Branch-Schutz für `main` (Pflicht-Checks `static`, `unit`, `sonar`,
     `build`, `e2e`), Secret Scanning mit Push Protection, Private
     vulnerability reporting.

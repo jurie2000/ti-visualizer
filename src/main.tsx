@@ -11,3 +11,5 @@ createRoot(root).render(
     <App />
   </StrictMode>,
 );
+
+export const gegentest: any = 1;

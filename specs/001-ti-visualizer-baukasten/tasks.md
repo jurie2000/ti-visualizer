@@ -182,7 +182,7 @@ Vorher: T-907 (fachliche Freigabe).
     `[A-2]` für die Verträglichkeit der Anschlussarten grün, und Justin
     hat die Gerätetypen im PR abgenommen.
 
-- [ ] **T-104 Katalog: Verbindungsregeln und Protokolle** · FR: FR-4, FR-11, FR-12 · Regeln: G-1 bis G-4, V-4 bis V-10, V-12, V-14 bis V-20, X-1 · nach: T-103, T-905
+- [x] **T-104 Katalog: Verbindungsregeln und Protokolle** · FR: FR-4, FR-11, FR-12 · Regeln: G-1 bis G-4, V-4 bis V-10, V-12, V-14 bis V-20, X-1 · nach: T-103, T-905
   - Umfang: `base-checks.json` (4.1), `connection-rules.json` (4.2,
     Erlaubnisliste mit Sichtbarkeit in Einfach), `reason-rules.json` (4.3),
     `exclusion-rules.json` (4.4), `protocols.json` (Regelwerk 3 mit

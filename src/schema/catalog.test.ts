@@ -223,6 +223,12 @@ describe("Referenzen (D5)", () => {
       "Fähigkeit",
     ],
     [
+      "Begründungsregel mit unbekanntem Gerätetyp in der Ausnahme",
+      "reasonRules.0.except",
+      [{ a: { types: ["nix"] }, b: { types: ["pvs"] } }],
+      "„nix“",
+    ],
+    [
       "Anschluss mit unbekannter Art",
       "deviceTypes.0.ports.0.kind",
       "nix",

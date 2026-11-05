@@ -1,1 +1,379 @@
-[]
+[
+  {
+    "id": "erl-kt-zugang",
+    "a": {
+      "types": ["kt"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": true,
+    "source": ["gemSpec_KT", "gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-kt-lan",
+    "a": {
+      "types": ["kt"]
+    },
+    "b": {
+      "types": ["switch", "router"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_KT", "DVO"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-cardlink-zugang",
+    "a": {
+      "types": ["cardlink"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": true,
+    "source": ["gemSpec_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-cardlink-internet",
+    "a": {
+      "types": ["cardlink"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "visibleSimple": false,
+    "source": ["FP_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-mkt-ps",
+    "a": {
+      "types": ["mkt"]
+    },
+    "b": {
+      "types": ["pvs", "kis", "avs", "pflege"]
+    },
+    "visibleSimple": true,
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-mkt-pc",
+    "a": {
+      "types": ["mkt"]
+    },
+    "b": {
+      "types": ["pc"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-ps-zugang",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": true,
+    "source": ["gemILF_PS", "gemF_Highspeed-Konnektor", "KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-ps-lan",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege", "pc", "ris", "lis"]
+    },
+    "b": {
+      "types": ["switch", "router"]
+    },
+    "visibleSimple": false,
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-tab-wlan",
+    "a": {
+      "types": ["tab"]
+    },
+    "b": {
+      "types": ["ap", "router"]
+    },
+    "visibleSimple": false,
+    "source": ["KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-pc-ps",
+    "a": {
+      "types": ["pc"]
+    },
+    "b": {
+      "types": ["kis", "pvs", "avs"]
+    },
+    "visibleSimple": false,
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-risl-kis",
+    "a": {
+      "types": ["ris", "lis"]
+    },
+    "b": {
+      "types": ["kis"]
+    },
+    "visibleSimple": false,
+    "source": ["KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-ps-kimcm",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege"]
+    },
+    "b": {
+      "types": ["kimcm"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_CM_KOMLE"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-kimcm-zugang",
+    "a": {
+      "types": ["kimcm"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_CM_KOMLE"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-timc-tim",
+    "a": {
+      "types": ["timc"]
+    },
+    "b": {
+      "types": ["tim"]
+    },
+    "visibleSimple": true,
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-timc-internet",
+    "a": {
+      "types": ["timc"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-switch-lan",
+    "a": {
+      "types": ["switch"]
+    },
+    "b": {
+      "types": ["switch", "router", "ap", "fw"]
+    },
+    "visibleSimple": false,
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-switch-zugang",
+    "a": {
+      "types": ["switch"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": false,
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-router-internet",
+    "a": {
+      "types": ["router"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "visibleSimple": false,
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-fw-lan",
+    "a": {
+      "types": ["fw"]
+    },
+    "b": {
+      "types": ["router", "switch"]
+    },
+    "visibleSimple": false,
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-fw-zugang",
+    "a": {
+      "types": ["fw"]
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "visibleSimple": false,
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-zugang-router",
+    "a": {
+      "capability": "zugang"
+    },
+    "b": {
+      "types": ["router"]
+    },
+    "visibleSimple": false,
+    "source": ["Betriebsarten", "gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-zugang-vpn",
+    "a": {
+      "capability": "zugang"
+    },
+    "b": {
+      "types": ["vpn"]
+    },
+    "visibleSimple": true,
+    "source": ["Arch"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-vpn-internet",
+    "a": {
+      "types": ["vpn"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "visibleSimple": false,
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-vpn-zentral",
+    "a": {
+      "types": ["vpn"]
+    },
+    "b": {
+      "types": ["zentral"]
+    },
+    "visibleSimple": false,
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-vpn-dienste",
+    "a": {
+      "types": ["vpn"]
+    },
+    "b": {
+      "types": ["vsdm", "erp", "kim", "epa", "idp"]
+    },
+    "visibleSimple": true,
+    "source": ["Arch"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-zentral-dienste",
+    "a": {
+      "types": ["zentral"]
+    },
+    "b": {
+      "types": ["dns", "ntp", "vzd", "tsl", "idp", "vsdm", "erp", "kim", "epa"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_Net", "Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-kim-kk",
+    "a": {
+      "types": ["kim"]
+    },
+    "b": {
+      "types": ["kk"]
+    },
+    "visibleSimple": true,
+    "source": ["KIM-DK", "PM_eAU"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-dienste-internet",
+    "a": {
+      "types": ["erp", "epa", "idp", "idpsek", "popp", "tim"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "visibleSimple": false,
+    "source": [
+      "gemSpec_eRp_FdV",
+      "gemSpec_IDP_Sek",
+      "gemSpec_PoPP_Service",
+      "gemSpec_TI-M_Basis"
+    ],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erl-erpapp-erp",
+    "a": {
+      "types": ["erpapp"]
+    },
+    "b": {
+      "types": ["erp"]
+    },
+    "visibleSimple": true,
+    "source": ["gemSpec_eRp_FdV"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-epaapp-epa",
+    "a": {
+      "types": ["epaapp"]
+    },
+    "b": {
+      "types": ["epa"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_Aktensystem_ePAfueralle"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-apps-internet",
+    "a": {
+      "types": ["erpapp", "epaapp"]
+    },
+    "b": {
+      "types": ["internet", "idpsek"]
+    },
+    "visibleSimple": false,
+    "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  }
+]

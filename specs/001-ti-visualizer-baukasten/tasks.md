@@ -203,7 +203,7 @@ Vorher: T-907 (fachliche Freigabe).
     „kein erlaubtes Paar wird von einer Begründungsregel erfasst“.
     Engine-Coverage ≥ 90 % Zeilen, ≥ 85 % Zweige.
 
-- [ ] **T-106 Karten-Engine** [P] · FR: FR-18 · Regeln: K-1 bis K-9 · nach: T-101, T-103
+- [x] **T-106 Karten-Engine** [P] · FR: FR-18 · Regeln: K-1 bis K-9 · nach: T-101, T-103
   - Umfang: `plugCard`, `unplugCard`, `cardState` in `src/engine/cards.ts`:
     nur in Geräten mit `cardSlots` bzw. `nfcCard`, eine Karte je Art,
     Ablauf gegen `simDate`, PIN-Freischaltung, `pinActive` der eGK.

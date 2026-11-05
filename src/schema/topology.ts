@@ -30,11 +30,13 @@ const Element = z.object({ id: key, label: text(LIMITS.name).optional() });
 // Karten (D35): eGK als Card, HBA und SMC-B als PinCard, unterschieden über `kind`
 export const Card = z.object({
   kind: z.literal("egk"),
+  id: key.optional(),
   expires: date,
   pinActive: z.boolean().optional(),
 });
 export const PinCard = z.object({
   kind: z.enum(["hba", "smcb"]),
+  id: key.optional(),
   expires: date,
   unlocked: z.boolean().optional(),
 });

@@ -789,7 +789,7 @@
         "name": "Zugangspunkt",
         "kind": "tun",
         "multi": true,
-        "source": ["Arch", "gemSpec_VPN_ZugD"],
+        "source": ["Arch"],
         "status": "bestätigt"
       },
       {
@@ -797,7 +797,7 @@
         "name": "Zentrales Netz",
         "kind": "ti",
         "multi": true,
-        "source": ["Arch", "gemSpec_VPN_ZugD"],
+        "source": ["Arch"],
         "status": "bestätigt"
       },
       {
@@ -805,7 +805,7 @@
         "name": "Internet",
         "kind": "net",
         "multi": false,
-        "source": ["Arch", "gemSpec_VPN_ZugD"],
+        "source": ["Arch"],
         "status": "bestätigt"
       }
     ],
@@ -959,15 +959,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -976,8 +968,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",
@@ -1005,15 +995,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -1022,8 +1004,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",
@@ -1073,15 +1053,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -1090,8 +1062,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",
@@ -1141,15 +1111,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -1158,8 +1120,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",
@@ -1187,15 +1147,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -1204,8 +1156,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",
@@ -1233,15 +1183,7 @@
         "name": "TI-Zugang",
         "kind": "ti",
         "multi": true,
-        "source": [
-          "Arch",
-          "gemSpec_Net",
-          "gemSpec_eRp_FdV",
-          "gemSpec_Aktensystem_ePAfueralle",
-          "gemSpec_IDP_Sek",
-          "gemSpec_PoPP_Service",
-          "gemSpec_TI-M_Basis"
-        ],
+        "source": ["Arch", "gemSpec_Net"],
         "status": "bestätigt"
       },
       {
@@ -1250,8 +1192,6 @@
         "kind": "net",
         "multi": true,
         "source": [
-          "Arch",
-          "gemSpec_Net",
           "gemSpec_eRp_FdV",
           "gemSpec_Aktensystem_ePAfueralle",
           "gemSpec_IDP_Sek",

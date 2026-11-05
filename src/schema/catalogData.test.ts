@@ -16,6 +16,12 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
     expect(checkReferences(catalog)).toEqual([]);
   });
 
+  it("Anschlussarten sind genau die aus Regelwerk 2.1", () => {
+    expect([...kinds].sort()).toEqual(
+      ["eth", "net", "ti", "tun", "usb", "wan", "wifi"].sort(),
+    );
+  });
+
   it("[A-1] gleiche Anschlussarten passen zusammen, außer wan mit wan", () => {
     for (const k of kinds)
       expect(compatible(k, k), `${k}/${k}`).toBe(k !== "wan");

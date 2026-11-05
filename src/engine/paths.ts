@@ -5,8 +5,16 @@ import type { Catalog, Node, Topology } from "../schema";
 // Die Suche läuft als Breitensuche über (Knoten, Phase). Die Phase erzwingt die
 // Rollenfolge, deshalb kann kein Weg den Zugang oder das VPN auslassen.
 
-/** Gerätetypen, deren Wege nur über das Internet laufen dürfen (Regelwerk 6.0). */
-export const INTERNET_ONLY = ["erpapp", "epaapp", "timc", "cardlink", "popp"];
+/**
+ * Wege nur über das Internet (Regelwerk 6.0): Auslöser und erlaubte Ziele.
+ * Zusätzlich ist der PoPP-Service für jeden Auslöser über das Internet
+ * erreichbar, CardLink erreicht seinen Zugang so.
+ */
+export const INTERNET_PAIRS: Record<string, string[]> = {
+  erpapp: ["erp", "idp", "idpsek"],
+  epaapp: ["epa", "idpsek"],
+  timc: ["tim"],
+};
 
 /** `ti`: Weg bis zum Dienst. `local`: nur bis zur eGK im Kartenterminal (NFDM/eMP). */
 export type PathKind = "ti" | "local";
@@ -35,7 +43,7 @@ function roleOf(node: Node, catalog: Catalogue): Role {
   return t.category === "primary" ? "local" : "end";
 }
 
-/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz. */
+/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz (Vereinfachung, nicht im Regelwerk 6.0). */
 export function zugangOf(
   topology: Topology,
   terminalId: string,
@@ -73,11 +81,17 @@ function search(
   if (start.fault && !ignoreFaults) return undefined;
   const internetOnly =
     kind === "ti" &&
-    (INTERNET_ONLY.includes(start.type) || INTERNET_ONLY.includes(goal.type));
-  // Ein Kartenterminal (Ziel bei `local`, Auslöser bei `ti`) nutzt nur seinen Zugang.
+    (goal.type === "popp" ||
+      (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
+      (start.type === "cardlink" && roleOf(goal, catalog) === "zugang"));
+  // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
+  // nutzt nur seinen Zugang.
   const hasSlots = (n: Node) =>
     catalog.deviceTypes.some(
-      (d) => d.id === n.type && d.capabilities.includes("cardSlots"),
+      (d) =>
+        d.id === n.type &&
+        (d.capabilities.includes("cardSlots") ||
+          d.capabilities.includes("netConfig:terminal")),
     );
   const terminal =
     kind === "local" ? goal : hasSlots(start) ? start : undefined;

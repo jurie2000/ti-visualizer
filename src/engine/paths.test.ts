@@ -22,7 +22,7 @@ const catalog = {
     dt("timc", "primary"),
     dt("kt", "terminal", ["cardSlots"]),
     dt("mkt", "terminal", ["cardSlots"]),
-    dt("cardlink", "terminal", ["nfcCard"]),
+    dt("cardlink", "terminal", ["nfcCard", "netConfig:terminal"]),
     dt("switch", "lan"),
     dt("router", "lan"),
     dt("kon", "network", ["zugang"]),
@@ -348,6 +348,39 @@ describe("Internet-Wege 6.0", () => {
       [["app", "erp"]],
     );
     expect(resolvePath(t, "app", "erp", catalog).ok).toBe(true);
+  });
+
+  it("TI-Messenger-Client erreicht über das Internet keinen anderen Dienst", () => {
+    const t = topo(
+      [
+        ["c", "timc"],
+        ["net", "internet"],
+        ["erp", "erp"],
+      ],
+      [
+        ["c", "net"],
+        ["net", "erp"],
+      ],
+    );
+    expect(resolvePath(t, "c", "erp", catalog).ok).toBe(false);
+  });
+
+  it("CardLink erreicht nur den gepairten Zugang", () => {
+    const t = topo(
+      [
+        ["cl", "cardlink", { pairedWith: "kon2" }],
+        ["net", "internet"],
+        ["kon1", "kon"],
+        ["kon2", "kon"],
+      ],
+      [
+        ["cl", "net"],
+        ["net", "kon1"],
+        ["net", "kon2"],
+      ],
+    );
+    expect(resolvePath(t, "cl", "kon1", catalog).ok).toBe(false);
+    expect(resolvePath(t, "cl", "kon2", catalog).ok).toBe(true);
   });
 
   it("Andere Dienste sind über das Internet allein nicht erreichbar", () => {

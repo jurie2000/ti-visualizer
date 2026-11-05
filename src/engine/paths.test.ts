@@ -487,6 +487,46 @@ describe("Terminal und Zugang 6.0", () => {
     expect(resolvePath(ohne, "pvs", "kt", catalog, "local").ok).toBe(false);
   });
 
+  it("TI-Pfad eines KT läuft nur über seinen gepairten Zugang", () => {
+    const t = zwei("kon2", [
+      ["vpn", "vpn"],
+      ["erp", "erp"],
+    ]);
+    const edge = (a: string, b: string) => ({
+      id: `${a}-${b}`,
+      ends: [
+        { node: a, port: "p" },
+        { node: b, port: "p" },
+      ] as Topology["edges"][0]["ends"],
+      fault: false,
+    });
+    t.edges.push(edge("kon1", "vpn"), edge("kon2", "vpn"), edge("vpn", "erp"));
+    const r = resolvePath(t, "kt", "erp", catalog);
+    expect(r.ok && r.nodes).toContain("kon2");
+    expect(r.ok && r.nodes).not.toContain("kon1");
+    (t.nodes.find((n) => n.id === "kon2") as Node).fault = true;
+    expect(resolvePath(t, "kt", "erp", catalog).ok).toBe(false);
+  });
+
+  it("Zugang als Auslöser hat einen Weg zum VPN-Zugangsdienst", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["kon", "kon"],
+        ["vpn", "vpn"],
+      ],
+      [
+        ["pvs", "kon"],
+        ["kon", "vpn"],
+      ],
+    );
+    expect(resolvePath(t, "kon", "vpn", catalog)).toMatchObject({
+      ok: true,
+      nodes: ["kon", "vpn"],
+      zugang: "kon",
+    });
+  });
+
   it("Mehrere Terminals: es zählt das mit dem Arbeitsplatz des Auslösers", () => {
     const t = zwei("kon1", [
       ["kt2", "kt", { workplace: "AP-2", pairedWith: "kon1" }],

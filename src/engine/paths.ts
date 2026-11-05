@@ -72,9 +72,20 @@ function search(
   const internetOnly =
     kind === "ti" &&
     (INTERNET_ONLY.includes(start.type) || INTERNET_ONLY.includes(goal.type));
-  const goalZugang =
-    kind === "local" ? zugangOf(topology, target, catalog) : undefined;
-  if (kind === "local" && goalZugang === undefined) return undefined;
+  // Ein Kartenterminal (Ziel bei `local`, Auslöser bei `ti`) nutzt nur seinen Zugang.
+  const hasSlots = (n: Node) =>
+    catalog.deviceTypes.some(
+      (d) => d.id === n.type && d.capabilities.includes("cardSlots"),
+    );
+  const terminal =
+    kind === "local" ? goal : hasSlots(start) ? start : undefined;
+  const fixedZugang = terminal
+    ? zugangOf(topology, terminal.id, catalog)
+    : undefined;
+  if (terminal && fixedZugang === undefined) return undefined;
+  // Ein Zugang als Auslöser steht schon hinter dem LAN.
+  const startPhase =
+    kind === "ti" && roleOf(start, catalog) === "zugang" ? POST : LAN;
 
   /** Phase nach dem Schritt auf `n`, oder -1, wenn die Rollenfolge es verbietet. */
   const next = (phase: number, n: Node, direct: boolean): number => {
@@ -85,7 +96,7 @@ function search(
       case "net":
         return phase === LAN || phase === POST || phase === INET ? phase : -1;
       case "zugang":
-        if (kind === "local" && n.id !== goalZugang) return -1;
+        if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
         if (phase === LAN) return POST;
         return phase === INET && isGoal ? INET : -1;
       case "internet":
@@ -109,9 +120,9 @@ function search(
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
   const prev = new Map<string, { from: string; edge: string } | null>([
-    [key(trigger, LAN), null],
+    [key(trigger, startPhase), null],
   ]);
-  const queue: [string, number][] = [[trigger, LAN]];
+  const queue: [string, number][] = [[trigger, startPhase]];
   for (let i = 0; i < queue.length; i++) {
     const [id, phase] = queue[i] as [string, number];
     if (id === target) {
@@ -185,6 +196,8 @@ export type TerminalChoice =
 /**
  * Terminal des Auslösers (Regelwerk 6.0): das mit gleichem `workplace`. Ohne
  * Zuordnung entscheiden die Nutzer unter allen erreichbaren Terminals.
+ * Karten bleiben unberücksichtigt: den Filter auf passende Karten (K-3, K-4)
+ * setzt `availableActions` (T-402) darauf.
  */
 export function terminalFor(
   topology: Topology,

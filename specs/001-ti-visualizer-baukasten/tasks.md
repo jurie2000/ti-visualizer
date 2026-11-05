@@ -222,7 +222,7 @@ Vorher: T-907 (fachliche Freigabe).
     darunter „Weg am Zugang vorbei ist kein TI-Pfad“ und „zwei Zugänge im
     Netz, KT gehört zum gepairten“.
 
-- [ ] **T-108 Presets im Katalog** · FR: FR-2 · Regeln: A-5 · nach: T-105, T-106
+- [x] **T-108 Presets im Katalog** · FR: FR-2 · Regeln: A-5 · nach: T-105, T-106
   - Umfang: `presets.json` mit Arztpraxis, Apotheke, Krankenhaus,
     Klinikum nach Regelwerk 13 (Geräte, Kanten mit Anschlüssen, Karten,
     Zonen, `simDate` = 2026-11-01). Positionen aus dem Mockup.

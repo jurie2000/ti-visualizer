@@ -1,1 +1,1787 @@
-[]
+[
+  {
+    "id": "praxis",
+    "topology": {
+      "name": "Arztpraxis Dr. Behrens",
+      "description": "PVS und zwei Kartenterminals am Switch, Konnektor und die Fachdienste der TI.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "pvs1",
+          "type": "pvs",
+          "position": {
+            "x": 46,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "kt1",
+          "type": "kt",
+          "position": {
+            "x": 46,
+            "y": 48
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "smcb",
+              "id": "kt1-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            },
+            {
+              "kind": "hba",
+              "id": "kt1-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "kt2",
+          "type": "kt",
+          "position": {
+            "x": 46,
+            "y": 448
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "kt2-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            }
+          ]
+        },
+        {
+          "id": "sw1",
+          "type": "switch",
+          "position": {
+            "x": 320,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "kon1",
+          "type": "kon",
+          "position": {
+            "x": 590,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "rt1",
+          "type": "router",
+          "position": {
+            "x": 590,
+            "y": 450
+          },
+          "fault": false
+        },
+        {
+          "id": "vpn1",
+          "type": "vpn",
+          "position": {
+            "x": 860,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "idp1",
+          "type": "idp",
+          "position": {
+            "x": 1136,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm1",
+          "type": "vsdm",
+          "position": {
+            "x": 1136,
+            "y": 196
+          },
+          "fault": false
+        },
+        {
+          "id": "erp1",
+          "type": "erp",
+          "position": {
+            "x": 1136,
+            "y": 352
+          },
+          "fault": false
+        },
+        {
+          "id": "kim1",
+          "type": "kim",
+          "position": {
+            "x": 1366,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "tim1",
+          "type": "tim",
+          "position": {
+            "x": 1366,
+            "y": 196
+          },
+          "fault": false
+        },
+        {
+          "id": "epa1",
+          "type": "epa",
+          "position": {
+            "x": 1366,
+            "y": 352
+          },
+          "fault": false
+        },
+        {
+          "id": "timc1",
+          "type": "timc",
+          "position": {
+            "x": 1596,
+            "y": 196
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-pvs1-sw1",
+          "ends": [
+            {
+              "node": "pvs1",
+              "port": "eth0"
+            },
+            {
+              "node": "sw1",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kt1-sw1",
+          "ends": [
+            {
+              "node": "kt1",
+              "port": "lan0"
+            },
+            {
+              "node": "sw1",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kt2-sw1",
+          "ends": [
+            {
+              "node": "kt2",
+              "port": "lan0"
+            },
+            {
+              "node": "sw1",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-sw1-kon1",
+          "ends": [
+            {
+              "node": "sw1",
+              "port": "p4"
+            },
+            {
+              "node": "kon1",
+              "port": "lan"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kon1-rt1",
+          "ends": [
+            {
+              "node": "kon1",
+              "port": "wan"
+            },
+            {
+              "node": "rt1",
+              "port": "lan1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kon1-vpn1",
+          "ends": [
+            {
+              "node": "kon1",
+              "port": "vpn"
+            },
+            {
+              "node": "vpn1",
+              "port": "zugang"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-idp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "idp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-vsdm1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "vsdm1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-erp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "erp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-kim1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "kim1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-epa1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "epa1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-timc1-tim1",
+          "ends": [
+            {
+              "node": "timc1",
+              "port": "wan"
+            },
+            {
+              "node": "tim1",
+              "port": "net"
+            }
+          ],
+          "fault": false
+        }
+      ],
+      "zones": []
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "apotheke",
+    "topology": {
+      "name": "Apotheke am Markt",
+      "description": "AVS, ein Kartenterminal und der Konnektor am E-Rezept-Fachdienst.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "avs1",
+          "type": "avs",
+          "position": {
+            "x": 46,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "kt1",
+          "type": "kt",
+          "position": {
+            "x": 46,
+            "y": 60
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "smcb",
+              "id": "kt1-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            },
+            {
+              "kind": "egk",
+              "id": "kt1-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            }
+          ]
+        },
+        {
+          "id": "sw1",
+          "type": "switch",
+          "position": {
+            "x": 320,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "kon1",
+          "type": "kon",
+          "position": {
+            "x": 590,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "rt1",
+          "type": "router",
+          "position": {
+            "x": 590,
+            "y": 450
+          },
+          "fault": false
+        },
+        {
+          "id": "cl1",
+          "type": "cardlink",
+          "position": {
+            "x": 590,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "vpn1",
+          "type": "vpn",
+          "position": {
+            "x": 860,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "idp1",
+          "type": "idp",
+          "position": {
+            "x": 1136,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm1",
+          "type": "vsdm",
+          "position": {
+            "x": 1136,
+            "y": 196
+          },
+          "fault": false
+        },
+        {
+          "id": "erp1",
+          "type": "erp",
+          "position": {
+            "x": 1136,
+            "y": 352
+          },
+          "fault": false
+        },
+        {
+          "id": "epa1",
+          "type": "epa",
+          "position": {
+            "x": 1136,
+            "y": 508
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-avs1-sw1",
+          "ends": [
+            {
+              "node": "avs1",
+              "port": "eth0"
+            },
+            {
+              "node": "sw1",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kt1-sw1",
+          "ends": [
+            {
+              "node": "kt1",
+              "port": "lan0"
+            },
+            {
+              "node": "sw1",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-sw1-kon1",
+          "ends": [
+            {
+              "node": "sw1",
+              "port": "p3"
+            },
+            {
+              "node": "kon1",
+              "port": "lan"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-cl1-kon1",
+          "ends": [
+            {
+              "node": "cl1",
+              "port": "wan"
+            },
+            {
+              "node": "kon1",
+              "port": "lan"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kon1-rt1",
+          "ends": [
+            {
+              "node": "kon1",
+              "port": "wan"
+            },
+            {
+              "node": "rt1",
+              "port": "lan1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kon1-vpn1",
+          "ends": [
+            {
+              "node": "kon1",
+              "port": "vpn"
+            },
+            {
+              "node": "vpn1",
+              "port": "zugang"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-idp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "idp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-vsdm1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "vsdm1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-erp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "erp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-epa1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "epa1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        }
+      ],
+      "zones": []
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "krankenhaus",
+    "topology": {
+      "name": "Kreiskrankenhaus Nord, TI 2.0",
+      "description": "KIS und TI-Gateway am Switch, vor Ort PCs, Kartenterminals, Switches und ein Router.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "pc1",
+          "type": "pc",
+          "position": {
+            "x": 40,
+            "y": 50
+          },
+          "fault": false
+        },
+        {
+          "id": "kt1",
+          "type": "kt",
+          "position": {
+            "x": 40,
+            "y": 190
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "kt1-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "smcb",
+              "id": "kt1-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "pc2",
+          "type": "pc",
+          "position": {
+            "x": 40,
+            "y": 340
+          },
+          "fault": false
+        },
+        {
+          "id": "kt2",
+          "type": "kt",
+          "position": {
+            "x": 40,
+            "y": 480
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "hba",
+              "id": "kt2-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "sw1",
+          "type": "switch",
+          "position": {
+            "x": 330,
+            "y": 260
+          },
+          "fault": false
+        },
+        {
+          "id": "rt1",
+          "type": "router",
+          "position": {
+            "x": 330,
+            "y": 480
+          },
+          "fault": false
+        },
+        {
+          "id": "sw2",
+          "type": "switch",
+          "position": {
+            "x": 670,
+            "y": 260
+          },
+          "fault": false
+        },
+        {
+          "id": "kis1",
+          "type": "kis",
+          "position": {
+            "x": 950,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "gw1",
+          "type": "gateway",
+          "position": {
+            "x": 950,
+            "y": 330
+          },
+          "fault": false
+        },
+        {
+          "id": "vpn1",
+          "type": "vpn",
+          "position": {
+            "x": 1270,
+            "y": 330
+          },
+          "fault": false
+        },
+        {
+          "id": "idp1",
+          "type": "idp",
+          "position": {
+            "x": 1560,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm1",
+          "type": "vsdm",
+          "position": {
+            "x": 1560,
+            "y": 196
+          },
+          "fault": false
+        },
+        {
+          "id": "erp1",
+          "type": "erp",
+          "position": {
+            "x": 1560,
+            "y": 352
+          },
+          "fault": false
+        },
+        {
+          "id": "kim1",
+          "type": "kim",
+          "position": {
+            "x": 1790,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "tim1",
+          "type": "tim",
+          "position": {
+            "x": 1790,
+            "y": 196
+          },
+          "fault": false
+        },
+        {
+          "id": "epa1",
+          "type": "epa",
+          "position": {
+            "x": 1790,
+            "y": 352
+          },
+          "fault": false
+        },
+        {
+          "id": "timc1",
+          "type": "timc",
+          "position": {
+            "x": 2020,
+            "y": 196
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-pc1-sw1",
+          "ends": [
+            {
+              "node": "pc1",
+              "port": "eth0"
+            },
+            {
+              "node": "sw1",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kt1-sw1",
+          "ends": [
+            {
+              "node": "kt1",
+              "port": "lan0"
+            },
+            {
+              "node": "sw1",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-pc2-sw1",
+          "ends": [
+            {
+              "node": "pc2",
+              "port": "eth0"
+            },
+            {
+              "node": "sw1",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-kt2-sw1",
+          "ends": [
+            {
+              "node": "kt2",
+              "port": "lan0"
+            },
+            {
+              "node": "sw1",
+              "port": "p4"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-sw1-rt1",
+          "ends": [
+            {
+              "node": "sw1",
+              "port": "p5"
+            },
+            {
+              "node": "rt1",
+              "port": "lan1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rt1-sw2",
+          "ends": [
+            {
+              "node": "rt1",
+              "port": "lan2"
+            },
+            {
+              "node": "sw2",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-sw2-kis1",
+          "ends": [
+            {
+              "node": "sw2",
+              "port": "p2"
+            },
+            {
+              "node": "kis1",
+              "port": "eth0"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-sw2-gw1",
+          "ends": [
+            {
+              "node": "sw2",
+              "port": "p3"
+            },
+            {
+              "node": "gw1",
+              "port": "lan"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-gw1-vpn1",
+          "ends": [
+            {
+              "node": "gw1",
+              "port": "vpn"
+            },
+            {
+              "node": "vpn1",
+              "port": "zugang"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-idp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "idp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-vsdm1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "vsdm1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-erp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "erp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-kim1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "kim1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-epa1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "epa1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-timc1-tim1",
+          "ends": [
+            {
+              "node": "timc1",
+              "port": "wan"
+            },
+            {
+              "node": "tim1",
+              "port": "net"
+            }
+          ],
+          "fault": false
+        }
+      ],
+      "zones": []
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "klinikum",
+    "topology": {
+      "name": "Klinikum St. Anna",
+      "description": "Ein zentrales KIS für alle Abteilungen, RIS und LIS als Subsysteme, PCs am Switch, WLAN-Visite, Router und Highspeed-Konnektor.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "na_pc",
+          "type": "pc",
+          "position": {
+            "x": 40,
+            "y": 50
+          },
+          "fault": false
+        },
+        {
+          "id": "na_kt",
+          "type": "kt",
+          "position": {
+            "x": 40,
+            "y": 175
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "na_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "hba",
+              "id": "na_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "na_sw",
+          "type": "switch",
+          "position": {
+            "x": 300,
+            "y": 112
+          },
+          "fault": false
+        },
+        {
+          "id": "st_pc",
+          "type": "pc",
+          "position": {
+            "x": 590,
+            "y": 50
+          },
+          "fault": false
+        },
+        {
+          "id": "st_kt",
+          "type": "kt",
+          "position": {
+            "x": 590,
+            "y": 170
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "hba",
+              "id": "st_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "st_tab",
+          "type": "tab",
+          "position": {
+            "x": 590,
+            "y": 300
+          },
+          "fault": false
+        },
+        {
+          "id": "st_sw",
+          "type": "switch",
+          "position": {
+            "x": 850,
+            "y": 110
+          },
+          "fault": false
+        },
+        {
+          "id": "st_ap",
+          "type": "ap",
+          "position": {
+            "x": 850,
+            "y": 300
+          },
+          "fault": false
+        },
+        {
+          "id": "rad_pc",
+          "type": "pc",
+          "position": {
+            "x": 40,
+            "y": 380
+          },
+          "fault": false
+        },
+        {
+          "id": "rad_ris",
+          "type": "ris",
+          "position": {
+            "x": 40,
+            "y": 505
+          },
+          "fault": false
+        },
+        {
+          "id": "rad_sw",
+          "type": "switch",
+          "position": {
+            "x": 300,
+            "y": 442
+          },
+          "fault": false
+        },
+        {
+          "id": "lab_pc",
+          "type": "pc",
+          "position": {
+            "x": 40,
+            "y": 710
+          },
+          "fault": false
+        },
+        {
+          "id": "lab_lis",
+          "type": "lis",
+          "position": {
+            "x": 40,
+            "y": 835
+          },
+          "fault": false
+        },
+        {
+          "id": "lab_sw",
+          "type": "switch",
+          "position": {
+            "x": 300,
+            "y": 772
+          },
+          "fault": false
+        },
+        {
+          "id": "pa_pc",
+          "type": "pc",
+          "position": {
+            "x": 590,
+            "y": 500
+          },
+          "fault": false
+        },
+        {
+          "id": "pa_kt",
+          "type": "kt",
+          "position": {
+            "x": 590,
+            "y": 625
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "pa_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "smcb",
+              "id": "pa_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "pa_sw",
+          "type": "switch",
+          "position": {
+            "x": 850,
+            "y": 562
+          },
+          "fault": false
+        },
+        {
+          "id": "core",
+          "type": "switch",
+          "position": {
+            "x": 1160,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "kis1",
+          "type": "kis",
+          "position": {
+            "x": 1160,
+            "y": 230
+          },
+          "fault": false
+        },
+        {
+          "id": "adm_pc",
+          "type": "pc",
+          "position": {
+            "x": 1160,
+            "y": 400
+          },
+          "fault": false
+        },
+        {
+          "id": "hskon1",
+          "type": "hskon",
+          "position": {
+            "x": 1160,
+            "y": 570
+          },
+          "fault": false
+        },
+        {
+          "id": "rt1",
+          "type": "router",
+          "position": {
+            "x": 1160,
+            "y": 780
+          },
+          "fault": false
+        },
+        {
+          "id": "vpn1",
+          "type": "vpn",
+          "position": {
+            "x": 1460,
+            "y": 570
+          },
+          "fault": false
+        },
+        {
+          "id": "idp1",
+          "type": "idp",
+          "position": {
+            "x": 1780,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm1",
+          "type": "vsdm",
+          "position": {
+            "x": 1780,
+            "y": 220
+          },
+          "fault": false
+        },
+        {
+          "id": "erp1",
+          "type": "erp",
+          "position": {
+            "x": 1780,
+            "y": 380
+          },
+          "fault": false
+        },
+        {
+          "id": "kim1",
+          "type": "kim",
+          "position": {
+            "x": 2020,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "tim1",
+          "type": "tim",
+          "position": {
+            "x": 2020,
+            "y": 220
+          },
+          "fault": false
+        },
+        {
+          "id": "epa1",
+          "type": "epa",
+          "position": {
+            "x": 2020,
+            "y": 380
+          },
+          "fault": false
+        },
+        {
+          "id": "timc1",
+          "type": "timc",
+          "position": {
+            "x": 2250,
+            "y": 220
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-na_pc-na_sw",
+          "ends": [
+            {
+              "node": "na_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "na_sw",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-na_kt-na_sw",
+          "ends": [
+            {
+              "node": "na_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "na_sw",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-na_sw-core",
+          "ends": [
+            {
+              "node": "na_sw",
+              "port": "p8"
+            },
+            {
+              "node": "core",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-st_pc-st_sw",
+          "ends": [
+            {
+              "node": "st_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "st_sw",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-st_kt-st_sw",
+          "ends": [
+            {
+              "node": "st_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "st_sw",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-st_ap-st_sw",
+          "ends": [
+            {
+              "node": "st_ap",
+              "port": "lan"
+            },
+            {
+              "node": "st_sw",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-st_tab-st_ap",
+          "ends": [
+            {
+              "node": "st_tab",
+              "port": "wlan0"
+            },
+            {
+              "node": "st_ap",
+              "port": "wlan"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-st_sw-core",
+          "ends": [
+            {
+              "node": "st_sw",
+              "port": "p8"
+            },
+            {
+              "node": "core",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rad_pc-rad_sw",
+          "ends": [
+            {
+              "node": "rad_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "rad_sw",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rad_ris-rad_sw",
+          "ends": [
+            {
+              "node": "rad_ris",
+              "port": "eth0"
+            },
+            {
+              "node": "rad_sw",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rad_sw-core",
+          "ends": [
+            {
+              "node": "rad_sw",
+              "port": "p8"
+            },
+            {
+              "node": "core",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-lab_pc-lab_sw",
+          "ends": [
+            {
+              "node": "lab_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "lab_sw",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-lab_lis-lab_sw",
+          "ends": [
+            {
+              "node": "lab_lis",
+              "port": "eth0"
+            },
+            {
+              "node": "lab_sw",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-lab_sw-core",
+          "ends": [
+            {
+              "node": "lab_sw",
+              "port": "p8"
+            },
+            {
+              "node": "core",
+              "port": "p4"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-pa_pc-pa_sw",
+          "ends": [
+            {
+              "node": "pa_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "pa_sw",
+              "port": "p1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-pa_kt-pa_sw",
+          "ends": [
+            {
+              "node": "pa_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "pa_sw",
+              "port": "p2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-pa_sw-core",
+          "ends": [
+            {
+              "node": "pa_sw",
+              "port": "p8"
+            },
+            {
+              "node": "core",
+              "port": "p5"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-core-kis1",
+          "ends": [
+            {
+              "node": "core",
+              "port": "p6"
+            },
+            {
+              "node": "kis1",
+              "port": "eth0"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rad_ris-kis1",
+          "ends": [
+            {
+              "node": "rad_ris",
+              "port": "eth1"
+            },
+            {
+              "node": "kis1",
+              "port": "eth2"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-lab_lis-kis1",
+          "ends": [
+            {
+              "node": "lab_lis",
+              "port": "eth1"
+            },
+            {
+              "node": "kis1",
+              "port": "eth3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-adm_pc-kis1",
+          "ends": [
+            {
+              "node": "adm_pc",
+              "port": "eth0"
+            },
+            {
+              "node": "kis1",
+              "port": "eth1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-core-hskon1",
+          "ends": [
+            {
+              "node": "core",
+              "port": "p7"
+            },
+            {
+              "node": "hskon1",
+              "port": "lan0"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-hskon1-rt1",
+          "ends": [
+            {
+              "node": "hskon1",
+              "port": "wan"
+            },
+            {
+              "node": "rt1",
+              "port": "lan1"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-hskon1-vpn1",
+          "ends": [
+            {
+              "node": "hskon1",
+              "port": "vpn"
+            },
+            {
+              "node": "vpn1",
+              "port": "zugang"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-idp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "idp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-vsdm1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "vsdm1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-erp1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "erp1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-kim1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "kim1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-vpn1-epa1",
+          "ends": [
+            {
+              "node": "vpn1",
+              "port": "zentral"
+            },
+            {
+              "node": "epa1",
+              "port": "ti"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-timc1-tim1",
+          "ends": [
+            {
+              "node": "timc1",
+              "port": "wan"
+            },
+            {
+              "node": "tim1",
+              "port": "net"
+            }
+          ],
+          "fault": false
+        }
+      ],
+      "zones": [
+        {
+          "id": "z-na",
+          "label": "Notaufnahme",
+          "area": {
+            "x": 20,
+            "y": 20,
+            "w": 510,
+            "h": 280
+          },
+          "tone": "sage"
+        },
+        {
+          "id": "z-st",
+          "label": "Station Innere (WLAN)",
+          "area": {
+            "x": 570,
+            "y": 20,
+            "w": 510,
+            "h": 400
+          },
+          "tone": "accent"
+        },
+        {
+          "id": "z-rad",
+          "label": "Radiologie",
+          "area": {
+            "x": 20,
+            "y": 350,
+            "w": 510,
+            "h": 280
+          },
+          "tone": "sage"
+        },
+        {
+          "id": "z-lab",
+          "label": "Labor",
+          "area": {
+            "x": 20,
+            "y": 680,
+            "w": 510,
+            "h": 280
+          },
+          "tone": "neutral"
+        }
+      ]
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  }
+]

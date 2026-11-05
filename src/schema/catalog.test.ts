@@ -152,20 +152,26 @@ const valid = {
   presets: [
     {
       id: "praxis",
-      name: "Praxis",
-      simDate: "2026-11-01",
-      nodes: [
-        { id: "a", type: "pvs", name: "PVS" },
-        { id: "b", type: "kon", name: "Kon" },
-      ],
-      edges: [
-        {
-          id: "e1",
-          a: { node: "a", port: "eth0" },
-          b: { node: "b", port: "lan" },
-          kind: "phys",
-        },
-      ],
+      topology: {
+        name: "Praxis",
+        description: "",
+        simDate: "2026-11-01",
+        nodes: [
+          { id: "a", type: "pvs", position: { x: 0, y: 0 }, fault: false },
+          { id: "b", type: "kon", position: { x: 1, y: 0 }, fault: false },
+        ],
+        edges: [
+          {
+            id: "e1",
+            ends: [
+              { node: "a", port: "eth0" },
+              { node: "b", port: "lan" },
+            ],
+            fault: false,
+          },
+        ],
+        zones: [],
+      },
       ...base,
     },
   ],
@@ -281,9 +287,22 @@ describe("Referenzen (D5)", () => {
     ],
     [
       "Preset-Kante an unbekanntem Anschluss",
-      "presets.0.edges.0.a.port",
+      "presets.0.topology.edges.0.ends.0.port",
       "nix",
       "Anschluss",
+    ],
+    [
+      "Preset belegt einen Einzelanschluss doppelt",
+      "presets.0.topology.edges",
+      [0, 1].map((i) => ({
+        id: `e${String(i)}`,
+        ends: [
+          { node: "a", port: "eth0" },
+          { node: "b", port: "lan" },
+        ],
+        fault: false,
+      })),
+      "nicht mehrfach",
     ],
     ["doppelte ID", "sources.1", valid.sources[0], "doppelte ID"],
   ])("meldet: %s", (_, path, value, part) => {

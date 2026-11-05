@@ -545,6 +545,22 @@ describe("Terminal und Zugang 6.0", () => {
     });
   });
 
+  it("Zugeordnetes Terminal nicht erreichbar: kein Ausweichen auf fremde Arbeitsplätze", () => {
+    const t = zwei("kon1", [
+      ["kt2", "kt", { workplace: "AP-2", pairedWith: "kon1" }],
+    ]);
+    (t.nodes.find((n) => n.id === "kt") as Node).fault = true;
+    t.edges.push({
+      id: "sw-kt2",
+      ends: [
+        { node: "sw", port: "p" },
+        { node: "kt2", port: "p" },
+      ],
+      fault: false,
+    });
+    expect(terminalFor(t, "pvs", catalog)).toEqual({ status: "none" });
+  });
+
   it("Mehrere Terminals ohne Zuordnung: die App fragt", () => {
     const t = zwei("kon1", [["kt2", "kt", { pairedWith: "kon1" }]]);
     (t.nodes.find((n) => n.id === "pvs") as Node).config = {};

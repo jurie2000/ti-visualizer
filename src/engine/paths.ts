@@ -197,7 +197,9 @@ export type TerminalChoice =
  * Terminal des Auslösers (Regelwerk 6.0): das mit gleichem `workplace`. Ohne
  * Zuordnung entscheiden die Nutzer unter allen erreichbaren Terminals.
  * Karten bleiben unberücksichtigt: den Filter auf passende Karten (K-3, K-4)
- * setzt `availableActions` (T-402) darauf.
+ * setzt `availableActions` (T-402) darauf. `zugang` im Pfad ist bei mehreren
+ * Zugängen der zuerst gefundene, T-402 muss für Karten den Zugang des Terminals
+ * (`zugangOf`) verlangen.
  */
 export function terminalFor(
   topology: Topology,
@@ -209,16 +211,15 @@ export function terminalFor(
       .filter((t) => t.capabilities.includes("cardSlots"))
       .map((t) => t.id),
   );
-  const reachable = topology.nodes.filter(
-    (n) =>
-      slots.has(n.type) &&
-      resolvePath(topology, trigger, n.id, catalog, "local").ok,
-  );
+  const terminals = topology.nodes.filter((n) => slots.has(n.type));
   const wp = topology.nodes.find((n) => n.id === trigger)?.config?.workplace;
+  // Ist dem Arbeitsplatz ein Terminal zugeordnet, zählt nur dieses (auch wenn es nicht erreichbar ist).
   const assigned = wp
-    ? reachable.filter((n) => n.config?.workplace === wp)
+    ? terminals.filter((n) => n.config?.workplace === wp)
     : [];
-  const pick = assigned.length > 0 ? assigned : reachable;
+  const pick = (assigned.length > 0 ? assigned : terminals).filter(
+    (n) => resolvePath(topology, trigger, n.id, catalog, "local").ok,
+  );
   const [first] = pick;
   if (!first) return { status: "none" };
   return pick.length === 1

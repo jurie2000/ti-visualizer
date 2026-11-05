@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import regelwerk from "../../specs/001-ti-visualizer-baukasten/regelwerk.md?raw";
+import { regelwerkRows } from "../../scripts/regelwerk.ts";
 import { checkReferences, type Selector } from "./catalog";
 import { loadCatalog } from "./loadCatalog";
 
@@ -94,47 +95,15 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
 
 // --- T-104: Verbindungsregeln und Protokolle ---------------------------------
 
-type Row = { id: string; message: string; status: string; source: string[] };
-
-// Kürzel im Regelwerk -> Quellen-ID im Katalog.
-const sourceAlias: Record<string, string[]> = {
-  "keine (Editorregel)": ["editor"],
-  "FP Konnektor/TI-Gateway": ["FP_Konnektor"],
-};
-
-/** Liest die Zeilen G-*, V-* und X-* aus den Tabellen 4.1, 4.3 und 4.4. */
-function regelwerkRows(): Row[] {
-  const rows = regelwerk
-    .split("\n")
-    .filter((l) => /^\| [GVX]-\d+ \|/.test(l))
-    .map((l) =>
-      l
-        .split("|")
-        .slice(1, -1)
-        .map((c) => c.trim()),
-    );
-  const parsed = rows.map((c) => ({
-    id: c[0] ?? "",
+/** Meldungen der Zeilen G-*, V-* und X-* (ID, Status, Quelle prüft check-regelwerk-katalog.ts). */
+const expected = regelwerkRows(regelwerk)
+  .filter((r) => /^[GVX]-/.test(r.id))
+  .map((r) => ({
+    id: r.id,
     // X-1 hat keine Meldungsspalte
-    message: c.length === 5 ? (c[2] ?? "") : "",
-    status:
-      /^(bestätigt|plausibel|Vereinfachung|offen)/.exec(
-        c[c.length - 2] ?? "",
-      )?.[1] ?? "?",
-    source: (c[c.length - 1] ?? "")
-      .split(", ")
-      .flatMap((q) => sourceAlias[q] ?? [q]),
+    message: r.cells.length === 5 ? (r.cells[2] ?? "") : "",
   }));
-  // „siehe X-1“ (V-10) übernimmt die Quellen von X-1
-  const x1 = parsed.find((r) => r.id === "X-1")?.source ?? [];
-  return parsed.map((r) => ({
-    ...r,
-    source: r.source.flatMap((q) => (q === "siehe X-1" ? x1 : [q])),
-  }));
-}
-
-const expected = regelwerkRows();
-const catalogRows: Row[] = [
+const catalogRows = [
   ...catalog.baseChecks,
   ...catalog.reasonRules,
   ...catalog.exclusionRules.map((r) => ({ ...r, message: "" })),
@@ -179,18 +148,13 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     ]);
   });
 
-  it.each(expected)(
-    "[$id] steht im Katalog mit Status, Quelle und Meldung wie im Regelwerk",
-    (rule) => {
+  it("[G-1][G-2][G-3][G-4][V-4][V-5][V-6][V-7][V-8][V-9][V-10][V-12][V-14][V-15][V-16][V-17][V-18][V-19][V-20][X-1] Meldung im Katalog wie im Regelwerk (ID, Status, Quelle: check-regelwerk-katalog.ts)", () => {
+    for (const rule of expected) {
       const found = catalogRows.find((r) => r.id === rule.id);
-      expect(found, "Regel fehlt").toBeDefined();
-      expect(found?.status).toBe(rule.status);
-      expect([...(found?.source ?? [])].sort()).toEqual(
-        [...rule.source].sort(),
-      );
-      if (rule.message) expect(found?.message).toBe(rule.message);
-    },
-  );
+      expect(found, `${rule.id} fehlt`).toBeDefined();
+      if (rule.message) expect(found?.message, rule.id).toBe(rule.message);
+    }
+  });
 
   it("der Katalog enthält keine weiteren G-, V- oder X-Regeln", () => {
     expect(catalogRows.map((r) => r.id).sort()).toEqual(

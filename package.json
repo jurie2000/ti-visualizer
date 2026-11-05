@@ -12,6 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "check:rueckverfolgbarkeit": "node scripts/check-traceability.ts",
+    "check:katalog": "node scripts/check-regelwerk-katalog.ts",
     "prepare": "lefthook install",
     "test": "vitest run --coverage",
     "e2e": "playwright test",

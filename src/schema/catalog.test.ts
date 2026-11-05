@@ -311,6 +311,24 @@ describe("Referenzen (D5)", () => {
   });
 });
 
+describe("Preset-Anschlüsse", () => {
+  it("meldet einen Mehrfachanschluss mit zwei Kanten nicht", () => {
+    // zwei Kanten am Mehrfachanschluss b.lan (Selbstkante genügt für die Prüfung)
+    const edge = (id: string) => ({
+      id,
+      ends: [
+        { node: "b", port: "lan" },
+        { node: "b", port: "lan" },
+      ],
+      fault: false,
+    });
+    const errors = checkReferences(
+      parse(patch("presets.0.topology.edges", [edge("e1"), edge("e2")])),
+    );
+    expect(errors).toEqual([]);
+  });
+});
+
 describe("Loader", () => {
   it("lädt den gebündelten aktiven Katalog, Schemas und Referenzen stimmen", () => {
     expect(checkReferences(loadCatalog())).toEqual([]);

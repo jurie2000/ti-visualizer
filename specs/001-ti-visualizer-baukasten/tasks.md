@@ -317,7 +317,8 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Umfang: `src/persistence/`: `serialize` und `parse` für `.tiv.json`,
     Migrationskette für ältere `schemaVersion`, Ablehnung neuerer
     Versionen mit Meldung, Prüfung gegen den aktiven Katalog bei
-    abweichender `catalogVersion`. Liste der Importbefunde statt
+    abweichender `catalogVersion`, Anschlussprüfung (Anschluss vorhanden,
+    Einzelanschluss höchstens eine Kante, `multi`) immer. Liste der Importbefunde statt
     stillem Entfernen.
   - Fertig, wenn: Property-Tests „Speichern → Öffnen ergibt dieselbe
     Topologie“ und „Migration ist idempotent“ grün sind, dazu Tests für

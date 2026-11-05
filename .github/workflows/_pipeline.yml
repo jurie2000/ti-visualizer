@@ -94,12 +94,16 @@ jobs:
           name: coverage
           path: coverage/
       - if: steps.token.outputs.vorhanden == 'true'
+        id: woche
+        run: echo "woche=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+      - if: steps.token.outputs.vorhanden == 'true'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.sonar/cache
-          # Wechselnder Key, damit neue Java- und Plugin-Versionen gespeichert
-          # werden; restore-keys holt den jüngsten Stand.
-          key: sonar-${{ runner.os }}-${{ github.run_id }}
+          # Key je Kalenderwoche: neue Java- und Plugin-Versionen landen
+          # spätestens nach einer Woche im Cache, gespeichert wird nur einmal
+          # pro Woche. restore-keys holt sonst den jüngsten Stand.
+          key: sonar-${{ runner.os }}-${{ steps.woche.outputs.woche }}
           restore-keys: sonar-${{ runner.os }}-
       - if: steps.token.outputs.vorhanden == 'true'
         uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1

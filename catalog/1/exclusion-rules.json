@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "X-1",
+    "exclusive": [
+      {
+        "types": ["kon", "hskon"]
+      },
+      {
+        "types": ["gateway"]
+      }
+    ],
+    "message": "Konnektor und TI-Gateway kommen in diesem Lernmodell nicht in derselben Topologie vor.",
+    "source": ["FP_Konnektor", "gemF_TI-Gateway"],
+    "status": "Vereinfachung"
+  }
+]

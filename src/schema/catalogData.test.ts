@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { checkReferences } from "./catalog";
+import regelwerk from "../../specs/001-ti-visualizer-baukasten/regelwerk.md?raw";
+import { checkReferences, type Selector } from "./catalog";
 import { loadCatalog } from "./loadCatalog";
 
 const catalog = loadCatalog();
@@ -88,5 +89,176 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
         "tab",
       ].sort(),
     );
+  });
+});
+
+// --- T-104: Verbindungsregeln und Protokolle ---------------------------------
+
+type Row = { id: string; message: string; status: string; source: string[] };
+
+// Kürzel im Regelwerk -> Quellen-ID im Katalog.
+const sourceAlias: Record<string, string[]> = {
+  "keine (Editorregel)": ["editor"],
+  "FP Konnektor/TI-Gateway": ["FP_Konnektor"],
+};
+
+/** Liest die Zeilen G-*, V-* und X-* aus den Tabellen 4.1, 4.3 und 4.4. */
+function regelwerkRows(): Row[] {
+  const rows = regelwerk
+    .split("\n")
+    .filter((l) => /^\| [GVX]-\d+ \|/.test(l))
+    .map((l) =>
+      l
+        .split("|")
+        .slice(1, -1)
+        .map((c) => c.trim()),
+    );
+  const parsed = rows.map((c) => ({
+    id: c[0] ?? "",
+    // X-1 hat keine Meldungsspalte
+    message: c.length === 5 ? (c[2] ?? "") : "",
+    status:
+      /^(bestätigt|plausibel|Vereinfachung|offen)/.exec(
+        c[c.length - 2] ?? "",
+      )?.[1] ?? "?",
+    source: (c[c.length - 1] ?? "")
+      .split(", ")
+      .flatMap((q) => sourceAlias[q] ?? [q]),
+  }));
+  // „siehe X-1“ (V-10) übernimmt die Quellen von X-1
+  const x1 = parsed.find((r) => r.id === "X-1")?.source ?? [];
+  return parsed.map((r) => ({
+    ...r,
+    source: r.source.flatMap((q) => (q === "siehe X-1" ? x1 : [q])),
+  }));
+}
+
+const expected = regelwerkRows();
+const catalogRows: Row[] = [
+  ...catalog.baseChecks,
+  ...catalog.reasonRules,
+  ...catalog.exclusionRules.map((r) => ({ ...r, message: "" })),
+];
+
+const placeable = catalog.deviceTypes.filter((t) => t.placeable);
+const members = (s: Selector) =>
+  new Set(
+    "types" in s
+      ? s.types
+      : placeable
+          .filter((t) => t.capabilities.includes(s.capability))
+          .map((t) => t.id),
+  );
+const covers = (a: Selector, b: Selector, x: string, y: string) =>
+  (members(a).has(x) && members(b).has(y)) ||
+  (members(a).has(y) && members(b).has(x));
+
+describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
+  it("das Regelwerk nennt genau die Regeln dieses Tasks", () => {
+    expect(expected.map((r) => r.id)).toEqual([
+      "G-1",
+      "G-2",
+      "G-3",
+      "G-4",
+      "V-4",
+      "V-5",
+      "V-6",
+      "V-7",
+      "V-8",
+      "V-9",
+      "V-10",
+      "V-12",
+      "V-14",
+      "V-15",
+      "V-16",
+      "V-17",
+      "V-18",
+      "V-19",
+      "V-20",
+      "X-1",
+    ]);
+  });
+
+  it.each(expected)(
+    "[$id] steht im Katalog mit Status, Quelle und Meldung wie im Regelwerk",
+    (rule) => {
+      const found = catalogRows.find((r) => r.id === rule.id);
+      expect(found, "Regel fehlt").toBeDefined();
+      expect(found?.status).toBe(rule.status);
+      expect([...(found?.source ?? [])].sort()).toEqual(
+        [...rule.source].sort(),
+      );
+      if (rule.message) expect(found?.message).toBe(rule.message);
+    },
+  );
+
+  it("der Katalog enthält keine weiteren G-, V- oder X-Regeln", () => {
+    expect(catalogRows.map((r) => r.id).sort()).toEqual(
+      expected.map((r) => r.id).sort(),
+    );
+  });
+
+  it("[G-1][G-2][G-3][G-4] Grundprüfungen tragen die passende Prüfart", () => {
+    expect(catalog.baseChecks.map((r) => [r.id, r.check])).toEqual([
+      ["G-1", "self"],
+      ["G-2", "duplicate"],
+      ["G-3", "freePort"],
+      ["G-4", "singleZugang"],
+    ]);
+  });
+
+  it("[X-1] schließt Konnektor/Highspeed-Konnektor und TI-Gateway gegeneinander aus", () => {
+    const [a, b] = catalog.exclusionRules[0]?.exclusive ?? [];
+    expect([...members(a as Selector)].sort()).toEqual(["hskon", "kon"]);
+    expect([...members(b as Selector)]).toEqual(["gateway"]);
+  });
+
+  it("Erlaubnisliste: im Modus Einfach sichtbar nur zwischen sichtbaren Geräten", () => {
+    const visible = new Set(
+      catalog.deviceTypes.filter((t) => t.visibleSimple).map((t) => t.id),
+    );
+    for (const r of catalog.connectionRules.filter((x) => x.visibleSimple))
+      for (const t of [...members(r.a), ...members(r.b)])
+        expect(visible.has(t), `${r.id}: ${t}`).toBe(true);
+  });
+
+  it("Konsistenz: keine Begründungsregel erfasst ein erlaubtes Paar", () => {
+    const allowed = (x: string, y: string) =>
+      catalog.connectionRules.some((r) => covers(r.a, r.b, x, y));
+    for (const r of catalog.reasonRules) {
+      let hits = 0;
+      for (const x of placeable)
+        for (const y of placeable) {
+          if (!covers(r.a, r.b, x.id, y.id)) continue;
+          if (r.except?.some((e) => covers(e.a, e.b, x.id, y.id))) continue;
+          hits++;
+          expect(allowed(x.id, y.id), `${r.id}: ${x.id}/${y.id}`).toBe(false);
+        }
+      expect(hits, `${r.id} trifft kein Paar`).toBeGreaterThan(0);
+    }
+  });
+
+  it("Protokolle: sieben Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
+    expect(catalog.protocols.connectionKinds.map((k) => k.id)).toEqual([
+      "phys",
+      "tcp",
+      "vpn",
+      "wlan",
+      "inet",
+      "usb",
+      "sammel",
+    ]);
+    expect(catalog.protocols.protocols).toHaveLength(13);
+    const byId = (id: string) =>
+      catalog.protocols.protocols.find((p) => p.id === id);
+    expect(byId("prot-kt-zugang")).toMatchObject({
+      netPort: "4742",
+      tls: true,
+    });
+    expect(byId("prot-mkt-ps")).toMatchObject({
+      netPort: "keiner",
+      tls: false,
+    });
+    expect(byId("prot-cardlink-zugang")?.netPort).toBeNull();
   });
 });

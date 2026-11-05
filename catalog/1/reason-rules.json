@@ -1,1 +1,257 @@
-[]
+[
+  {
+    "id": "V-4",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+    },
+    "b": {
+      "types": [
+        "vsdm",
+        "erp",
+        "kim",
+        "tim",
+        "epa",
+        "popp",
+        "dns",
+        "ntp",
+        "vzd",
+        "tsl",
+        "idp",
+        "idpsek"
+      ]
+    },
+    "message": "Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst.",
+    "source": ["Arch", "gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-5",
+    "a": {
+      "types": ["kt", "mkt", "cardlink"]
+    },
+    "b": {
+      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+    },
+    "message": "Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor.",
+    "source": ["gemSpec_KT", "Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-6",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+    },
+    "b": {
+      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+    },
+    "except": [
+      {
+        "a": {
+          "types": ["pc"]
+        },
+        "b": {
+          "types": ["kis", "pvs", "avs"]
+        }
+      },
+      {
+        "a": {
+          "types": ["ris", "lis"]
+        },
+        "b": {
+          "types": ["kis"]
+        }
+      }
+    ],
+    "message": "Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden.",
+    "source": ["gemILF_PS", "KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "V-7",
+    "a": {
+      "types": ["switch", "router", "ap", "fw"]
+    },
+    "b": {
+      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+    },
+    "message": "Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst.",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-8",
+    "a": {
+      "types": ["switch", "ap"]
+    },
+    "b": {
+      "types": ["vpn", "internet"]
+    },
+    "message": "Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz.",
+    "source": ["Betriebsarten"],
+    "status": "plausibel"
+  },
+  {
+    "id": "V-9",
+    "a": {
+      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+    },
+    "b": {
+      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+    },
+    "message": "Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz.",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-10",
+    "a": {
+      "types": ["kon", "hskon"]
+    },
+    "b": {
+      "types": ["gateway"]
+    },
+    "message": "Konnektor und TI-Gateway kommen in diesem Lernmodell nicht in derselben Topologie vor.",
+    "source": ["FP_Konnektor", "gemF_TI-Gateway"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "V-12",
+    "a": {
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "tab",
+        "ris",
+        "lis",
+        "kt",
+        "cardlink"
+      ]
+    },
+    "b": {
+      "types": ["vpn"]
+    },
+    "message": "Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf.",
+    "source": ["Arch", "gemSpec_VPN_ZugD"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-14",
+    "a": {
+      "types": ["mkt"]
+    },
+    "b": {
+      "types": [
+        "switch",
+        "router",
+        "ap",
+        "fw",
+        "kon",
+        "hskon",
+        "gateway",
+        "vpn",
+        "internet",
+        "zentral"
+      ]
+    },
+    "message": "Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. Die Daten gehen später per USB ans Primärsystem.",
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-15",
+    "a": {
+      "types": ["erpapp", "epaapp"]
+    },
+    "b": {
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "tab",
+        "ris",
+        "lis",
+        "kon",
+        "hskon",
+        "gateway"
+      ]
+    },
+    "message": "Versicherte nutzen ihre Apps über das Internet, nicht über die Infrastruktur der Praxis.",
+    "source": ["gemSpec_eRp_FdV"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-16",
+    "a": {
+      "types": ["dns", "ntp", "vzd", "tsl", "idp", "idpsek"]
+    },
+    "b": {
+      "types": ["switch", "router", "ap", "fw"]
+    },
+    "message": "Zentrale Dienste der TI liegen im Zentralen Netz und sind nur über den VPN-Zugangsdienst erreichbar.",
+    "source": ["Arch", "gemSpec_Net"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-17",
+    "a": {
+      "capability": "zugang"
+    },
+    "b": {
+      "capability": "zugang"
+    },
+    "except": [
+      {
+        "a": {
+          "types": ["kon", "hskon"]
+        },
+        "b": {
+          "types": ["gateway"]
+        }
+      }
+    ],
+    "message": "Eine Einrichtung nutzt ihre Konnektoren unabhängig voneinander. Sie werden nicht miteinander verbunden.",
+    "source": ["gemSpec_Kon"],
+    "status": "plausibel"
+  },
+  {
+    "id": "V-18",
+    "a": {
+      "types": ["kt", "mkt", "cardlink"]
+    },
+    "b": {
+      "types": ["kt", "mkt", "cardlink"]
+    },
+    "message": "Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor.",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "V-19",
+    "a": {
+      "types": ["tim"]
+    },
+    "b": {
+      "types": ["vpn", "zentral"]
+    },
+    "message": "Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst.",
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "plausibel"
+  },
+  {
+    "id": "V-20",
+    "a": {
+      "types": ["router"]
+    },
+    "b": {
+      "types": ["router"]
+    },
+    "message": "Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch.",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  }
+]

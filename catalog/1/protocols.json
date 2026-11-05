@@ -1,1 +1,243 @@
-{ "connectionKinds": [], "protocols": [] }
+{
+  "connectionKinds": [
+    {
+      "id": "phys",
+      "name": "Physisch",
+      "meaning": "Kabel",
+      "lineStyle": "durchgezogen, dick"
+    },
+    {
+      "id": "tcp",
+      "name": "TCP/TLS",
+      "meaning": "im lokalen Netz bzw. in der TI",
+      "lineStyle": "durchgezogen, dünn"
+    },
+    {
+      "id": "vpn",
+      "name": "VPN",
+      "meaning": "IPsec-Tunnel in die TI",
+      "lineStyle": "gestrichelt"
+    },
+    {
+      "id": "wlan",
+      "name": "WLAN",
+      "meaning": "Funk im lokalen Netz",
+      "lineStyle": "kurz gestrichelt"
+    },
+    {
+      "id": "inet",
+      "name": "Internet",
+      "meaning": "offenes Netz",
+      "lineStyle": "Strich-Punkt"
+    },
+    {
+      "id": "usb",
+      "name": "USB",
+      "meaning": "lokale Kabelverbindung, z. B. Mobiles KT",
+      "lineStyle": "durchgezogen, dick"
+    },
+    {
+      "id": "sammel",
+      "name": "Sammelkante",
+      "meaning": "nur im Modus Einfach: fasst einen Weg über ausgeblendete Geräte zusammen (Abschnitt 11)",
+      "lineStyle": "durchgezogen, doppelt"
+    }
+  ],
+  "protocols": [
+    {
+      "id": "prot-kt-zugang",
+      "a": {
+        "types": ["kt"]
+      },
+      "b": {
+        "capability": "zugang"
+      },
+      "label": "SICCT",
+      "protocol": "SICCT, nach Pairing",
+      "netPort": "4742",
+      "tls": true,
+      "source": ["gemSpec_KT"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-cardlink-zugang",
+      "a": {
+        "types": ["cardlink"]
+      },
+      "b": {
+        "capability": "zugang"
+      },
+      "label": "wie Kartenterminal",
+      "protocol": "wie Kartenterminal, über das Internet",
+      "netPort": null,
+      "tls": true,
+      "source": ["gemSpec_eHealth-CardLink"],
+      "status": "plausibel"
+    },
+    {
+      "id": "prot-ps-zugang",
+      "a": {
+        "types": ["pvs", "kis", "avs", "pflege"]
+      },
+      "b": {
+        "capability": "zugang"
+      },
+      "label": "SOAP",
+      "protocol": "SOAP, XML",
+      "netPort": "443",
+      "tls": true,
+      "source": ["gemILF_PS"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-mkt-ps",
+      "a": {
+        "types": ["mkt"]
+      },
+      "b": {
+        "types": ["pvs", "kis", "avs", "pflege", "pc"]
+      },
+      "label": "CT-API",
+      "protocol": "CT-API über USB",
+      "netPort": "keiner",
+      "tls": false,
+      "source": ["gemSpec_MobKT"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-zugang-vpn",
+      "a": {
+        "capability": "zugang"
+      },
+      "b": {
+        "types": ["vpn"]
+      },
+      "label": "IPsec",
+      "protocol": "IPsec (IKEv2) über das Transportnetz",
+      "netPort": "UDP 500 und 4500",
+      "tls": false,
+      "source": ["Arch", "gemSpec_VPN_ZugD"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-ps-kimcm",
+      "a": {
+        "types": ["pvs", "kis", "avs", "pflege"]
+      },
+      "b": {
+        "types": ["kimcm"]
+      },
+      "label": "SMTP/POP3",
+      "protocol": "SMTP und POP3",
+      "netPort": null,
+      "tls": true,
+      "source": ["gemSpec_CM_KOMLE"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-kimcm-kim",
+      "a": {
+        "types": ["kimcm"]
+      },
+      "b": {
+        "types": ["kim"]
+      },
+      "label": "SMTP/POP3",
+      "protocol": "SMTP und POP3, über die Route des Zugangs",
+      "netPort": null,
+      "tls": true,
+      "source": ["gemSpec_CM_KOMLE"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-timc-tim",
+      "a": {
+        "types": ["timc"]
+      },
+      "b": {
+        "types": ["tim"]
+      },
+      "label": "Matrix",
+      "protocol": "Matrix (Client-Server-API), JSON",
+      "netPort": "443",
+      "tls": true,
+      "source": ["gemSpec_TI-M_Basis"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-ps-erp",
+      "a": {
+        "types": ["pvs", "kis", "avs", "pflege"]
+      },
+      "b": {
+        "types": ["erp"]
+      },
+      "label": "HTTPS/VAU",
+      "protocol": "HTTPS mit VAU, FHIR. Läuft über die Route des Zugangs, der Zugang leitet nur weiter",
+      "netPort": "443",
+      "tls": true,
+      "source": ["gemILF_PS_eRp"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-ps-epa",
+      "a": {
+        "types": ["pvs", "kis", "avs", "pflege"]
+      },
+      "b": {
+        "types": ["epa"]
+      },
+      "label": "HTTPS/VAU",
+      "protocol": "HTTPS mit VAU, FHIR. Über die Route des Zugangs",
+      "netPort": "443",
+      "tls": true,
+      "source": ["gemILF_PS_ePA"],
+      "status": "plausibel"
+    },
+    {
+      "id": "prot-zugang-vsdm",
+      "a": {
+        "capability": "zugang"
+      },
+      "b": {
+        "types": ["vsdm"]
+      },
+      "label": "SOAP",
+      "protocol": "SOAP (ReadVSD)",
+      "netPort": null,
+      "tls": true,
+      "source": ["gemSysL_VSDM"],
+      "status": "plausibel"
+    },
+    {
+      "id": "prot-ps-idp",
+      "a": {
+        "types": ["pvs", "kis", "avs", "pflege"]
+      },
+      "b": {
+        "types": ["idp"]
+      },
+      "label": "OAuth 2.0/OIDC",
+      "protocol": "OAuth 2.0 und OpenID Connect, über die Route des Zugangs",
+      "netPort": "443",
+      "tls": true,
+      "source": ["gemSpec_IDP_FD", "gemILF_PS_eRp"],
+      "status": "bestätigt"
+    },
+    {
+      "id": "prot-kis-risl",
+      "a": {
+        "types": ["kis"]
+      },
+      "b": {
+        "types": ["ris", "lis"]
+      },
+      "label": "HL7 v2",
+      "protocol": "HL7 v2 (außerhalb der TI)",
+      "netPort": null,
+      "tls": true,
+      "source": ["KH"],
+      "status": "plausibel"
+    }
+  ]
+}

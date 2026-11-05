@@ -124,6 +124,9 @@ export const reasonRules = z.array(
     id: Id,
     a: Selector,
     b: Selector,
+    // Paare, die trotz Treffer von a/b nicht gemeint sind (z. B. V-6: erlaubte
+    // Primärsystem-Paare), damit keine Begründung ein erlaubtes Paar erfasst.
+    except: z.array(z.strictObject({ a: Selector, b: Selector })).optional(),
     message: Text,
     ...sourced,
   }),
@@ -375,6 +378,11 @@ export function checkReferences(c: Catalog): string[] {
     sel(`Regel ${r.id}`, r.a);
     sel(`Regel ${r.id}`, r.b);
   }
+  for (const r of c.reasonRules)
+    r.except?.forEach((e) => {
+      sel(`Regel ${r.id}`, e.a);
+      sel(`Regel ${r.id}`, e.b);
+    });
   for (const r of c.exclusionRules)
     r.exclusive.forEach((s) => {
       sel(`Regel ${r.id}`, s);

@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "id": "G-1",
+    "check": "self",
+    "message": "Ein Gerät kann nicht mit sich selbst verbunden werden.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "G-2",
+    "check": "duplicate",
+    "message": "Diese beiden Geräte sind bereits verbunden.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "G-3",
+    "check": "freePort",
+    "message": "‹Gerät› hat keinen freien passenden Anschluss mehr.",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "G-4",
+    "check": "singleZugang",
+    "message": "Ein Kartenterminal arbeitet immer nur mit einem Konnektor zusammen.",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  }
+]

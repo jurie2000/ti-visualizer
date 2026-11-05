@@ -90,3 +90,8 @@
   color: var(--color-bg);
   border-radius: var(--radius-sm);
 }
+
+a {
+  color: var(--tiv-link, inherit);
+  text-decoration: underline;
+}

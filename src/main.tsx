@@ -1,3 +1,4 @@
+// Gegentest T-008: harmlose Kommentarzeile, wird nicht gemergt.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";

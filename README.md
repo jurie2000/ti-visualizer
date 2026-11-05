@@ -68,3 +68,5 @@ Dies ist kein offizielles Angebot der gematik GmbH.
 ## Lizenz
 
 [MIT](LICENSE) © 2026 Justin Riedel
+
+<!-- Gegentest T-008, wird nicht gemergt -->

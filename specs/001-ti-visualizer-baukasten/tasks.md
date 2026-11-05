@@ -82,7 +82,7 @@ Git-Historie auf private Daten und Secrets durchsucht (T-901).
   - Fertig, wenn: der Build enthält beide Meta-Tags. Das Ergebnis der
     Probe steht in plan.md unter „Risiken“ (Ausnahme nur mit Begründung).
 
-- [ ] **T-005 Pre-Commit und PR-Vorlagen** [P] · FR: – · Regeln: – · nach: T-001
+- [x] **T-005 Pre-Commit und PR-Vorlagen** [P] · FR: – · Regeln: – · nach: T-001
   - Umfang: `lefthook` mit `lint-staged` (ESLint, Prettier) und `gitleaks`.
     `.github/pull_request_template.md` (Task-ID, FR- und Regel-IDs, Tests,
     Screenshot bei UI, Sicherheitsrelevanz). `.github/CODEOWNERS` (nur

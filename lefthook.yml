@@ -1,0 +1,8 @@
+# Pre-Commit-Prüfungen (T-005). Installation über `pnpm prepare`.
+pre-commit:
+  parallel: false
+  jobs:
+    - name: gitleaks
+      run: gitleaks git --staged --pre-commit --redact --no-banner --verbose
+    - name: lint-staged
+      run: pnpm exec lint-staged

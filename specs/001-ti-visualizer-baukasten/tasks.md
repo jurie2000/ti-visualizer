@@ -566,7 +566,9 @@ Fertig-Kriterium.
   `src/persistence/` (Ziel ≥ 80 %)
 - [ ] **T-802** `nightly.yml`: E2E in allen Browsern
 - [ ] **T-803** Lighthouse CI und `knip`
-- [ ] **T-804** CodeQL, Dependency-Review-Action, `pnpm audit`, OSV-Scanner
+- [x] **T-804a** CodeQL (Default-Setup von GitHub, Query-Suite `extended`,
+  JavaScript/TypeScript und Actions), vorgezogen am 2026-11-05
+- [ ] **T-804b** Dependency-Review-Action, `pnpm audit`, OSV-Scanner
 - [ ] **T-805** SBOM (CycloneDX) und OWASP Dependency-Track
 - [ ] **T-806** OWASP ZAP Baseline-Scan und OpenSSF Scorecard
 - [ ] **T-807** Build-Provenienz und `commitlint`

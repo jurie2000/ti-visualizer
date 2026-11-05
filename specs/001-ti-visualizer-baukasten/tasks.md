@@ -40,7 +40,7 @@ Pipeline. Vor T-010 müssen T-901 bis T-904 erledigt sein, weil das Repo
 dann öffentlich wird. Insbesondere wird vorher das ganze Projekt samt
 Git-Historie auf private Daten und Secrets durchsucht (T-901).
 
-- [ ] **T-001 Projekt aufsetzen** · FR: – · Regeln: – · nach: –
+- [x] **T-001 Projekt aufsetzen** · FR: – · Regeln: – · nach: –
   - Umfang: Vite, React, TypeScript, pnpm. `tsconfig` mit `strict`,
     `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
     `noImplicitOverride`. Ordner nach Repo-Layout (`src/app`, `ui`,

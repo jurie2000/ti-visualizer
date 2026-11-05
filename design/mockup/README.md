@@ -10,6 +10,7 @@ Export vom 2026-11-03 (`MockUp.zip`, entpackt).
 | `_ds/organic-…/styles.css` | Design-Tokens „Organic“ (Farben, Schriften, Abstände, Radien) |
 | `screenshots/` | Ansichten des Mockups |
 | `assets/`, `uploads/` | Persona-Bilder, Vorlagen-Screenshots, Mockup-Prompts |
-| `support.js`, `image-slot.js` | Laufzeit von Claude Design, nur zur Anzeige nötig |
 
-Referenz für die Umsetzung sind Template, Logik und `styles.css`. Die Laufzeit-Dateien werden nicht in die App übernommen.
+Referenz für die Umsetzung sind Template, Logik und `styles.css`. Die Laufzeit-Dateien von Claude Design (`support.js`, `image-slot.js`)
+sind nicht im Repo, weil sie nicht zum Projekt gehören (T-901, T-904).
+Zum Anzeigen der `.dc.html`-Dateien `MockUp.zip` lokal entpacken.

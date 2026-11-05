@@ -18,9 +18,6 @@ ersetzt nicht die Spezifikationen im [gematik-Fachportal](https://fachportal.gem
 
 ## Datenschutz
 
-> **Entwurf:** Dieser Hinweis wird vor der Veröffentlichung noch einmal
-> geprüft. Die Anschrift des Verantwortlichen wird bis dahin ergänzt.
-
 **Verantwortlich** im Sinne der DSGVO ist Justin Riedel (Kontakt siehe
 oben).
 

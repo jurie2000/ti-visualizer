@@ -23,9 +23,10 @@ export function useConnecting() {
   const connect = useTopology((s) => s.connect);
   const [source, setSource] = useState<string>();
   const [exclusion, setExclusion] = useState<string>();
-  // Letzte Prüfung von React Flow. Beim Verbinden per Klick meldet
-  // `onClickConnectEnd` kein Ergebnis; die Prüfung läuft direkt davor.
-  const last = useRef<ReturnType<typeof validateConnection>>(undefined);
+  // Klick-Zug: Quelle vom ersten Klick, und ob der zweite Klick verbunden hat.
+  // React Flow liefert im Klick-Modus kein Prüfergebnis an `onClickConnectEnd`.
+  const clickFrom = useRef<string>(undefined);
+  const clickConnected = useRef(false);
   const flow = useStoreApi();
 
   /** Bricht einen Klick-Zug ab (Punkt angeklickt, Ziel noch offen). */
@@ -72,11 +73,10 @@ export function useConnecting() {
     closeExclusion: () => {
       setExclusion(undefined);
     },
-    isValidConnection: (c: { source: string; target: string }) => {
-      last.current = check(c.source, c.target);
-      return last.current.ok;
-    },
+    isValidConnection: (c: { source: string; target: string }) =>
+      check(c.source, c.target).ok,
     onConnect: (c: Connection) => {
+      clickConnected.current = true;
       tryConnect(c.source, c.target);
     },
     /** Ein losgelassener, ungültiger Zug auf ein Gerät nennt den Grund. */
@@ -87,16 +87,30 @@ export function useConnecting() {
     }) satisfies OnConnectEnd,
     /** Verbinden per Klick: erst den Punkt, dann das Zielgerät. */
     onClickConnectStart: ((_, { nodeId }) => {
-      last.current = undefined;
+      clickFrom.current = nodeId ?? undefined;
+      clickConnected.current = false;
       if (nodeId)
         toast.show(
           `Quelle ${nameOf(nodeId)} gewählt. Jetzt das Zielgerät anklicken, Esc oder ein Klick auf die freie Fläche bricht ab.`,
         );
     }) satisfies OnConnectStart,
-    onClickConnectEnd: (() => {
-      const r = last.current;
-      last.current = undefined;
-      if (r && !r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
+    /** Zweiter Klick ohne Verbindung (Zielfläche oder Punkt eines Geräts): Grund nennen. */
+    onClickConnectEnd: ((event) => {
+      const from = clickFrom.current;
+      clickFrom.current = undefined;
+      if (clickConnected.current) {
+        clickConnected.current = false;
+        return;
+      }
+      const target = event.target instanceof Element ? event.target : null;
+      const to = target?.closest(".react-flow__node")?.getAttribute("data-id");
+      if (!from || !to) return;
+      if (from === to) {
+        toast.show("Verbinden abgebrochen.");
+        return;
+      }
+      const r = check(from, to);
+      if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
     cancelClick,
     onKeyDown: (e: KeyboardEvent) => {

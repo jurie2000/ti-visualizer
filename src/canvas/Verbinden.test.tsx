@@ -157,6 +157,18 @@ describe("Verbinden per Klick: Punkt, dann Zielgerät", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/VPN-Tunnel/);
   });
 
+  it("[V-12] nennt den Grund auch, wenn der zweite Klick den Punkt des Ziels trifft", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    const before = useTopology.getState().topology.edges.length;
+    await user.click(punkt("pvs1"));
+    const el = punkt("vpn1");
+    document.elementFromPoint = () => el;
+    await user.click(el);
+    expect(useTopology.getState().topology.edges).toHaveLength(before);
+    expect(screen.getByRole("status")).toHaveTextContent(/VPN-Tunnel/);
+  });
+
   it("Esc bricht ab, danach nimmt keine Zielfläche mehr Klicks an", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });

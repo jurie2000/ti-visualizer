@@ -330,6 +330,19 @@ genau zwei Enden, beide zeigen auf vorhandene Knoten und Anschlüsse.
     Importbefunden und werden von der Sicherheitsprüfung angezeigt, nicht
     stillschweigend entfernt.
 
+### Persistenz-API (`src/persistence/`, T-301)
+
+`serialize(topology, catalog, { settings? })` schreibt den Text.
+`parse(text, catalog)` und `parseData(daten, catalog)` liefern
+`{ ok: true, topology, settings?, catalogVersion, findings }` oder
+`{ ok: false, reason }` und werfen nie. Ein Befund (`Finding`) hat
+`severity` (Fehler, Warnung, Hinweis), `code`, `message` und optional `ref`
+(ID des Elements). `parse` prüft Anschlüsse, Karten und Konfiguration immer
+gegen den aktiven Katalog, die Verbindungsregeln zusätzlich bei abweichender
+`catalogVersion` (Verstöße bleiben als Warnung stehen). Auch Autosave läuft
+durch `parse`. `toFileSettings`/`fromFileSettings` bilden den Settings-Store
+auf das Dateiformat ab.
+
 ### Sicherheit beim Öffnen fremder Dateien
 
 - Jede Datei läuft durch das Zod-Schema. Übernommen werden nur bekannte

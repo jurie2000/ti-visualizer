@@ -1,3 +1,4 @@
+import { ReactFlowProvider } from "@xyflow/react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -22,7 +23,9 @@ const plugButton = () => {
 };
 const app = (
   <ToastProvider>
-    <Canvas />
+    <ReactFlowProvider>
+      <Canvas />
+    </ReactFlowProvider>
     <PlugCardDialog />
   </ToastProvider>
 );
@@ -54,7 +57,7 @@ describe("Karten stecken und ziehen", () => {
     expect(cardsOf()).toEqual([]);
   });
 
-  it("[K-2] meldet bei voller Kartenbelegung, dass die Art schon steckt", async () => {
+  it("[K-2] bietet nur fehlende Kartenarten an", async () => {
     const user = userEvent.setup();
     useTopology
       .getState()
@@ -62,11 +65,24 @@ describe("Karten stecken und ziehen", () => {
     render(app);
     await user.click(plugButton());
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
+    const options = within(
+      within(dlg).getByLabelText("Kartenart"),
+    ).getAllByRole("option");
+    expect(options.map((o) => o.textContent)).toEqual(["HBA", "SMC-B"]);
+  });
+
+  it("[K-2] meldet bei voller Kartenbelegung, dass alle Arten stecken", async () => {
+    const user = userEvent.setup();
+    for (const kind of ["egk", "hba", "smcb"] as const)
+      useTopology.getState().plugCard(kt.id, { kind, expires: "2030-01-01" });
+    render(app);
+    await user.click(plugButton());
+    const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
     expect(screen.getByRole("status")).toHaveTextContent(
       "Alle Kartenarten stecken bereits in diesem Terminal.",
     );
-    expect(cardsOf()).toHaveLength(1);
+    expect(cardsOf()).toHaveLength(3);
   });
 
   it("[K-3] kennzeichnet abgelaufene Karten im Text", () => {

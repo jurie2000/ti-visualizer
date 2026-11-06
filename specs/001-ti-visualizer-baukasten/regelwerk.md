@@ -228,6 +228,29 @@ Abschnitt 5.
 | `usb` | USB | lokale Kabelverbindung, z. B. Mobiles KT | durchgezogen, dick |
 | `sammel` | Sammelkante | nur im Modus Einfach: fasst einen Weg über ausgeblendete Geräte zusammen (Abschnitt 11) | durchgezogen, doppelt |
 
+Zuordnung einer Kante zur Art, in dieser Reihenfolge (aus den
+Anschlussarten der beiden Enden und der Protokolltabelle unten, keine
+eigene Regel-ID):
+
+1. über `wifi` (A-4): `wlan`
+2. beide Enden `tun`: `vpn`
+3. ein Ende `net`: `inet`
+4. beide Enden `ti`: `tcp`
+5. ein Ende `usb`: `usb`
+6. Kabel zwischen zwei Geräten, für die die Protokolltabelle TLS
+   führt, und keines davon ist ein Netzgerät (Kategorie `lan`: Switch,
+   Internet-Router, WLAN Access Point, Firewall): `tcp`, z. B.
+   eHealth-KT ↔ Zugang, Primärsystem ↔ Zugang, Primärsystem ↔
+   KIM-Clientmodul
+7. sonst `phys`
+
+Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
+Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
+physische Strecke gemeint: `phys`. Verbinden zwei Endgeräte direkt, die
+laut Protokolltabelle TLS sprechen, zeigt die Kante die logische
+Verbindung: `tcp`. Daher weicht KT ↔ Zugang vom Mockup ab (dort Kabel):
+SICCT läuft nach dem Pairing über TLS (gemSpec_KT).
+
 Protokolle je Verbindung (Detailpanel, FR-11). „offen“ heißt: noch
 nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 

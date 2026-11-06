@@ -89,6 +89,10 @@
   --tiv-edge-phys: #4a4439;
   --tiv-edge-phys-width: 3.6;
   --tiv-edge-phys-dash: none;
+  /* Regelwerk 3: USB sieht aus wie Kabel (durchgezogen, dick) */
+  --tiv-edge-usb: var(--tiv-edge-phys);
+  --tiv-edge-usb-width: var(--tiv-edge-phys-width);
+  --tiv-edge-usb-dash: var(--tiv-edge-phys-dash);
   --tiv-edge-nfc: #b0568d;
   --tiv-edge-nfc-width: 3;
   --tiv-edge-nfc-dash: 1 6;

@@ -46,8 +46,16 @@
   color: var(--color-text);
   font-size: 0.8125rem;
 }
+/* Auswahl: dickerer Rahmen, Häkchen und Fokusfarbe, nicht nur Farbe */
 .tiv-node.is-selected {
   background: var(--tiv-focus);
+}
+.tiv-node.is-selected .tiv-node__body {
+  margin: 4px;
+}
+.tiv-node__selected {
+  color: var(--tiv-focus);
+  margin-left: auto;
 }
 .tiv-node.is-fault {
   background: repeating-linear-gradient(
@@ -170,6 +178,10 @@
   font-size: 0.6875rem;
   white-space: nowrap;
   pointer-events: none;
+}
+.tiv-edge-label.is-selected {
+  border: 3px solid var(--tiv-focus);
+  font-weight: 700;
 }
 .tiv-edge-label.is-fault {
   color: var(--tiv-error-fg);

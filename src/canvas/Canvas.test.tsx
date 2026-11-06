@@ -66,6 +66,10 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
     el.focus();
     await user.keyboard("{Enter}");
     expect(useUi.getState().selection).toEqual({ kind: "node", id: first.id });
+    // Auswahl nicht nur über Farbe: Screenreader hören sie im Label
+    expect(
+      screen.getByRole("group", { name: /^PVS: .*, ausgewählt$/ }),
+    ).toBeInTheDocument();
     const before = useTopology.getState().past.length;
     await act(async () => {
       await user.keyboard("{ArrowRight}");

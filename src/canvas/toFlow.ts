@@ -36,14 +36,15 @@ export function toFlow(
     const device = catalog.deviceTypes.find((d) => d.id === node.type);
     if (!device) continue;
     const name = node.label ?? device.name;
+    const selected = selection?.kind === "node" && selection.id === node.id;
     nodes.push({
       id: node.id,
       type: "device",
       position: drag[node.id] ?? node.position,
       initialWidth: NODE_SIZE.width,
       initialHeight: NODE_SIZE.height,
-      selected: selection?.kind === "node" && selection.id === node.id,
-      ariaLabel: `${device.abbr}: ${name}${node.fault ? ", gestört" : ""}`,
+      selected,
+      ariaLabel: `${device.abbr}: ${name}${node.fault ? ", gestört" : ""}${selected ? ", ausgewählt" : ""}`,
       data: {
         node,
         device,
@@ -53,14 +54,20 @@ export function toFlow(
   }
 
   const edges: ConnectionFlowEdge[] = topology.edges.map((edge) => {
-    const { kind, label, description } = describeEdge(edge, topology, catalog);
+    const selected = selection?.kind === "edge" && selection.id === edge.id;
+    const { kind, label, description } = describeEdge(
+      edge,
+      topology,
+      catalog,
+      selected,
+    );
     const [a, b] = edge.ends;
     return {
       id: edge.id,
       type: "connection",
       source: a.node,
       target: b.node,
-      selected: selection?.kind === "edge" && selection.id === edge.id,
+      selected,
       ariaLabel: description,
       data: { kind, label: edge.label ?? label, fault: edge.fault },
     };

@@ -72,13 +72,16 @@ export function ConnectionEdge({
         className={`tiv-edge${selected ? " is-selected" : ""}${data.fault ? " is-fault" : ""}`}
         style={{
           stroke: `var(--tiv-edge-${data.kind})`,
-          strokeWidth: `var(--tiv-edge-${data.kind}-width)`,
+          // Auswahl: dicker, nicht nur farbig
+          strokeWidth: selected
+            ? `calc(var(--tiv-edge-${data.kind}-width) + 3)`
+            : `var(--tiv-edge-${data.kind}-width)`,
           strokeDasharray: `var(--tiv-edge-${data.kind}-dash)`,
         }}
       />
       <EdgeLabelRenderer>
         <div
-          className={`tiv-edge-label nodrag nopan${data.fault ? " is-fault" : ""}`}
+          className={`tiv-edge-label nodrag nopan${data.fault ? " is-fault" : ""}${selected ? " is-selected" : ""}`}
           style={{
             transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(y)}px)`,
           }}

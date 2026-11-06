@@ -1,5 +1,5 @@
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
 import type { DeviceFlowNode } from "./toFlow";
@@ -29,6 +29,13 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
           <span className="tiv-node__abbr">
             <DeviceIcon id={device.icon} />
             {device.abbr}
+            {selected && (
+              <CircleCheck
+                size={14}
+                aria-hidden="true"
+                className="tiv-node__selected"
+              />
+            )}
             {node.fault && (
               <AlertTriangle
                 size={14}

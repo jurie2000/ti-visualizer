@@ -9,6 +9,7 @@ import { initAutosave } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
+import { SaveControls } from "./SaveControls";
 import { StartScreen } from "./StartScreen";
 import { ThemeToggle } from "./ThemeToggle";
 import "./app.css";
@@ -53,6 +54,7 @@ export function App() {
                 Startansicht
               </Button>
             )}
+            <SaveControls />
             <ModeSwitch />
             <ThemeToggle />
           </div>

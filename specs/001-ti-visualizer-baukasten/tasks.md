@@ -324,7 +324,7 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
     Topologie“ und „Migration ist idempotent“ grün sind, dazu Tests für
     neuere Version und unbekannte Gerätetypen.
 
-- [ ] **T-302 Speichern** [P] · FR: FR-5 · Regeln: – · nach: T-201, T-301
+- [x] **T-302 Speichern** [P] · FR: FR-5 · Regeln: – · nach: T-201, T-301
   - Umfang: Speichern über Strg+S und Kopfleiste. File System Access API
     in Chrome/Edge, Download in Firefox/Safari. Häkchen „Einstellungen
     mitspeichern“ (Standard aus, Wahl gemerkt). Anzeige „nicht als Datei

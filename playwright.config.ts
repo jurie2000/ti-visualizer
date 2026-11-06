@@ -36,6 +36,11 @@ export default defineConfig({
       testMatch: "build-and-connect.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "speichern",
+      testMatch: "speichern.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
   ],
   // Mit E2E_BASE_URL (öffentliche Adresse) startet kein lokaler Server.
   ...(externeUrl

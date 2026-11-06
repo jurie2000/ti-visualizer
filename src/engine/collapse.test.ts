@@ -125,15 +125,75 @@ describe("collapseHidden (Regelwerk 11)", () => {
     ]);
   });
 
-  it("ein ausgeblendetes Gerät an nur einem sichtbaren Gerät ergibt keine Sammelkante", () => {
+  it("ein ausgeblendetes Gerät an nur einem sichtbaren Gerät ergibt einen Hinweis am Nachbarn", () => {
     const t = topo(
       [
         ["pvs", "pvs"],
         ["sw", "switch"],
+        ["r", "router"],
       ],
-      [["pvs", "sw"]],
+      [
+        ["pvs", "sw"],
+        ["sw", "r"],
+      ],
     );
-    expect(collapseHidden(t, catalog).groups).toEqual([]);
+    const c = collapseHidden(t, catalog);
+    expect(c.groups).toEqual([]);
+    expect(c.stubs).toEqual([{ at: "pvs", hidden: ["r", "sw"] }]);
+    expect(c.isolated).toEqual([]);
+  });
+
+  it("Abzweig neben dem Weg bekommt einen Hinweis", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+        ["sw2", "switch"],
+        ["kon", "konnektor"],
+      ],
+      [
+        ["pvs", "sw"],
+        ["sw", "kon"],
+        ["sw", "sw2"],
+      ],
+    );
+    expect(collapseHidden(t, catalog).stubs).toEqual([
+      { at: "kon", hidden: ["sw2"] },
+    ]);
+  });
+
+  it("ausgeblendetes Gerät ohne sichtbaren Nachbarn steht in isolated", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+        ["r", "router"],
+      ],
+      [["sw", "r"]],
+    );
+    const c = collapseHidden(t, catalog);
+    expect(c.stubs).toEqual([]);
+    expect(c.isolated).toEqual(["r", "sw"]);
+  });
+
+  it("Konsistenz: jedes ausgeblendete Gerät ist über Sammelkante, Hinweis oder isolated auffindbar", () => {
+    fc.assert(
+      fc.property(randomTopology, (t) => {
+        const c = collapseHidden(t, catalog);
+        const found = [
+          ...c.groups.flatMap((g) => g.hidden),
+          ...c.stubs.flatMap((s) => s.hidden),
+          ...c.isolated,
+        ];
+        const hidden = t.nodes
+          .filter((n) => hiddenTypes.has(n.type))
+          .map((n) => n.id);
+        expect(new Set(found)).toEqual(new Set(hidden));
+        const visible = new Set(c.nodes.map((n) => n.id));
+        for (const s of c.stubs) expect(visible.has(s.at)).toBe(true);
+      }),
+      { numRuns: 500 },
+    );
   });
 
   it("Konsistenz: sichtbare Verbindung nur zwischen sichtbaren Geräten", () => {

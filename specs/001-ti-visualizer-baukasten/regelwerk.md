@@ -716,6 +716,13 @@ Entschieden 2026-11-04 (Plan D36).
 Der Modus gehört zu den Einstellungen, nicht zur Topologie. Eine Datei
 mit ausgeblendeten Geräten lässt sich daher in jedem Modus öffnen.
 
+Auslegung (2026-11-06): Ausgeblendete Geräte, die keine Sammelkante nennt
+(Sackgasse an nur einem sichtbaren Gerät, Abzweig neben dem Weg), zeigt ein
+Knopf „+n ausgeblendet“ am sichtbaren Nachbarn; ein Klick klappt ihre Namen
+auf. Ausgeblendete Geräte ganz ohne sichtbaren Nachbarn nennt ein Hinweis
+auf der Canvas („nur im Modus Erweitert sichtbar“). So bleibt jedes
+ausgeblendete Gerät auffindbar. Status: Vereinfachung.
+
 ## 12. Offene Fragen
 
 **Entschieden bzw. durch Quellen geklärt**

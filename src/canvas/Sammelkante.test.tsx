@@ -63,6 +63,20 @@ describe("Canvas im Modus Einfach (Regelwerk 11)", () => {
     expect(JSON.stringify(useTopology.getState().topology)).toBe(before);
   });
 
+  it("Sackgasse: der Hinweis am Konnektor klappt den Router rt1 auf", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    const hint = await screen.findByRole("button", {
+      name: /^\+1 ausgeblendet an /,
+    });
+    expect(hint).toHaveTextContent("+1 ausgeblendet");
+    expect(hint).toHaveAttribute("aria-expanded", "false");
+    await user.click(hint);
+    expect(hint).toHaveAttribute("aria-expanded", "true");
+    const list = screen.getByRole("list", { name: "Ausgeblendete Geräte" });
+    expect(within(list).getByText(/^Internet-Router/)).toBeInTheDocument();
+  });
+
   it("im Modus Erweitert gibt es keine Sammelkanten", () => {
     useSettings.setState({ mode: "advanced" });
     render(<Canvas />, { wrapper });
@@ -70,5 +84,6 @@ describe("Canvas im Modus Einfach (Regelwerk 11)", () => {
       praxis.nodes.length,
     );
     expect(screen.queryByRole("button", { name: /^Sammelkante/ })).toBeNull();
+    expect(screen.queryByText(/ausgeblendet$/)).toBeNull();
   });
 });

@@ -9,12 +9,24 @@ export interface Sammelkante {
   hidden: string[];
 }
 
+/** Sackgasse: ausgeblendete Geräte, die keine Sammelkante nennt, am sichtbaren Nachbarn. */
+export interface Hinweis {
+  /** Das sichtbare Gerät, an dem der Hinweis hängt. */
+  at: string;
+  /** IDs der ausgeblendeten Geräte, nach ID sortiert. */
+  hidden: string[];
+}
+
 export interface Collapsed {
   /** Sichtbare Geräte. */
   nodes: Node[];
   /** Verbindungen zwischen sichtbaren Geräten. */
   edges: Edge[];
   groups: Sammelkante[];
+  /** Ausgeblendete Geräte ohne Sammelkante, je am (nach ID) ersten sichtbaren Nachbarn ihrer Gruppe. */
+  stubs: Hinweis[];
+  /** Ausgeblendete Geräte ohne jeden sichtbaren Nachbarn, nach ID sortiert. */
+  isolated: string[];
 }
 
 /**
@@ -22,9 +34,10 @@ export interface Collapsed {
  * `visibleSimple: false` aus und fasst jeden Weg über sie zu einer Sammelkante
  * zusammen. Ändert die Topologie nicht, sie bleibt in beiden Modi dieselbe (D36).
  * Eine Sammelkante nennt die ausgeblendeten Geräte auf den kürzesten Wegen
- * zwischen ihren Enden. Hängt ein ausgeblendetes Gerät (oder eine Gruppe
- * verbundener ausgeblendeter Geräte) nur an einem sichtbaren Gerät, entsteht
- * keine Sammelkante.
+ * zwischen ihren Enden. Ausgeblendete Geräte, die so in keiner Sammelkante
+ * stehen (Sackgassen, Abzweige), nennt `stubs` am sichtbaren Nachbarn; Geräte
+ * ganz ohne sichtbaren Nachbarn stehen in `isolated`. So bleibt jedes
+ * ausgeblendete Gerät auffindbar („ausgeblendet, aber vorhanden“).
  */
 export function collapseHidden(
   topology: Topology,
@@ -89,11 +102,39 @@ export function collapseHidden(
     }
   }
 
+  // Zusammenhängende Gruppen ausgeblendeter Geräte, die keine Sammelkante nennt
+  const covered = new Set(groups.flatMap((g) => g.hidden));
+  const neighbours = new Map<string, Set<string>>();
+  for (const [v, hs] of attach)
+    for (const h of hs)
+      neighbours.set(h, (neighbours.get(h) ?? new Set()).add(v));
+  const seen = new Set<string>();
+  const stubs: Hinweis[] = [];
+  const isolated: string[] = [];
+  for (const start of [...isHidden].sort((p, q) => p.localeCompare(q))) {
+    if (seen.has(start)) continue;
+    const component = [...distances(new Set([start])).keys()];
+    for (const h of component) seen.add(h);
+    const open = component
+      .filter((h) => !covered.has(h))
+      .sort((p, q) => p.localeCompare(q));
+    if (open.length === 0) continue;
+    const ends = component
+      .flatMap((h) => [...(neighbours.get(h) ?? [])])
+      .sort((p, q) => p.localeCompare(q));
+    const at = ends[0];
+    if (at === undefined) isolated.push(...open);
+    else stubs.push({ at, hidden: open });
+  }
+  isolated.sort((p, q) => p.localeCompare(q));
+
   return {
     nodes: topology.nodes.filter((n) => !isHidden.has(n.id)),
     edges: topology.edges.filter(
       (e) => !e.ends.some((end) => isHidden.has(end.node)),
     ),
     groups,
+    stubs,
+    isolated,
   };
 }

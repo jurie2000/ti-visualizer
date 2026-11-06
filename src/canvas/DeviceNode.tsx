@@ -5,6 +5,7 @@ import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
 import { plugCardDialog } from "../dialogs/PlugCardDialog";
 import { useUi } from "../store";
 import { CardChip } from "./CardChip";
+import { HiddenToggle } from "./HiddenToggle";
 import type { DeviceFlowNode } from "./toFlow";
 
 /**
@@ -19,7 +20,7 @@ import type { DeviceFlowNode } from "./toFlow";
  * - Karten-Chips (T-205): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
  */
 export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
-  const { node, device, category } = data;
+  const { node, device, category, hidden } = data;
   const nfc = device.capabilities.includes("nfcCard");
   const hasCards = nfc || device.capabilities.includes("cardSlots");
   const shape = category?.shape ?? "box";
@@ -72,6 +73,13 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
               >
                 Karte stecken
               </button>
+            )}
+            {hidden.length > 0 && (
+              <HiddenToggle
+                label={`+${String(hidden.length)} ausgeblendet`}
+                description={`+${String(hidden.length)} ausgeblendet an ${node.label ?? device.name}`}
+                hidden={hidden}
+              />
             )}
           </div>
         </div>

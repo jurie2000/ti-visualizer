@@ -12,6 +12,8 @@ export interface DeviceNodeData extends Record<string, unknown> {
   node: TopoNode;
   device: DeviceType;
   category: Catalog["categories"][number] | undefined;
+  /** Namen ausgeblendeter Geräte, die nur an diesem Gerät hängen (Modus Einfach). */
+  hidden: string[];
 }
 export interface ConnectionEdgeData extends Record<string, unknown> {
   kind: EdgeKind;
@@ -47,16 +49,23 @@ export function toFlow(
 ): {
   nodes: DeviceFlowNode[];
   edges: (ConnectionFlowEdge | GroupFlowEdge)[];
+  /** Namen ausgeblendeter Geräte ohne sichtbaren Nachbarn (Modus Einfach). */
+  isolated: string[];
 } {
   const view =
     mode === "simple"
       ? collapseHidden(topology, catalog)
-      : { ...topology, groups: [] };
+      : { ...topology, groups: [], stubs: [], isolated: [] };
+  const name = (id: string) => {
+    const n = topology.nodes.find((x) => x.id === id);
+    const d = catalog.deviceTypes.find((t) => t.id === n?.type);
+    return n?.label ?? d?.name ?? id;
+  };
   const nodes: DeviceFlowNode[] = [];
   for (const node of view.nodes) {
     const device = catalog.deviceTypes.find((d) => d.id === node.type);
     if (!device) continue;
-    const name = node.label ?? device.name;
+    const title = node.label ?? device.name;
     const selected = selection?.kind === "node" && selection.id === node.id;
     nodes.push({
       id: node.id,
@@ -66,20 +75,18 @@ export function toFlow(
       initialHeight: NODE_SIZE.height,
       selected,
       domAttributes: { "aria-roledescription": "Gerät" },
-      ariaLabel: `${device.abbr}: ${name}${node.fault ? ", gestört" : ""}${selected ? ", ausgewählt" : ""}`,
+      ariaLabel: `${device.abbr}: ${title}${node.fault ? ", gestört" : ""}${selected ? ", ausgewählt" : ""}`,
       data: {
         node,
         device,
         category: catalog.categories.find((c) => c.id === device.category),
+        hidden: view.stubs
+          .filter((s) => s.at === node.id)
+          .flatMap((s) => s.hidden.map(name)),
       },
     });
   }
 
-  const name = (id: string) => {
-    const n = topology.nodes.find((x) => x.id === id);
-    const d = catalog.deviceTypes.find((t) => t.id === n?.type);
-    return n?.label ?? d?.name ?? id;
-  };
   const edges: (ConnectionFlowEdge | GroupFlowEdge)[] = view.edges.map(
     (edge): ConnectionFlowEdge => {
       const selected = selection?.kind === "edge" && selection.id === edge.id;
@@ -119,5 +126,5 @@ export function toFlow(
       },
     });
   }
-  return { nodes, edges };
+  return { nodes, edges, isolated: view.isolated.map(name) };
 }

@@ -4,8 +4,8 @@ import {
   useInternalNode,
   type EdgeProps,
 } from "@xyflow/react";
-import { useState } from "react";
 import { boxOf, onBorder } from "./ConnectionEdge";
+import { HiddenToggle } from "./HiddenToggle";
 import type { GroupFlowEdge } from "./toFlow";
 
 /**
@@ -20,7 +20,6 @@ export function GroupEdge({
 }: EdgeProps<GroupFlowEdge>) {
   const from = useInternalNode(source);
   const to = useInternalNode(target);
-  const [open, setOpen] = useState(false);
   if (!from || !to || !data) return null;
 
   const a = boxOf(from);
@@ -59,27 +58,11 @@ export function GroupEdge({
             transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(y)}px)`,
           }}
         >
-          <button
-            type="button"
-            className="tiv-edge-label__btn"
-            aria-label={data.description}
-            aria-expanded={open}
-            onClick={() => {
-              setOpen(!open);
-            }}
-          >
-            {data.label}
-          </button>
-          {open && (
-            <ul
-              className="tiv-edge-label__hidden"
-              aria-label="Ausgeblendete Geräte"
-            >
-              {data.hidden.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          )}
+          <HiddenToggle
+            label={data.label}
+            description={data.description}
+            hidden={data.hidden}
+          />
         </div>
       </EdgeLabelRenderer>
     </>

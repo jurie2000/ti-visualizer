@@ -2,6 +2,7 @@ import {
   Background,
   Controls,
   MiniMap,
+  Panel,
   ReactFlow,
   useReactFlow,
   type EdgeTypes,
@@ -83,7 +84,7 @@ export function Canvas() {
 
   const connecting = useConnecting();
 
-  const { nodes, edges } = useMemo(
+  const { nodes, edges, isolated } = useMemo(
     () => toFlow(topology, catalog, selection, drag, mode),
     [topology, catalog, selection, drag, mode],
   );
@@ -167,6 +168,13 @@ export function Canvas() {
         ariaLabelConfig={ariaLabelConfig}
       >
         <Background />
+        {isolated.length > 0 && (
+          <Panel position="top-left" className="tiv-hint">
+            {isolated.length === 1
+              ? `${isolated[0] ?? ""} ist nur im Modus Erweitert sichtbar`
+              : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
+          </Panel>
+        )}
         <Controls showInteractive={false} />
         <MiniMap
           pannable

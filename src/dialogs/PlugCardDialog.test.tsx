@@ -105,7 +105,7 @@ describe("Karten stecken und ziehen", () => {
     ).toBeInTheDocument();
   });
 
-  it("[K-6] NFC-Gerät: nur eGK, keine PIN-Auswahl, pinActive bleibt ungesetzt", async () => {
+  it("[K-6] NFC-Gerät: nur eGK, keine PIN-Auswahl, Karte ohne PIN", async () => {
     const user = userEvent.setup();
     const added = useTopology.getState().addNode("erpapp", { x: 0, y: 0 });
     if (!added.ok || !added.id) throw new Error("E-Rezept-App nicht angelegt");
@@ -123,6 +123,6 @@ describe("Karten stecken und ziehen", () => {
       .getState()
       .topology.nodes.find((n) => n.id === target.id)?.cards?.[0];
     expect(card?.kind).toBe("egk");
-    expect(card).not.toHaveProperty("pinActive");
+    expect(card).toMatchObject({ pinActive: false });
   });
 });

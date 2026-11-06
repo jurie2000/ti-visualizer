@@ -53,6 +53,8 @@ export function plugCard(
     return { ok: false, message: MESSAGES.noSlot };
   if (!slots && card.kind !== "egk")
     return { ok: false, message: MESSAGES.nfcOnlyEgk };
+  // K-6: per NFC (CAN) gibt es keine PIN, also auch keine Einwilligung für eMP (K-7).
+  if (!slots && card.kind === "egk") card = { ...card, pinActive: false };
   const cards = node.cards ?? [];
   if (cards.some((c) => c.kind === card.kind))
     return { ok: false, message: MESSAGES.full };

@@ -56,7 +56,7 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
 
   const submit = (e: SyntheticEvent) => {
     e.preventDefault();
-    // K-6: per NFC (CAN) liest man ohne PIN; `pinActive` (K-7) bleibt dort ungesetzt.
+    // K-6: bei NFC gibt es keine PIN-Auswahl; die Engine setzt `pinActive` dort selbst.
     const card: AnyCard =
       kind === "egk"
         ? { kind, expires, ...(!nfcOnly && { pinActive: pin }) }

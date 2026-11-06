@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const basePath = process.env["BASE_PATH"] ?? "/ti-visualizer/";
-const port = 4173;
+const port = Number(process.env["E2E_PORT"] ?? 4173);
 const origin = `http://localhost:${String(port)}`;
 // Öffentliche Adresse (mit Pfad und abschließendem „/“): kein lokaler Server.
 const externeUrl = process.env["E2E_BASE_URL"];
@@ -29,6 +29,11 @@ export default defineConfig({
     {
       name: "a11y",
       testMatch: "a11y.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "build-and-connect",
+      testMatch: "build-and-connect.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
   ],

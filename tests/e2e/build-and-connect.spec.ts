@@ -31,6 +31,27 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
   });
 
+  test("Gerät mit der Maus verschieben, ohne eine Verbindung zu starten", async ({
+    page,
+  }) => {
+    const knoten = gerät(page, "sw1");
+    const vorher = await knoten.boundingBox();
+    if (!vorher) throw new Error("Switch nicht sichtbar");
+    const kanten = await page.locator(".react-flow__edge").count();
+    // links in der Kachel greifen, weg vom Quellpunkt am rechten Rand
+    const x = vorher.x + vorher.width * 0.25;
+    const y = vorher.y + vorher.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 60, y + 40, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.locator(".react-flow__connectionline")).toHaveCount(0);
+    const nachher = await knoten.boundingBox();
+    expect(nachher?.x).toBeGreaterThan(vorher.x + 30);
+    expect(nachher?.y).toBeGreaterThan(vorher.y + 20);
+    await expect(page.locator(".react-flow__edge")).toHaveCount(kanten);
+  });
+
   test("Moduswechsel: Einfach blendet Geräte aus und zeigt Sammelkanten", async ({
     page,
   }) => {

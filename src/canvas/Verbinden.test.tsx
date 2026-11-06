@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
 import { useSettings, useTopology, useUi } from "../store";
 import { ReactFlowProvider } from "@xyflow/react";
@@ -105,5 +105,78 @@ describe("Verbinden per Tastatur", () => {
     expect(useTopology.getState().topology.edges).toHaveLength(
       praxis.edges.length,
     );
+  });
+});
+
+describe("Verbinden per Klick: Punkt, dann Zielgerät", () => {
+  const punkt = (id: string) => {
+    const el = node(id).querySelector<HTMLElement>(".tiv-handle--source");
+    if (!el) throw new Error(`Punkt an ${id} fehlt`);
+    return el;
+  };
+  const ziel = (id: string) => {
+    const el = node(id).querySelector<HTMLElement>(".tiv-handle--target");
+    if (!el) throw new Error(`Zielfläche an ${id} fehlt`);
+    return el;
+  };
+
+  /** jsdom kennt `elementFromPoint` nicht; React Flow sucht damit das Ziel unter dem Zeiger. */
+  const klickZiel = async (
+    user: ReturnType<typeof userEvent.setup>,
+    id: string,
+  ) => {
+    const el = ziel(id);
+    document.elementFromPoint = () => el;
+    await user.click(el);
+  };
+  afterEach(() => {
+    Reflect.deleteProperty(document, "elementFromPoint");
+  });
+
+  it("verbindet gültige Geräte und gibt nach dem ersten Klick einen Hinweis", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    const before = useTopology.getState().topology.edges.length;
+    await user.click(punkt("sw1"));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /Jetzt das Zielgerät anklicken/,
+    );
+    expect(ziel("rt1")).toHaveClass("is-active");
+    await klickZiel(user, "rt1");
+    expect(useTopology.getState().topology.edges).toHaveLength(before + 1);
+    expect(screen.getByRole("status")).toHaveTextContent(/Verbunden: /);
+  });
+
+  it("[V-12] nennt bei ungültigem Ziel den Grund", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    const before = useTopology.getState().topology.edges.length;
+    await user.click(punkt("pvs1"));
+    await klickZiel(user, "vpn1");
+    expect(useTopology.getState().topology.edges).toHaveLength(before);
+    expect(screen.getByRole("status")).toHaveTextContent(/VPN-Tunnel/);
+  });
+
+  it("Esc bricht ab, danach nimmt keine Zielfläche mehr Klicks an", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    await user.click(punkt("sw1"));
+    await user.keyboard("{Escape}");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /Verbinden abgebrochen/,
+    );
+    expect(ziel("rt1")).not.toHaveClass("is-active");
+  });
+
+  it("Klick auf die freie Fläche bricht ab", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    await user.click(punkt("sw1"));
+    expect(ziel("rt1")).toHaveClass("is-active");
+    const pane = document.querySelector<HTMLElement>(".react-flow__pane");
+    if (!pane) throw new Error("Fläche fehlt");
+    // nur `click`: das `mousedown` von user.click scheitert in jsdom an d3-zoom
+    fireEvent.click(pane);
+    expect(ziel("rt1")).not.toHaveClass("is-active");
   });
 });

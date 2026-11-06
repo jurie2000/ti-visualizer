@@ -187,6 +187,7 @@ export function Canvas() {
         isValidConnection={connecting.isValidConnection}
         onKeyDown={connecting.onKeyDown}
         onPaneClick={() => {
+          connecting.cancelClick();
           select(undefined);
         }}
         onDragOver={(e) => {

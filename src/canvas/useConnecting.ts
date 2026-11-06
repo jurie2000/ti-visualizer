@@ -1,4 +1,9 @@
-import type { Connection, OnConnectEnd, OnConnectStart } from "@xyflow/react";
+import {
+  useStoreApi,
+  type Connection,
+  type OnConnectEnd,
+  type OnConnectStart,
+} from "@xyflow/react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { validateConnection } from "../engine/rules";
 import { useCatalog, useTopology } from "../store";
@@ -21,6 +26,15 @@ export function useConnecting() {
   // Letzte Prüfung von React Flow. Beim Verbinden per Klick meldet
   // `onClickConnectEnd` kein Ergebnis; die Prüfung läuft direkt davor.
   const last = useRef<ReturnType<typeof validateConnection>>(undefined);
+  const flow = useStoreApi();
+
+  /** Bricht einen Klick-Zug ab (Punkt angeklickt, Ziel noch offen). */
+  const cancelClick = () => {
+    if (flow.getState().connectionClickStartHandle === null) return false;
+    flow.setState({ connectionClickStartHandle: null });
+    toast.show("Verbinden abgebrochen.");
+    return true;
+  };
 
   const nameOf = (id: string) => {
     const node = useTopology.getState().topology.nodes.find((n) => n.id === id);
@@ -76,7 +90,7 @@ export function useConnecting() {
       last.current = undefined;
       if (nodeId)
         toast.show(
-          `Quelle ${nameOf(nodeId)} gewählt. Jetzt das Zielgerät anklicken.`,
+          `Quelle ${nameOf(nodeId)} gewählt. Jetzt das Zielgerät anklicken, Esc oder ein Klick auf die freie Fläche bricht ab.`,
         );
     }) satisfies OnConnectStart,
     onClickConnectEnd: (() => {
@@ -84,8 +98,10 @@ export function useConnecting() {
       last.current = undefined;
       if (r && !r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
+    cancelClick,
     onKeyDown: (e: KeyboardEvent) => {
       // Esc bricht von jeder Stelle der Canvas aus ab
+      if (e.key === "Escape" && cancelClick()) return;
       if (e.key === "Escape" && source) {
         setSource(undefined);
         toast.show("Verbinden abgebrochen.");

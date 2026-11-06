@@ -2,6 +2,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
+import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "../canvas/Canvas";
 import { DRAG_TYPE } from "../canvas/deviceStyle";
 import { useCatalog, useTopology } from "../store";
@@ -78,9 +79,11 @@ describe("Palette", () => {
   it("fügt per Enter hinzu, beliebig oft je Typ", async () => {
     const user = userEvent.setup();
     render(
-      <ReactFlowProvider>
-        <PalettePanel />
-      </ReactFlowProvider>,
+      <ToastProvider>
+        <ReactFlowProvider>
+          <PalettePanel />
+        </ReactFlowProvider>
+      </ToastProvider>,
     );
     const add = screen.getByRole("button", {
       name: "PVS Praxisverwaltungssystem hinzufügen",
@@ -92,9 +95,11 @@ describe("Palette", () => {
 
   it("fügt per Drop auf die Canvas hinzu", () => {
     render(
-      <ReactFlowProvider>
-        <Canvas />
-      </ReactFlowProvider>,
+      <ToastProvider>
+        <ReactFlowProvider>
+          <Canvas />
+        </ReactFlowProvider>
+      </ToastProvider>,
     );
     const pane = document.querySelector(".react-flow") as HTMLElement;
     const dataTransfer = {
@@ -108,9 +113,11 @@ describe("Palette", () => {
 
   it("ignoriert fremde Drops", () => {
     render(
-      <ReactFlowProvider>
-        <Canvas />
-      </ReactFlowProvider>,
+      <ToastProvider>
+        <ReactFlowProvider>
+          <Canvas />
+        </ReactFlowProvider>
+      </ToastProvider>,
     );
     const pane = document.querySelector(".react-flow") as HTMLElement;
     fireEvent.drop(pane, { dataTransfer: { types: [], getData: () => "" } });

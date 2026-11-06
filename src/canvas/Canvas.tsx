@@ -13,6 +13,7 @@ import "@xyflow/react/dist/style.css";
 import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import { useCatalog, useTopology, useUi } from "../store";
+import { useToast } from "../ui/Toast";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
@@ -63,6 +64,7 @@ export function Canvas() {
   const moveNodes = useTopology((s) => s.moveNodes);
   const addNode = useTopology((s) => s.addNode);
   const { screenToFlowPosition } = useReactFlow();
+  const toast = useToast();
   const catalog = useCatalog((s) => s.catalog);
   const selection = useUi((s) => s.selection);
   const select = useUi((s) => s.select);
@@ -111,7 +113,8 @@ export function Canvas() {
       x: Math.round(p.x - NODE_SIZE.width / 2),
       y: Math.round(p.y - NODE_SIZE.height / 2),
     });
-    if (result.ok && result.id) select({ kind: "node", id: result.id });
+    if (!result.ok) toast.show(result.reason);
+    else if (result.id) select({ kind: "node", id: result.id });
   };
 
   return (

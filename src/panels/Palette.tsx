@@ -71,11 +71,9 @@ export function Palette({ onAdd, filter }: Props) {
           setQuery(e.target.value);
         }}
       />
-      {groups.length === 0 && (
-        <p className="tiv-palette__empty" role="status">
-          Kein Gerät gefunden.
-        </p>
-      )}
+      <p className="tiv-palette__empty" role="status">
+        {groups.length === 0 ? "Kein Gerät gefunden." : ""}
+      </p>
       {groups.map((g) => (
         <PaletteGroup
           key={g.id}

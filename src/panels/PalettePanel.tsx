@@ -1,6 +1,7 @@
 import { useReactFlow } from "@xyflow/react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
 import { useTopology, useUi } from "../store";
+import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
 
 /**
@@ -14,6 +15,7 @@ export function PalettePanel() {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
+  const toast = useToast();
 
   const add = (type: string) => {
     const canvas = document.querySelector(".react-flow");
@@ -27,7 +29,8 @@ export function PalettePanel() {
       x: Math.round(center.x - NODE_SIZE.width / 2 + shift),
       y: Math.round(center.y - NODE_SIZE.height / 2 + shift),
     });
-    if (result.ok && result.id) select({ kind: "node", id: result.id });
+    if (!result.ok) toast.show(result.reason);
+    else if (result.id) select({ kind: "node", id: result.id });
   };
 
   return <Palette onAdd={add} />;

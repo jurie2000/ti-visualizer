@@ -48,7 +48,7 @@ export function PaletteItem({ device, pinned, onAdd, onTogglePin }: Props) {
         type="button"
         className="tiv-palette__pin"
         aria-pressed={pinned}
-        aria-label={`${device.name} ${pinned ? "lösen" : "anpinnen"}`}
+        aria-label={`${device.name} anpinnen`}
         onClick={() => {
           onTogglePin(device.id);
         }}

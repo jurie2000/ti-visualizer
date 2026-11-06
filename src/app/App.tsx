@@ -2,10 +2,13 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
+import { ImportFindingsDialog } from "../dialogs/ImportFindingsDialog";
+import { OpenDialog } from "../dialogs/OpenDialog";
+import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { PalettePanel } from "../panels/PalettePanel";
-import { initAutosave } from "../store";
+import { initAutosave, useOpen } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
@@ -24,6 +27,15 @@ export function App() {
     if (first.current) first.current = false;
     else mainRef.current?.focus();
   }, [started]);
+
+  // Datei oder Preset wurde eingesetzt (auch per Drop oder aus dem Schutzdialog): zur Arbeitsfläche
+  useEffect(
+    () =>
+      useOpen.subscribe((s, prev) => {
+        if (s.opened !== prev.opened) setStarted(true);
+      }),
+    [],
+  );
 
   // Autosave: letzten Stand prüfen, danach entprellt mitsichern (T-304)
   useEffect(() => {
@@ -96,6 +108,9 @@ export function App() {
           </Button>
         </footer>
         <PlugCardDialog />
+        <OpenDialog />
+        <UnsavedGuardDialog />
+        <ImportFindingsDialog />
         <AutosaveDialog
           onRestored={() => {
             setStarted(true);

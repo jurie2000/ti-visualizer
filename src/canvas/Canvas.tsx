@@ -13,7 +13,13 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
-import { useCatalog, useSettings, useTopology, useUi } from "../store";
+import {
+  openDropped,
+  useCatalog,
+  useSettings,
+  useTopology,
+  useUi,
+} from "../store";
 import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { ConnectionEdge } from "./ConnectionEdge";
@@ -128,7 +134,16 @@ export function Canvas() {
   // Drop aus der Palette: Mauszeiger ist die Mitte des neuen Geräts
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     const type = e.dataTransfer.getData(DRAG_TYPE);
-    if (!type) return;
+    if (!type) {
+      // Datei von außen (Palette-Geräte tragen DRAG_TYPE): öffnen statt Gerät anlegen
+      const file = e.dataTransfer.files.item(0);
+      if (!file) return;
+      e.preventDefault();
+      void openDropped(e.dataTransfer.items[0], file).then((reason) => {
+        if (reason) toast.show(reason, "error");
+      });
+      return;
+    }
     e.preventDefault();
     const p = screenToFlowPosition({ x: e.clientX, y: e.clientY });
     const result = addNode(type, {
@@ -156,7 +171,8 @@ export function Canvas() {
           select(undefined);
         }}
         onDragOver={(e) => {
-          if (!e.dataTransfer.types.includes(DRAG_TYPE)) return;
+          const t = e.dataTransfer.types;
+          if (!t.includes(DRAG_TYPE) && !t.includes("Files")) return;
           e.preventDefault();
           e.dataTransfer.dropEffect = "copy";
         }}

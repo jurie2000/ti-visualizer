@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { saveToFile, useFile, useHasUnsaved, useSettings } from "../store";
+import {
+  saveToFile,
+  useFile,
+  useHasUnsaved,
+  useSettings,
+  useUi,
+} from "../store";
 import { Button } from "../ui/Button";
 import { useToast } from "../ui/Toast";
 
@@ -45,6 +51,16 @@ export function SaveControls() {
 
   return (
     <div className="tiv-save">
+      <Button
+        onClick={() => {
+          useUi.getState().openDialog("open");
+        }}
+      >
+        Öffnen
+      </Button>
+      {fileName && (
+        <span className="tiv-save__file">Eigene Datei: {fileName}</span>
+      )}
       <span className="tiv-save__state" role="status">
         {unsaved
           ? "Nicht als Datei gespeichert"

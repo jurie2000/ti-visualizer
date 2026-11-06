@@ -269,7 +269,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
     vollständig angezeigt wird und RTL-Tests Rolle und Label der Knoten
     prüfen.
 
-- [ ] **T-203 Gerätepalette** [P] · FR: FR-1 · Regeln: – · nach: T-202
+- [x] **T-203 Gerätepalette** [P] · FR: FR-1 · Regeln: – · nach: T-202
   - Umfang: `Palette`, `PaletteGroup`, `PaletteItem`: gruppiert nach
     Kategorie, einklappbar, anpinnbar, Suche, Drag & Drop und Enter zum
     Hinzufügen. Beliebig viele Geräte je Typ.

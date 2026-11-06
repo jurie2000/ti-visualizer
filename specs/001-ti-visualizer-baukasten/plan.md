@@ -468,7 +468,8 @@ sicher dasselbe prüfen.
 Stufen 1, 2, 3b und 4 starten gleichzeitig. Stufe 3 wartet auf 2,
 Stufe 5 auf 4. Deploy startet nur, wenn alle anderen Jobs grün sind.
 Caches: pnpm-Store, `~/.sonar/cache` (Java und Plugins) und die
-Playwright-Headless-Shell je Playwright-Version.
+Playwright-Browser je Playwright-Version (Headless-Shell; mit Firefox und
+WebKit für die Suite `datei`).
 
 ### Sonar-Prüfung (D27)
 

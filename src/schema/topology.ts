@@ -7,11 +7,12 @@ export const LIMITS = {
   zones: 50,
   name: 100,
   description: 2000,
+  coord: 100_000,
 } as const;
 
 const text = (max: number) => z.string().max(max);
 const key = z.string().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/i);
-const coord = z.number().min(-100_000).max(100_000);
+const coord = z.number().min(-LIMITS.coord).max(LIMITS.coord);
 const date = z.iso.date();
 
 export const Point = z.object({ x: coord, y: coord });

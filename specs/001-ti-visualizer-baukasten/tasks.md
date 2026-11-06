@@ -253,7 +253,7 @@ Vorher: T-907 (fachliche Freigabe).
 
 Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
 
-- [ ] **T-201 Stores mit Rückgängig** · FR: FR-16 · Regeln: – · nach: T-101, T-102
+- [x] **T-201 Stores mit Rückgängig** · FR: FR-16 · Regeln: – · nach: T-101, T-102
   - Umfang: Zustand-Stores für Katalog, Topologie (Verlauf mit 80
     Schritten, D25), Oberfläche und Einstellungen. Alle Änderungen an der
     Topologie laufen über Store-Aktionen, die die Engines aufrufen.

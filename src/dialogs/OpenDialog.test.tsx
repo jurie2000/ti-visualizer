@@ -1,10 +1,12 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadCatalog } from "../schema";
 import {
   emptyTopology,
   hasUnsaved,
+  openDropped,
+  openFile,
   serialize,
   toFileSettings,
   useCatalog,
@@ -168,5 +170,62 @@ describe("Öffnen (T-303)", () => {
     await userEvent.click(screen.getByRole("button", { name: praxis.name }));
     expect(useTopology.getState().topology).toEqual(praxis);
     expect(useFile.getState().fileName).toBeNull();
+  });
+
+  it("lehnt zu große Dateien vor dem Lesen ab", async () => {
+    const big = new File(["x"], "gross.tiv.json");
+    Object.defineProperty(big, "size", { value: 2_000_000 });
+    expect(await openFile(big)).toMatch(/1 MB/);
+    expect(useTopology.getState().topology.nodes).toHaveLength(0);
+  });
+
+  describe("File System Access API", () => {
+    afterEach(() => {
+      Reflect.deleteProperty(window, "showOpenFilePicker");
+    });
+
+    it("öffnet über den Dateidialog und merkt sich das Handle für Strg+S", async () => {
+      const file = fileOf(text(false));
+      const handle = { name: file.name, getFile: () => Promise.resolve(file) };
+      Object.assign(window, {
+        showOpenFilePicker: vi.fn(() => Promise.resolve([handle])),
+      });
+      mount();
+      await userEvent.click(
+        screen.getByRole("button", { name: /Datei wählen/ }),
+      );
+      await waitFor(() => {
+        expect(useTopology.getState().topology).toEqual(praxis);
+      });
+      expect(useFile.getState().handle).toBe(handle);
+    });
+
+    it("Abbrechen im Dateidialog ändert nichts", async () => {
+      Object.assign(window, {
+        showOpenFilePicker: vi.fn(() =>
+          Promise.reject(new DOMException("x", "AbortError")),
+        ),
+      });
+      mount();
+      await userEvent.click(
+        screen.getByRole("button", { name: /Datei wählen/ }),
+      );
+      expect(useTopology.getState().topology.nodes).toHaveLength(0);
+      expect(screen.queryByRole("alert")).toBeNull();
+    });
+
+    it("Drop übernimmt das Handle des Eintrags", async () => {
+      const file = fileOf(text(false));
+      const handle = {
+        kind: "file",
+        name: file.name,
+        getFile: () => Promise.resolve(file),
+      };
+      await openDropped(
+        { getAsFileSystemHandle: () => Promise.resolve(handle) } as never,
+        file,
+      );
+      expect(useFile.getState().handle).toBe(handle);
+    });
   });
 });

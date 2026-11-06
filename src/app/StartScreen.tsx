@@ -8,11 +8,10 @@ import { PresetCard } from "./PresetCard";
  * Öffnen läuft über `openTopology` (T-303): fragt bei ungespeichertem Stand nach
  * und ersetzt per `replace`, die verlassene Arbeit bleibt mit „Rückgängig“ erreichbar.
  */
-export function StartScreen({ onStart }: { onStart: () => void }) {
+export function StartScreen() {
   const presets = useCatalog((s) => s.catalog.presets);
   const open = (t: Topology) => {
     openTopology(t);
-    onStart();
   };
   return (
     <section className="tiv-start" aria-labelledby="tiv-start-h">

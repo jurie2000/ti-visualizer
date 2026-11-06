@@ -78,11 +78,7 @@ export function App() {
               tabIndex={-1}
               className="tiv-main tiv-main--start"
             >
-              <StartScreen
-                onStart={() => {
-                  setStarted(true);
-                }}
-              />
+              <StartScreen />
             </main>
           ) : (
             <main ref={mainRef} tabIndex={-1} className="tiv-main">

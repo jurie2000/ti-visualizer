@@ -203,7 +203,11 @@
 .tiv-handle--source:focus-visible {
   outline: var(--tiv-focus-width) solid var(--tiv-focus);
 }
-.tiv-handle--target {
+/* Drei Klassen, weil React Flow `.react-flow__handle.connectionindicator`
+   (zwei Klassen) auf `pointer-events: all` setzt; so gewinnt die Regel
+   unabhängig von der Import-Reihenfolge. Sonst fängt die Fläche jeden Griff
+   ab und das Gerät lässt sich nicht verschieben. */
+.react-flow__handle.tiv-handle.tiv-handle--target {
   inset: 0;
   width: 100%;
   height: 100%;
@@ -213,7 +217,7 @@
   opacity: 0;
   pointer-events: none;
 }
-.tiv-handle--target.is-active {
+.react-flow__handle.tiv-handle.tiv-handle--target.is-active {
   pointer-events: auto;
 }
 /* Quelle per Tastatur gewählt */

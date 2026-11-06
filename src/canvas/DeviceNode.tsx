@@ -87,6 +87,7 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectableStart={false}
         className={`tiv-handle tiv-handle--target${connecting ? " is-active" : ""}`}
       />
       <Handle

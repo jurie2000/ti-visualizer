@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Canvas } from "../canvas/Canvas";
+import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
@@ -36,6 +37,7 @@ export function App() {
             Impressum
           </Button>
         </footer>
+        <PlugCardDialog />
         <ImpressumDialog
           open={impressumOpen}
           onClose={() => {

@@ -3,30 +3,53 @@ import { Canvas } from "../canvas/Canvas";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
+import { StartScreen } from "./StartScreen";
 import { ThemeToggle } from "./ThemeToggle";
 import "./app.css";
 
 export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
+  const [started, setStarted] = useState(false);
 
   return (
     <ToastProvider>
       <div className="tiv-shell">
         <header className="tiv-header">
           <h1>TI Visualizer</h1>
-          <ThemeToggle />
+          <div className="tiv-header__actions">
+            {started && (
+              <Button
+                onClick={() => {
+                  setStarted(false);
+                }}
+              >
+                Startansicht
+              </Button>
+            )}
+            <ThemeToggle />
+          </div>
         </header>
-        <main className="tiv-main">
-          <aside className="tiv-palette" aria-label="Palette">
-            Palette
-          </aside>
-          <section className="tiv-canvas" aria-label="Canvas">
-            <Canvas />
-          </section>
-          <aside className="tiv-detail" aria-label="Detailpanel">
-            Detailpanel
-          </aside>
-        </main>
+        {!started ? (
+          <main className="tiv-main tiv-main--start">
+            <StartScreen
+              onStart={() => {
+                setStarted(true);
+              }}
+            />
+          </main>
+        ) : (
+          <main className="tiv-main">
+            <aside className="tiv-palette" aria-label="Palette">
+              Palette
+            </aside>
+            <section className="tiv-canvas" aria-label="Canvas">
+              <Canvas />
+            </section>
+            <aside className="tiv-detail" aria-label="Detailpanel">
+              Detailpanel
+            </aside>
+          </main>
+        )}
         <footer className="tiv-footer">
           <Button
             onClick={() => {

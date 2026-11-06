@@ -42,6 +42,17 @@ test.describe("smoke", { tag: "@smoke" }, () => {
       page.locator('meta[http-equiv="Content-Security-Policy"]'),
     ).toHaveCount(1);
 
+    // Preset öffnen: Karte wählen, Canvas zeigt die Geräte, zurück zur Startansicht
+    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(5);
+    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    await expect(
+      page.getByRole("group", { name: /^PVS: Praxisverwaltungssystem/ }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Startansicht" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Womit möchten Sie beginnen?" }),
+    ).toBeVisible();
+
     await page.getByRole("button", { name: "Impressum" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.keyboard.press("Escape");

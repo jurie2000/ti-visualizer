@@ -98,3 +98,66 @@ a {
   color: var(--color-accent);
   text-decoration: underline;
 }
+.tiv-header__actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.tiv-main--start {
+  display: block;
+  overflow: auto;
+}
+.tiv-start {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.tiv-start__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-preset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-sm);
+}
+.tiv-preset h3,
+.tiv-preset p {
+  margin: 0;
+}
+.tiv-preset__facts {
+  color: var(--color-text-muted);
+}
+.tiv-preset .tiv-btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+.tiv-preset__sketch {
+  width: 100%;
+  height: auto;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+.tiv-preset__sketch line {
+  stroke: var(--color-neutral-600);
+  stroke-width: 1.5;
+}
+.tiv-preset__sketch circle {
+  fill: var(--color-accent);
+}
+.tiv-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

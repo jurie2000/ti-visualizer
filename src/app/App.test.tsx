@@ -1,10 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useTopology } from "../store";
 import { App } from "./App";
 
 describe("App-Shell", () => {
-  it("zeigt Überschrift, Bereiche und Impressum-Link", () => {
+  it("zeigt Überschrift, Bereiche und Impressum-Link", async () => {
+    const user = userEvent.setup();
     render(<App />);
+    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
     expect(
       screen.getByRole("heading", { level: 1, name: "TI Visualizer" }),
     ).toBeInTheDocument();
@@ -14,6 +17,20 @@ describe("App-Shell", () => {
     expect(
       screen.getByRole("button", { name: "Impressum" }),
     ).toBeInTheDocument();
+  });
+
+  it("zeigt die Startansicht mit vier Presets, öffnet eines und führt zurück", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    await user.click(screen.getByRole("button", { name: /Arztpraxis/ }));
+    expect(useTopology.getState().topology.nodes.length).toBeGreaterThan(0);
+    expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Startansicht" }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    // Leerer Start ersetzt die Topologie
+    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
+    expect(useTopology.getState().topology.nodes).toHaveLength(0);
   });
 
   it("öffnet das Impressum, schließt es mit Esc und gibt den Fokus zurück", async () => {

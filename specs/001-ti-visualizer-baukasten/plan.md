@@ -56,7 +56,7 @@ GitHub Pages. Fachlich freigegeben durch Justin am 2026-11-05 (T-907).
 | Zustand im Browser | Bibliothek „Zustand“ (Stores für Katalog, Topologie, Oberfläche, Simulation, Einstellungen) |
 | Schemas | Zod |
 | Speicher | Datei (`.tiv.json`, File System Access API mit Download/Upload als Rückfall), Autosave in IndexedDB über `idb-keyval` |
-| Tests | Vitest mit `@vitest/coverage-v8`, `fast-check`, React Testing Library, Playwright (Chromium, Firefox), `@axe-core/playwright` |
+| Tests | Vitest mit `@vitest/coverage-v8`, `fast-check`, React Testing Library, Playwright (Chromium, Firefox, WebKit), `@axe-core/playwright` |
 | Qualität | ESLint (`typescript-eslint` strict, `jsx-a11y`, `react-hooks`, `no-unsanitized`), Prettier, `tsc --noEmit` (strict), SonarQube Cloud, `dependency-cruiser`, `size-limit`, `lefthook`. Optional: StrykerJS, Lighthouse CI, `knip`, `commitlint` |
 | Sicherheit | `gitleaks`, GitHub Secret Scanning, Dependabot, Sonar, CodeQL. Optional: Dependency-Review-Action, `pnpm audit`, OSV-Scanner, CycloneDX-SBOM, OWASP Dependency-Track, OWASP ZAP, OpenSSF Scorecard, Build-Provenienz |
 | CI/CD | GitHub Actions, Dependabot, Claude Code GitHub Action (KI-Review) |
@@ -556,10 +556,12 @@ Playwright-Headless-Shell je Playwright-Version.
 | `smoke` | App lädt, Startansicht, Preset öffnen, Impressum erreichbar | P0 |
 | `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar, Moduswechsel mit Sammelkanten | P2 |
 | `datei` | Speichern in Kontext A → Öffnen in neuem Kontext B: Topologie kommt an, Einstellungen nur nach Zustimmung. Datei ohne Einstellungen. Autosave und Wiederherstellen | P3 |
+| `edit` | Gerät mit der Maus ziehen, Rückgängig und Wiederholen über mehrere Schritte, Gerät löschen samt Kanten und wiederherstellen | P5 (T-508) |
 | `actions-sim` | Kontextmenü, ausgegraute Aktion, Simulation abspielen und abbrechen, Bearbeiten während der Simulation gesperrt | P4 |
 | `a11y` | Axe auf Hauptansichten und Dialogen, Durchlauf nur per Tastatur, Listenansicht | ab P0 wachsend |
 
-In der CI läuft Chromium, für `datei` zusätzlich Firefox. Bei Fehlern
+In der CI läuft Chromium, für `datei` zusätzlich Firefox und WebKit
+(Safari-Engine: Download-Weg und CSP-Vorbehalt aus T-004). Bei Fehlern
 lädt die Pipeline Trace, Video und Screenshots als Artefakt hoch. Nach
 dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 

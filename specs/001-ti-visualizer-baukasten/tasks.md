@@ -357,10 +357,11 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
     `window.__pwned` bleibt leer und `Object.prototype` unverändert.
 
 - [ ] **T-306 E2E-Suite Datei** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
-  - Umfang: Suite `datei` in Chromium und Firefox: Speichern in Kontext A,
+  - Umfang: Suite `datei` in Chromium, Firefox und WebKit (Safari):
+    Speichern in Kontext A,
     Öffnen in neuem Kontext B. Einstellungen nur nach Zustimmung. Datei
     ohne Einstellungen. Autosave und Wiederherstellen.
-  - Fertig, wenn: die Suite in beiden Browsern in der CI grün ist.
+  - Fertig, wenn: die Suite in allen drei Browsern in der CI grün ist.
     **Ergebnis von P3.**
 
 ---
@@ -483,10 +484,17 @@ Sicherheitsprüfung.
   - Fertig, wenn: RTL-Tests alle fünf Handlungen abdecken.
 
 - [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
-  - Umfang: Kopieren, Einfügen, Duplizieren (Kanten nur, wenn gültig),
-    automatisch anordnen (rückgängig machbar), Tastaturkürzel dazu.
+  - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per
+    Strg+Z / Strg+Y (Strg+Umschalt+Z), Löschen von Gerät oder Kante per
+    Entf/Rücktaste. Kopieren, Einfügen, Duplizieren (Kanten nur, wenn
+    gültig), automatisch anordnen (rückgängig machbar), Tastaturkürzel
+    dazu. E2E-Suite `edit`: Gerät mit der Maus ziehen (Position bleibt
+    nach dem Loslassen, ein Rückgängig-Schritt), Rückgängig und
+    Wiederholen über mehrere Schritte, Gerät löschen samt seiner Kanten
+    und wiederherstellen.
   - Fertig, wenn: Tests prüfen, dass eingefügte Kanten `validateConnection`
-    bestehen und „anordnen“ ein Rückgängig-Schritt ist.
+    bestehen und „anordnen“ ein Rückgängig-Schritt ist, und die Suite
+    `edit` in der CI grün ist.
     **Ergebnis von P5.**
 
 ---

@@ -147,8 +147,8 @@ test.describe("injection", { tag: "@security" }, () => {
           page,
           weg,
           datei({
-            name: "Pra‮xis",
-            nodes: [knoten("a", "kt", { label: "K‮T\u0007​" })],
+            name: "Pra\u202Exis",
+            nodes: [knoten("a", "kt", { label: "K\u202ET\u0007\u200B" })],
           }),
         );
         expect(befunde).toContain("Unsichtbare");

@@ -10,7 +10,7 @@ import { datei, katalog, knoten, PAYLOADS } from "./helpers";
  * `src/persistence/persistence.test.ts`; hier geht es um die Texte der Datei.
  */
 const VERBORGEN = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
-const trick = fc.constantFrom("‮", "​", "\u0000", " ", "﻿");
+const trick = fc.constantFrom("\u202E", "\u200B", "\u0000", "\u2028", "\uFEFF");
 const text = fc
   .array(
     fc.oneof(

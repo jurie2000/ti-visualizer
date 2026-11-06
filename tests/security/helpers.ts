@@ -163,7 +163,7 @@ export const WEGE: Weg[] = ["datei", "drop", "autosave"];
 /**
  * Schickt den Text über den Eingabeweg in die App und liefert den Text der
  * Importbefunde (Autosave: der Rückfrage), "" wenn es keine gibt. `einstellungen`:
- * Antwort auf „Einstellungen übernehmen?“ (nur Datei und Drop), sonst keine Rückfrage.
+ * Antwort auf \u201EEinstellungen übernehmen?\u201C (nur Datei und Drop), sonst keine Rückfrage.
  */
 export async function einspielen(
   page: Page,

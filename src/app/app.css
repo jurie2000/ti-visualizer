@@ -180,3 +180,14 @@ a {
 .tiv-main:focus {
   outline: none;
 }
+.tiv-save {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.tiv-save__check {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 24px;
+}

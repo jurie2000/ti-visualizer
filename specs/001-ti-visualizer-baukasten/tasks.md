@@ -341,7 +341,7 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Fertig, wenn: RTL-Tests Rückfrage, Importbefunde und Rückgängig nach
     dem Öffnen prüfen.
 
-- [ ] **T-304 Autosave** [P] · FR: FR-5 · Regeln: – · nach: T-201, T-301
+- [x] **T-304 Autosave** [P] · FR: FR-5 · Regeln: – · nach: T-201, T-301
   - Umfang: Autosave in IndexedDB über `idb-keyval` kurz nach jeder
     Änderung, genau ein Stand. Beim Start „Letzten Stand
     wiederherstellen?“. Hinweis auf die Grenzen beim ersten Start.

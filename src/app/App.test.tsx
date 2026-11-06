@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useTopology } from "../store";
 import { App } from "./App";
@@ -33,6 +33,22 @@ describe("App-Shell", () => {
     // Leerer Start ersetzt die Topologie
     await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
     expect(useTopology.getState().topology.nodes).toHaveLength(0);
+  });
+
+  it("fragt in der Startansicht bei ungespeichertem Stand, bevor ein Preset ersetzt", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
+    act(() => {
+      useTopology.getState().addNode("switch", { x: 0, y: 0 });
+    });
+    await user.click(screen.getByRole("button", { name: "Startansicht" }));
+    await user.click(screen.getByRole("button", { name: /Arztpraxis/ }));
+    expect(await screen.findByText(/erst speichern\?/)).toBeVisible();
+    expect(useTopology.getState().topology.nodes).toHaveLength(1);
+    await user.click(screen.getByRole("button", { name: "Verwerfen" }));
+    expect(useTopology.getState().topology.nodes.length).toBeGreaterThan(1);
+    expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
   });
 
   it("öffnet das Impressum, schließt es mit Esc und gibt den Fokus zurück", async () => {

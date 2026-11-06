@@ -332,7 +332,7 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Fertig, wenn: RTL-Tests Häkchen und Hinweis prüfen und der
     Download-Weg in Playwright eine gültige Datei liefert.
 
-- [ ] **T-303 Öffnen** [P] · FR: FR-2, FR-5 · Regeln: – · nach: T-201, T-301
+- [x] **T-303 Öffnen** [P] · FR: FR-2, FR-5 · Regeln: – · nach: T-201, T-301
   - Umfang: `OpenDialog` mit Datei (Auswahl, Drag & Drop auf die Canvas)
     und Preset. Rückfrage „Einstellungen aus der Datei übernehmen?“
     (Standard nein). Vor dem Ersetzen Speichern anbieten, alter Stand als

@@ -105,6 +105,8 @@ describe("Palette", () => {
     const dataTransfer = {
       types: [DRAG_TYPE],
       getData: (t: string) => (t === DRAG_TYPE ? "pvs" : ""),
+      files: { item: () => null },
+      items: [],
     };
     fireEvent.drop(pane, { dataTransfer, clientX: 200, clientY: 100 });
     expect(count()).toBe(1);
@@ -120,7 +122,14 @@ describe("Palette", () => {
       </ToastProvider>,
     );
     const pane = document.querySelector(".react-flow") as HTMLElement;
-    fireEvent.drop(pane, { dataTransfer: { types: [], getData: () => "" } });
+    fireEvent.drop(pane, {
+      dataTransfer: {
+        types: [],
+        getData: () => "",
+        files: { item: () => null },
+        items: [],
+      },
+    });
     expect(count()).toBe(0);
   });
 });

@@ -1,10 +1,23 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
-import { useSettings, useTopology, useUi } from "../store";
+import {
+  emptyTopology,
+  serialize,
+  useSettings,
+  useTopology,
+  useUi,
+} from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
@@ -86,5 +99,28 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
     const moved = pvsNode(useTopology.getState().topology.nodes);
     expect(moved.position.x).toBeGreaterThan(first.position.x);
     expect(useTopology.getState().past.length).toBe(before + 1);
+  });
+
+  it("öffnet eine auf die Canvas gezogene Datei statt ein Gerät anzulegen", async () => {
+    useTopology.getState().reset(emptyTopology());
+    render(<Canvas />, { wrapper });
+    const pane = document.querySelector(".react-flow") as HTMLElement;
+    const file = new File(
+      [serialize(praxis, loadCatalog())],
+      "praxis.tiv.json",
+    );
+    fireEvent.drop(pane, {
+      dataTransfer: {
+        types: ["Files"],
+        getData: () => "",
+        files: { item: () => file },
+        items: [],
+      },
+    });
+    await waitFor(() => {
+      expect(useTopology.getState().topology.nodes).toHaveLength(
+        praxis.nodes.length,
+      );
+    });
   });
 });

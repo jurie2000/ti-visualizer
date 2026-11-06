@@ -1,22 +1,17 @@
 import type { Topology } from "../schema";
-import { emptyTopology, useCatalog, useFile, useTopology } from "../store";
+import { emptyTopology, openTopology, useCatalog } from "../store";
 import { AutosaveHint } from "./AutosaveHint";
 import { PresetCard } from "./PresetCard";
 
 /**
  * Startansicht (FR-2): die Presets und der leere Start.
- * Öffnen läuft über `replace` statt `reset`: Wer über die Kopfleiste hierher
- * zurückkommt und ein Preset wählt, kann die verlassene Arbeit mit „Rückgängig“
- * zurückholen.
+ * Öffnen läuft über `openTopology` (T-303): fragt bei ungespeichertem Stand nach
+ * und ersetzt per `replace`, die verlassene Arbeit bleibt mit „Rückgängig“ erreichbar.
  */
-export function StartScreen({ onStart }: { onStart: () => void }) {
+export function StartScreen() {
   const presets = useCatalog((s) => s.catalog.presets);
-  const replace = useTopology((s) => s.replace);
   const open = (t: Topology) => {
-    replace(t);
-    // Neues Dokument: Dateibezug lösen, damit Strg+S nicht die vorige Datei überschreibt
-    useFile.getState().markSaved(useTopology.getState().topology, null);
-    onStart();
+    openTopology(t);
   };
   return (
     <section className="tiv-start" aria-labelledby="tiv-start-h">

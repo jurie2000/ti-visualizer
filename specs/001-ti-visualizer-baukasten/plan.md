@@ -660,7 +660,7 @@ dem Deploy prüft ein `smoke`-Lauf die öffentliche Adresse.
 | **Tampering / Injection:** präparierte `.tiv.json` mit Skript- oder HTML-Inhalt | Öffnen | Zod-Schema mit festen Wertebereichen, Texte nur als Text, `no-unsanitized`, CSP, Injection-Tests |
 | **Denial of Service im Browser:** riesige Datei, tief verschachteltes JSON | Öffnen | Grenzen aus „Sicherheit beim Öffnen“, Abbruch mit Meldung |
 | **Prototype Pollution:** Schlüssel wie `__proto__`, `constructor` | Öffnen | Zod übernimmt nur bekannte Schlüssel. Test mit diesen Schlüsseln |
-| **Spoofing:** weitergegebene Datei gibt sich als offizielles Preset aus | Öffnen | offizielle Presets kommen nur aus dem Katalog, geöffnete Dateien sind immer als eigene Datei gekennzeichnet und ersetzen den Stand nur nach Rückfrage |
+| **Spoofing:** weitergegebene Datei gibt sich als offizielles Preset aus | Öffnen | offizielle Presets kommen nur aus dem Katalog, geöffnete Dateien sind immer als eigene Datei gekennzeichnet und ersetzen einen ungespeicherten Stand nur nach Rückfrage (Speichern, Verwerfen, Abbrechen) und bleiben rückgängig |
 | **Information Disclosure:** Daten verlassen den Browser | gesamte App | keine Laufzeit-Netzwerkzugriffe außer zur eigenen Seite (Same-Origin). Keine Tracker. Schriften selbst ausgeliefert |
 | **Supply Chain:** kompromittierte Abhängigkeit oder Action | Build, CI | Lockfile, Dependabot, gepinnte Actions, minimale Rechte. Optional: Dependency-Review, SBOM, Provenienz |
 | **Elevation of Privilege in der CI:** Fork-PR greift auf Secrets zu | GitHub Actions | keine Secrets für Fork-PRs, `permissions` minimal, kein `pull_request_target` mit Checkout fremden Codes |

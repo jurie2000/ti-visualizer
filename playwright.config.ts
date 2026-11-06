@@ -41,6 +41,13 @@ export default defineConfig({
       testMatch: "speichern.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      // Injection-Suite und Fuzzing (T-305)
+      name: "security",
+      testDir: "tests/security",
+      testMatch: "*.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
   ],
   // Mit E2E_BASE_URL (öffentliche Adresse) startet kein lokaler Server.
   ...(externeUrl

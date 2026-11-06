@@ -40,7 +40,8 @@ export interface Finding {
     | "konfiguration"
     | "regel"
     | "katalogversion"
-    | "einstellungen";
+    | "einstellungen"
+    | "zeichen";
   /** Deutscher Text, nur als Text anzeigen. */
   message: string;
   /** ID des betroffenen Geräts, der Kante oder Zone (für Hervorheben), falls sie übernommen wurde. */
@@ -80,6 +81,11 @@ const isObject = (v: unknown): v is Record<string, unknown> =>
 /** Fremde Namen kürzen und Steuer-/Formatzeichen ersetzen, bevor sie in einer Meldung stehen. */
 const safe = (s: string, max = 60) =>
   s.replace(/[\p{Cc}\p{Cf}]/gu, "?").slice(0, max);
+
+/** Steuer-, Format- (u. a. Rechts-nach-links) und Zeilentrenner-Zeichen; im Fließtext bleibt der Zeilenumbruch. */
+const HIDDEN = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu;
+const strip = (s: string, keepNewline = false) =>
+  s.replace(HIDDEN, (c) => (keepNewline && c === "\n" ? c : ""));
 
 const KINDS = { Node: "Gerät", Edge: "Verbindung", Zone: "Zone" } as const;
 
@@ -188,9 +194,48 @@ export function parseData(data: unknown, catalog: Catalog): ParseResult {
   if (!final.success)
     return fail("Die Topologie in der Datei ist inkonsistent.");
 
+  // Unsichtbare Zeichen in Texten entfernen (plan.md: „sichtbar markiert oder entfernt“)
+  let stripped = false as boolean;
+  const clean = (v: string, keepNewline = false) => {
+    const c = strip(v, keepNewline);
+    if (c !== v) stripped = true;
+    return c;
+  };
+  const label = <T extends { label?: string | undefined }>(el: T): T =>
+    el.label === undefined ? el : { ...el, label: clean(el.label) };
+  const t = final.data;
+  const topology2: Topology = {
+    ...t,
+    name: clean(t.name),
+    description: clean(t.description, true),
+    nodes: t.nodes.map((n) => {
+      const l = label(n);
+      return l.config === undefined
+        ? l
+        : {
+            ...l,
+            config: Object.fromEntries(
+              Object.entries(l.config).map(([k, v]) => [
+                k,
+                typeof v === "string" ? clean(v) : v,
+              ]),
+            ),
+          };
+    }),
+    edges: t.edges.map(label),
+    zones: t.zones.map(label),
+  };
+  if (stripped)
+    add({
+      severity: "Hinweis",
+      code: "zeichen",
+      message:
+        "Unsichtbare Steuer- oder Formatzeichen in Namen und Texten wurden entfernt.",
+    });
+
   const result: ParseResult = {
     ok: true,
-    topology: final.data,
+    topology: topology2,
     catalogVersion: header.data.catalogVersion,
     findings,
   };

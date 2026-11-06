@@ -624,3 +624,34 @@ describe("Eingabeprüfung an der Vertrauensgrenze", () => {
     );
   });
 });
+
+describe("Unicode-Tricks in Topologie-Texten (T-305)", () => {
+  it("Steuer- und Rechts-nach-links-Zeichen werden entfernt und gemeldet", () => {
+    const rlo = "\u202E";
+    const r = ok(
+      file({
+        ...base(),
+        name: `Pra${rlo}xis\u0000`,
+        description: `Zeile 1\nZeile${rlo} 2\u2028`,
+        nodes: [{ ...node("a", "kt"), label: `K${rlo}T\u200B` }],
+        zones: [
+          {
+            id: "z",
+            label: `Z${rlo}one`,
+            tone: "sage",
+            area: { x: 0, y: 0, w: 1, h: 1 },
+          },
+        ],
+      }),
+    );
+    expect(r.topology.name).toBe("Praxis");
+    expect(r.topology.description).toBe("Zeile 1\nZeile 2");
+    expect(r.topology.nodes[0]?.label).toBe("KT");
+    expect(r.topology.zones[0]?.label).toBe("Zone");
+    expect(r.findings.filter((f) => f.code === "zeichen")).toHaveLength(1);
+  });
+
+  it("saubere Texte erzeugen keinen Befund", () => {
+    expect(ok(file(base())).findings).toEqual([]);
+  });
+});

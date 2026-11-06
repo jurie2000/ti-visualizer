@@ -348,7 +348,7 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Fertig, wenn: Tests mit `fake-indexeddb` Sichern und Wiederherstellen
     abdecken. Ein kaputter Autosave wird wie eine fremde Datei geprüft.
 
-- [ ] **T-305 Injection-Suite und Fuzzing** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
+- [x] **T-305 Injection-Suite und Fuzzing** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
   - Umfang: `tests/security/` mit dem Korpus aus plan.md
     („Injection-Tests“) über jeden Eingabeweg: Datei, Drag & Drop,
     Autosave, Topologiename, Beschreibung, Zonenname, Gerätebezeichnung,

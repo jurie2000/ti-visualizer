@@ -9,10 +9,10 @@ interface Props {
   /** Fügt ein Gerät dieses Typs ein (Position bestimmt der Aufrufer). */
   onAdd: (type: string) => void;
   /**
-   * Filterpunkt (T-207): im Modus Einfach nur Typen mit `visibleSimple` zeigen.
+   * Filter (T-207): `PalettePanel` zeigt im Modus Einfach nur Typen mit `visibleSimple`.
    * Ohne Angabe erscheinen alle platzierbaren Typen.
    */
-  filter?: (device: DeviceType) => boolean;
+  filter?: ((device: DeviceType) => boolean) | undefined;
 }
 
 const PINNED = "__pinned";

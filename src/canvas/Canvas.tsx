@@ -12,19 +12,27 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
-import { useCatalog, useTopology, useUi } from "../store";
+import { useCatalog, useSettings, useTopology, useUi } from "../store";
 import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
+import { GroupEdge } from "./GroupEdge";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
-import { toFlow, type DeviceFlowNode, type ConnectionFlowEdge } from "./toFlow";
+import {
+  toFlow,
+  type DeviceFlowNode,
+  type ConnectionFlowEdge,
+  type GroupFlowEdge,
+} from "./toFlow";
 import { useConnecting } from "./useConnecting";
 import "./canvas.css";
 
-// Erweiterungspunkt (T-207): weitere Kantenarten (`group`) hier eintragen.
 const nodeTypes: NodeTypes = { device: DeviceNode };
-const edgeTypes: EdgeTypes = { connection: ConnectionEdge };
+const edgeTypes: EdgeTypes = {
+  connection: ConnectionEdge,
+  group: GroupEdge,
+};
 
 const ariaLabelConfig = {
   "node.a11yDescription.default":
@@ -67,6 +75,7 @@ export function Canvas() {
   const { screenToFlowPosition } = useReactFlow();
   const toast = useToast();
   const catalog = useCatalog((s) => s.catalog);
+  const mode = useSettings((s) => s.mode);
   const selection = useUi((s) => s.selection);
   const select = useUi((s) => s.select);
   // Positionen während des Ziehens: erst beim Loslassen geht ein Schritt in den Verlauf
@@ -75,8 +84,8 @@ export function Canvas() {
   const connecting = useConnecting();
 
   const { nodes, edges } = useMemo(
-    () => toFlow(topology, catalog, selection, drag),
-    [topology, catalog, selection, drag],
+    () => toFlow(topology, catalog, selection, drag, mode),
+    [topology, catalog, selection, drag, mode],
   );
 
   const onNodesChange = (changes: NodeChange<DeviceFlowNode>[]) => {
@@ -101,7 +110,9 @@ export function Canvas() {
     );
   };
 
-  const onEdgesChange = (changes: EdgeChange<ConnectionFlowEdge>[]) => {
+  const onEdgesChange = (
+    changes: EdgeChange<ConnectionFlowEdge | GroupFlowEdge>[],
+  ) => {
     for (const c of changes)
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };

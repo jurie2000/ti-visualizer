@@ -250,3 +250,25 @@
   color: var(--tiv-error-fg);
   border-color: var(--tiv-error-bd);
 }
+.tiv-edge-label--group {
+  pointer-events: all;
+  padding: 0;
+}
+.tiv-edge-label__btn {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+.tiv-edge-label__btn:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.tiv-edge-label__hidden {
+  margin: 0;
+  padding: 2px 8px 4px 22px;
+  text-align: left;
+  border-top: 1px solid var(--color-neutral-300);
+}

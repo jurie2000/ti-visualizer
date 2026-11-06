@@ -6,6 +6,7 @@ import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { PalettePanel } from "../panels/PalettePanel";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
+import { ModeSwitch } from "./ModeSwitch";
 import { StartScreen } from "./StartScreen";
 import { ThemeToggle } from "./ThemeToggle";
 import "./app.css";
@@ -36,6 +37,7 @@ export function App() {
                 Startansicht
               </Button>
             )}
+            <ModeSwitch />
             <ThemeToggle />
           </div>
         </header>

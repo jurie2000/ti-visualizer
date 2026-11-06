@@ -1,0 +1,177 @@
+/* React Flow auf die Tokens abbilden (Hell/Dunkel kommt aus tokens.css). */
+.react-flow {
+  --xy-background-color: var(--color-bg);
+  --xy-background-pattern-dots-color-default: var(--color-neutral-400);
+  --xy-minimap-background-color: var(--color-surface);
+  --xy-minimap-mask-background-color: color-mix(
+    in srgb,
+    var(--color-bg) 70%,
+    transparent
+  );
+  --xy-controls-button-background-color: var(--color-surface);
+  --xy-controls-button-background-color-hover: var(--color-neutral-300);
+  --xy-controls-button-color: var(--color-text);
+  --xy-controls-button-color-hover: var(--color-text);
+  --xy-controls-button-border-color: var(--color-neutral-300);
+  --xy-attribution-background-color: color-mix(
+    in srgb,
+    var(--color-surface) 80%,
+    transparent
+  );
+  font-family: var(--font-body);
+}
+.react-flow__attribution a {
+  color: var(--color-text-muted);
+}
+.react-flow__node:focus-visible,
+.react-flow__edge:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.react-flow__controls-button:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: -2px;
+}
+
+/* Gerät: Rand und Fläche zeichnet die Kategoriefarbe, die Form zeichnet clip-path. */
+.tiv-node {
+  --shape: none;
+  --radius: 4px;
+  width: 148px;
+  min-height: 64px;
+  display: flex;
+  background: var(--cat);
+  border-radius: var(--radius);
+  clip-path: var(--shape);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+}
+.tiv-node.is-selected {
+  background: var(--tiv-focus);
+}
+.tiv-node.is-fault {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--tiv-error-bd) 0 6px,
+    var(--cat) 6px 12px
+  );
+}
+.tiv-node__body {
+  flex: 1;
+  display: flex;
+  margin: 2px;
+  background: var(--color-surface);
+  border-radius: calc(var(--radius) - 2px);
+  clip-path: var(--shape);
+  overflow: hidden;
+}
+.tiv-node__bar {
+  flex: none;
+  width: 8px;
+  background: var(--cat);
+}
+.tiv-node__text {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tiv-node__abbr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.tiv-node__abbr svg {
+  color: var(--cat);
+  flex: none;
+}
+.tiv-node__fault {
+  margin-left: auto;
+  color: var(--tiv-error-fg);
+}
+.tiv-node__name {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+.tiv-node__slot:empty {
+  display: none;
+}
+
+/* Formen der Kategorien (Katalog `shape`): abgerundet, Kapsel, Kerbe, Kasten, Sechseck, Raute, Sprechblase. */
+.tiv-shape-round {
+  --radius: 24px;
+}
+.tiv-shape-pill {
+  --radius: 32px;
+}
+.tiv-shape-box {
+  --radius: 4px;
+}
+.tiv-shape-bubble {
+  --radius: 20px 20px 20px 2px;
+}
+.tiv-shape-notch {
+  --shape: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.tiv-shape-hex {
+  --radius: 0;
+  --shape: polygon(
+    12px 0,
+    calc(100% - 12px) 0,
+    100% 50%,
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0 50%
+  );
+}
+.tiv-shape-diamond {
+  --radius: 0;
+  --shape: polygon(
+    14px 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    14px 100%,
+    0 calc(100% - 14px),
+    0 14px
+  );
+}
+
+/* Anschlusspunkte: unsichtbar in der Mitte, die Kanten laufen schwebend. */
+.tiv-handle {
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tiv-edge {
+  fill: none;
+}
+.tiv-edge.is-selected {
+  filter: drop-shadow(0 0 3px var(--tiv-focus));
+}
+.tiv-edge.is-fault {
+  stroke: var(--tiv-error-bd) !important;
+}
+.tiv-edge-label {
+  position: absolute;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-300);
+  color: var(--color-text);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.tiv-edge-label.is-fault {
+  color: var(--tiv-error-fg);
+  border-color: var(--tiv-error-bd);
+}

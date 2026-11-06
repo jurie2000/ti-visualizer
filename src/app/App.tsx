@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Canvas } from "../canvas/Canvas";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
@@ -20,7 +21,7 @@ export function App() {
             Palette
           </aside>
           <section className="tiv-canvas" aria-label="Canvas">
-            Canvas
+            <Canvas />
           </section>
           <aside className="tiv-detail" aria-label="Detailpanel">
             Detailpanel

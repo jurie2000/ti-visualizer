@@ -238,14 +238,18 @@ eigene Regel-ID):
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
 6. Kabel zwischen zwei Geräten, für die die Protokolltabelle TLS
-   führt, und keines davon ist ein Netzgerät (Switch, Router): `tcp`,
-   z. B. eHealth-KT ↔ Zugang (SICCT über TLS, gemSpec_KT)
+   führt, und keines davon ist ein Netzgerät (Kategorie `lan`: Switch,
+   Internet-Router, WLAN Access Point, Firewall): `tcp`, z. B.
+   eHealth-KT ↔ Zugang, Primärsystem ↔ Zugang, Primärsystem ↔
+   KIM-Clientmodul
 7. sonst `phys`
 
-Auslegung (2026-11-06): Im Mockup war die Kante KT ↔ Zugang als Kabel
-gezeichnet. Sie wird als `tcp` gezeigt, weil SICCT nach dem Pairing über
-TLS läuft. Kabel zu Switch oder Router bleiben `phys`, weil dort die
-physische Strecke gemeint ist.
+Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
+Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
+physische Strecke gemeint: `phys`. Verbinden zwei Endgeräte direkt, die
+laut Protokolltabelle TLS sprechen, zeigt die Kante die logische
+Verbindung: `tcp`. Daher weicht KT ↔ Zugang vom Mockup ab (dort Kabel):
+SICCT läuft nach dem Pairing über TLS (gemSpec_KT).
 
 Protokolle je Verbindung (Detailpanel, FR-11). „offen“ heißt: noch
 nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.

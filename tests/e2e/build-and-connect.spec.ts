@@ -15,6 +15,8 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
     await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    // Die Tests bauen mit Anschlüssen und Netzgeräten: Modus Erweitert
+    await page.getByRole("button", { name: "Erweitert" }).click();
     await expect(gerät(page, "sw1")).toBeVisible();
     await expect(page.locator(".react-flow__edge").first()).toBeVisible();
   });
@@ -27,6 +29,27 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await perTastatur(page, "switch-1", "sw1");
     await expect(page.locator(".tiv-toasts")).toContainText("Verbunden: ");
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
+  });
+
+  test("Moduswechsel: Einfach blendet Geräte aus und zeigt Sammelkanten", async ({
+    page,
+  }) => {
+    const alle = await page.locator(".react-flow__node").count();
+    await page.getByRole("button", { name: "Einfach" }).click();
+    await expect(gerät(page, "sw1")).toHaveCount(0);
+    expect(await page.locator(".react-flow__node").count()).toBeLessThan(alle);
+    const sammel = page.getByRole("button", { name: /^Sammelkante .* über / });
+    await expect(sammel.first()).toBeVisible();
+    // Klick zeigt die ausgeblendeten Geräte
+    await sammel.first().click();
+    await expect(
+      page.getByRole("list", { name: "Ausgeblendete Geräte" }),
+    ).toBeVisible();
+    // zurück: alles wieder da, keine Sammelkanten
+    await page.getByRole("button", { name: "Erweitert" }).click();
+    await expect(gerät(page, "sw1")).toBeVisible();
+    await expect(sammel).toHaveCount(0);
+    expect(await page.locator(".react-flow__node").count()).toBe(alle);
   });
 
   test("ungültig verbinden per Tastatur zeigt die Begründung", async ({

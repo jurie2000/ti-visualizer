@@ -1,20 +1,23 @@
 import { useReactFlow } from "@xyflow/react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
-import { useTopology, useUi } from "../store";
+import { useSettings, useTopology, useUi } from "../store";
 import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
+import type { DeviceType } from "./PaletteItem";
+
+const visibleSimple = (d: DeviceType) => d.visibleSimple;
 
 /**
  * Palette in der App-Shell: Enter/Klick setzt das Gerät in die Mitte des
  * sichtbaren Canvas-Bereichs (leicht versetzt, damit Geräte nicht exakt
  * übereinander landen). Läuft innerhalb des `ReactFlowProvider`.
- *
- * Filterpunkt (T-207): hier `filter` an `Palette` übergeben.
+ * Im Modus Einfach zeigt sie nur Typen mit `visibleSimple` (Regelwerk 11).
  */
 export function PalettePanel() {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
+  const mode = useSettings((s) => s.mode);
   const toast = useToast();
 
   const add = (type: string) => {
@@ -33,5 +36,10 @@ export function PalettePanel() {
     else if (result.id) select({ kind: "node", id: result.id });
   };
 
-  return <Palette onAdd={add} />;
+  return (
+    <Palette
+      onAdd={add}
+      filter={mode === "simple" ? visibleSimple : undefined}
+    />
+  );
 }

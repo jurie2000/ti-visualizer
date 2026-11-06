@@ -297,7 +297,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
     und leeren Start.
   - Fertig, wenn: Suite `smoke` um „Preset öffnen“ erweitert und grün ist.
 
-- [ ] **T-207 Modus Einfach und Erweitert** · FR: FR-13 · Regeln: A-3 · nach: T-105, T-204
+- [x] **T-207 Modus Einfach und Erweitert** · FR: FR-13 · Regeln: A-3 · nach: T-105, T-204
   - Umfang: `ModeSwitch` in der Kopfleiste, Modus in den Einstellungen.
     `collapseHidden(topology, catalog)` in der Engine, `GroupEdge` für
     Sammelkanten (Klick zeigt ausgeblendete Geräte). Palette zeigt im

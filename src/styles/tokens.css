@@ -108,6 +108,10 @@
   --tiv-edge-inet: #7b7263;
   --tiv-edge-inet-width: 2.2;
   --tiv-edge-inet-dash: 12 4 2 4;
+  /* Sammelkante (Modus Einfach): doppelte Linie aus Farbe und hellem Kern */
+  --tiv-edge-sammel: #6a4c93;
+  --tiv-edge-sammel-width: 7;
+  --tiv-edge-sammel-core: 3;
 
   --font-heading: "Caprasimo", system-ui, sans-serif;
   --font-heading-weight: 400;
@@ -177,6 +181,7 @@
     --tiv-edge-vpn: #44d7ac;
     --tiv-edge-wlan: #b6c77a;
     --tiv-edge-inet: #a79e8e;
+    --tiv-edge-sammel: #b9a2e0;
     --shadow-sm: 0 0 0 1px #413c34;
     --shadow-md: 0 3px 10px #0006;
     --shadow-lg: 0 12px 32px #0008;
@@ -230,6 +235,7 @@
   --tiv-edge-vpn: #44d7ac;
   --tiv-edge-wlan: #b6c77a;
   --tiv-edge-inet: #a79e8e;
+  --tiv-edge-sammel: #b9a2e0;
   --shadow-sm: 0 0 0 1px #413c34;
   --shadow-md: 0 3px 10px #0006;
   --shadow-lg: 0 12px 32px #0008;

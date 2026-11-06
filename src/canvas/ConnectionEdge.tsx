@@ -15,7 +15,7 @@ interface Box {
   hh: number;
 }
 
-const boxOf = (n: InternalNode): Box => {
+export const boxOf = (n: InternalNode): Box => {
   const w = n.measured.width ?? NODE_SIZE.width;
   const h = n.measured.height ?? NODE_SIZE.height;
   return {
@@ -27,7 +27,7 @@ const boxOf = (n: InternalNode): Box => {
 };
 
 /** Schnittpunkt der Mittellinie von `a` nach `b` mit dem Rand von `a`. */
-function onBorder(a: Box, b: Box) {
+export function onBorder(a: Box, b: Box) {
   const dx = b.cx - a.cx;
   const dy = b.cy - a.cy;
   if (dx === 0 && dy === 0) return { x: a.cx, y: a.cy };
@@ -42,8 +42,7 @@ function onBorder(a: Box, b: Box) {
  * Kante je Verbindungsart (Farbe, Stärke, Strichmuster aus `--tiv-edge-<art>`),
  * schwebend zwischen den Rändern der Knoten, mit Label in der Mitte.
  *
- * Erweiterungspunkt (T-207): weitere Kantenarten wie `GroupEdge` kommen als
- * eigene Komponente in `edgeTypes` (Canvas.tsx), diese Datei bleibt unberührt.
+ * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf` und `onBorder`.
  */
 export function ConnectionEdge({
   id,

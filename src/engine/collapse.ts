@@ -1,0 +1,99 @@
+import type { Catalog, Edge, Node, Topology } from "../schema";
+
+/** Sammelkante (Regelwerk 3 und 11): ein Weg zwischen zwei sichtbaren Geräten über ausgeblendete. */
+export interface Sammelkante {
+  id: string;
+  /** Die beiden sichtbaren Enden, nach ID sortiert. */
+  ends: [string, string];
+  /** IDs der ausgeblendeten Geräte auf dem Weg, nach ID sortiert. */
+  hidden: string[];
+}
+
+export interface Collapsed {
+  /** Sichtbare Geräte. */
+  nodes: Node[];
+  /** Verbindungen zwischen sichtbaren Geräten. */
+  edges: Edge[];
+  groups: Sammelkante[];
+}
+
+/**
+ * Darstellung im Modus Einfach (Regelwerk 11): blendet Geräte mit
+ * `visibleSimple: false` aus und fasst jeden Weg über sie zu einer Sammelkante
+ * zusammen. Ändert die Topologie nicht, sie bleibt in beiden Modi dieselbe (D36).
+ * Eine Sammelkante nennt die ausgeblendeten Geräte auf den kürzesten Wegen
+ * zwischen ihren Enden. Hängt ein ausgeblendetes Gerät (oder eine Gruppe
+ * verbundener ausgeblendeter Geräte) nur an einem sichtbaren Gerät, entsteht
+ * keine Sammelkante.
+ */
+export function collapseHidden(
+  topology: Topology,
+  catalog: Catalog,
+): Collapsed {
+  const hiddenType = new Set(
+    catalog.deviceTypes.filter((d) => !d.visibleSimple).map((d) => d.id),
+  );
+  const isHidden = new Set(
+    topology.nodes.filter((n) => hiddenType.has(n.type)).map((n) => n.id),
+  );
+
+  // Nachbarschaft unter den ausgeblendeten Geräten und Anschlussstellen der sichtbaren
+  const adj = new Map<string, string[]>();
+  const attach = new Map<string, Set<string>>();
+  const link = (m: Map<string, string[]>, a: string, b: string) =>
+    m.set(a, [...(m.get(a) ?? []), b]);
+  for (const e of topology.edges) {
+    const [a, b] = e.ends;
+    const ha = isHidden.has(a.node);
+    const hb = isHidden.has(b.node);
+    if (ha && hb) {
+      link(adj, a.node, b.node);
+      link(adj, b.node, a.node);
+    } else if (ha !== hb) {
+      const [h, v] = ha ? [a.node, b.node] : [b.node, a.node];
+      attach.set(v, (attach.get(v) ?? new Set()).add(h));
+    }
+  }
+
+  /** Abstände (in Kanten) von den Startgeräten durch die ausgeblendeten Geräte. */
+  const distances = (from: Set<string>) => {
+    const dist = new Map<string, number>([...from].map((h) => [h, 0]));
+    for (const [h, d] of dist)
+      for (const n of adj.get(h) ?? []) if (!dist.has(n)) dist.set(n, d + 1);
+    return dist;
+  };
+
+  // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt;
+  // aufgeführt sind nur die Geräte auf den kürzesten Wegen, nicht Abzweige daneben
+  const groups: Sammelkante[] = [];
+  const visibleEnds = [...attach.keys()].sort((p, q) => p.localeCompare(q));
+  for (const [i, x] of visibleEnds.entries()) {
+    const dx = distances(attach.get(x) ?? new Set());
+    for (const y of visibleEnds.slice(i + 1)) {
+      const dy = distances(attach.get(y) ?? new Set());
+      const total = new Map<string, number>();
+      for (const [h, d] of dx) {
+        const other = dy.get(h);
+        if (other !== undefined) total.set(h, d + other);
+      }
+      if (total.size === 0) continue;
+      const best = Math.min(...total.values());
+      groups.push({
+        id: `sammel:${x}:${y}`,
+        ends: [x, y],
+        hidden: [...total]
+          .filter(([, t]) => t === best)
+          .map(([h]) => h)
+          .sort((p, q) => p.localeCompare(q)),
+      });
+    }
+  }
+
+  return {
+    nodes: topology.nodes.filter((n) => !isHidden.has(n.id)),
+    edges: topology.edges.filter(
+      (e) => !e.ends.some((end) => isHidden.has(end.node)),
+    ),
+    groups,
+  };
+}

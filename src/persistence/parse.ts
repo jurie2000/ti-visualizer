@@ -78,7 +78,8 @@ const isObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 
 /** Fremde Namen kürzen und Steuer-/Formatzeichen ersetzen, bevor sie in einer Meldung stehen. */
-const safe = (s: string) => s.replace(/[\p{Cc}\p{Cf}]/gu, "?").slice(0, 60);
+const safe = (s: string, max = 60) =>
+  s.replace(/[\p{Cc}\p{Cf}]/gu, "?").slice(0, max);
 
 const KINDS = { Node: "Gerät", Edge: "Verbindung", Zone: "Zone" } as const;
 
@@ -301,7 +302,7 @@ function build(
   }).map((n) => checkConfig(n, types, add));
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
-  // Belegung je Anschluss (G-3, `multi` nach Regelwerk 2.2)
+  // Belegung je Anschluss: Schema-Prüfung nach Regelwerk 2.2 (`multi`), keine Regel-ID
   const load = new Map<string, number>();
   const edges = take<EdgeT>(raw.edges, Edge, "Edge", "topology.edges", (e) => {
     const refuse = (code: Finding["code"], why: string) => {
@@ -414,7 +415,11 @@ function checkCards(
       const plugged = r.topology.nodes
         .find((n) => n.id === node.id)
         ?.cards?.at(-1);
-      if (JSON.stringify(plugged) !== JSON.stringify(card))
+      if (
+        card.kind === "egk" &&
+        card.pinActive &&
+        !(plugged as typeof card | undefined)?.pinActive
+      )
         add({
           severity: "Hinweis",
           code: "karte",
@@ -446,7 +451,7 @@ function checkRules(
       add({
         severity: "Warnung",
         code: "regel",
-        message: `Verbindung „${e.id}“ verstößt gegen den aktuellen Katalog: ${r.reason ?? "nicht erlaubt"}`,
+        message: `Verbindung „${e.id}“ verstößt gegen den aktuellen Katalog: ${safe(r.reason ?? "nicht erlaubt", 300)}`,
         ref: e.id,
       });
     built = { ...built, edges: [...built.edges, e] };

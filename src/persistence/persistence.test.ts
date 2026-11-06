@@ -440,6 +440,20 @@ describe("Importbefunde", () => {
     expect(r.findings.map((f) => f.ref)).toEqual(["a", "b", "d"]);
   });
 
+  it("eGK per NFC: PIN-Einwilligung wird zurückgenommen und gemeldet, ohne Einwilligung nicht", () => {
+    const nfc = placeable.find((t) => t.capabilities.includes("nfcCard"));
+    if (!nfc) throw new Error("Katalog ohne NFC-Gerät");
+    const egk = { kind: "egk", expires: "2030-01-01" };
+    const run = (c: object) =>
+      ok(file({ ...base(), nodes: [{ ...node("a", nfc.id), cards: [c] }] }));
+    const asked = run({ ...egk, pinActive: true });
+    expect(asked.findings.map((f) => f.severity)).toEqual(["Hinweis"]);
+    expect(asked.topology.nodes[0]?.cards?.[0]).toMatchObject({
+      pinActive: false,
+    });
+    expect(run(egk).findings).toEqual([]);
+  });
+
   it("Konfiguration nur bei passender Fähigkeit", () => {
     const withCfg = placeable.find((t) =>
       t.capabilities.some((c) => c.startsWith("netConfig:")),

@@ -51,10 +51,32 @@ describe("Autosave (T-304)", () => {
     expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");
     restoreAutosave();
     expect(useTopology.getState().topology).toEqual(praxis);
-    expect(useTopology.getState().past).toEqual([]);
+    expect(useTopology.getState().past).toHaveLength(1); // Rückgängig möglich
     expect(useSettings.getState().mode).toBe("advanced");
     expect(useSettings.getState().theme).toBe("dark");
     expect(useAutosave.getState().start).toBeUndefined();
+  });
+
+  it("übernimmt die Einstellungen auch bei Verwerfen und fragt bei leerer Topologie nicht", async () => {
+    useSettings.getState().set({ mode: "advanced", theme: "dark" });
+    await saveNow(); // leere Topologie, nur Einstellungen
+    useSettings.getState().set({ mode: "simple", theme: "system" });
+    await start();
+    expect(useAutosave.getState().start?.kind).toBe("hinweis");
+    expect(useSettings.getState().theme).toBe("dark");
+
+    off?.();
+    useTopology.getState().reset(praxis);
+    await saveNow();
+    useSettings.getState().set({ theme: "light" });
+    await saveNow();
+    useSettings.getState().set({ theme: "system" });
+    useTopology.getState().reset(emptyTopology());
+    await start();
+    expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");
+    await dismissAutosave();
+    expect(useSettings.getState().theme).toBe("light");
+    expect(useTopology.getState().topology).toEqual(emptyTopology());
   });
 
   it("sichert entprellt nach einer Änderung", async () => {

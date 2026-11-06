@@ -7,7 +7,7 @@ import {
   toFileSettings,
   type Finding,
 } from "../persistence";
-import type { Settings, Topology } from "../schema";
+import type { Topology } from "../schema";
 import { useCatalog } from "./catalogStore";
 import { useSettings } from "./settingsStore";
 import { useTopology } from "./topologyStore";
@@ -23,7 +23,6 @@ export type AutosaveStart =
   | {
       kind: "wiederherstellen";
       topology: Topology;
-      settings?: Settings;
       findings: Finding[];
     }
   /** Der Autosave war kaputt und wurde wie eine fremde Datei abgelehnt. */
@@ -112,33 +111,33 @@ function watch() {
 export async function initAutosave(): Promise<() => void> {
   try {
     const text = await get<unknown>(KEY_STAND);
-    if (text !== undefined) {
-      const r =
-        typeof text === "string"
+    const r =
+      text === undefined
+        ? undefined
+        : typeof text === "string"
           ? parse(text, useCatalog.getState().catalog)
           : ({
               ok: false,
               reason: "Der gesicherte Stand hat ein falsches Format.",
             } as const);
-      if (r.ok) {
-        const { topology, settings, findings } = r;
-        useAutosave.setState({
-          start: {
-            kind: "wiederherstellen",
-            topology,
-            ...(settings && { settings }),
-            findings,
-          },
-        });
-      } else {
-        useAutosave.setState({
-          start: { kind: "abgelehnt", reason: r.reason },
-        });
-        await del(KEY_STAND);
-      }
+    if (r && !r.ok) {
+      useAutosave.setState({ start: { kind: "abgelehnt", reason: r.reason } });
+      await del(KEY_STAND);
+    } else if (r?.topology.nodes.length) {
+      // Zuerst die Rückfrage setzen: Sie hält das Sichern an, bis entschieden ist.
+      useAutosave.setState({
+        start: {
+          kind: "wiederherstellen",
+          topology: r.topology,
+          findings: r.findings,
+        },
+      });
     } else if ((await get<unknown>(KEY_HINWEIS)) === undefined) {
       useAutosave.setState({ start: { kind: "hinweis" } });
     }
+    // Einstellungen gelten immer wieder, auch bei „Verwerfen“: Der Autosave ist ihre einzige Ablage.
+    if (r?.ok && r.settings)
+      useSettings.getState().set(fromFileSettings(r.settings));
   } catch (e) {
     log("Lesen fehlgeschlagen", e);
   }
@@ -146,14 +145,14 @@ export async function initAutosave(): Promise<() => void> {
 }
 
 /**
- * Übernimmt den gefundenen Stand. `reset` statt `replace`: Es ist der
- * Programmstart, es gibt keinen Stand, zu dem „Rückgängig“ zurückkehren könnte.
+ * Übernimmt den gefundenen Stand als ein Rückgängig-Schritt (`replace`, wie
+ * Öffnen und Preset): Hat der Benutzer vor der Antwort schon begonnen, bleibt
+ * seine Arbeit erreichbar.
  */
 export function restoreAutosave(): void {
   const s = useAutosave.getState().start;
   if (s?.kind !== "wiederherstellen") return;
-  useTopology.getState().reset(s.topology);
-  if (s.settings) useSettings.getState().set(fromFileSettings(s.settings));
+  useTopology.getState().replace(s.topology);
   useAutosave.setState({ start: undefined });
 }
 

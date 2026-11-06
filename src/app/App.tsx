@@ -1,9 +1,11 @@
 import { ReactFlowProvider } from "@xyflow/react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
+import { AutosaveDialog } from "../dialogs/AutosaveDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { PalettePanel } from "../panels/PalettePanel";
+import { initAutosave } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
@@ -21,6 +23,20 @@ export function App() {
     if (first.current) first.current = false;
     else mainRef.current?.focus();
   }, [started]);
+
+  // Autosave: letzten Stand prüfen, danach entprellt mitsichern (T-304)
+  useEffect(() => {
+    let off: (() => void) | undefined;
+    let gone = false;
+    void initAutosave().then((stop) => {
+      if (gone) stop();
+      else off = stop;
+    });
+    return () => {
+      gone = true;
+      off?.();
+    };
+  }, []);
 
   return (
     <ToastProvider>
@@ -78,6 +94,11 @@ export function App() {
           </Button>
         </footer>
         <PlugCardDialog />
+        <AutosaveDialog
+          onRestored={() => {
+            setStarted(true);
+          }}
+        />
         <ImpressumDialog
           open={impressumOpen}
           onClose={() => {

@@ -1,5 +1,6 @@
 import type { Topology } from "../schema";
 import { emptyTopology, useCatalog, useTopology } from "../store";
+import { AutosaveHint } from "./AutosaveHint";
 import { PresetCard } from "./PresetCard";
 
 /**
@@ -17,6 +18,7 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
   };
   return (
     <section className="tiv-start" aria-labelledby="tiv-start-h">
+      <AutosaveHint />
       <h2 id="tiv-start-h">Womit möchten Sie beginnen?</h2>
       <ul className="tiv-start__list">
         {presets.map((p) => (

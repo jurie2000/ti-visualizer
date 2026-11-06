@@ -21,8 +21,10 @@ export interface Collapsed {
  * Darstellung im Modus Einfach (Regelwerk 11): blendet Geräte mit
  * `visibleSimple: false` aus und fasst jeden Weg über sie zu einer Sammelkante
  * zusammen. Ändert die Topologie nicht, sie bleibt in beiden Modi dieselbe (D36).
- * Hängt ein ausgeblendetes Gerät (oder eine Gruppe verbundener ausgeblendeter
- * Geräte) nur an einem sichtbaren Gerät, entsteht keine Sammelkante.
+ * Eine Sammelkante nennt die ausgeblendeten Geräte auf den kürzesten Wegen
+ * zwischen ihren Enden. Hängt ein ausgeblendetes Gerät (oder eine Gruppe
+ * verbundener ausgeblendeter Geräte) nur an einem sichtbaren Gerät, entsteht
+ * keine Sammelkante.
  */
 export function collapseHidden(
   topology: Topology,
@@ -35,38 +37,56 @@ export function collapseHidden(
     topology.nodes.filter((n) => hiddenType.has(n.type)).map((n) => n.id),
   );
 
-  // Zusammenhängende Gruppen ausgeblendeter Geräte (Kanten zwischen ausgeblendeten)
-  const group = new Map<string, string>();
-  const find = (id: string): string => {
-    const parent = group.get(id) ?? id;
-    return parent === id ? id : find(parent);
+  // Nachbarschaft unter den ausgeblendeten Geräten und Anschlussstellen der sichtbaren
+  const adj = new Map<string, string[]>();
+  const attach = new Map<string, Set<string>>();
+  const link = (m: Map<string, string[]>, a: string, b: string) =>
+    m.set(a, [...(m.get(a) ?? []), b]);
+  for (const e of topology.edges) {
+    const [a, b] = e.ends;
+    const ha = isHidden.has(a.node);
+    const hb = isHidden.has(b.node);
+    if (ha && hb) {
+      link(adj, a.node, b.node);
+      link(adj, b.node, a.node);
+    } else if (ha !== hb) {
+      const [h, v] = ha ? [a.node, b.node] : [b.node, a.node];
+      attach.set(v, (attach.get(v) ?? new Set()).add(h));
+    }
+  }
+
+  /** Abstände (in Kanten) von den Startgeräten durch die ausgeblendeten Geräte. */
+  const distances = (from: Set<string>) => {
+    const dist = new Map<string, number>([...from].map((h) => [h, 0]));
+    for (const [h, d] of dist)
+      for (const n of adj.get(h) ?? []) if (!dist.has(n)) dist.set(n, d + 1);
+    return dist;
   };
-  for (const e of topology.edges) {
-    const [a, b] = e.ends;
-    if (isHidden.has(a.node) && isHidden.has(b.node))
-      group.set(find(a.node), find(b.node));
-  }
 
-  // je Gruppe: sichtbare Nachbarn
-  const neighbours = new Map<string, Set<string>>();
-  for (const e of topology.edges) {
-    const [a, b] = e.ends;
-    if (isHidden.has(a.node) === isHidden.has(b.node)) continue;
-    const [h, v] = isHidden.has(a.node) ? [a.node, b.node] : [b.node, a.node];
-    const key = find(h);
-    neighbours.set(key, (neighbours.get(key) ?? new Set()).add(v));
-  }
-
-  const byPair = new Map<string, Sammelkante>();
-  for (const [key, set] of neighbours) {
-    const members = [...isHidden].filter((id) => find(id) === key);
-    const ends = [...set].sort();
-    for (const [i, x] of ends.entries())
-      for (const y of ends.slice(i + 1)) {
-        const id = `sammel:${x}:${y}`;
-        const hidden = new Set([...(byPair.get(id)?.hidden ?? []), ...members]);
-        byPair.set(id, { id, ends: [x, y], hidden: [...hidden].sort() });
+  // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt;
+  // aufgeführt sind nur die Geräte auf den kürzesten Wegen, nicht Abzweige daneben
+  const groups: Sammelkante[] = [];
+  const visibleEnds = [...attach.keys()].sort();
+  for (const [i, x] of visibleEnds.entries()) {
+    const dx = distances(attach.get(x) ?? new Set());
+    for (const y of visibleEnds.slice(i + 1)) {
+      const dy = distances(attach.get(y) ?? new Set());
+      const total = new Map<string, number>();
+      for (const [h, d] of dx) {
+        const other = dy.get(h);
+        if (other !== undefined) total.set(h, d + other);
       }
+      if (total.size === 0) continue;
+      const best = Math.min(...total.values());
+      groups.push({
+        id: `sammel:${x}:${y}`,
+        ends: [x, y],
+        hidden: [...total]
+          .filter(([, t]) => t === best)
+          .map(([h]) => h)
+          .sort(),
+      });
+    }
   }
 
   return {
@@ -74,6 +94,6 @@ export function collapseHidden(
     edges: topology.edges.filter(
       (e) => !e.ends.some((end) => isHidden.has(end.node)),
     ),
-    groups: [...byPair.values()].sort((p, q) => p.id.localeCompare(q.id)),
+    groups,
   };
 }

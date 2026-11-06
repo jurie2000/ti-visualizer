@@ -106,6 +106,25 @@ describe("collapseHidden (Regelwerk 11)", () => {
     ]);
   });
 
+  it("führt nur Geräte auf dem Weg auf, nicht Abzweige daneben", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+        ["sw2", "switch"],
+        ["kon", "konnektor"],
+      ],
+      [
+        ["pvs", "sw"],
+        ["sw", "kon"],
+        ["sw", "sw2"],
+      ],
+    );
+    expect(collapseHidden(t, catalog).groups).toEqual([
+      { id: "sammel:kon:pvs", ends: ["kon", "pvs"], hidden: ["sw"] },
+    ]);
+  });
+
   it("ein ausgeblendetes Gerät an nur einem sichtbaren Gerät ergibt keine Sammelkante", () => {
     const t = topo(
       [

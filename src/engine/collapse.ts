@@ -66,7 +66,7 @@ export function collapseHidden(
   // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt;
   // aufgeführt sind nur die Geräte auf den kürzesten Wegen, nicht Abzweige daneben
   const groups: Sammelkante[] = [];
-  const visibleEnds = [...attach.keys()].sort();
+  const visibleEnds = [...attach.keys()].sort((p, q) => p.localeCompare(q));
   for (const [i, x] of visibleEnds.entries()) {
     const dx = distances(attach.get(x) ?? new Set());
     for (const y of visibleEnds.slice(i + 1)) {
@@ -84,7 +84,7 @@ export function collapseHidden(
         hidden: [...total]
           .filter(([, t]) => t === best)
           .map(([h]) => h)
-          .sort(),
+          .sort((p, q) => p.localeCompare(q)),
       });
     }
   }

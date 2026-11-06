@@ -284,7 +284,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
   - Fertig, wenn: E2E-Suite `build-and-connect` grün ist: Gerät ergänzen,
     gültig und ungültig verbinden, Begründung sichtbar.
 
-- [ ] **T-205 Karten stecken und ziehen** [P] · FR: FR-18 · Regeln: K-2, K-3, K-4 · nach: T-106, T-202
+- [x] **T-205 Karten stecken und ziehen** [P] · FR: FR-18 · Regeln: K-2, K-3, K-4 · nach: T-106, T-202
   - Umfang: `CardChip` im Terminal mit Beschriftung „gesteckt · ISO 7816“
     bzw. „NFC · ISO 14443, CAN“. `PlugCardDialog` mit Kartenart,
     Ablaufdatum und PIN-Status. Abgelaufene oder gesperrte Karten nicht

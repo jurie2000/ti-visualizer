@@ -2,6 +2,9 @@ import { Handle, Position, useConnection, type NodeProps } from "@xyflow/react";
 import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
+import { plugCardDialog } from "../dialogs/PlugCardDialog";
+import { useUi } from "../store";
+import { CardChip } from "./CardChip";
 import type { DeviceFlowNode } from "./toFlow";
 
 /**
@@ -17,6 +20,8 @@ import type { DeviceFlowNode } from "./toFlow";
  */
 export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const { node, device, category } = data;
+  const nfc = device.capabilities.includes("nfcCard");
+  const hasCards = nfc || device.capabilities.includes("cardSlots");
   const shape = category?.shape ?? "box";
   const connecting = useConnection().inProgress;
   return (
@@ -46,7 +51,23 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
             )}
           </span>
           <span className="tiv-node__name">{node.label ?? device.name}</span>
-          <div className="tiv-node__slot" />
+          <div className="tiv-node__slot">
+            {node.cards?.map((c) => (
+              <CardChip key={c.kind} nodeId={node.id} card={c} nfc={nfc} />
+            ))}
+            {hasCards && (
+              <button
+                type="button"
+                className="tiv-chip__plug nodrag nopan"
+                aria-label={`Karte stecken: ${node.label ?? device.name}`}
+                onClick={() => {
+                  useUi.getState().openDialog(plugCardDialog(node.id));
+                }}
+              >
+                Karte stecken
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <Handle

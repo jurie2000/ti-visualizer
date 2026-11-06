@@ -1,6 +1,7 @@
 import { ReactFlowProvider } from "@xyflow/react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
+import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { PalettePanel } from "../panels/PalettePanel";
 import { Button } from "../ui/Button";
@@ -74,6 +75,7 @@ export function App() {
             Impressum
           </Button>
         </footer>
+        <PlugCardDialog />
         <ImpressumDialog
           open={impressumOpen}
           onClose={() => {

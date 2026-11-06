@@ -137,8 +137,12 @@ describe("Karten-Engine (T-106)", () => {
 
   it("[K-6] NFC-Geräte nehmen nur die eGK, ohne PIN", () => {
     const t = topo(node("cl", "cardlink"), node("app", "erpapp"));
-    expect(plugged(t, "cl", egk).nodes[0]?.cards).toEqual([egk]);
-    expect(plugged(t, "app", egk).nodes[1]?.cards).toEqual([egk]);
+    const noPin = { ...egk, pinActive: false };
+    expect(plugged(t, "cl", egk).nodes[0]?.cards).toEqual([noPin]);
+    expect(plugged(t, "app", egk).nodes[1]?.cards).toEqual([noPin]);
+    expect(cardState(plugged(t, "app", egk), "app", "egk").empMessage).toBe(
+      MESSAGES.emp,
+    );
     expect(fail(t, "cl", hba)).toBe(
       "Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal.",
     );

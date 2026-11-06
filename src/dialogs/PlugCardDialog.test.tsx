@@ -53,7 +53,9 @@ describe("Karten stecken und ziehen", () => {
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
     expect(cardsOf().map((c) => c.kind)).toEqual(["hba"]);
     expect(screen.getByText(/HBA · gesteckt · ISO 7816/)).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "HBA ziehen" }));
+    await user.click(
+      screen.getByRole("button", { name: /^HBA aus .+ ziehen$/ }),
+    );
     expect(cardsOf()).toEqual([]);
   });
 
@@ -101,5 +103,26 @@ describe("Karten stecken und ziehen", () => {
     expect(
       screen.getByText(/HBA \(nicht freigeschaltet\)/),
     ).toBeInTheDocument();
+  });
+
+  it("[K-6] NFC-Gerät: nur eGK, keine PIN-Auswahl, Karte ohne PIN", async () => {
+    const user = userEvent.setup();
+    const added = useTopology.getState().addNode("erpapp", { x: 0, y: 0 });
+    if (!added.ok || !added.id) throw new Error("E-Rezept-App nicht angelegt");
+    const target = { id: added.id };
+    useUi.getState().openDialog(`plugCard:${target.id}`);
+    render(app);
+    const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
+    const options = within(
+      within(dlg).getByLabelText("Kartenart"),
+    ).getAllByRole("option");
+    expect(options.map((o) => o.textContent)).toEqual(["eGK"]);
+    expect(within(dlg).queryByRole("checkbox")).toBeNull();
+    await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
+    const card = useTopology
+      .getState()
+      .topology.nodes.find((n) => n.id === target.id)?.cards?.[0];
+    expect(card?.kind).toBe("egk");
+    expect(card).toMatchObject({ pinActive: false });
   });
 });

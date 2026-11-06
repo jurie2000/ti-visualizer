@@ -63,10 +63,7 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher);
   });
 
-  // Die Palette macht die Seite derzeit sehr hoch und damit die Canvas: ein hohes
-  // Fenster hält beide Geräte im Bild, bis das Layout die Höhe begrenzt.
   test.describe("Maus", () => {
-    test.use({ viewport: { width: 1280, height: 2600 } });
     test("ungültig verbinden mit der Maus zeigt die Begründung", async ({
       page,
     }) => {

@@ -313,7 +313,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
 
 Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
 
-- [ ] **T-301 Dateiformat und Migrationen** · FR: FR-5, FR-12 · Regeln: – · nach: T-101
+- [x] **T-301 Dateiformat und Migrationen** · FR: FR-5, FR-12 · Regeln: – · nach: T-101
   - Umfang: `src/persistence/`: `serialize` und `parse` für `.tiv.json`,
     Migrationskette für ältere `schemaVersion`, Ablehnung neuerer
     Versionen mit Meldung, Prüfung gegen den aktiven Katalog bei

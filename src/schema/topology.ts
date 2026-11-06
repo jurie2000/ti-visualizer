@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+// Die CSP verbietet eval. Zod prüft sonst mit `new Function`, ob es erlaubt ist,
+// und löst dabei eine CSP-Verletzung aus. Ohne JIT entfällt die Probe.
+z.config({ jitless: true });
+
 // Grenzen aus plan.md, „Sicherheit beim Öffnen fremder Dateien“
 export const LIMITS = {
   nodes: 500,

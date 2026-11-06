@@ -260,7 +260,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
   - Fertig, wenn: Tests für Rückgängig/Wiederholen grün sind, inklusive
     Grenze von 80 Schritten.
 
-- [ ] **T-202 Canvas, Knoten und Kanten** · FR: FR-1, FR-3, FR-16 · Regeln: – · nach: T-002, T-201
+- [x] **T-202 Canvas, Knoten und Kanten** · FR: FR-1, FR-3, FR-16 · Regeln: – · nach: T-002, T-201
   - Umfang: React Flow auf der Canvas. `DeviceNode` mit Kategorie-Leiste,
     Form, Icon, Kurzname und Name. `ConnectionEdge` je Verbindungsart mit
     Label. Zoom, Minimap, „alles einpassen“. Knoten per Pfeiltasten

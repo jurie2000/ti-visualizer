@@ -21,3 +21,35 @@ Object.defineProperty(HTMLDialogElement.prototype, "close", {
   configurable: true,
   value: close,
 });
+
+// React Flow braucht Größen, die jsdom nicht misst (Vorgehen laut React-Flow-Doku
+// „Testing“): ResizeObserver meldet nach dem Beobachten, Maße kommen aus `style`.
+class ResizeObserverStub {
+  constructor(private callback: ResizeObserverCallback) {}
+  observe(target: Element) {
+    // Asynchron wie im Browser: React Flow kennt seinen Wurzelknoten erst nach dem Einhängen.
+    setTimeout(() => {
+      this.callback([{ target } as ResizeObserverEntry], this);
+    }, 0);
+  }
+  unobserve() {}
+  disconnect() {}
+}
+globalThis.ResizeObserver = ResizeObserverStub;
+globalThis.DOMMatrixReadOnly = class {
+  m22 = 1;
+} as unknown as typeof DOMMatrixReadOnly;
+Object.defineProperties(HTMLElement.prototype, {
+  offsetWidth: {
+    configurable: true,
+    get() {
+      return parseFloat((this as HTMLElement).style.width) || 1;
+    },
+  },
+  offsetHeight: {
+    configurable: true,
+    get() {
+      return parseFloat((this as HTMLElement).style.height) || 1;
+    },
+  },
+});

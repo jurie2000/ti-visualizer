@@ -1,5 +1,10 @@
-import type { Connection, OnConnectEnd } from "@xyflow/react";
-import { useState, type KeyboardEvent } from "react";
+import {
+  useStoreApi,
+  type Connection,
+  type OnConnectEnd,
+  type OnConnectStart,
+} from "@xyflow/react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import { validateConnection } from "../engine/rules";
 import { useCatalog, useTopology } from "../store";
 import { useToast } from "../ui/Toast";
@@ -18,6 +23,19 @@ export function useConnecting() {
   const connect = useTopology((s) => s.connect);
   const [source, setSource] = useState<string>();
   const [exclusion, setExclusion] = useState<string>();
+  // Klick-Zug: Quelle vom ersten Klick, und ob der zweite Klick verbunden hat.
+  // React Flow liefert im Klick-Modus kein Prüfergebnis an `onClickConnectEnd`.
+  const clickFrom = useRef<string>(undefined);
+  const clickConnected = useRef(false);
+  const flow = useStoreApi();
+
+  /** Bricht einen Klick-Zug ab (Punkt angeklickt, Ziel noch offen). */
+  const cancelClick = () => {
+    if (flow.getState().connectionClickStartHandle === null) return false;
+    flow.setState({ connectionClickStartHandle: null });
+    toast.show("Verbinden abgebrochen.");
+    return true;
+  };
 
   const nameOf = (id: string) => {
     const node = useTopology.getState().topology.nodes.find((n) => n.id === id);
@@ -58,6 +76,7 @@ export function useConnecting() {
     isValidConnection: (c: { source: string; target: string }) =>
       check(c.source, c.target).ok,
     onConnect: (c: Connection) => {
+      clickConnected.current = true;
       tryConnect(c.source, c.target);
     },
     /** Ein losgelassener, ungültiger Zug auf ein Gerät nennt den Grund. */
@@ -66,8 +85,37 @@ export function useConnecting() {
       const r = check(state.fromNode.id, state.toNode.id);
       if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
+    /** Verbinden per Klick: erst den Punkt, dann das Zielgerät. */
+    onClickConnectStart: ((_, { nodeId }) => {
+      clickFrom.current = nodeId ?? undefined;
+      clickConnected.current = false;
+      if (nodeId)
+        toast.show(
+          `Quelle ${nameOf(nodeId)} gewählt. Jetzt das Zielgerät anklicken, Esc oder ein Klick auf die freie Fläche bricht ab.`,
+        );
+    }) satisfies OnConnectStart,
+    /** Zweiter Klick ohne Verbindung (Zielfläche oder Punkt eines Geräts): Grund nennen. */
+    onClickConnectEnd: ((event) => {
+      const from = clickFrom.current;
+      clickFrom.current = undefined;
+      if (clickConnected.current) {
+        clickConnected.current = false;
+        return;
+      }
+      const target = event.target instanceof Element ? event.target : null;
+      const to = target?.closest(".react-flow__node")?.getAttribute("data-id");
+      if (!from || !to) return;
+      if (from === to) {
+        toast.show("Verbinden abgebrochen.");
+        return;
+      }
+      const r = check(from, to);
+      if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
+    }) satisfies OnConnectEnd,
+    cancelClick,
     onKeyDown: (e: KeyboardEvent) => {
       // Esc bricht von jeder Stelle der Canvas aus ab
+      if (e.key === "Escape" && cancelClick()) return;
       if (e.key === "Escape" && source) {
         setSource(undefined);
         toast.show("Verbinden abgebrochen.");

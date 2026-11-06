@@ -44,6 +44,8 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await page.mouse.move(x, y);
     await page.mouse.down();
     await page.mouse.move(x + 60, y + 40, { steps: 8 });
+    // Kanten bleiben während des Ziehens sichtbar
+    await expect(page.locator(".react-flow__edge")).toHaveCount(kanten);
     await page.mouse.up();
     await expect(page.locator(".react-flow__connectionline")).toHaveCount(0);
     const nachher = await knoten.boundingBox();
@@ -85,6 +87,42 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   });
 
   test.describe("Maus", () => {
+    /** Punkt am Gerät anklicken, dann das Zielgerät. */
+    async function perKlick(page: Page, quelle: string, ziel: string) {
+      await page.getByRole("button", { name: "Alles einpassen" }).click();
+      await page.waitForTimeout(500);
+      const von = await gerät(page, quelle)
+        .locator(".tiv-handle--source")
+        .boundingBox();
+      const nach = await gerät(page, ziel).boundingBox();
+      if (!von || !nach) throw new Error("Geräte nicht sichtbar");
+      await page.mouse.click(von.x + von.width / 2, von.y + von.height / 2);
+      await expect(page.locator(".tiv-toasts")).toContainText(
+        "Jetzt das Zielgerät anklicken",
+      );
+      await page.mouse.click(nach.x + nach.width / 2, nach.y + nach.height / 2);
+    }
+
+    test("gültig verbinden per Klick: Punkt, dann Ziel", async ({ page }) => {
+      await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
+      await expect(gerät(page, "switch-1")).toBeVisible();
+      const vorher = await page.locator(".react-flow__edge").count();
+      await perKlick(page, "switch-1", "sw1");
+      await expect(page.locator(".tiv-toasts")).toContainText("Verbunden: ");
+      await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
+    });
+
+    test("ungültig verbinden per Klick zeigt die Begründung", async ({
+      page,
+    }) => {
+      const vorher = await page.locator(".react-flow__edge").count();
+      await perKlick(page, "pvs1", "vpn1");
+      await expect(page.locator(".tiv-toasts")).toContainText(
+        "Den VPN-Tunnel in die TI baut nur der Konnektor",
+      );
+      await expect(page.locator(".react-flow__edge")).toHaveCount(vorher);
+    });
+
     test("ungültig verbinden mit der Maus zeigt die Begründung", async ({
       page,
     }) => {

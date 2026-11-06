@@ -44,6 +44,7 @@ export function toFlow(
       initialWidth: NODE_SIZE.width,
       initialHeight: NODE_SIZE.height,
       selected,
+      domAttributes: { "aria-roledescription": "Gerät" },
       ariaLabel: `${device.abbr}: ${name}${node.fault ? ", gestört" : ""}${selected ? ", ausgewählt" : ""}`,
       data: {
         node,
@@ -68,6 +69,7 @@ export function toFlow(
       source: a.node,
       target: b.node,
       selected,
+      domAttributes: { "aria-roledescription": "Verbindung" },
       ariaLabel: description,
       data: { kind, label: edge.label ?? label, fault: edge.fault },
     };

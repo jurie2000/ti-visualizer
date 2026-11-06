@@ -1,3 +1,4 @@
+import { isWlan } from "../engine/rules";
 import type { Catalog, Edge, Selector, Topology } from "../schema";
 
 /** Verbindungsarten mit eigenem Linienstil (Tokens `--tiv-edge-…`). */
@@ -29,14 +30,13 @@ const selects = (s: Selector, type: string, catalog: Catalog) =>
 
 /**
  * Kabel zwischen Endgeräten, für die das Regelwerk (3) ein TLS-Protokoll kennt,
- * ist eine TCP/TLS-Verbindung. Kabel zu Netzgeräten (Switch, Router) und
- * Kartenterminals bleiben physisch.
+ * ist eine TCP/TLS-Verbindung. Kabel zu Netzgeräten (Switch, Router)
+ * bleiben physisch.
  */
 function carriesTls(types: [string, string], catalog: Catalog): boolean {
   const category = (t: string) =>
     catalog.deviceTypes.find((d) => d.id === t)?.category;
-  if (types.some((t) => ["lan", "terminal"].includes(category(t) ?? "")))
-    return false;
+  if (types.some((t) => category(t) === "lan")) return false;
   const [x, y] = types;
   return catalog.protocols.protocols.some(
     (p) =>
@@ -68,7 +68,7 @@ export function describeEdge(
   const both = (k: string) => ends.every((e) => e.kind === k);
 
   const [a, b] = ends;
-  const kind: EdgeKind = has("wifi")
+  const kind: EdgeKind = isWlan(edge, topology, catalog)
     ? "wlan"
     : both("tun")
       ? "vpn"

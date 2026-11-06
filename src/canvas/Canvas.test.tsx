@@ -30,7 +30,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
     const pvs = screen.getByRole("group", {
       name: /^PVS: Praxisverwaltungssystem/,
     });
-    expect(pvs).toHaveAttribute("aria-roledescription", "node");
+    expect(pvs).toHaveAttribute("aria-roledescription", "Gerät");
   });
 
   it("zeigt alle Verbindungen mit Label und Beschreibung", async () => {

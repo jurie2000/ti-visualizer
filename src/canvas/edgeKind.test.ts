@@ -47,6 +47,9 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("Primärsystem direkt am Zugang (SOAP/TLS) ergibt TCP/TLS", () => {
     expect(kindOf(["pvs", "eth0"], ["kon", "lan"])).toBe("tcp");
   });
+  it("Kartenterminal am Zugang (SICCT/TLS) ergibt TCP/TLS", () => {
+    expect(kindOf(["kt", "lan0"], ["kon", "lan"])).toBe("tcp");
+  });
   it("Kabel zum Switch bleibt Kabel", () => {
     expect(kindOf(["pvs", "eth0"], ["switch", "p1"])).toBe("phys");
   });

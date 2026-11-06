@@ -1,7 +1,7 @@
 .tiv-shell {
   display: grid;
-  grid-template-rows: 62px 1fr auto;
-  min-height: 100vh;
+  grid-template-rows: 62px minmax(0, 1fr) auto;
+  height: 100dvh;
 }
 .tiv-header,
 .tiv-footer {
@@ -25,10 +25,13 @@
 .tiv-main {
   display: grid;
   grid-template-columns: 240px 1fr 280px;
+  min-height: 0;
 }
 .tiv-palette,
 .tiv-detail {
   padding: 16px;
+  min-height: 0;
+  overflow-y: auto;
 }
 .tiv-canvas {
   position: relative;

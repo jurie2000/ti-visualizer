@@ -16,6 +16,7 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   // ein Gerät per Palette (bisher gibt es nur das Preset Arztpraxis).
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
+    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
     await expect(gerät(page, "sw1")).toBeVisible();
     await expect(page.locator(".react-flow__edge").first()).toBeVisible();
   });

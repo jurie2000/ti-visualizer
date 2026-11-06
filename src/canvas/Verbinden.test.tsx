@@ -66,6 +66,26 @@ describe("Verbinden per Tastatur", () => {
     ).toBeInTheDocument();
   });
 
+  it("[V-10] erklärt auch den direkten Weg Konnektor an TI-Gateway im Dialog", async () => {
+    useTopology.getState().addNode("gateway", { x: 0, y: 0 });
+    const gw = useTopology.getState().topology.nodes.at(-1)?.id ?? "";
+    render(<Canvas />, { wrapper: ToastProvider });
+    await verbinden("kon1", gw);
+    expect(screen.getByRole("dialog")).toHaveTextContent(/Regel X-1/);
+  });
+
+  it("ignoriert Strg+V und bricht mit Esc auch außerhalb eines Geräts ab", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper: ToastProvider });
+    node("sw1").focus();
+    await user.keyboard("{Control>}v{/Control}");
+    expect(screen.queryByRole("status")).toBeEmptyDOMElement();
+    await user.keyboard("v");
+    screen.getByRole("button", { name: "Vergrößern" }).focus();
+    await user.keyboard("{Escape}");
+    expect(screen.getByRole("status")).toHaveTextContent(/abgebrochen/);
+  });
+
   it("Esc bricht die Quellenwahl ab", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper: ToastProvider });

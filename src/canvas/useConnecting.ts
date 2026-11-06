@@ -67,17 +67,20 @@ export function useConnecting() {
       if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
     onKeyDown: (e: KeyboardEvent) => {
-      const el = e.target as HTMLElement;
-      // nur am fokussierten Gerät selbst, nicht in Unterelementen
-      if (!el.classList.contains("react-flow__node")) return;
-      const id = el.dataset["id"];
-      if (!id) return;
+      // Esc bricht von jeder Stelle der Canvas aus ab
       if (e.key === "Escape" && source) {
         setSource(undefined);
         toast.show("Verbinden abgebrochen.");
         return;
       }
-      if (e.key.toLowerCase() !== "v") return;
+      const el = e.target as HTMLElement;
+      // nur am fokussierten Gerät selbst, nicht in Unterelementen
+      if (!el.classList.contains("react-flow__node")) return;
+      const id = el.dataset["id"];
+      if (!id) return;
+      // Strg/Cmd/Alt+V sind Einfügen und Systemkürzel
+      if (e.key.toLowerCase() !== "v" || e.ctrlKey || e.metaKey || e.altKey)
+        return;
       if (!source) {
         setSource(id);
         toast.show(

@@ -360,7 +360,10 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Umfang: Suite `datei` in Chromium, Firefox und WebKit (Safari):
     Speichern in Kontext A,
     Öffnen in neuem Kontext B. Einstellungen nur nach Zustimmung. Datei
-    ohne Einstellungen. Autosave und Wiederherstellen.
+    ohne Einstellungen. Autosave und Wiederherstellen. Prüfung „keine CSP-Verletzung“
+    in jedem Browser. `.github/actions/playwright` installiert die drei
+    Browser (Parameter, Cache-Key, WebKit-Systempakete). WebKit unter Linux
+    ist eine Annäherung an Safari, kein Ersatz für die manuelle Probe in P7.
   - Fertig, wenn: die Suite in allen drei Browsern in der CI grün ist.
     **Ergebnis von P3.**
 
@@ -485,8 +488,9 @@ Sicherheitsprüfung.
 
 - [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
   - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per
-    Strg+Z / Strg+Y (Strg+Umschalt+Z), Löschen von Gerät oder Kante per
-    Entf/Rücktaste. Kopieren, Einfügen, Duplizieren (Kanten nur, wenn
+    Strg+Z / Strg+Y (Strg+Umschalt+Z), auf macOS ⌘ statt Strg (D10), Löschen von Gerät oder Kante per
+    Entf/Rücktaste. Kürzel greifen nicht, solange
+    der Fokus in einem Eingabefeld liegt. Kopieren, Einfügen, Duplizieren (Kanten nur, wenn
     gültig), automatisch anordnen (rückgängig machbar), Tastaturkürzel
     dazu. E2E-Suite `edit`: Gerät mit der Maus ziehen (Position bleibt
     nach dem Loslassen, ein Rückgängig-Schritt), Rückgängig und

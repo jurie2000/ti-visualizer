@@ -56,9 +56,10 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
 
   const submit = (e: SyntheticEvent) => {
     e.preventDefault();
+    // K-6: per NFC (CAN) liest man ohne PIN; `pinActive` (K-7) bleibt dort ungesetzt.
     const card: AnyCard =
       kind === "egk"
-        ? { kind, expires, pinActive: pin }
+        ? { kind, expires, ...(!nfcOnly && { pinActive: pin }) }
         : { kind, expires, unlocked: pin };
     const r = plug(nodeId, card);
     // Der Toast liegt außerhalb des modalen Dialogs: erst schließen, dann melden.

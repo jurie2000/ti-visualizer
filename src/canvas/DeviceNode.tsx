@@ -53,7 +53,13 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
           <span className="tiv-node__name">{node.label ?? device.name}</span>
           <div className="tiv-node__slot">
             {node.cards?.map((c) => (
-              <CardChip key={c.kind} nodeId={node.id} card={c} nfc={nfc} />
+              <CardChip
+                key={c.kind}
+                nodeId={node.id}
+                card={c}
+                nfc={nfc}
+                owner={node.label ?? device.name}
+              />
             ))}
             {hasCards && (
               <button

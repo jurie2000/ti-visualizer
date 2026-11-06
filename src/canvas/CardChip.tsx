@@ -17,10 +17,13 @@ export function CardChip({
   nodeId,
   card,
   nfc,
+  owner,
 }: {
   nodeId: string;
   card: AnyCard;
   nfc: boolean;
+  /** Name des Geräts, in dem die Karte steckt (für den Namen des Knopfs). */
+  owner: string;
 }) {
   const topology = useTopology((s) => s.topology);
   const unplug = useTopology((s) => s.unplugCard);
@@ -51,7 +54,7 @@ export function CardChip({
       <button
         type="button"
         className="tiv-chip__unplug"
-        aria-label={`${name} ziehen`}
+        aria-label={`${name} aus ${owner} ziehen`}
         onClick={() => {
           unplug(nodeId, card.kind);
         }}

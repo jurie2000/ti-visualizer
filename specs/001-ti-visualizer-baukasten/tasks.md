@@ -292,7 +292,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
   - Fertig, wenn: RTL-Tests Stecken, Ziehen und die Meldung bei voller
     Kartenbelegung (K-2) prüfen.
 
-- [ ] **T-206 Startansicht und Presets** [P] · FR: FR-2 · Regeln: – · nach: T-108, T-202
+- [x] **T-206 Startansicht und Presets** [P] · FR: FR-2 · Regeln: – · nach: T-108, T-202
   - Umfang: `StartScreen` mit `PresetCard` (Vorschau) für die vier Presets
     und leeren Start.
   - Fertig, wenn: Suite `smoke` um „Preset öffnen“ erweitert und grün ist.

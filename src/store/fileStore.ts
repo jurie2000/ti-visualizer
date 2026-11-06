@@ -55,17 +55,18 @@ export const useFile = create<FileState>((set) => ({
 }));
 
 /**
- * Gilt der aktuelle Stand als nicht gespeichert? Nein bei leerer Fläche (kein
- * Verlust), bei unverändertem Preset (jederzeit neu wählbar) und wenn er dem
- * Stand der Datei entspricht (auch nach Rückgängig bis dorthin).
+ * Gilt der aktuelle Stand als nicht gespeichert? Nein, wenn er dem Stand der
+ * Datei entspricht (auch nach Rückgängig bis dorthin). Ohne Datei zusätzlich
+ * nein bei leerer Fläche (kein Verlust). Ein unverändertes Preset gilt als
+ * „gespeichert“, weil die Startansicht es per `markSaved(preset, null)` als
+ * Ausgangsstand setzt (jederzeit neu wählbar).
  */
 export function hasUnsaved(): boolean {
   const { topology } = useTopology.getState();
-  if (topology === useFile.getState().baseline) return false;
-  if (topology.nodes.length === 0 && topology.zones.length === 0) return false;
-  return !useCatalog
-    .getState()
-    .catalog.presets.some((p) => p.topology === topology);
+  const { baseline, fileName } = useFile.getState();
+  if (topology === baseline) return false;
+  const empty = topology.nodes.length === 0 && topology.zones.length === 0;
+  return !(empty && fileName === null);
 }
 
 /** Reaktive Fassung von `hasUnsaved` für Komponenten. */

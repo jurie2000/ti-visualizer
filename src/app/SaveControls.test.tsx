@@ -60,10 +60,56 @@ describe("Speichern: Häkchen und Hinweis", () => {
     const preset = useCatalog.getState().catalog.presets[0];
     if (!preset) throw new Error("kein Preset");
     useTopology.getState().replace(preset.topology);
+    useFile.getState().markSaved(useTopology.getState().topology, null);
     expect(hasUnsaved()).toBe(false);
     useTopology.getState().addNode("switch", { x: 0, y: 0 });
     expect(hasUnsaved()).toBe(true);
     useTopology.getState().undo();
     expect(hasUnsaved()).toBe(false);
+  });
+
+  it("fragt beim Schließen nur bei ungespeichertem Stand nach", () => {
+    ui();
+    const frei = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(frei);
+    expect(frei.defaultPrevented).toBe(false);
+    act(() => {
+      useTopology.getState().addNode("switch", { x: 0, y: 0 });
+    });
+    const offen = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(offen);
+    expect(offen.defaultPrevented).toBe(true);
+  });
+
+  it("speichert mit Strg+S und per Button, Fehler erscheinen als Meldung", async () => {
+    const user = userEvent.setup();
+    URL.createObjectURL = vi.fn(() => "blob:x");
+    URL.revokeObjectURL = vi.fn();
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
+    ui();
+    act(() => {
+      useTopology.getState().addNode("switch", { x: 0, y: 0 });
+    });
+    await user.keyboard("{Control>}s{/Control}");
+    await user.click(screen.getByRole("button", { name: "Speichern" }));
+    expect(click).toHaveBeenCalledTimes(2);
+    expect(screen.queryByText("Nicht als Datei gespeichert")).toBeNull();
+    click.mockImplementation(() => {
+      throw new Error("kaputt");
+    });
+    await user.click(screen.getByRole("button", { name: "Speichern" }));
+    expect(
+      await screen.findByText("Speichern fehlgeschlagen."),
+    ).toBeInTheDocument();
+    vi.restoreAllMocks();
+  });
+
+  it("meldet leere Fläche mit offener Datei als ungespeichert", () => {
+    useTopology.getState().addNode("switch", { x: 0, y: 0 });
+    useFile.getState().markSaved(useTopology.getState().topology, "a.tiv.json");
+    useTopology.getState().removeNode("switch-1");
+    expect(hasUnsaved()).toBe(true);
   });
 });

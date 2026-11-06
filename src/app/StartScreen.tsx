@@ -1,5 +1,5 @@
 import type { Topology } from "../schema";
-import { emptyTopology, useCatalog, useTopology } from "../store";
+import { emptyTopology, useCatalog, useFile, useTopology } from "../store";
 import { PresetCard } from "./PresetCard";
 
 /**
@@ -13,6 +13,8 @@ export function StartScreen({ onStart }: { onStart: () => void }) {
   const replace = useTopology((s) => s.replace);
   const open = (t: Topology) => {
     replace(t);
+    // Neues Dokument: Dateibezug lösen, damit Strg+S nicht die vorige Datei überschreibt
+    useFile.getState().markSaved(useTopology.getState().topology, null);
     onStart();
   };
   return (

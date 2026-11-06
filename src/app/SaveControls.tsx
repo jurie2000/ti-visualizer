@@ -34,6 +34,8 @@ export function SaveControls() {
     if (!unsaved) return;
     const onUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- ältere Chrome/Edge/WebKit verlangen es
+      e.returnValue = "";
     };
     window.addEventListener("beforeunload", onUnload);
     return () => {

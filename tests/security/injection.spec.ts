@@ -183,7 +183,9 @@ test.describe("injection", { tag: "@security" }, () => {
         await w.pruefen();
 
         // frischer Kontext: sonst bietet der Autosave der ersten Seite die Wiederherstellung an
-        const page2 = await (await browser.newContext({ baseURL })).newPage();
+        const page2 = await (
+          await browser.newContext({ ...(baseURL && { baseURL }) })
+        ).newPage();
         const w2 = await wache(page2);
         const befunde = await einspielen(
           page2,

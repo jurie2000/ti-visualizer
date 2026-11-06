@@ -138,4 +138,45 @@ describe("Topologie-Store (T-201)", () => {
     });
     expect(s().addNode("pc", at(0)).ok).toBe(false);
   });
+
+  it("Aktionen ohne Wirkung legen keinen Schritt an", () => {
+    const a = add("pc");
+    const n = s().past.length;
+    s().unplugCard(a, "egk");
+    s().removeNode("gibt-es-nicht");
+    s().removeEdge("gibt-es-nicht");
+    s().toggleFault("gibt-es-nicht");
+    s().moveNodes({});
+    expect(s().past).toHaveLength(n);
+  });
+
+  it("hält Name, Beschreibung und Positionen in den Schema-Grenzen", () => {
+    const a = add("pc");
+    expect(s().setMeta({ name: "x".repeat(LIMITS.name + 1) }).ok).toBe(false);
+    expect(
+      s().setMeta({ description: "x".repeat(LIMITS.description + 1) }).ok,
+    ).toBe(false);
+    expect(s().setMeta({ name: "ok" }).ok).toBe(true);
+    s().moveNodes({ [a]: { x: 1e9, y: -1e9 } });
+    expect(s().topology.nodes[0]?.position).toEqual({
+      x: LIMITS.coord,
+      y: -LIMITS.coord,
+    });
+  });
+
+  it("verbindet mit gewählten Anschlüssen und lehnt unbekannte oder belegte ab", () => {
+    const a = add("pc");
+    const b = add("switch");
+    const ports = { a: "eth0", b: "p1" };
+    expect(s().connect(a, b, ports).ok).toBe(true);
+    const e = s().topology.edges[0];
+    expect(e?.ends).toEqual([
+      { node: a, port: "eth0" },
+      { node: b, port: "p1" },
+    ]);
+    expect(s().connect(a, b, { a: "nix", b: "p2" }).ok).toBe(false);
+    const c = add("pc");
+    expect(s().connect(c, b, ports).ok).toBe(false);
+    expect(s().topology.edges).toHaveLength(1);
+  });
 });

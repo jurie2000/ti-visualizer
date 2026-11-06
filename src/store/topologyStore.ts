@@ -44,10 +44,15 @@ interface TopologyState {
   unplugCard: (nodeId: string, kind: CardKind) => void;
   /** Schaltet die Störung von Gerät oder Kante um. */
   toggleFault: (id: string) => void;
-  setMeta: (meta: Partial<Pick<Topology, "name" | "description">>) => void;
+  /** Lehnt zu lange Texte ab (Grenzen aus `LIMITS`). */
+  setMeta: (
+    meta: Partial<Pick<Topology, "name" | "description">>,
+  ) => ActionResult;
   undo: () => void;
   redo: () => void;
 }
+
+const clamp = (v: number) => Math.max(-LIMITS.coord, Math.min(LIMITS.coord, v));
 
 const freeId = (prefix: string, t: Topology) => {
   const used = new Set([...t.nodes, ...t.edges, ...t.zones].map((e) => e.id));
@@ -59,6 +64,8 @@ const freeId = (prefix: string, t: Topology) => {
 export const useTopology = create<TopologyState>((set, get) => {
   /** Übernimmt `next` als neuen Stand und merkt den alten für Rückgängig. */
   const commit = (next: Topology) => {
+    // Aktionen ohne Wirkung (unbekannte ID, nichts zu ziehen) legen keinen Schritt an
+    if (JSON.stringify(next) === JSON.stringify(get().topology)) return;
     set((s) => ({
       topology: next,
       past: [...s.past, s.topology].slice(-HISTORY_LIMIT),
@@ -99,7 +106,9 @@ export const useTopology = create<TopologyState>((set, get) => {
         ...t,
         nodes: t.nodes.map((n) => {
           const position = moves[n.id];
-          return position ? { ...n, position } : n;
+          return position
+            ? { ...n, position: { x: clamp(position.x), y: clamp(position.y) } }
+            : n;
         }),
       });
     },
@@ -171,7 +180,16 @@ export const useTopology = create<TopologyState>((set, get) => {
     },
 
     setMeta: (meta) => {
+      if ((meta.name?.length ?? 0) > LIMITS.name)
+        return fail(
+          `Der Name darf höchstens ${String(LIMITS.name)} Zeichen haben.`,
+        );
+      if ((meta.description?.length ?? 0) > LIMITS.description)
+        return fail(
+          `Die Beschreibung darf höchstens ${String(LIMITS.description)} Zeichen haben.`,
+        );
       commit({ ...get().topology, ...meta });
+      return { ok: true };
     },
 
     undo: () => {

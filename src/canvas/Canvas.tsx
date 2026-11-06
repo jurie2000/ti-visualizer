@@ -87,12 +87,26 @@ export function Canvas() {
   const select = useUi((s) => s.select);
   // Positionen während des Ziehens: erst beim Loslassen geht ein Schritt in den Verlauf
   const [drag, setDrag] = useState<Record<string, Point>>({});
+  // Gemessene Größen von React Flow. Ohne sie verlieren neu gebaute Knoten ihre
+  // Maße, und React Flow blendet die Kanten aus (z. B. während des Ziehens).
+  const [sizes, setSizes] = useState<
+    Record<string, { width: number; height: number }>
+  >({});
 
   const connecting = useConnecting();
 
-  const { nodes, edges, isolated } = useMemo(
+  const flow = useMemo(
     () => toFlow(topology, catalog, selection, drag, mode),
     [topology, catalog, selection, drag, mode],
+  );
+  const { edges, isolated } = flow;
+  const nodes = useMemo(
+    () =>
+      flow.nodes.map((n) => {
+        const measured = sizes[n.id];
+        return measured ? { ...n, measured } : n;
+      }),
+    [flow.nodes, sizes],
   );
 
   const onNodesChange = (changes: NodeChange<DeviceFlowNode>[]) => {
@@ -105,6 +119,9 @@ export function Canvas() {
         };
         if (c.dragging) setDrag((d) => ({ ...d, [c.id]: position }));
         else dropped[c.id] = position;
+      } else if (c.type === "dimensions" && c.dimensions) {
+        const size = c.dimensions;
+        setSizes((m) => ({ ...m, [c.id]: size }));
       } else if (c.type === "select" && c.selected) {
         select({ kind: "node", id: c.id });
       }
@@ -165,6 +182,8 @@ export function Canvas() {
         onEdgesChange={onEdgesChange}
         onConnect={connecting.onConnect}
         onConnectEnd={connecting.onConnectEnd}
+        onClickConnectStart={connecting.onClickConnectStart}
+        onClickConnectEnd={connecting.onClickConnectEnd}
         isValidConnection={connecting.isValidConnection}
         onKeyDown={connecting.onKeyDown}
         onPaneClick={() => {

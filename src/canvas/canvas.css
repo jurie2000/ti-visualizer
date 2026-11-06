@@ -199,8 +199,16 @@
   border-radius: 50%;
   cursor: crosshair;
 }
+/* Größere Trefferfläche, auch wenn die Canvas herausgezoomt ist */
+.tiv-handle--source::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+}
 .tiv-handle--source:hover,
-.tiv-handle--source:focus-visible {
+.tiv-handle--source:focus-visible,
+.tiv-handle--source.clickconnecting {
   outline: var(--tiv-focus-width) solid var(--tiv-focus);
 }
 /* Drei Klassen, weil React Flow `.react-flow__handle.connectionindicator`

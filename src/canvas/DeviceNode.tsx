@@ -1,4 +1,10 @@
-import { Handle, Position, useConnection, type NodeProps } from "@xyflow/react";
+import {
+  Handle,
+  Position,
+  useConnection,
+  useStore,
+  type NodeProps,
+} from "@xyflow/react";
 import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
@@ -24,7 +30,10 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const nfc = device.capabilities.includes("nfcCard");
   const hasCards = nfc || device.capabilities.includes("cardSlots");
   const shape = category?.shape ?? "box";
-  const connecting = useConnection().inProgress;
+  // Ziel annehmen beim Ziehen und beim Verbinden per Klick (Punkt, dann Ziel)
+  const dragging = useConnection().inProgress;
+  const clicked = useStore((s) => s.connectionClickStartHandle !== null);
+  const connecting = dragging || clicked;
   return (
     <div
       className={`tiv-node tiv-shape-${shape}${selected ? " is-selected" : ""}${node.fault ? " is-fault" : ""}`}

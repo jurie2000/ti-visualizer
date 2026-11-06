@@ -1,5 +1,5 @@
-import type { Connection, OnConnectEnd } from "@xyflow/react";
-import { useState, type KeyboardEvent } from "react";
+import type { Connection, OnConnectEnd, OnConnectStart } from "@xyflow/react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import { validateConnection } from "../engine/rules";
 import { useCatalog, useTopology } from "../store";
 import { useToast } from "../ui/Toast";
@@ -18,6 +18,9 @@ export function useConnecting() {
   const connect = useTopology((s) => s.connect);
   const [source, setSource] = useState<string>();
   const [exclusion, setExclusion] = useState<string>();
+  // Letzte Prüfung von React Flow. Beim Verbinden per Klick meldet
+  // `onClickConnectEnd` kein Ergebnis; die Prüfung läuft direkt davor.
+  const last = useRef<ReturnType<typeof validateConnection>>(undefined);
 
   const nameOf = (id: string) => {
     const node = useTopology.getState().topology.nodes.find((n) => n.id === id);
@@ -55,8 +58,10 @@ export function useConnecting() {
     closeExclusion: () => {
       setExclusion(undefined);
     },
-    isValidConnection: (c: { source: string; target: string }) =>
-      check(c.source, c.target).ok,
+    isValidConnection: (c: { source: string; target: string }) => {
+      last.current = check(c.source, c.target);
+      return last.current.ok;
+    },
     onConnect: (c: Connection) => {
       tryConnect(c.source, c.target);
     },
@@ -65,6 +70,19 @@ export function useConnecting() {
       if (state.isValid !== false || !state.toNode) return;
       const r = check(state.fromNode.id, state.toNode.id);
       if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
+    }) satisfies OnConnectEnd,
+    /** Verbinden per Klick: erst den Punkt, dann das Zielgerät. */
+    onClickConnectStart: ((_, { nodeId }) => {
+      last.current = undefined;
+      if (nodeId)
+        toast.show(
+          `Quelle ${nameOf(nodeId)} gewählt. Jetzt das Zielgerät anklicken.`,
+        );
+    }) satisfies OnConnectStart,
+    onClickConnectEnd: (() => {
+      const r = last.current;
+      last.current = undefined;
+      if (r && !r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
     onKeyDown: (e: KeyboardEvent) => {
       // Esc bricht von jeder Stelle der Canvas aus ab

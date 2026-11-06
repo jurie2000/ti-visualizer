@@ -12,8 +12,6 @@ async function perTastatur(page: Page, quelle: string, ziel: string) {
 }
 
 test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
-  // Erweiterung: Sobald die Palette (T-203) auf main ist, ergänzt der Test hier
-  // ein Gerät per Palette (bisher gibt es nur das Preset Arztpraxis).
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
     await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
@@ -22,9 +20,12 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   });
 
   test("gültig verbinden per Tastatur, Ansage sichtbar", async ({ page }) => {
+    // Gerät ergänzen: ein zweiter Switch aus der Palette
+    await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
+    await expect(gerät(page, "switch-1")).toBeVisible();
     const vorher = await page.locator(".react-flow__edge").count();
-    await perTastatur(page, "sw1", "rt1");
-    await expect(page.getByRole("status")).toContainText("Verbunden: ");
+    await perTastatur(page, "switch-1", "sw1");
+    await expect(page.locator(".tiv-toasts")).toContainText("Verbunden: ");
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
   });
 
@@ -33,30 +34,38 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   }) => {
     const vorher = await page.locator(".react-flow__edge").count();
     await perTastatur(page, "pvs1", "vpn1");
-    await expect(page.getByRole("status")).toContainText(
+    await expect(page.locator(".tiv-toasts")).toContainText(
       "Den VPN-Tunnel in die TI baut nur der Konnektor",
     );
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher);
   });
 
-  test("ungültig verbinden mit der Maus zeigt die Begründung", async ({
-    page,
-  }) => {
-    const vorher = await page.locator(".react-flow__edge").count();
-    const von = await gerät(page, "pvs1")
-      .locator(".tiv-handle--source")
-      .boundingBox();
-    const nach = await gerät(page, "vpn1").boundingBox();
-    if (!von || !nach) throw new Error("Geräte nicht sichtbar");
-    await page.mouse.move(von.x + von.width / 2, von.y + von.height / 2);
-    await page.mouse.down();
-    await page.mouse.move(nach.x + nach.width / 2, nach.y + nach.height / 2, {
-      steps: 15,
+  // Die Palette macht die Seite derzeit sehr hoch und damit die Canvas: ein hohes
+  // Fenster hält beide Geräte im Bild, bis das Layout die Höhe begrenzt.
+  test.describe("Maus", () => {
+    test.use({ viewport: { width: 1280, height: 2600 } });
+    test("ungültig verbinden mit der Maus zeigt die Begründung", async ({
+      page,
+    }) => {
+      const vorher = await page.locator(".react-flow__edge").count();
+      // alles einpassen, damit beide Geräte sichtbar sind
+      await page.getByRole("button", { name: "Alles einpassen" }).click();
+      await page.waitForTimeout(500);
+      const von = await gerät(page, "pvs1")
+        .locator(".tiv-handle--source")
+        .boundingBox();
+      const nach = await gerät(page, "vpn1").boundingBox();
+      if (!von || !nach) throw new Error("Geräte nicht sichtbar");
+      await page.mouse.move(von.x + von.width / 2, von.y + von.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(nach.x + nach.width / 2, nach.y + nach.height / 2, {
+        steps: 15,
+      });
+      await page.mouse.up();
+      await expect(page.locator(".tiv-toasts")).toContainText(
+        "Den VPN-Tunnel in die TI baut nur der Konnektor",
+      );
+      await expect(page.locator(".react-flow__edge")).toHaveCount(vorher);
     });
-    await page.mouse.up();
-    await expect(page.getByRole("status")).toContainText(
-      "Den VPN-Tunnel in die TI baut nur der Konnektor",
-    );
-    await expect(page.locator(".react-flow__edge")).toHaveCount(vorher);
   });
 });

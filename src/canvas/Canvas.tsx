@@ -3,19 +3,21 @@ import {
   Controls,
   MiniMap,
   ReactFlow,
+  useReactFlow,
   type EdgeTypes,
   type NodeChange,
   type EdgeChange,
   type NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import { useCatalog, useTopology, useUi } from "../store";
+import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
-import { categoryColor } from "./deviceStyle";
+import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
 import { toFlow, type DeviceFlowNode, type ConnectionFlowEdge } from "./toFlow";
 import { useConnecting } from "./useConnecting";
 import "./canvas.css";
@@ -52,15 +54,18 @@ const ariaLabelConfig = {
  * Die Canvas zeigt die Topologie aus dem Store und schreibt Änderungen nur über
  * Store-Aktionen zurück.
  *
+ * Braucht einen `ReactFlowProvider` darüber (App-Shell, damit die Palette
+ * dieselbe Ansicht kennt). Drop aus der Palette: `onDrop` unten.
+ *
  * Erweiterungspunkte:
- * - T-203 (Drop): `onDrop`/`onDragOver` an `ReactFlow`, Position über
- *   `screenToFlowPosition`, dann `useTopology.addNode`.
-
  * Verbinden (T-204) steckt in `useConnecting`.
  */
 export function Canvas() {
   const topology = useTopology((s) => s.topology);
   const moveNodes = useTopology((s) => s.moveNodes);
+  const addNode = useTopology((s) => s.addNode);
+  const { screenToFlowPosition } = useReactFlow();
+  const toast = useToast();
   const catalog = useCatalog((s) => s.catalog);
   const selection = useUi((s) => s.selection);
   const select = useUi((s) => s.select);
@@ -73,12 +78,6 @@ export function Canvas() {
     () => toFlow(topology, catalog, selection, drag),
     [topology, catalog, selection, drag],
   );
-  // Quelle einer Verbindung per Tastatur: gestrichelter Rahmen (CSS `.is-source`)
-  const shown = connecting.source
-    ? nodes.map((n) =>
-        n.id === connecting.source ? { ...n, className: "is-source" } : n,
-      )
-    : nodes;
 
   const onNodesChange = (changes: NodeChange<DeviceFlowNode>[]) => {
     const dropped: Record<string, Point> = {};
@@ -107,6 +106,27 @@ export function Canvas() {
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };
 
+  // Quelle einer Verbindung per Tastatur: gestrichelter Rahmen (CSS `.is-source`)
+  const shown = connecting.source
+    ? nodes.map((n) =>
+        n.id === connecting.source ? { ...n, className: "is-source" } : n,
+      )
+    : nodes;
+
+  // Drop aus der Palette: Mauszeiger ist die Mitte des neuen Geräts
+  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+    const type = e.dataTransfer.getData(DRAG_TYPE);
+    if (!type) return;
+    e.preventDefault();
+    const p = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+    const result = addNode(type, {
+      x: Math.round(p.x - NODE_SIZE.width / 2),
+      y: Math.round(p.y - NODE_SIZE.height / 2),
+    });
+    if (!result.ok) toast.show(result.reason);
+    else if (result.id) select({ kind: "node", id: result.id });
+  };
+
   return (
     <>
       <ReactFlow
@@ -123,6 +143,12 @@ export function Canvas() {
         onPaneClick={() => {
           select(undefined);
         }}
+        onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes(DRAG_TYPE)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "copy";
+        }}
+        onDrop={onDrop}
         deleteKeyCode={null}
         fitView
         minZoom={0.2}

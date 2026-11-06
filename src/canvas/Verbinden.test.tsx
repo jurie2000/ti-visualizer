@@ -3,8 +3,16 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
 import { useSettings, useTopology, useUi } from "../store";
+import { ReactFlowProvider } from "@xyflow/react";
+import type { ReactNode } from "react";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
+
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <ToastProvider>
+    <ReactFlowProvider>{children}</ReactFlowProvider>
+  </ToastProvider>
+);
 
 const catalog = loadCatalog();
 const praxis = (() => {
@@ -38,7 +46,7 @@ async function verbinden(a: string, b: string) {
 
 describe("Verbinden per Tastatur", () => {
   it("verbindet gültige Geräte und sagt es an", async () => {
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     const before = useTopology.getState().topology.edges.length;
     await verbinden("sw1", "rt1");
     expect(useTopology.getState().topology.edges).toHaveLength(before + 1);
@@ -46,7 +54,7 @@ describe("Verbinden per Tastatur", () => {
   });
 
   it("[V-12] lehnt ungültige Paare ab und nennt den Grund", async () => {
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     const before = useTopology.getState().topology.edges.length;
     await verbinden("pvs1", "vpn1");
     expect(useTopology.getState().topology.edges).toHaveLength(before);
@@ -55,7 +63,7 @@ describe("Verbinden per Tastatur", () => {
 
   it("[X-1] erklärt im ExclusionDialog, warum Konnektor und TI-Gateway sich ausschließen", async () => {
     useTopology.getState().addNode("gateway", { x: 0, y: 0 });
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     const before = useTopology.getState().topology.edges.length;
     await verbinden("pvs1", "kon1");
     expect(useTopology.getState().topology.edges).toHaveLength(before);
@@ -69,14 +77,14 @@ describe("Verbinden per Tastatur", () => {
   it("[V-10] erklärt auch den direkten Weg Konnektor an TI-Gateway im Dialog", async () => {
     useTopology.getState().addNode("gateway", { x: 0, y: 0 });
     const gw = useTopology.getState().topology.nodes.at(-1)?.id ?? "";
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     await verbinden("kon1", gw);
     expect(screen.getByRole("dialog")).toHaveTextContent(/Regel X-1/);
   });
 
   it("ignoriert Strg+V und bricht mit Esc auch außerhalb eines Geräts ab", async () => {
     const user = userEvent.setup();
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     node("sw1").focus();
     await user.keyboard("{Control>}v{/Control}");
     expect(screen.queryByRole("status")).toBeEmptyDOMElement();
@@ -88,7 +96,7 @@ describe("Verbinden per Tastatur", () => {
 
   it("Esc bricht die Quellenwahl ab", async () => {
     const user = userEvent.setup();
-    render(<Canvas />, { wrapper: ToastProvider });
+    render(<Canvas />, { wrapper });
     node("sw1").focus();
     await user.keyboard("v");
     await user.keyboard("{Escape}");

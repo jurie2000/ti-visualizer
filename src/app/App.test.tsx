@@ -26,7 +26,9 @@ describe("App-Shell", () => {
     await user.click(screen.getByRole("button", { name: /Arztpraxis/ }));
     expect(useTopology.getState().topology.nodes.length).toBeGreaterThan(0);
     expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
+    expect(screen.getByRole("main")).toHaveFocus();
     await user.click(screen.getByRole("button", { name: "Startansicht" }));
+    expect(screen.getByRole("main")).toHaveFocus();
     expect(screen.getAllByRole("listitem")).toHaveLength(5);
     // Leerer Start ersetzt die Topologie
     await user.click(screen.getByRole("button", { name: /Leerer Start/ }));

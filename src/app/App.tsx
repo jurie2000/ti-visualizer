@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { Button } from "../ui/Button";
@@ -10,6 +10,13 @@ import "./app.css";
 export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
+  // Beim Ansichtswechsel verschwindet der bediente Button: Fokus auf den neuen Hauptbereich (D10)
+  const mainRef = useRef<HTMLElement>(null);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) first.current = false;
+    else mainRef.current?.focus();
+  }, [started]);
 
   return (
     <ToastProvider>
@@ -30,7 +37,11 @@ export function App() {
           </div>
         </header>
         {!started ? (
-          <main className="tiv-main tiv-main--start">
+          <main
+            ref={mainRef}
+            tabIndex={-1}
+            className="tiv-main tiv-main--start"
+          >
             <StartScreen
               onStart={() => {
                 setStarted(true);
@@ -38,7 +49,7 @@ export function App() {
             />
           </main>
         ) : (
-          <main className="tiv-main">
+          <main ref={mainRef} tabIndex={-1} className="tiv-main">
             <aside className="tiv-palette" aria-label="Palette">
               Palette
             </aside>

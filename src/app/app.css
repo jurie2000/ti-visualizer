@@ -161,3 +161,6 @@ a {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+.tiv-main:focus {
+  outline: none;
+}

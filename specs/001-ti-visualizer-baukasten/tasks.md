@@ -355,8 +355,13 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
     Einstellungen. `fast-check`-Fuzzing für `parse`. In Stufe `e2e`.
   - Fertig, wenn: alle Fälle der Tabelle grün sind, insbesondere
     `window.__pwned` bleibt leer und `Object.prototype` unverändert.
+  - Umgesetzt: Eingabewege ohne eigene Oberfläche (Topologiename,
+    Beschreibung, Zonenname, Gerätebezeichnung) laufen über Datei, Drop und
+    Autosave; Unicode-Tricks in Topologie-Texten entfernt `parse` mit
+    Befund `zeichen`. Direkte Texteingaben kommen mit T-507 (Zonen) und
+    den Editor-Aufgaben.
 
-- [ ] **T-306 E2E-Suite Datei** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
+- [x] **T-306 E2E-Suite Datei** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
   - Umfang: Suite `datei` in Chromium, Firefox und WebKit (Safari):
     Speichern in Kontext A,
     Öffnen in neuem Kontext B. Einstellungen nur nach Zustimmung. Datei
@@ -485,6 +490,11 @@ Sicherheitsprüfung.
   - Umfang: `ZoneNode`: Geräte gruppieren, Zone benennen, einfärben (nur
     feste Töne), verschieben, entfernen. Rückgängig machbar.
   - Fertig, wenn: RTL-Tests alle fünf Handlungen abdecken.
+  - Nachtrag (T-305): Zonenname und Zonenfarbe sind bisher nur über die
+    Datei geprüft (`tests/security/`). Mit der Eingabe in der Oberfläche
+    den Weg „Zonenname eintippen“ in der Injection-Suite ergänzen;
+    getippte Texte müssen wie Dateitexte von Steuer- und
+    Formatzeichen befreit werden (`persistence/parse.ts`, `strip`).
 
 - [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
   - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per

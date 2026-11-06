@@ -1,7 +1,9 @@
 name: Playwright-Browser
-description: Chromium (nur Headless-Shell) mit Cache je Playwright-Version, dazu die Systempakete.
-# lean: nur Chromium. Für T-306 (Suite `datei` auch in Firefox) braucht die
-# Action einen Browser-Parameter, und der Cache-Key muss den Browser nennen.
+description: Chromium (nur Headless-Shell), mit `alle` auch Firefox und WebKit. Cache je Playwright-Version und Browser-Satz, dazu die Systempakete.
+inputs:
+  alle:
+    description: '"true" installiert zusätzlich Firefox und WebKit (Suite `datei`).'
+    default: "false"
 runs:
   using: composite
   steps:
@@ -12,9 +14,12 @@ runs:
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ steps.version.outputs.version }}-shell
-    # Die Systempakete liegen nicht im Cache, sie kommen bei jedem Lauf per apt.
-    # Der Browser-Download entfällt bei einem Cache-Treffer.
-    - name: Chromium-Headless-Shell installieren
+        key: playwright-${{ runner.os }}-${{ steps.version.outputs.version }}-${{ inputs.alle == 'true' && 'drei' || 'shell' }}
+    # Die Systempakete (auch für WebKit) liegen nicht im Cache, sie kommen bei
+    # jedem Lauf per apt. Der Browser-Download entfällt bei einem Cache-Treffer.
+    - name: Browser installieren
       shell: bash
-      run: pnpm exec playwright install --with-deps --only-shell chromium
+      env:
+        BROWSER: ${{ inputs.alle == 'true' && 'chromium firefox webkit' || 'chromium' }}
+      # $BROWSER absichtlich ungequotet: Liste mit Leerzeichen.
+      run: pnpm exec playwright install --with-deps --only-shell $BROWSER

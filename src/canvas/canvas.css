@@ -151,12 +151,41 @@
   );
 }
 
-/* Anschlusspunkte: unsichtbar in der Mitte, die Kanten laufen schwebend. */
+/* Anschlusspunkte: Quelle ist ein sichtbarer Punkt am rechten Rand (Form und Rahmen, nicht nur Farbe).
+   Das Ziel deckt die Kachel ab, solange ein Zug läuft; die Kanten laufen schwebend. */
 .tiv-handle {
+  border: 2px solid var(--color-text);
+  background: var(--color-surface);
+}
+.tiv-handle--source {
+  width: 14px;
+  height: 14px;
+  right: 10px;
   top: 50%;
-  left: 50%;
+  border-radius: 50%;
+  cursor: crosshair;
+}
+.tiv-handle--source:hover,
+.tiv-handle--source:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+}
+.tiv-handle--target {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  border: 0;
+  border-radius: inherit;
   opacity: 0;
   pointer-events: none;
+}
+.tiv-handle--target.is-active {
+  pointer-events: auto;
+}
+/* Quelle per Tastatur gewählt */
+.react-flow__node.is-source {
+  outline: 3px dashed var(--tiv-focus);
+  outline-offset: 3px;
 }
 
 .tiv-edge {

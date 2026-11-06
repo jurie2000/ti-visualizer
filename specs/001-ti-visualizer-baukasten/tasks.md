@@ -276,7 +276,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
   - Fertig, wenn: RTL-Tests Suche, Hinzufügen per Enter und per Drop
     abdecken.
 
-- [ ] **T-204 Verbinden mit Begründung** · FR: FR-3, FR-4 · Regeln: X-1 · nach: T-105, T-202
+- [x] **T-204 Verbinden mit Begründung** · FR: FR-3, FR-4 · Regeln: X-1 · nach: T-105, T-202
   - Umfang: Quelle/Ziel-Auswahl mit Maus und Tastatur, `isValidConnection`
     ruft `validateConnection`, Anschlüsse per `autoPorts`. Ungültig:
     `Toast` mit Icon und Begründung. `ExclusionDialog` bei Konnektor und

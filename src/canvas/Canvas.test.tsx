@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
 import { useSettings, useTopology, useUi } from "../store";
+import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
 const praxis = (() => {
@@ -24,7 +25,7 @@ beforeEach(() => {
 
 describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
   it("zeigt alle Geräte mit Rolle und Label", () => {
-    render(<Canvas />);
+    render(<Canvas />, { wrapper: ToastProvider });
     const devices = document.querySelectorAll(".react-flow__node");
     expect(devices).toHaveLength(praxis.nodes.length);
     const pvs = screen.getByRole("group", {
@@ -34,7 +35,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
   });
 
   it("zeigt alle Verbindungen mit Label und Beschreibung", async () => {
-    render(<Canvas />);
+    render(<Canvas />, { wrapper: ToastProvider });
     // Kanten erscheinen erst, wenn React Flow die Knoten gemessen hat
     await waitFor(() => {
       expect(
@@ -45,7 +46,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
   });
 
   it("hat Zoom, Einpassen und Übersichtskarte mit deutschen Namen", () => {
-    render(<Canvas />);
+    render(<Canvas />, { wrapper: ToastProvider });
     const view = screen.getByLabelText("Ansicht");
     expect(
       within(view).getByRole("button", { name: "Alles einpassen" }),
@@ -60,7 +61,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
 
   it("wählt per Enter und verschiebt per Pfeiltaste (ein Verlaufsschritt je Taste)", async () => {
     const user = userEvent.setup();
-    render(<Canvas />);
+    render(<Canvas />, { wrapper: ToastProvider });
     const first = pvsNode(praxis.nodes);
     const el = screen.getByRole("group", { name: /^PVS: / });
     el.focus();

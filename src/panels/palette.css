@@ -1,0 +1,115 @@
+.tiv-palette__root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tiv-palette__heading {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.tiv-palette__search {
+  font: inherit;
+  color: inherit;
+  padding: 6px 10px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-sm);
+}
+.tiv-palette__group h3 {
+  margin: 0;
+}
+.tiv-palette__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.tiv-palette__title::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+  background: var(--cat, var(--color-neutral-500));
+}
+.tiv-palette__count {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+.tiv-palette__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tiv-palette__list[hidden] {
+  display: none;
+}
+.tiv-palette__item {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--color-neutral-300);
+  border-left: 4px solid var(--cat);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+.tiv-palette__add,
+.tiv-palette__pin {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tiv-palette__add {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  text-align: left;
+  cursor: grab;
+}
+.tiv-palette__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.8125rem;
+}
+.tiv-palette__text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+}
+.tiv-palette__pin {
+  padding: 0 8px;
+}
+.tiv-palette__pin[aria-pressed="true"] {
+  color: var(--color-accent);
+}
+.tiv-palette__head:focus-visible,
+.tiv-palette__add:focus-visible,
+.tiv-palette__pin:focus-visible,
+.tiv-palette__search:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.tiv-palette__empty {
+  color: var(--color-text-muted);
+}

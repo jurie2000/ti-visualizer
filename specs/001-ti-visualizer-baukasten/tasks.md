@@ -269,7 +269,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
     vollständig angezeigt wird und RTL-Tests Rolle und Label der Knoten
     prüfen.
 
-- [ ] **T-203 Gerätepalette** [P] · FR: FR-1 · Regeln: – · nach: T-202
+- [x] **T-203 Gerätepalette** [P] · FR: FR-1 · Regeln: – · nach: T-202
   - Umfang: `Palette`, `PaletteGroup`, `PaletteItem`: gruppiert nach
     Kategorie, einklappbar, anpinnbar, Suche, Drag & Drop und Enter zum
     Hinzufügen. Beliebig viele Geräte je Typ.
@@ -292,7 +292,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
   - Fertig, wenn: RTL-Tests Stecken, Ziehen und die Meldung bei voller
     Kartenbelegung (K-2) prüfen.
 
-- [ ] **T-206 Startansicht und Presets** [P] · FR: FR-2 · Regeln: – · nach: T-108, T-202
+- [x] **T-206 Startansicht und Presets** [P] · FR: FR-2 · Regeln: – · nach: T-108, T-202
   - Umfang: `StartScreen` mit `PresetCard` (Vorschau) für die vier Presets
     und leeren Start.
   - Fertig, wenn: Suite `smoke` um „Preset öffnen“ erweitert und grün ist.

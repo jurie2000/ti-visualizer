@@ -60,3 +60,6 @@ const CAT_TOKEN: Record<string, string> = {
 
 export const categoryColor = (id: string) =>
   `var(--tiv-cat-${CAT_TOKEN[id] ?? id})`;
+
+/** MIME-Typ, mit dem die Palette den Gerätetyp beim Ziehen an die Canvas übergibt. */
+export const DRAG_TYPE = "application/x-tiv-device";

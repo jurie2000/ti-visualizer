@@ -92,6 +92,19 @@
   background: var(--color-text);
   color: var(--color-bg);
   border-radius: var(--radius-sm);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  max-width: 28rem;
+}
+.tiv-toast svg {
+  flex: none;
+  margin-top: 2px;
+}
+.tiv-toast--error {
+  background: var(--tiv-error-bg);
+  color: var(--tiv-error-fg);
+  border: 2px solid var(--tiv-error-bd);
 }
 
 a {

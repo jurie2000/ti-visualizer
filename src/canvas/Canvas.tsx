@@ -14,10 +14,12 @@ import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import { useCatalog, useTopology, useUi } from "../store";
 import { useToast } from "../ui/Toast";
+import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
 import { toFlow, type DeviceFlowNode, type ConnectionFlowEdge } from "./toFlow";
+import { useConnecting } from "./useConnecting";
 import "./canvas.css";
 
 // Erweiterungspunkt (T-207): weitere Kantenarten (`group`) hier eintragen.
@@ -26,7 +28,7 @@ const edgeTypes: EdgeTypes = { connection: ConnectionEdge };
 
 const ariaLabelConfig = {
   "node.a11yDescription.default":
-    "Enter oder Leertaste wählt das Gerät, danach verschieben die Pfeiltasten es. Mit Umschalt geht es in größeren Schritten.",
+    "Enter oder Leertaste wählt das Gerät, danach verschieben die Pfeiltasten es. Mit Umschalt geht es in größeren Schritten. Die Taste V wählt das Gerät als Quelle einer Verbindung, V am Zielgerät verbindet.",
   "node.a11yDescription.keyboardDisabled":
     "Enter oder Leertaste wählt das Gerät.",
   "node.a11yDescription.ariaLiveMessage": ({
@@ -56,8 +58,7 @@ const ariaLabelConfig = {
  * dieselbe Ansicht kennt). Drop aus der Palette: `onDrop` unten.
  *
  * Erweiterungspunkte:
- * - T-204 (Verbinden): `onConnect` und `isValidConnection` an `ReactFlow`,
- *   Handles in `DeviceNode` freischalten, `useTopology.connect`.
+ * Verbinden (T-204) steckt in `useConnecting`.
  */
 export function Canvas() {
   const topology = useTopology((s) => s.topology);
@@ -70,6 +71,8 @@ export function Canvas() {
   const select = useUi((s) => s.select);
   // Positionen während des Ziehens: erst beim Loslassen geht ein Schritt in den Verlauf
   const [drag, setDrag] = useState<Record<string, Point>>({});
+
+  const connecting = useConnecting();
 
   const { nodes, edges } = useMemo(
     () => toFlow(topology, catalog, selection, drag),
@@ -103,6 +106,13 @@ export function Canvas() {
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };
 
+  // Quelle einer Verbindung per Tastatur: gestrichelter Rahmen (CSS `.is-source`)
+  const shown = connecting.source
+    ? nodes.map((n) =>
+        n.id === connecting.source ? { ...n, className: "is-source" } : n,
+      )
+    : nodes;
+
   // Drop aus der Palette: Mauszeiger ist die Mitte des neuen Geräts
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
     const type = e.dataTransfer.getData(DRAG_TYPE);
@@ -118,38 +128,49 @@ export function Canvas() {
   };
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onPaneClick={() => {
-        select(undefined);
-      }}
-      onDragOver={(e) => {
-        if (!e.dataTransfer.types.includes(DRAG_TYPE)) return;
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "copy";
-      }}
-      onDrop={onDrop}
-      deleteKeyCode={null}
-      fitView
-      minZoom={0.2}
-      maxZoom={2}
-      ariaLabelConfig={ariaLabelConfig}
-    >
-      <Background />
-      <Controls showInteractive={false} />
-      <MiniMap
-        pannable
-        zoomable
-        nodeColor={(n) => {
-          const device = (n as DeviceFlowNode).data.device;
-          return categoryColor(device.category);
+    <>
+      <ReactFlow
+        nodes={shown}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={connecting.onConnect}
+        onConnectEnd={connecting.onConnectEnd}
+        isValidConnection={connecting.isValidConnection}
+        onKeyDown={connecting.onKeyDown}
+        onPaneClick={() => {
+          select(undefined);
         }}
+        onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes(DRAG_TYPE)) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "copy";
+        }}
+        onDrop={onDrop}
+        deleteKeyCode={null}
+        fitView
+        minZoom={0.2}
+        maxZoom={2}
+        ariaLabelConfig={ariaLabelConfig}
+      >
+        <Background />
+        <Controls showInteractive={false} />
+        <MiniMap
+          pannable
+          zoomable
+          nodeColor={(n) => {
+            const device = (n as DeviceFlowNode).data.device;
+            return categoryColor(device.category);
+          }}
+        />
+      </ReactFlow>
+      <ExclusionDialog
+        open={connecting.exclusion !== undefined}
+        reason={connecting.exclusion ?? ""}
+        onClose={connecting.closeExclusion}
       />
-    </ReactFlow>
+    </>
   );
 }

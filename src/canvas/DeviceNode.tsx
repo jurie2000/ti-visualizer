@@ -1,4 +1,4 @@
-import { Handle, Position, type NodeProps } from "@xyflow/react";
+import { Handle, Position, useConnection, type NodeProps } from "@xyflow/react";
 import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
@@ -9,15 +9,16 @@ import type { DeviceFlowNode } from "./toFlow";
  * Icon, Kurzname, Name.
  *
  * Erweiterungspunkte:
- * - Handles (T-204): die beiden unsichtbaren Handles in der Mitte tragen die
- *   Kanten. T-204 macht sie bedienbar (Größe, `pointer-events`), ohne dass
- *   sich Lage oder Aussehen der Kanten ändern; die Kanten laufen schwebend
- *   (siehe `ConnectionEdge`).
+ * - Handles (T-204): Die Kanten laufen schwebend (siehe `ConnectionEdge`), die
+ *   Handles legen nur fest, wo man verbindet. Quelle: sichtbarer Punkt am
+ *   rechten Rand. Ziel: die ganze Kachel, aber nur während ein Zug läuft,
+ *   damit das Verschieben des Geräts unberührt bleibt.
  * - Karten-Chips (T-205): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
  */
 export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const { node, device, category } = data;
   const shape = category?.shape ?? "box";
+  const connecting = useConnection().inProgress;
   return (
     <div
       className={`tiv-node tiv-shape-${shape}${selected ? " is-selected" : ""}${node.fault ? " is-fault" : ""}`}
@@ -51,14 +52,12 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
       <Handle
         type="target"
         position={Position.Top}
-        className="tiv-handle"
-        isConnectable={false}
+        className={`tiv-handle tiv-handle--target${connecting ? " is-active" : ""}`}
       />
       <Handle
         type="source"
-        position={Position.Top}
-        className="tiv-handle"
-        isConnectable={false}
+        position={Position.Right}
+        className="tiv-handle tiv-handle--source"
       />
     </div>
   );

@@ -61,8 +61,9 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
         ? { kind, expires, pinActive: pin }
         : { kind, expires, unlocked: pin };
     const r = plug(nodeId, card);
-    if (r.ok) onDone();
-    else toast.show(r.reason);
+    // Der Toast liegt außerhalb des modalen Dialogs: erst schließen, dann melden.
+    onDone();
+    if (!r.ok) toast.show(r.reason);
   };
 
   return (

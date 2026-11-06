@@ -24,14 +24,16 @@ export function CardChip({
 }) {
   const topology = useTopology((s) => s.topology);
   const unplug = useTopology((s) => s.unplugCard);
-  const { state } = cardState(topology, nodeId, card.kind);
+  const { state, empMessage } = cardState(topology, nodeId, card.kind);
   const name = CARD_NAMES[card.kind];
   const status =
     state === "expired"
       ? "abgelaufen"
       : state === "locked"
         ? "nicht freigeschaltet"
-        : "";
+        : empMessage
+          ? "PIN aus"
+          : "";
   const way = nfc ? "NFC · ISO 14443, CAN" : "gesteckt · ISO 7816";
   return (
     <span className={`tiv-chip tiv-chip--${state} nodrag nopan`}>

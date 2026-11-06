@@ -158,6 +158,8 @@ jobs:
           name: dist
           path: dist/
       - uses: ./.github/actions/playwright
+        with:
+          alle: "true"
       - run: pnpm e2e
       - name: Bericht, Trace und Video bei Fehlern
         if: failure()

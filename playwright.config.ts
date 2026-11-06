@@ -36,10 +36,21 @@ export default defineConfig({
       testMatch: "build-and-connect.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    // Suite `datei` als einzige in drei Browsern (Safari-Annäherung: WebKit).
     {
-      name: "speichern",
-      testMatch: "speichern.spec.ts",
+      name: "datei",
+      testMatch: "datei.spec.ts",
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "datei-firefox",
+      testMatch: "datei.spec.ts",
+      use: { ...devices["Desktop Firefox"] },
+    },
+    {
+      name: "datei-webkit",
+      testMatch: "datei.spec.ts",
+      use: { ...devices["Desktop Safari"] },
     },
   ],
   // Mit E2E_BASE_URL (öffentliche Adresse) startet kein lokaler Server.

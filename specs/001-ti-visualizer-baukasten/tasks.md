@@ -356,7 +356,7 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
   - Fertig, wenn: alle Fälle der Tabelle grün sind, insbesondere
     `window.__pwned` bleibt leer und `Object.prototype` unverändert.
 
-- [ ] **T-306 E2E-Suite Datei** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
+- [x] **T-306 E2E-Suite Datei** · FR: FR-5 · Regeln: – · nach: T-302, T-303, T-304
   - Umfang: Suite `datei` in Chromium, Firefox und WebKit (Safari):
     Speichern in Kontext A,
     Öffnen in neuem Kontext B. Einstellungen nur nach Zustimmung. Datei

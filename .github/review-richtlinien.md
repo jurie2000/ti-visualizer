@@ -17,6 +17,31 @@ den Merge entscheidet ein Mensch, der Review ist kein Pflicht-Check.
    geprüft? Werden Texte nie als HTML ausgegeben?
 6. **Task-ID:** Nennt der Pull Request die Task-ID?
 
+## Schweregrade
+
+Jeder Befund trägt eine Schwere. Sie entscheidet, ob er den Merge aufhält:
+
+- **Hoch:** Verstoß gegen Spec oder Regelwerk, falsches Verhalten, fehlende
+  Prüfung beim Öffnen. Blockt den Merge, wird im selben PR behoben.
+- **Mittel:** fachliche Abweichung mit begrenzter Wirkung, die vertretbar
+  vertagt werden kann. Blockt nicht.
+- **Niedrig / Hinweis:** kleine Unstimmigkeit oder Vormerkung für einen
+  Folge-Task. Blockt nicht.
+
+## Merge-Disziplin
+
+Der Review ist kein Pflicht-Check und muss nicht null Befunde haben. Vor dem
+Merge braucht aber **jeder Befund eine Disposition**, keine offen-ignorierten
+Punkte:
+
+- **Fix** — im selben PR behoben (bei Hoch Pflicht).
+- **Vertagt** — mit Verweis auf den Folge-Task (z. B. „geht in T-402“).
+- **Wontfix** — mit einem Satz Begründung.
+
+Nie mergen, ohne den Review gelesen zu haben. Ist jeder Befund disponiert und
+kein Hoch-Befund offen, darf gemergt werden — die finale Abnahme bleibt beim
+Menschen.
+
 ## Nicht Aufgabe des Reviews
 
 Stil, Formatierung und allgemeine Codequalität. Das erledigen ESLint,

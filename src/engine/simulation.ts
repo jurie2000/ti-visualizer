@@ -15,53 +15,7 @@ export interface BoundStep {
 const caps = (c: Cat, n: Node) =>
   c.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
 
-/** Knoten einer Rolle (Regelwerk 7): P Auslöser, K Zugang, T Terminal, sonst Gerätetyp-ID. */
-function roleNode(
-  role: string,
-  trigger: Node,
-  topology: Topology,
-  catalog: Cat,
-  terminal: string | undefined,
-): string | undefined {
-  const byType = (t: string) => topology.nodes.filter((n) => n.type === t);
-  const slots = caps(catalog, trigger).includes("cardSlots");
-  const term = slots
-    ? trigger.id
-    : (terminal ??
-      (() => {
-        const c = terminalFor(topology, trigger.id, catalog);
-        return c.status === "one"
-          ? c.terminal
-          : c.status === "choose"
-            ? c.candidates[0]
-            : undefined;
-      })());
-  switch (role) {
-    case "P":
-      return trigger.id;
-    case "T":
-      return term;
-    case "K": {
-      const own = term ? zugangOf(topology, term, catalog) : undefined;
-      const zugaenge = topology.nodes.filter((n) =>
-        caps(catalog, n).includes("zugang"),
-      );
-      return (
-        own ??
-        zugaenge.find(
-          (z) => resolvePath(topology, trigger.id, z.id, catalog).ok,
-        )?.id ??
-        zugaenge[0]?.id
-      );
-    }
-    case "egk":
-      return [trigger, ...topology.nodes].find((n) =>
-        n.cards?.some((c) => c.kind === "egk"),
-      )?.id;
-    default:
-      return trigger.type === role ? trigger.id : byType(role)[0]?.id;
-  }
-}
+type Path = { nodes: string[]; edges: string[] };
 
 /** Weg zwischen zwei Knoten, die Rückrichtung eingeschlossen (ein Pfad ist ungerichtet). */
 function between(
@@ -69,7 +23,7 @@ function between(
   a: string,
   b: string,
   catalog: Cat,
-): { nodes: string[]; edges: string[] } {
+): Path | undefined {
   if (a === b) return { nodes: [a], edges: [] };
   for (const kind of ["ti", "local"] as const) {
     const fwd = resolvePath(topology, a, b, catalog, kind);
@@ -81,13 +35,56 @@ function between(
         edges: [...back.edges].reverse(),
       };
   }
-  return { nodes: [a, b], edges: [] };
+  return undefined;
+}
+
+/** Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs. */
+function roleBinder(
+  trigger: Node,
+  topology: Topology,
+  catalog: Cat,
+  terminal: string | undefined,
+): (role: string) => string | undefined {
+  const own = caps(catalog, trigger);
+  const choice = terminalFor(topology, trigger.id, catalog);
+  const term =
+    own.includes("cardSlots") || own.includes("netConfig:terminal")
+      ? trigger.id
+      : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
+  const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
+    candidates.find((c) =>
+      anchors.some((a) => a && between(topology, a, c.id, catalog)),
+    ) ?? (candidates.length === 1 ? candidates[0] : undefined);
+  const zugaenge = topology.nodes.filter((n) =>
+    caps(catalog, n).includes("zugang"),
+  );
+  const k =
+    (term && zugangOf(topology, term, catalog)) ||
+    reached(zugaenge, [trigger.id])?.id;
+  return (role) => {
+    switch (role) {
+      case "P":
+        return trigger.id;
+      case "T":
+        return term;
+      case "K":
+        return k;
+      default:
+        return trigger.type === role
+          ? trigger.id
+          : reached(
+              topology.nodes.filter((n) => n.type === role),
+              [trigger.id, k],
+            )?.id;
+    }
+  };
 }
 
 /**
  * Schritte eines Ablaufs auf die Topologie gebunden (FR-8, Regelwerk 7).
- * Rollen werden über den Auslöser und den Pfad bestimmt (Regelwerk 7 „Rollenbindung“).
- * `terminal`: Wahl der Nutzer, wenn mehrere Terminals passen.
+ * Rollen folgen dem Pfad vom Auslöser (Regelwerk 7 „Rollenbindung“); was kein
+ * Pfad erreicht, bleibt ohne Knoten. Passen mehrere Terminals, bindet erst die
+ * Wahl der Nutzer (`terminal`) T und K.
  */
 export function bindFlow(
   flow: Flow,
@@ -96,11 +93,14 @@ export function bindFlow(
   catalog: Cat,
   terminal?: string,
 ): BoundStep[] {
+  const bind = roleBinder(trigger, topology, catalog, terminal);
   return flow.steps.map((s) => {
-    const a = roleNode(s.from, trigger, topology, catalog, terminal);
-    const b = roleNode(s.to, trigger, topology, catalog, terminal);
-    const path =
-      a && b ? between(topology, a, b, catalog) : { nodes: [], edges: [] };
+    const a = bind(s.from);
+    const b = bind(s.to);
+    const path = (a && b && between(topology, a, b, catalog)) || {
+      nodes: [],
+      edges: [],
+    };
     return { label: s.label, text: s.text, ...path };
   });
 }

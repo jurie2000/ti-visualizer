@@ -84,7 +84,9 @@ const TRIGGER: Record<string, string> = {
   mobkt: "mkt",
   app: "erpapp",
 };
-const ROLE: Record<string, string> = { K: "kon", T: "kt", egk: "kt" };
+const ROLE: Record<string, string> = { K: "kon", T: "kt" };
+// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse (zweimal) und CardLink↔Smartphone laufen außerhalb der Pfadregel.
+const NO_PATH = new Set(["eau:4", "eau:5", "cardlinkErp:1", "cardlinkVsdm:1"]);
 
 describe("bindFlow (Regelwerk 7, FR-8)", () => {
   it.each(catalog.flows.map((f) => f.id))(
@@ -99,6 +101,10 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       const node = (r: string) => (r === "P" ? trigger : (ROLE[r] ?? r));
       flow?.steps.forEach((s, i) => {
         const nodes = bound[i]?.nodes ?? [];
+        if (NO_PATH.has(`${id}:${String(i)}`)) {
+          expect(nodes).toEqual([]);
+          return;
+        }
         expect([nodes[0], nodes.at(-1)], `${id} Schritt ${String(i)}`).toEqual([
           node(s.from),
           node(s.to),
@@ -124,6 +130,43 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
         expect(["pvs", "switch", "kon", "kt"]).toContain(n);
     },
   );
+
+  it("mehrere Terminals ohne Wahl: T und K bleiben ungebunden, mit Wahl gebunden", () => {
+    const t = build();
+    const two: Topology = {
+      ...t,
+      nodes: [
+        ...t.nodes,
+        { ...(t.nodes.find((n) => n.id === "kt") as Node), id: "kt2" },
+      ],
+      edges: [
+        ...t.edges,
+        {
+          id: "sw-kt2",
+          fault: false,
+          ends: [
+            { node: "switch", port: "p" },
+            { node: "kt2", port: "p" },
+          ],
+        },
+      ],
+    };
+    const flow = catalog.flows.find((f) => f.id === "notfalldaten") as never;
+    const pvs = two.nodes.find((n) => n.id === "pvs") as Node;
+    expect(bindFlow(flow, pvs, two, catalog)[1]?.nodes).toEqual([]);
+    expect(bindFlow(flow, pvs, two, catalog, "kt2")[1]?.nodes.at(-1)).toBe(
+      "kt2",
+    );
+  });
+
+  it("Störung auf dem Weg: Schritt ohne Pfad statt erfundener Kante", () => {
+    const t = build();
+    const down: Topology = {
+      ...t,
+      nodes: t.nodes.map((n) => (n.id === "vpn" ? { ...n, fault: true } : n)),
+    };
+    expect(bind("erezept", "pvs", down)[4]?.nodes).toEqual([]);
+  });
 
   it("fehlendes Gerät: Schritt ohne Pfad statt Absturz", () => {
     expect(bind("erezept", "pvs", build(["erp"])).at(-1)?.nodes).toEqual([]);

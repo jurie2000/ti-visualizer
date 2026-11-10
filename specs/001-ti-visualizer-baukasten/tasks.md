@@ -432,7 +432,7 @@ abspielen.
     `from`/`to`. Auslegung: `TIM2` und `TIMC2` (zweite Instanz) sind `tim`
     und `timc`, `App` ist der Auslöser (`P`), `FD` der E-Rezept-Dienst,
     `Smartphone` die E-Rezept-App. Fehlt ein Gerät, hat der Schritt keinen
-    Pfad. Umfang etwa 130 Zeilen Produktivcode.
+    Pfad. Rollen folgen dem Pfad, nicht „erstes Gerät“; ohne Pfad bleibt der Schritt ohne Knoten (Krankenkasse, CardLink↔Smartphone). `eGK`-Schritte stehen am Gerät, das die Karte hält. Folge-Task vormerken: Föderation `tim→tim` braucht zwei Instanzen. Umfang etwa 150 Zeilen Produktivcode.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.

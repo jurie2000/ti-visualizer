@@ -289,13 +289,13 @@
       },
       {
         "from": "tim",
-        "to": "tim",
+        "to": "E",
         "label": "Föderation über den VZD",
         "text": "Der Fachdienst findet den Fachdienst des Empfängers über den Verzeichnisdienst und reicht weiter."
       },
       {
-        "from": "tim",
-        "to": "timc",
+        "from": "E",
+        "to": "E",
         "label": "Zustellung",
         "text": "Die Nachricht wird dem Empfänger zugestellt."
       }
@@ -482,8 +482,8 @@
     "status": "bestätigt"
   },
   {
-    "id": "app",
-    "name": "Versicherten-App (E-Rezept / ePA)",
+    "id": "appErezept",
+    "name": "E-Rezept-App",
     "steps": [
       {
         "from": "P",
@@ -494,11 +494,31 @@
       {
         "from": "P",
         "to": "erp",
-        "label": "E-Rezept-FD bzw. ePA",
-        "text": "Mit dem Token greift die App direkt auf den E-Rezept-Fachdienst oder das ePA-Aktensystem zu."
+        "label": "E-Rezept-FD",
+        "text": "Mit dem Token greift die App direkt auf den E-Rezept-Fachdienst zu."
       }
     ],
     "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "appEpa",
+    "name": "ePA-App",
+    "steps": [
+      {
+        "from": "P",
+        "to": "idpsek",
+        "label": "GesundheitsID (Internet)",
+        "text": "Die App meldet sich über das Internet mit der GesundheitsID beim sektoralen IDP an."
+      },
+      {
+        "from": "P",
+        "to": "epa",
+        "label": "ePA-Aktensystem",
+        "text": "Mit dem Token greift die App direkt auf das ePA-Aktensystem zu."
+      }
+    ],
+    "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
   }
 ]

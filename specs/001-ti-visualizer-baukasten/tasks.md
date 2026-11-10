@@ -427,12 +427,15 @@ abspielen.
     uneinheitlich (`ERP` gegenüber Gerätetyp `erp`, `Smartphone` und `FD`
     ohne Gerätetyp) und `checkReferences` prüft `from`/`to` nicht. Vor der
     Umsetzung auf Gerätetyp-IDs normalisieren und die Prüfung ergänzen.
-  - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die Rollen
-    `P`, `K`, `T` (Auslöser, Zugang, Terminal). `checkReferences` prüft
-    `from`/`to`. Auslegung: `TIM2` und `TIMC2` (zweite Instanz) sind `tim`
-    und `timc`, `App` ist der Auslöser (`P`), `FD` der E-Rezept-Dienst,
-    `Smartphone` die E-Rezept-App. Fehlt ein Gerät, hat der Schritt keinen
-    Pfad. Rollen folgen dem Pfad, nicht „erstes Gerät“; ohne Pfad bleibt der Schritt ohne Knoten (Krankenkasse, CardLink↔Smartphone). `eGK`-Schritte stehen am Gerät, das die Karte hält. Folge-Task vormerken: Föderation `tim→tim` braucht zwei Instanzen. Umfang etwa 150 Zeilen Produktivcode.
+  - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die
+    Rollen `P`, `K`, `T` (Auslöser, Zugang, Terminal) und `E` (außerhalb der
+    Topologie). `checkReferences` prüft `from`/`to`. Auslegung: `App` ist
+    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` die E-Rezept-App,
+    die Empfängerseite von `tim` ist `E`. `app` ist in `appErezept` und
+    `appEpa` geteilt. Rollen folgen dem Pfad, nicht „erstes Gerät“. Ohne
+    Pfad hat der Schritt keine Knoten und nennt `problem` (`fehlt`,
+    `kein-weg`, `ausgefallen`). `eGK`-Schritte stehen am Gerät, das die
+    Karte hält. Umfang etwa 170 Zeilen Produktivcode.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.

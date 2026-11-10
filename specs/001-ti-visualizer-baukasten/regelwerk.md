@@ -592,7 +592,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `cardlinkErp` | eGK→Smartphone (NFC, CAN) · Smartphone→CardLink (Internet) · CardLink→K wie ein Kartenterminal · P→K ReadVSD · K→V→VSDM Prüfungsnachweis · P→E-Rezept-FD Abruf (über K→V) · E-Rezept-FD→P | bestätigt | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | `cardlinkVsdm` | wie `cardlinkErp` bis zum Prüfungsnachweis | bestätigt | gemSpec_eHealth-CardLink |
 | `mobkt` | eGK→Mobiles KT (offline lesen, speichern) · später Mobiles KT→P per USB (CT-API) | bestätigt | gemSpec_MobKT |
-| `app` | App→Internet→sektoraler IDP (GesundheitsID) · App→E-Rezept-FD bzw. ePA | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| `appErezept` | App→Internet→sektoraler IDP (GesundheitsID) · App→E-Rezept-FD | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| `appEpa` | App→Internet→sektoraler IDP (GesundheitsID) · App→ePA | bestätigt | gemSpec_Aktensystem_ePAfueralle, gemSpec_IDP_Sek |
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.

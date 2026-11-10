@@ -7,10 +7,17 @@ type Flow = Catalog["flows"][number];
 export interface BoundStep {
   label: string;
   text: string;
-  /** Knoten- und Kanten-IDs des Pfads, leer wenn ein Ende in der Topologie fehlt. */
+  /** Knoten- und Kanten-IDs des Pfads, leer ohne Pfad (siehe `problem`). */
   nodes: string[];
   edges: string[];
+  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). */
+  problem?: Problem;
 }
+
+export type Problem =
+  | { kind: "fehlt" } // Gerät der Rolle nicht in der Topologie oder nicht über den Pfad erreichbar
+  | { kind: "kein-weg" } // beide Enden da, Regelwerk 6.0 kennt keinen Weg
+  | { kind: "ausgefallen"; at: string }; // Störung auf dem Weg
 
 const caps = (c: Cat, n: Node) =>
   c.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
@@ -23,19 +30,24 @@ function between(
   a: string,
   b: string,
   catalog: Cat,
-): Path | undefined {
+): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
+  let problem: Problem = { kind: "kein-weg" };
   for (const kind of ["ti", "local"] as const) {
-    const fwd = resolvePath(topology, a, b, catalog, kind);
-    if (fwd.ok) return fwd;
-    const back = resolvePath(topology, b, a, catalog, kind);
-    if (back.ok)
-      return {
-        nodes: [...back.nodes].reverse(),
-        edges: [...back.edges].reverse(),
-      };
+    for (const [x, y] of [
+      [a, b],
+      [b, a],
+    ] as const) {
+      const r = resolvePath(topology, x, y, catalog, kind);
+      if (r.ok)
+        return x === a
+          ? r
+          : { nodes: [...r.nodes].reverse(), edges: [...r.edges].reverse() };
+      if (r.reason === "ausgefallen")
+        problem = { kind: "ausgefallen", at: r.at };
+    }
   }
-  return undefined;
+  return problem;
 }
 
 /** Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs. */
@@ -51,9 +63,10 @@ function roleBinder(
     own.includes("cardSlots") || own.includes("netConfig:terminal")
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
+  // Ohne Pfad zählt das einzige Gerät des Typs (etwa das Smartphone); das ist eindeutig, anders als „erstes Gerät“.
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>
-      anchors.some((a) => a && between(topology, a, c.id, catalog)),
+      anchors.some((a) => a && "nodes" in between(topology, a, c.id, catalog)),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
   const zugaenge = topology.nodes.filter((n) =>
     caps(catalog, n).includes("zugang"),
@@ -95,13 +108,16 @@ export function bindFlow(
 ): BoundStep[] {
   const bind = roleBinder(trigger, topology, catalog, terminal);
   return flow.steps.map((s) => {
+    const base = { label: s.label, text: s.text };
+    if (s.from === "E" || s.to === "E")
+      return { ...base, nodes: [], edges: [] };
     const a = bind(s.from);
     const b = bind(s.to);
-    const path = (a && b && between(topology, a, b, catalog)) || {
-      nodes: [],
-      edges: [],
-    };
-    return { label: s.label, text: s.text, ...path };
+    const r: Path | Problem =
+      a && b ? between(topology, a, b, catalog) : { kind: "fehlt" };
+    return "nodes" in r
+      ? { ...base, ...r }
+      : { ...base, nodes: [], edges: [], problem: r };
   });
 }
 

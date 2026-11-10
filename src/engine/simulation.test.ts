@@ -19,7 +19,7 @@ const card = (kind: "egk" | "hba" | "smcb"): AnyCard =>
     : { kind, expires: "2027-01-01", unlocked: true };
 const TYPES = [
   ...["pvs", "avs", "kimcm", "kt", "kon", "mkt", "cardlink", "timc"],
-  ...["erpapp", "switch", "router", "internet", "vpn", "zentral"],
+  ...["erpapp", "epaapp", "switch", "router", "internet", "vpn", "zentral"],
   ...["vsdm", "erp", "idp", "idpsek", "kim", "epa", "tim", "vzd", "kk"],
 ];
 const LINKS: [string, string][] = [
@@ -35,6 +35,7 @@ const LINKS: [string, string][] = [
   ["vpn", "zentral"],
   ["timc", "internet"],
   ["erpapp", "internet"],
+  ["epaapp", "internet"],
   ["internet", "tim"],
   ["internet", "erp"],
   ["internet", "idpsek"],
@@ -82,11 +83,19 @@ const TRIGGER: Record<string, string> = {
   cardlinkErp: "avs",
   cardlinkVsdm: "cardlink",
   mobkt: "mkt",
-  app: "erpapp",
+  appErezept: "erpapp",
+  appEpa: "epaapp",
 };
 const ROLE: Record<string, string> = { K: "kon", T: "kt" };
 // Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse (zweimal) und CardLink↔Smartphone laufen außerhalb der Pfadregel.
-const NO_PATH = new Set(["eau:4", "eau:5", "cardlinkErp:1", "cardlinkVsdm:1"]);
+const NO_PATH = new Set([
+  "tim:1",
+  "tim:2",
+  "eau:4",
+  "eau:5",
+  "cardlinkErp:1",
+  "cardlinkVsdm:1",
+]);
 
 describe("bindFlow (Regelwerk 7, FR-8)", () => {
   it.each(catalog.flows.map((f) => f.id))(
@@ -113,6 +122,19 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     },
   );
 
+  it("tim: Empfängerseite liegt außerhalb der Topologie, ohne Problem", () => {
+    const steps = bind("tim", "timc");
+    expect(steps[1]).toEqual(expect.objectContaining({ nodes: [] }));
+    expect(steps[2]?.problem).toBeUndefined();
+    expect(steps[0]?.nodes).toEqual(["timc", "internet", "tim"]);
+  });
+
+  it("Ablauf appEpa: ePA-App erreicht das Aktensystem", () => {
+    expect(bind("appEpa", "epaapp", build(["erpapp"]))[1]?.nodes.at(-1)).toBe(
+      "epa",
+    );
+  });
+
   it("P→IDP läuft über Zugang und VPN-Zugangsdienst (6.0)", () => {
     const step = bind("erezept", "pvs")[4];
     expect(step?.nodes).toContain("kon");
@@ -131,7 +153,7 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     },
   );
 
-  it("mehrere Terminals ohne Wahl: T und K bleiben ungebunden, mit Wahl gebunden", () => {
+  it("mehrere Terminals ohne Wahl: T bleibt ungebunden, mit Wahl gebunden", () => {
     const t = build();
     const two: Topology = {
       ...t,
@@ -165,11 +187,17 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       ...t,
       nodes: t.nodes.map((n) => (n.id === "vpn" ? { ...n, fault: true } : n)),
     };
-    expect(bind("erezept", "pvs", down)[4]?.nodes).toEqual([]);
+    expect(bind("erezept", "pvs", down)[4]).toMatchObject({
+      nodes: [],
+      problem: { kind: "ausgefallen", at: "vpn" },
+    });
   });
 
   it("fehlendes Gerät: Schritt ohne Pfad statt Absturz", () => {
-    expect(bind("erezept", "pvs", build(["erp"])).at(-1)?.nodes).toEqual([]);
+    expect(bind("erezept", "pvs", build(["erp"])).at(-1)).toMatchObject({
+      nodes: [],
+      problem: { kind: "fehlt" },
+    });
   });
 });
 

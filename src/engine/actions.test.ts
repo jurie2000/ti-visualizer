@@ -449,6 +449,25 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     expect(ids(full(), "pc")).toContain("erezept-ausstellen");
     expect(ids(full(), "pc")).not.toContain("erezept-einloesen-code");
     expect(ids(full(), "tab")).toContain("erezept-ausstellen");
+    // PC und PVS hängen am Switch: ein ausgefallenes PVS nimmt dem PC die Aktionen.
+    const viaSwitch = faulty(
+      {
+        ...without(full(), "kis", "avs"),
+        edges: [
+          ...without(full(), "kis", "avs").edges,
+          {
+            id: "pc-sw",
+            fault: false,
+            ends: [
+              { node: "pc", port: "p" },
+              { node: "sw", port: "p" },
+            ],
+          },
+        ],
+      },
+      "pvs",
+    );
+    expect(ids(viaSwitch, "pc")).not.toContain("erezept-ausstellen");
     expect(ids(without(full(), "pvs", "kis", "avs"), "pc")).toEqual([]);
   });
 });

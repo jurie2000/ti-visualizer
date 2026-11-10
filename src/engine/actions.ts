@@ -183,7 +183,7 @@ const offers = (s: Selector, c: Cat, type: string) =>
         s.capability,
       );
 
-/** Primärsysteme, an denen ein PC oder Tablet hängt: direkt oder über Netzgeräte. */
+/** Primärsysteme, an denen ein PC oder Tablet hängt: direkt oder über Netzgeräte. Ausgefallene Geräte und Kanten trennen die Verbindung (P-1, P-2). */
 function hostTypes(node: Node, topology: Topology, c: Cat): string[] {
   const byId = new Map(topology.nodes.map((n) => [n.id, n]));
   const seen = new Set([node.id]);
@@ -191,10 +191,11 @@ function hostTypes(node: Node, topology: Topology, c: Cat): string[] {
   const queue = [node.id];
   for (const id of queue)
     for (const e of topology.edges) {
+      if (e.fault) continue;
       const [a, b] = e.ends;
       const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
       const n = other === undefined ? undefined : byId.get(other);
-      if (!n || seen.has(n.id)) continue;
+      if (!n || n.fault || seen.has(n.id)) continue;
       seen.add(n.id);
       if (HOSTS.includes(n.type)) found.add(n.type);
       else if (c.deviceTypes.find((d) => d.id === n.type)?.category === "lan")

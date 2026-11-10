@@ -1,6 +1,6 @@
 import { useReactFlow } from "@xyflow/react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
-import { useSettings, useTopology, useUi } from "../store";
+import { simLocked, useSettings, useSim, useTopology, useUi } from "../store";
 import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
 import type { DeviceType } from "./PaletteItem";
@@ -21,6 +21,10 @@ export function PalettePanel() {
   const toast = useToast();
 
   const add = (type: string) => {
+    if (simLocked(useSim.getState().sim)) {
+      toast.show("Während der Simulation ist die Topologie gesperrt.");
+      return;
+    }
     const canvas = document.querySelector(".react-flow");
     const rect = canvas?.getBoundingClientRect();
     const center = screenToFlowPosition({

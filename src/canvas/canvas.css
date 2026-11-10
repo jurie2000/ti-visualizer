@@ -338,3 +338,56 @@
   flex-basis: 100%;
   font-size: 0.75rem;
 }
+
+/* Simulation (T-405): Hervorhebung über Strichstärke und Fläche, nicht nur Farbe */
+.react-flow__node.is-sim .tiv-node {
+  background: var(--tiv-focus);
+}
+.react-flow__node.is-sim .tiv-node__body {
+  margin: 4px;
+}
+.react-flow__edge.is-sim .tiv-edge {
+  stroke: var(--tiv-focus) !important;
+  stroke-width: 6px !important;
+  stroke-dasharray: 10 8 !important;
+  animation: tiv-packet 0.6s linear infinite;
+}
+@keyframes tiv-packet {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+.is-reduced-motion .react-flow__edge.is-sim .tiv-edge {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__edge.is-sim .tiv-edge {
+    animation: none;
+  }
+}
+
+.tiv-sim {
+  display: grid;
+  gap: 8px;
+  width: min(560px, calc(100vw - 32px));
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 6px;
+}
+.tiv-sim[hidden] {
+  display: none;
+}
+.tiv-sim:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+}
+.tiv-sim__title {
+  margin: 0;
+  font-weight: 600;
+}
+.tiv-sim__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}

@@ -12,6 +12,8 @@ export interface BoundStep {
   edges: string[];
   /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). */
   problem?: Problem;
+  /** Schritt außerhalb der Topologie (Rolle E): das Gerät auf der Topologie-Seite. */
+  anchor?: string;
 }
 
 export type Problem =
@@ -151,8 +153,10 @@ export function bindFlow(
     !terminal && terminalFor(topology, trigger.id, catalog).status === "choose";
   return flow.steps.map((s) => {
     const base = { label: s.label, text: s.text };
-    if (s.from === "E" || s.to === "E")
-      return { ...base, nodes: [], edges: [] };
+    if (s.from === "E" || s.to === "E") {
+      const anchor = bind(s.from === "E" ? s.to : s.from);
+      return { ...base, nodes: [], edges: [], ...(anchor && { anchor }) };
+    }
     const a = bind(s.from);
     const b = bind(s.to);
     const open = [s.from, s.to].some((x) => x === "T" || x === "K");

@@ -1,1 +1,403 @@
-[]
+[
+  {
+    "id": "erezept-ausstellen",
+    "name": "E-Rezept ausstellen",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "service": "erp" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "erezept",
+    "source": ["gemILF_PS_eRp", "gemSpec_FD_eRp", "KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "eau-senden",
+    "name": "eAU ausstellen und per KIM senden",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
+      ]
+    },
+    "flow": "eau",
+    "source": ["PM_eAU", "gemSpec_CM_KOMLE"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "earztbrief-kim",
+    "name": "eArztbrief per KIM senden",
+    "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
+      ]
+    },
+    "flow": "kim",
+    "source": ["gemSpec_CM_KOMLE", "KIM-DK", "KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "kim-senden",
+    "name": "KIM-Nachricht senden",
+    "offeredBy": { "types": ["pvs", "kis", "pflege"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
+      ]
+    },
+    "flow": "kim",
+    "source": ["gemSpec_CM_KOMLE", "Pflege-FAQ"],
+    "status": "plausibel"
+  },
+  {
+    "id": "eau-epa-hochladen",
+    "name": "eAU-Kopie in die ePA hochladen",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "epa",
+    "source": ["gemILF_PS_ePA", "KBV_ePA"],
+    "status": "plausibel"
+  },
+  {
+    "id": "befund-epa-hochladen",
+    "name": "Befund in die ePA hochladen",
+    "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "epa",
+    "source": ["gemILF_PS_ePA", "KH"],
+    "status": "plausibel"
+  },
+  {
+    "id": "epa-medikationsliste-einsehen",
+    "name": "ePA-Medikationsliste einsehen",
+    "offeredBy": { "types": ["pvs", "kis", "avs"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "epa",
+    "source": ["gemSpec_Aktensystem_ePAfueralle", "ePA_Apotheken"],
+    "status": "plausibel"
+  },
+  {
+    "id": "notfalldaten-schreiben",
+    "name": "Notfalldatensatz schreiben",
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        { "card": "hba", "unlocked": true }
+      ]
+    },
+    "flow": "notfalldaten",
+    "source": ["gemSpec_FM_NFDM", "KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erklaerungen-schreiben",
+    "name": "Persönliche Erklärungen schreiben",
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "smcb", "unlocked": true },
+            { "card": "hba", "unlocked": true }
+          ]
+        }
+      ]
+    },
+    "flow": "notfalldaten",
+    "source": ["KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "notfalldaten-lesen",
+    "name": "Notfalldaten lesen",
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
+          ]
+        }
+      ]
+    },
+    "flow": "notfalldaten",
+    "source": ["KH"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "medikationsplan-schreiben",
+    "name": "Medikationsplan erstellen oder aktualisieren",
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
+          ]
+        }
+      ]
+    },
+    "flow": "emp",
+    "source": ["gemILF_PS_AMTS", "gemSysL_AMTS_A"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "medikationsplan-lesen",
+    "name": "Medikationsplan auslesen",
+    "offeredBy": { "types": ["pvs", "kis", "avs", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
+          ]
+        }
+      ]
+    },
+    "flow": "emp",
+    "source": ["gemSysL_AMTS_A"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "vsdm-pruefen",
+    "name": "VSDM-Prüfung anstoßen",
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "smcb", "unlocked": true },
+            { "card": "hba", "unlocked": true }
+          ]
+        },
+        { "service": "vsdm" }
+      ]
+    },
+    "flow": "vsdm",
+    "source": ["gemSysL_VSDM", "gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erezept-einloesen-egk",
+    "name": "E-Rezept einlösen (eGK einlesen)",
+    "offeredBy": { "types": ["avs"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "card": "egk" },
+        { "need": "pruefungsnachweis" },
+        { "service": "erp" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "erezeptEinloesen",
+    "source": ["gemF_eRp_Autorisierung_Apo", "FP_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erezept-einloesen-code",
+    "name": "E-Rezept einlösen (Rezeptcode scannen)",
+    "offeredBy": { "types": ["avs"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "service": "erp" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "erezeptEinloesen",
+    "source": ["gematik_eRp_Apotheken"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erezept-cardlink-einloesen",
+    "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
+    "offeredBy": { "types": ["avs"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "present": "cardlink" },
+        { "card": "egk" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "pruefungsnachweis" },
+        { "service": "erp" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "cardlinkErp",
+    "source": ["FP_eHealth-CardLink", "gemSpec_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "epa-dokument-pflege",
+    "name": "Dokument in die ePA hochladen oder einsehen",
+    "offeredBy": { "types": ["pflege"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
+      ]
+    },
+    "flow": "epa",
+    "source": ["Pflege-FAQ", "gemSpec_Aktensystem_ePAfueralle"],
+    "status": "plausibel"
+  },
+  {
+    "id": "mkt-egk-offline-einlesen",
+    "name": "eGK offline einlesen (mobiles KT)",
+    "offeredBy": { "types": ["mkt"] },
+    "requires": {
+      "all": [
+        { "card": "egk" },
+        {
+          "any": [
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
+          ]
+        }
+      ]
+    },
+    "flow": "mobkt",
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "mkt-daten-uebergeben",
+    "name": "Daten ans Primärsystem übergeben (mobiles KT)",
+    "offeredBy": { "types": ["mkt"] },
+    "requires": {
+      "any": [
+        { "present": "pvs" },
+        { "present": "kis" },
+        { "present": "avs" },
+        { "present": "pflege" }
+      ]
+    },
+    "flow": "mobkt",
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "cardlink-vsdm-pruefen",
+    "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
+    "offeredBy": { "types": ["cardlink"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "egk" },
+        { "present": "cardlink" },
+        { "card": "smcb", "unlocked": true },
+        { "service": "vsdm" }
+      ]
+    },
+    "flow": "cardlinkVsdm",
+    "source": ["gemSpec_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "tim-senden",
+    "name": "TI-Messenger-Nachricht senden",
+    "offeredBy": { "types": ["timc"] },
+    "requires": { "service": "tim" },
+    "flow": "tim",
+    "source": ["gemSpec_TI-M_Basis", "FP_TIM"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erezept-app-abrufen",
+    "name": "E-Rezept-App: Rezepte abrufen",
+    "offeredBy": { "types": ["erpapp"] },
+    "requires": {
+      "all": [
+        { "service": "erp" },
+        { "any": [{ "service": "idpsek" }, { "card": "egk" }] }
+      ]
+    },
+    "flow": "app",
+    "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "epa-app-ansehen",
+    "name": "ePA-App: Akte ansehen und Befugnis verwalten",
+    "offeredBy": { "types": ["epaapp"] },
+    "requires": { "all": [{ "service": "epa" }, { "service": "idpsek" }] },
+    "flow": "app",
+    "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  }
+]

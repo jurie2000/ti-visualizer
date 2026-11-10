@@ -1,1 +1,466 @@
-[]
+[
+  {
+    "id": "erezept",
+    "name": "E-Rezept ausstellen",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Signaturauftrag (SOAP)",
+        "text": "Das Primärsystem schickt die Verordnung zum Signieren an den Zugang."
+      },
+      {
+        "from": "K",
+        "to": "T",
+        "label": "QES mit dem HBA (SICCT, ISO 7816)",
+        "text": "Der Zugang lässt die Verordnung vom HBA im Kartenterminal qualifiziert signieren."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "signierte Verordnung",
+        "text": "Die signierte Verordnung geht zurück ans Primärsystem."
+      },
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Authentisierung mit der SMC-B",
+        "text": "Das Primärsystem weist sich als Institution mit der SMC-B aus."
+      },
+      {
+        "from": "P",
+        "to": "IDP",
+        "label": "Token holen (OAuth 2.0, über K→V)",
+        "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
+      },
+      {
+        "from": "P",
+        "to": "ERP",
+        "label": "Verordnung einstellen (VAU, FHIR, über K→V)",
+        "text": "Die verschlüsselte Verordnung wird im E-Rezept-Fachdienst eingestellt."
+      },
+      {
+        "from": "ERP",
+        "to": "P",
+        "label": "Rezept-ID",
+        "text": "Der Fachdienst bestätigt mit der Rezept-ID."
+      }
+    ],
+    "source": ["gemILF_PS_eRp", "gemSpec_FD_eRp", "gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "vsdm",
+    "name": "Versichertenstammdaten prüfen (VSDM)",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "ReadVSD (SOAP)",
+        "text": "Das Primärsystem stößt die Stammdatenprüfung beim Zugang an."
+      },
+      {
+        "from": "K",
+        "to": "T",
+        "label": "eGK lesen (SICCT)",
+        "text": "Der Zugang liest die eGK im Kartenterminal aus."
+      },
+      {
+        "from": "T",
+        "to": "K",
+        "label": "Kartendaten",
+        "text": "Das Kartenterminal liefert die Daten der eGK."
+      },
+      {
+        "from": "K",
+        "to": "VSDM",
+        "label": "Abgleich, Prüfziffer (über K→V)",
+        "text": "Über den VPN-Tunnel gleicht der Zugang die Stammdaten mit dem VSDM-Fachdienst ab und erhält die Prüfziffer."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Daten und Prüfungsnachweis",
+        "text": "Das Primärsystem erhält aktuelle Stammdaten und den Prüfungsnachweis."
+      }
+    ],
+    "source": ["gemSysL_VSDM", "gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "notfalldaten",
+    "name": "Notfalldaten schreiben oder lesen",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Fachmodul NFDM (SOAP)",
+        "text": "Das Primärsystem beauftragt das Notfalldaten-Fachmodul im Zugang."
+      },
+      {
+        "from": "K",
+        "to": "T",
+        "label": "Schreib- oder Leseauftrag (SICCT)",
+        "text": "Der Zugang schreibt oder liest die Notfalldaten auf der eGK im Kartenterminal."
+      },
+      {
+        "from": "T",
+        "to": "K",
+        "label": "eGK bestätigt",
+        "text": "Das Kartenterminal bestätigt den Zugriff auf die eGK."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Ergebnis — ohne VPN und ohne Fachdienst",
+        "text": "Alles bleibt lokal: Notfalldaten liegen auf der eGK, kein Fachdienst ist nötig."
+      }
+    ],
+    "source": ["gemSpec_FM_NFDM"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "emp",
+    "name": "Medikationsplan schreiben oder auslesen (eMP)",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Fachmodul AMTS (ReadMP/WriteMP)",
+        "text": "Das Primärsystem beauftragt das Medikationsplan-Fachmodul im Zugang."
+      },
+      {
+        "from": "K",
+        "to": "T",
+        "label": "C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN (SICCT)",
+        "text": "Der Berufsausweis und die eGK authentisieren sich gegenseitig im Kartenterminal, die eGK-PIN wird geprüft."
+      },
+      {
+        "from": "T",
+        "to": "K",
+        "label": "Medikationsplan gelesen/geschrieben",
+        "text": "Das Kartenterminal gibt den Medikationsplan der eGK zurück."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Ergebnis — ohne VPN und ohne Fachdienst",
+        "text": "Der Medikationsplan liegt auf der eGK, kein Fachdienst ist nötig."
+      }
+    ],
+    "source": ["gemSysL_AMTS_A", "gemILF_PS_AMTS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "eau",
+    "name": "eAU per KIM senden",
+    "steps": [
+      {
+        "from": "P",
+        "to": "CM",
+        "label": "eAU (SMTP)",
+        "text": "Das Primärsystem übergibt die eAU an das KIM-Clientmodul."
+      },
+      {
+        "from": "CM",
+        "to": "K",
+        "label": "QES mit dem HBA über das Kartenterminal",
+        "text": "Das Clientmodul lässt die eAU mit dem HBA qualifiziert signieren."
+      },
+      {
+        "from": "CM",
+        "to": "K",
+        "label": "Verschlüsselung mit der SMC-B",
+        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B."
+      },
+      {
+        "from": "CM",
+        "to": "KIM",
+        "label": "Versand (mTLS, über K→V)",
+        "text": "Über den VPN-Tunnel stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
+      },
+      {
+        "from": "KIM",
+        "to": "KK",
+        "label": "Zustellung",
+        "text": "Der KIM-Fachdienst stellt die eAU der Krankenkasse zu."
+      },
+      {
+        "from": "KK",
+        "to": "P",
+        "label": "Quittung (KIM→P)",
+        "text": "Die Empfangsquittung läuft über KIM zurück ins Primärsystem."
+      }
+    ],
+    "source": ["gemSpec_CM_KOMLE", "PM_eAU", "KIM-DK"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "kim",
+    "name": "KIM-Nachricht senden",
+    "steps": [
+      {
+        "from": "P",
+        "to": "CM",
+        "label": "Nachricht (SMTP)",
+        "text": "Das Primärsystem übergibt die Nachricht an das KIM-Clientmodul."
+      },
+      {
+        "from": "CM",
+        "to": "VZD",
+        "label": "Empfänger aus dem VZD",
+        "text": "Das Clientmodul schlägt die KIM-Adresse des Empfängers im Verzeichnisdienst nach."
+      },
+      {
+        "from": "CM",
+        "to": "K",
+        "label": "QES mit dem HBA — nur beim eArztbrief",
+        "text": "Nur ein eArztbrief wird mit dem HBA qualifiziert signiert, eine einfache KIM-Nachricht nicht."
+      },
+      {
+        "from": "CM",
+        "to": "K",
+        "label": "Verschlüsselung mit der SMC-B",
+        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B."
+      },
+      {
+        "from": "CM",
+        "to": "KIM",
+        "label": "Versand (mTLS, über K→V)",
+        "text": "Über den VPN-Tunnel stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
+      }
+    ],
+    "source": ["gemSpec_CM_KOMLE", "gemSpec_VZD_FHIR_Directory"],
+    "status": "plausibel"
+  },
+  {
+    "id": "epa",
+    "name": "ePA-Dokument hochladen oder einsehen",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Authentisierung mit der SMC-B",
+        "text": "Das Primärsystem weist sich als Institution mit der SMC-B aus."
+      },
+      {
+        "from": "P",
+        "to": "IDP",
+        "label": "Token holen (über K→V)",
+        "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
+      },
+      {
+        "from": "P",
+        "to": "ePA",
+        "label": "Befugnis prüfen (Prüfungsnachweis oder PoPP)",
+        "text": "Die Befugnis wird über Prüfungsnachweis oder PoPP-Token nachgewiesen."
+      },
+      {
+        "from": "P",
+        "to": "ePA",
+        "label": "Dokument bzw. Abfrage (VAU, FHIR, über K→V)",
+        "text": "Das verschlüsselte Dokument wird hochgeladen oder die Akte abgefragt."
+      },
+      {
+        "from": "ePA",
+        "to": "P",
+        "label": "Bestätigung bzw. Daten",
+        "text": "Das Aktensystem antwortet mit Bestätigung oder den angeforderten Daten."
+      }
+    ],
+    "source": ["gemILF_PS_ePA", "gemSpec_Aktensystem_ePAfueralle"],
+    "status": "plausibel"
+  },
+  {
+    "id": "tim",
+    "name": "TI-Messenger-Nachricht senden",
+    "steps": [
+      {
+        "from": "TIMC",
+        "to": "TIM",
+        "label": "Nachricht (Matrix, Internet)",
+        "text": "Der TI-Messenger-Client sendet die Nachricht über das Internet an seinen Fachdienst."
+      },
+      {
+        "from": "TIM",
+        "to": "TIM2",
+        "label": "Föderation über den VZD",
+        "text": "Der Fachdienst findet den Fachdienst des Empfängers über den Verzeichnisdienst und reicht weiter."
+      },
+      {
+        "from": "TIM2",
+        "to": "TIMC2",
+        "label": "Zustellung",
+        "text": "Die Nachricht wird dem Empfänger zugestellt."
+      }
+    ],
+    "source": ["gemSpec_TI-M_Basis"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erezeptEinloesen",
+    "name": "E-Rezept in der Apotheke einlösen",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "eGK-Weg: ReadVSD mit eGK",
+        "text": "Beim eGK-Weg liest die Apotheke die eGK ein; beim Rezeptcode-Weg entfallen eGK und VSDM."
+      },
+      {
+        "from": "K",
+        "to": "VSDM",
+        "label": "Prüfungsnachweis (über K→V)",
+        "text": "Über den VPN-Tunnel holt der Zugang den Prüfungsnachweis beim VSDM-Fachdienst."
+      },
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Authentisierung mit der SMC-B",
+        "text": "Die Apotheke weist sich mit der SMC-B aus."
+      },
+      {
+        "from": "P",
+        "to": "IDP",
+        "label": "Token holen (über K→V)",
+        "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
+      },
+      {
+        "from": "P",
+        "to": "ERP",
+        "label": "Abruf mit Prüfungsnachweis (über K→V)",
+        "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
+      },
+      {
+        "from": "ERP",
+        "to": "P",
+        "label": "Verordnung",
+        "text": "Der Fachdienst liefert die abgerufene Verordnung."
+      }
+    ],
+    "source": ["gemF_eRp_Autorisierung_Apo", "FP_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "cardlinkErp",
+    "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
+    "steps": [
+      {
+        "from": "eGK",
+        "to": "Smartphone",
+        "label": "NFC, CAN",
+        "text": "Die eGK wird per NFC am Smartphone der versicherten Person gelesen (Zugangsnummer CAN)."
+      },
+      {
+        "from": "Smartphone",
+        "to": "CardLink",
+        "label": "Internet",
+        "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."
+      },
+      {
+        "from": "CardLink",
+        "to": "K",
+        "label": "wie ein Kartenterminal",
+        "text": "Der CardLink-Dienst bindet sich am Zugang wie ein Kartenterminal ein."
+      },
+      {
+        "from": "P",
+        "to": "K",
+        "label": "ReadVSD",
+        "text": "Die Apotheke stößt die Stammdatenprüfung an."
+      },
+      {
+        "from": "K",
+        "to": "VSDM",
+        "label": "Prüfungsnachweis (über K→V)",
+        "text": "Über den VPN-Tunnel holt der Zugang den Prüfungsnachweis beim VSDM-Fachdienst."
+      },
+      {
+        "from": "P",
+        "to": "ERP",
+        "label": "Abruf (über K→V)",
+        "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
+      },
+      {
+        "from": "ERP",
+        "to": "P",
+        "label": "Verordnung",
+        "text": "Der Fachdienst liefert die Verordnung."
+      }
+    ],
+    "source": ["FP_eHealth-CardLink", "gemSpec_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "cardlinkVsdm",
+    "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
+    "steps": [
+      {
+        "from": "eGK",
+        "to": "Smartphone",
+        "label": "NFC, CAN",
+        "text": "Die eGK wird per NFC am Smartphone gelesen."
+      },
+      {
+        "from": "Smartphone",
+        "to": "CardLink",
+        "label": "Internet",
+        "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."
+      },
+      {
+        "from": "CardLink",
+        "to": "K",
+        "label": "wie ein Kartenterminal",
+        "text": "Der CardLink-Dienst bindet sich am Zugang wie ein Kartenterminal ein."
+      },
+      {
+        "from": "K",
+        "to": "VSDM",
+        "label": "Prüfungsnachweis (über K→V)",
+        "text": "Über den VPN-Tunnel wird der Prüfungsnachweis beim VSDM-Fachdienst geholt."
+      }
+    ],
+    "source": ["gemSpec_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "mobkt",
+    "name": "Mobiles Kartenterminal (offline)",
+    "steps": [
+      {
+        "from": "eGK",
+        "to": "MobKT",
+        "label": "offline lesen, speichern",
+        "text": "Das mobile Kartenterminal liest die eGK ohne Netz und speichert die Daten zwischen."
+      },
+      {
+        "from": "MobKT",
+        "to": "P",
+        "label": "später per USB (CT-API)",
+        "text": "Am Arbeitsplatz übergibt das mobile Kartenterminal die Daten per USB an das Primärsystem."
+      }
+    ],
+    "source": ["gemSpec_MobKT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "app",
+    "name": "Versicherten-App (E-Rezept / ePA)",
+    "steps": [
+      {
+        "from": "App",
+        "to": "IDPSEK",
+        "label": "GesundheitsID (Internet)",
+        "text": "Die App meldet sich über das Internet mit der GesundheitsID beim sektoralen IDP an."
+      },
+      {
+        "from": "App",
+        "to": "FD",
+        "label": "E-Rezept-FD bzw. ePA",
+        "text": "Mit dem Token greift die App direkt auf den E-Rezept-Fachdienst oder das ePA-Aktensystem zu."
+      }
+    ],
+    "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
+    "status": "bestätigt"
+  }
+]

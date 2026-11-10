@@ -144,7 +144,11 @@ jobs:
   e2e:
     name: e2e
     needs: build
-    runs-on: ubuntu-latest
+    # ubuntu-latest (ab ubuntu26) liefert libicu78; Playwrights webkit-Binary ist
+    # gegen libicu74 gelinkt (libicudata.so.74) und startet dort nicht. 24.04 hat
+    # libicu74. Wieder auf ubuntu-latest, sobald Playwright webkit für neuere ICU
+    # ausliefert.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       E2E_SKIP_BUILD: "1"

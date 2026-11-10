@@ -485,7 +485,7 @@ abspielen.
     Anpinnen hält die Auswahl im Panel fest; Zonen zeigen Name und Farbe
     (kein Protokoll). Umfang rund 190 Zeilen inkl. CSS (ohne Tests).
   - Nachbesserung (2026-11-10, aus dem KI-Review): `aria-live` liegt nur
-    noch auf der Überschrift (sonst liest der Screenreader bei jeder
+    noch auf einer dauerhaften Überschrift in `Body` (sonst liest der Screenreader bei jeder
     Auswahl den ganzen Inhalt vor). Öffnen einer Datei oder eines Presets
     löst Anheftung und Auswahl (sonst zeigt das Panel Reste der alten Datei).
 

@@ -36,7 +36,7 @@ function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
   );
 }
 
-/** Die Überschrift bleibt über alle Arten hinweg dasselbe Element und trägt allein die Live-Ansage (D10). */
+/** Wird in `Body` immer an derselben Stelle gerendert: ein dauerhaftes Element trägt allein die Live-Ansage (D10). */
 function Titled({ title, children }: { title: string; children: ReactNode }) {
   return (
     <>
@@ -61,7 +61,7 @@ const nameOf = (n: Node, catalog: Catalog) =>
 function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   return (
-    <Titled title={nameOf(node, catalog)}>
+    <>
       <dl className="tiv-detail__facts">
         {type && <Row name="Gerätetyp">{`${type.name} (${type.abbr})`}</Row>}
         <Row name="Betrieb">{node.fault ? "Ausgefallen" : "In Betrieb"}</Row>
@@ -73,9 +73,12 @@ function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
         {type && <Row name="Status">{type.status}</Row>}
       </dl>
       {type && <Sources ids={type.source} catalog={catalog} />}
-    </Titled>
+    </>
   );
 }
+
+const endsOf = (edge: Edge, topology: Topology) =>
+  edge.ends.map((e) => topology.nodes.find((n) => n.id === e.node));
 
 function EdgeDetail({
   edge,
@@ -86,9 +89,7 @@ function EdgeDetail({
   topology: Topology;
   catalog: Catalog;
 }) {
-  const [x, y] = edge.ends.map((e) =>
-    topology.nodes.find((n) => n.id === e.node),
-  );
+  const [x, y] = endsOf(edge, topology);
   const kind = describeEdge(edge, topology, catalog).kind;
   const rows = catalog.protocols.protocols.filter(
     (p) =>
@@ -98,9 +99,7 @@ function EdgeDetail({
         (matches(p.a, y.type, catalog) && matches(p.b, x.type, catalog))),
   );
   return (
-    <Titled
-      title={[x, y].map((n) => (n ? nameOf(n, catalog) : "?")).join(" ↔ ")}
-    >
+    <>
       <dl className="tiv-detail__facts">
         <Row name="Verbindungsart">
           {catalog.protocols.connectionKinds.find((k) => k.id === kind)?.name ??
@@ -128,32 +127,50 @@ function EdgeDetail({
           <Sources ids={p.source} catalog={catalog} />
         </section>
       ))}
-    </Titled>
+    </>
   );
 }
 
-function Body({ sel }: { sel: NonNullable<Selection> }) {
+function Body({ sel }: { sel: Selection }) {
   const topology = useTopology((s) => s.topology);
   const catalog = useCatalog((s) => s.catalog);
-  if (sel.kind === "node") {
+  let title = "Details";
+  let found = false;
+  let content: ReactNode = (
+    <p>Gerät oder Verbindung wählen, um Details zu sehen.</p>
+  );
+  if (sel?.kind === "node") {
     const node = topology.nodes.find((n) => n.id === sel.id);
-    if (node) return <DeviceDetail node={node} catalog={catalog} />;
-  } else if (sel.kind === "edge") {
+    if (node) {
+      found = true;
+      title = nameOf(node, catalog);
+      content = <DeviceDetail node={node} catalog={catalog} />;
+    }
+  } else if (sel?.kind === "edge") {
     const edge = topology.edges.find((e) => e.id === sel.id);
-    if (edge)
-      return <EdgeDetail edge={edge} topology={topology} catalog={catalog} />;
-  } else {
-    const zone = topology.zones.find((z) => z.id === sel.id);
-    if (zone)
-      return (
-        <Titled title={zone.label ?? zone.id}>
-          <dl className="tiv-detail__facts">
-            <Row name="Farbe">{TONE[zone.tone]}</Row>
-          </dl>
-        </Titled>
+    if (edge) {
+      found = true;
+      title = endsOf(edge, topology)
+        .map((n) => (n ? nameOf(n, catalog) : "?"))
+        .join(" ↔ ");
+      content = (
+        <EdgeDetail edge={edge} topology={topology} catalog={catalog} />
       );
+    }
+  } else if (sel?.kind === "zone") {
+    const zone = topology.zones.find((z) => z.id === sel.id);
+    if (zone) {
+      found = true;
+      title = zone.label ?? zone.id;
+      content = (
+        <dl className="tiv-detail__facts">
+          <Row name="Farbe">{TONE[zone.tone]}</Row>
+        </dl>
+      );
+    }
   }
-  return <p>Die Auswahl gibt es nicht mehr.</p>;
+  if (sel && !found) content = <p>Die Auswahl gibt es nicht mehr.</p>;
+  return <Titled title={title}>{content}</Titled>;
 }
 
 /** Detailpanel (FR-11): einblendbar; angepinnt bleibt der Inhalt trotz neuer Auswahl. */
@@ -194,11 +211,7 @@ export function DetailPanel() {
         )}
       </div>
       <div id="tiv-detail-body" hidden={!open}>
-        {shown ? (
-          <Body sel={shown} />
-        ) : (
-          <p>Gerät oder Verbindung wählen, um Details zu sehen.</p>
-        )}
+        <Body sel={shown} />
       </div>
     </>
   );

@@ -138,7 +138,9 @@ describe("T-406 Detailpanel (FR-11)", () => {
 
   it("sagt nur die Überschrift an, nicht den ganzen Inhalt (aria-live)", () => {
     const { container } = render(<DetailPanel />);
+    const leer = screen.getByRole("heading", { level: 3 });
     select("node", "kt1");
+    expect(screen.getByRole("heading", { level: 3 })).toBe(leer);
     expect(container.querySelector("#tiv-detail-body")).not.toHaveAttribute(
       "aria-live",
     );
@@ -146,6 +148,11 @@ describe("T-406 Detailpanel (FR-11)", () => {
       "aria-live",
       "polite",
     );
+    // bleibt über Arten und Auswahl hinweg dasselbe Element (neue Live-Regionen werden oft nicht angesagt)
+    const h = screen.getByRole("heading", { level: 3 });
+    select("edge", "e1");
+    select("zone", "z1");
+    expect(screen.getByRole("heading", { level: 3 })).toBe(h);
   });
 
   it("löst Anheftung und Auswahl beim Öffnen einer Datei", async () => {

@@ -178,6 +178,16 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(live()).toHaveTextContent("Ablauf beendet");
   });
 
+  it("wechselt das Tempo reihum", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    start();
+    await user.click(screen.getByRole("button", { name: /Tempo 1×/ }));
+    expect(useSim.getState().sim.tempo).toBe(2);
+    await user.click(screen.getByRole("button", { name: /Tempo 2×/ }));
+    expect(useSim.getState().sim.tempo).toBe(0.5);
+  });
+
   it("sperrt die Topologie während der Simulation und gibt sie danach frei", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });

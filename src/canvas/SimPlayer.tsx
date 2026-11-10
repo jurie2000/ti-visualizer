@@ -159,11 +159,6 @@ export function SimPlayer() {
         {name} · Schritt {Math.min(sim.step + 1, steps.length)} von{" "}
         {steps.length}
       </p>
-      <progress
-        aria-label="Fortschritt"
-        value={sim.step + 1}
-        max={Math.max(steps.length, 1)}
-      />
       <div aria-live="polite" aria-atomic="true" className="tiv-sim__text">
         {text}
       </div>
@@ -187,21 +182,16 @@ export function SimPlayer() {
         >
           Schritt
         </Button>
-        <label>
-          Tempo{" "}
-          <select
-            value={sim.tempo}
-            onChange={(e) => {
-              send({ tempo: Number(e.target.value) as Tempo });
-            }}
-          >
-            {TEMPOS.map((t) => (
-              <option key={t} value={t}>
-                {t}×
-              </option>
-            ))}
-          </select>
-        </label>
+        <Button
+          onClick={() => {
+            send({
+              tempo:
+                TEMPOS[(TEMPOS.indexOf(sim.tempo) + 1) % TEMPOS.length] ?? 1,
+            });
+          }}
+        >
+          Tempo {sim.tempo}× (ändern)
+        </Button>
         {locked ? (
           <Button
             onClick={() => {

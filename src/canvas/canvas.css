@@ -385,9 +385,6 @@
   margin: 0;
   font-weight: 600;
 }
-.tiv-sim progress {
-  width: 100%;
-}
 .tiv-sim__controls {
   display: flex;
   flex-wrap: wrap;

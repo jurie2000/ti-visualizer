@@ -28,6 +28,7 @@ argument-hint: <issue-nummer>
 4. Regeln aus `CLAUDE.md` (Code, Kommentare, Größe) einhalten.
 5. Lokale Checks laufen lassen, PR mit Vorlage öffnen, im Text
    `Closes #$ARGUMENTS` nennen.
-6. KI-Review abwarten, jeden Befund disponieren
+6. KI-Review abwarten, jeden Befund disponieren (neuer Lauf nur nach Hoch,
+   höchstens einmal)
    (`.github/review-richtlinien.md`). Mergen nur, wenn der Nutzer das
    freigegeben hat; sonst den PR zur Abnahme übergeben.

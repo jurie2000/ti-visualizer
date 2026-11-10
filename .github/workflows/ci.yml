@@ -1,10 +1,9 @@
 name: CI
 
 on:
+  # Kein `push`-Trigger: Der PR-Lauf deckt den Branch ab, sonst liefe alles doppelt.
+  # Auf `main` prüft und deployt deploy.yml.
   pull_request:
-  push:
-    # Auf `main` prüft und deployt deploy.yml (sonst liefe die Pipeline doppelt).
-    branches-ignore: [main]
 
 # Neuer Lauf für denselben Branch ersetzt den alten.
 concurrency:

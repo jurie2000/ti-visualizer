@@ -74,7 +74,9 @@ kein Hoch-Befund offen, darf gemergt werden — die finale Abnahme bleibt beim
 Menschen.
 
 Ein erneuter Review nach Fixes läuft nicht automatisch, sondern über das
-Label `ki-review` am PR.
+Label `ki-review` am PR. Er ist nur nach einem Hoch-Befund vorgesehen, um den
+Fix zu prüfen, und dann höchstens einmal. Mittel und Niedrig werden
+disponiert und im PR festgehalten, ohne neuen Lauf.
 
 ## Nicht Aufgabe des Reviews
 

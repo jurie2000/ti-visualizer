@@ -25,6 +25,7 @@ const caps = (c: Cat, n: Node) =>
 
 type Path = { nodes: string[]; edges: string[] };
 
+// Spiegelt die Ausnahmen in connection-rules.json (erl-mkt-ps, kim ↔ kk).
 const DIRECT: Record<string, string[]> = {
   mkt: ["pvs", "kis", "avs", "pflege"],
   kim: ["kk"],

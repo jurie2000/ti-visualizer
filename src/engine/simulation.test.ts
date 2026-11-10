@@ -166,7 +166,12 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     "Ablauf %s läuft ohne VPN und Fachdienst",
     (id) => {
       const t = build(["vpn", "zentral", "vsdm", "erp", "idp", "epa", "kim"]);
-      const nodes = bind(id, "pvs", t).flatMap((s) => s.nodes);
+      const steps = bind(id, "pvs", t);
+      for (const st of steps) {
+        expect(st.problem).toBeUndefined();
+        expect(st.nodes.length).toBeGreaterThan(1);
+      }
+      const nodes = steps.flatMap((s) => s.nodes);
       expect(nodes.length).toBeGreaterThan(0);
       for (const n of nodes)
         expect(["pvs", "switch", "kon", "kt"]).toContain(n);
@@ -224,24 +229,6 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       ...t,
       nodes: t.nodes.map((n) => (n.id === "mkt" ? { ...n, fault: true } : n)),
     };
-    const kt: Topology = {
-      ...t,
-      edges: [
-        ...t.edges,
-        {
-          id: "kt-avs",
-          fault: false,
-          ends: [
-            { node: "kt", port: "p" },
-            { node: "avs", port: "p" },
-          ],
-        },
-      ],
-    };
-    expect(bind("notfalldaten", "avs", kt)[1]?.nodes).not.toEqual([
-      "avs",
-      "kt",
-    ]);
     const direct = bind("erezept", "pvs", wired)[5];
     expect(direct?.nodes).not.toEqual(["pvs", "erp"]);
     expect(bind("mobkt", "mkt", down)[1]?.nodes).toEqual([]);

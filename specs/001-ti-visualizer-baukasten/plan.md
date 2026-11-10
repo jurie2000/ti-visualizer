@@ -500,9 +500,10 @@ WebKit für die Suite `datei`).
 
 - **Werkzeug:** offizielle Claude Code GitHub Action von Anthropic
   (`anthropics/claude-code-action`, Version gepinnt), Modell Opus.
-- **Auslöser:** automatisch bei geöffnetem oder aktualisiertem Pull
-  Request, wenn Dateien in `src/`, `catalog/` oder `specs/` geändert
-  sind. Zusätzlich auf Zuruf mit `@claude` in einem PR-Kommentar.
+- **Auslöser:** automatisch beim Öffnen eines Pull Requests (oder wenn er
+  bereit zum Review ist), wenn Dateien in `src/`, `catalog/` oder `specs/`
+  außer `tasks.md` geändert sind. Nicht bei jedem Push: ein erneuter Lauf
+  nach Fixes startet über das Label `ki-review` (Stand 2026-11-10).
 - **Prüfpunkte** in `.github/review-richtlinien.md`, mit Fokus auf das,
   was Sonar und Tests nicht sehen:
   - Stimmt die Änderung mit Spec und Regelwerk überein (Regel-IDs,
@@ -514,8 +515,14 @@ WebKit für die Suite `datei`).
   - Werden geöffnete Dateien durch das Schema geprüft und Texte nie als
     HTML ausgegeben?
   - Nennt der Pull Request die Task-ID?
-  - Stil, Formatierung und allgemeine Codequalität sind **nicht**
-    Aufgabe des KI-Reviews (das machen ESLint, Prettier, Sonar).
+  - Bleibt der Diff im Umfang des Tasks und unter etwa 300 Zeilen
+    Produktivcode, ohne Overengineering (Abstraktion für nur einen
+    Aufrufer, nacherzählende Kommentare, doppelte Tests)?
+  - Die Prüfpunkte sind in drei Blickwinkel gruppiert (Spec-Treue, Umfang
+    und Einfachheit, Robustheit und Sicherheit), höchstens 7 Befunde mit
+    Beleg, ein Durchlauf.
+  - Stil und Formatierung sind **nicht** Aufgabe des KI-Reviews (das
+    machen ESLint, Prettier, Sonar).
 - **Ausgabe:** ein zusammenfassender PR-Kommentar plus Inline-Kommentare,
   auf Deutsch. Der Kommentar beginnt mit einem Überblick zum schnellen
   Überfliegen (Task-ID, Soll laut `tasks.md`, Ist laut Diff, Abweichung),
@@ -532,6 +539,22 @@ WebKit für die Suite `datei`).
 - **Auswertung für die Bachelorarbeit:** Befunde je PR werden mit Label
   „KI-Befund übernommen“ bzw. „verworfen“ markiert.
   Anlegen einmalig mit `gh label create "KI-Befund übernommen" --color 0E8A16 --description "KI-Review-Befund wurde umgesetzt"` und `gh label create "KI-Befund verworfen" --color B60205 --description "KI-Review-Befund wurde bewusst nicht umgesetzt"`.
+
+### KI-Triage und Agenten-Regeln
+
+- **Regeln für alle Agenten** (Ablauf, Größe, Code, Kommentare, Tests)
+  stehen in der Repo-`CLAUDE.md` und gelten lokal wie im CI.
+- **Triage** (`.github/workflows/ki-triage.yml`, Sonnet): neue Issues
+  werden nach `.claude/skills/triage/SKILL.md` als Bug, Spec-Lücke,
+  Feature oder kein Handlungsbedarf eingeordnet, mit Beleg aus Spec oder
+  Regelwerk, Größe und Task-Vorschlag. Nur für Issues von Personen mit
+  Schreibrechten.
+- **Freigabe:** Features und Spec-Lücken werden erst umgesetzt, wenn ein
+  Mensch das Label `freigegeben` setzt. Vorher werden Spec und `tasks.md`
+  ergänzt.
+- **Umsetzung** lokal mit den Skills `task-umsetzen` und `fix-issue` bzw.
+  dem Agenten `umsetzer` (Sonnet, Aufwand mittel). Planen und Review auf
+  Opus.
 
 ### Unit- und Komponententests
 

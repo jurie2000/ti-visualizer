@@ -262,7 +262,8 @@ export function availableActions(
           disabledReason: results[0]?.reason ?? "",
         };
       const choose = [...new Set(ok.fits.filter((f) => f.length > 1).flat())];
-      const [terminal] = ok.fits.flat();
+      const all = new Set(ok.fits.flat());
+      const [terminal] = all.size === 1 ? all : [];
       return {
         ...base,
         enabled: true,

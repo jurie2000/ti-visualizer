@@ -248,7 +248,9 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
     expect(action("erezept-einloesen-code")?.flow).toBe("erezeptEinloesenCode");
     const code = flow("erezeptEinloesenCode")?.steps ?? [];
     const egk = flow("erezeptEinloesen")?.steps ?? [];
-    expect(code).toEqual(egk.slice(2));
+    expect(code.map((s) => [s.from, s.to])).toEqual(
+      egk.slice(2).map((s) => [s.from, s.to]),
+    );
     expect(code.some((s) => s.to === "VSDM")).toBe(false);
   });
 

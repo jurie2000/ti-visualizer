@@ -64,7 +64,11 @@ export function useContextMenu() {
             });
             return;
           }
-          useUi.getState().startAction({ nodeId: node.id, actionId: a.id });
+          useUi.getState().startAction({
+            nodeId: node.id,
+            actionId: a.id,
+            ...(a.terminal && { terminal: a.terminal }),
+          });
           toast.show(`„${a.name}“ gewählt.`);
         },
       }),

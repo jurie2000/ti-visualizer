@@ -3,6 +3,7 @@ import type { AnyCard, Node, Topology } from "../schema";
 import { loadCatalog } from "../schema/loadCatalog";
 import { availableActions } from "./actions";
 import { MESSAGES } from "./cards";
+import { bindFlow } from "./simulation";
 
 const catalog = loadCatalog();
 
@@ -439,6 +440,38 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     );
     expect(byId.get("vsdm-pruefen")?.enabled).toBe(true);
     expect(byId.get("notfalldaten-lesen")?.enabled).toBe(true);
+  });
+
+  it("6.0 Issue #70: Menü und Player wählen dasselbe Terminal (Preset praxis, E-Rezept ausstellen)", () => {
+    const t = catalog.presets.find((p) => p.id === "praxis")
+      ?.topology as Topology;
+    const pvs = t.nodes.find((n) => n.type === "pvs") as Node;
+    const a = availableActions(pvs, t, catalog).find(
+      (x) => x.id === "erezept-ausstellen",
+    );
+    const action = catalog.actions.find((x) => x.id === "erezept-ausstellen");
+    const flow = catalog.flows.find((f) => f.id === action?.flow) as never;
+    expect(a?.chooseTerminal).toBeUndefined();
+    const steps = bindFlow(flow, pvs, t, catalog, a?.terminal);
+    expect(steps.map((s) => s.problem?.kind)).not.toContain("terminal-waehlen");
+  });
+
+  it("6.0 Issue #70: Karten in verschiedenen Terminals binden kein Terminal vor", () => {
+    const base = catalog.presets.find((p) => p.id === "praxis")
+      ?.topology as Topology;
+    const pvs = base.nodes.find((n) => n.type === "pvs") as Node;
+    const all = base.nodes.flatMap((n) => n.cards ?? []);
+    const hba = all.find((c) => c.kind === "hba") as AnyCard;
+    const smcb = all.find((c) => c.kind === "smcb") as AnyCard;
+    const [k1, k2] = base.nodes.filter((n) => n.type === "kt");
+    let t = base;
+    for (const n of [k1, k2]) t = drop(t, n?.id ?? "", "hba", "smcb");
+    t = cards(t, k1?.id ?? "", (c) => [...c, hba]);
+    t = cards(t, k2?.id ?? "", (c) => [...c, smcb]);
+    const a = state(t, pvs.id, "erezept-ausstellen");
+    expect(a?.enabled).toBe(true);
+    expect(a?.terminal).toBeUndefined();
+    expect(a?.chooseTerminal).toBeUndefined();
   });
 
   it("PC und Tablet bieten die Aktionen ihres Primärsystems an", () => {

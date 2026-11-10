@@ -506,6 +506,14 @@ abspielen.
     sie ignorieren. Die vertagten Punkte aus T-406 (Panel-`aria-live`,
     Anheftung beim Öffnen) sind in PR #69 behoben und hier abgedeckt.
 
+- [x] **T-408 Terminalwahl in Menü und Player vereinheitlichen** · FR: FR-8 · Regeln: 6.0 · nach: T-405 (Issue #70)
+  - Umfang: `availableActions` liefert das eine Terminal mit passender Karte
+    (`terminal`); das Kontextmenü gibt es an den Player weiter. Das Menü
+    fragt nur bei mehreren passenden Terminals, der Player markiert dann
+    nicht mehr `terminal-waehlen`.
+  - Fertig, wenn: Arztpraxis, „E-Rezept ausstellen“ ohne Terminal-Frage
+    bindet T ohne `terminal-waehlen`. Test mit Issue-Nr.
+
 ---
 
 ## P5: Modus Erweitert

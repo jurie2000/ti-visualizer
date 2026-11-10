@@ -371,6 +371,48 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     ).toBeUndefined();
   });
 
+  it("Karten auf verschiedene Terminals des Zugangs verteilt zählen zusammen (6.1)", () => {
+    let t = drop(full(), "kt", "egk");
+    t = {
+      ...t,
+      nodes: [
+        ...t.nodes,
+        {
+          id: "kt2",
+          type: "kt",
+          position: { x: 0, y: 0 },
+          fault: false,
+          cards: [egk()],
+        },
+      ],
+      edges: [
+        ...t.edges,
+        {
+          id: "sw-kt2",
+          fault: false,
+          ends: [
+            { node: "sw", port: "p" },
+            { node: "kt2", port: "p" },
+          ],
+        },
+      ],
+    };
+    const s = state(t, "pvs", "notfalldaten-lesen");
+    expect(s?.enabled).toBe(true);
+    expect(s?.chooseTerminal).toBeUndefined();
+  });
+
+  it("Preset praxis: Karten auf kt1 und kt2 verteilt, Aktionen am PVS aktiv", () => {
+    const t = catalog.presets.find((p) => p.id === "praxis")
+      ?.topology as Topology;
+    const pvs = t.nodes.find((n) => n.type === "pvs") as Node;
+    const byId = new Map(
+      availableActions(pvs, t, catalog).map((a) => [a.id, a]),
+    );
+    expect(byId.get("vsdm-pruefen")?.enabled).toBe(true);
+    expect(byId.get("notfalldaten-lesen")?.enabled).toBe(true);
+  });
+
   it("PC und Tablet bieten die Aktionen ihres Primärsystems an", () => {
     const ids = (t: Topology, n: string) =>
       availableActions(t.nodes.find((x) => x.id === n) as Node, t, catalog).map(

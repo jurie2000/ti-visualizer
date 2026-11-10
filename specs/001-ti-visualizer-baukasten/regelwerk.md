@@ -489,8 +489,11 @@ Verkabelung des KIM-Clientmoduls). (b) K-7 steht im Katalog als
 `{card: egk, pin: true}`, die Engine liest `pinActive` über `cardState`.
 (c) PC und Tablet erben die Aktionen der Primärsysteme (PVS, KIS, AVS), die
 sie direkt oder über Netzgeräte erreichen, ohne einen Weg über ein anderes
-Primärsystem. (d) Mehrere passende Terminals ohne Zuordnung: Aktion aktiv
-mit Liste `chooseTerminal`, wenn mehr als ein Terminal die Karten erfüllt.
+Primärsystem. (d) Karten dürfen auf mehrere Terminals desselben Zugangs verteilt sein
+(Baustein „Karte X“); gilt das zugeordnete Terminal (P-29), zählt nur
+dieses. Steckt eine benötigte Karte in mehr als einem Terminal ohne
+Zuordnung, ist die Aktion aktiv mit Liste `chooseTerminal`. Bei mehreren
+Zugängen gilt die Aktion, wenn sie an einem von ihnen erfüllt ist.
 
 \* Im Modus Einfach gilt das KIM-Clientmodul als Teil des Primärsystems,
 der sektorale IDP als Teil der Versicherten-App (Vereinfachung).

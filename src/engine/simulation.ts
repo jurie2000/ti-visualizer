@@ -97,7 +97,7 @@ function roleBinder(
  * Schritte eines Ablaufs auf die Topologie gebunden (FR-8, Regelwerk 7).
  * Rollen folgen dem Pfad vom Auslöser (Regelwerk 7 „Rollenbindung“); was kein
  * Pfad erreicht, bleibt ohne Knoten. Passen mehrere Terminals, bindet erst die
- * Wahl der Nutzer (`terminal`) T und K.
+ * Wahl der Nutzer (`terminal`) T. K folgt dem Terminal, sonst dem Pfad.
  */
 export function bindFlow(
   flow: Flow,
@@ -160,6 +160,7 @@ export function simStep(sim: Sim, ev: SimEvent, total: number): Sim {
         ? { ...sim, status: "done", step: total - 1 }
         : { ...sim, step: sim.step + 1 };
     case "prev":
+      // aus done zurück: Pause auf dem letzten Schritt, damit er sichtbar bleibt
       if (status === "done") return { ...sim, status: "paused" };
       return status === "running" || status === "paused"
         ? { ...sim, step: Math.max(0, sim.step - 1) }

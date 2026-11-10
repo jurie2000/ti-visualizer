@@ -573,6 +573,11 @@ KH).
 
 Rollen: P = Primärsystem, CM = KIM-Clientmodul, K = Zugang
 (Konnektor/TI-Gateway), T = Kartenterminal, V = VPN-Zugangsdienst.
+Im Katalog stehen `P` (Auslöser), `K`, `T` und sonst Gerätetyp-IDs
+(`CM` ist `kimcm`, `V` ist `vpn`); `E` ist eine Seite außerhalb der
+Topologie (Empfänger von `tim`). Auslegung 2026-11-10: Ohne Weg nach 6.0
+hat ein Schritt keine Knoten, so bei der Krankenkasse (`eau`) und beim
+Weg Smartphone→CardLink (Vereinfachung).
 „über K→V“ heißt: Das Primärsystem spricht selbst mit dem Dienst, der
 Zugang leitet die Pakete nur durch den VPN-Tunnel weiter. Erklärtexte je
 Schritt stehen im Mockup und werden in den Katalog übernommen.

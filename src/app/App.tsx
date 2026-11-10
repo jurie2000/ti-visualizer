@@ -7,6 +7,7 @@ import { OpenDialog } from "../dialogs/OpenDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
+import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
 import { initAutosave, useOpen } from "../store";
 import { Button } from "../ui/Button";
@@ -89,7 +90,7 @@ export function App() {
                 <Canvas />
               </section>
               <aside className="tiv-detail" aria-label="Detailpanel">
-                Detailpanel
+                <DetailPanel />
               </aside>
             </main>
           )}

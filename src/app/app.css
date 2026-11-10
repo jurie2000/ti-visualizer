@@ -206,3 +206,25 @@ a {
   align-items: center;
   min-height: 24px;
 }
+.tiv-detail__bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.tiv-detail__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 8px 0;
+}
+.tiv-detail__facts dt {
+  font-weight: 600;
+}
+.tiv-detail__facts dd {
+  margin: 0;
+}
+.tiv-detail__list {
+  margin: 4px 0 12px;
+  padding-left: 18px;
+}

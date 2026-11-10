@@ -3,7 +3,13 @@ import { useState, type ReactNode } from "react";
 import { describeEdge } from "../canvas/edgeKind";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology } from "../schema";
-import { useCatalog, useTopology, useUi, type Selection } from "../store";
+import {
+  useCatalog,
+  useOpen,
+  useTopology,
+  useUi,
+  type Selection,
+} from "../store";
 import { Button } from "../ui/Button";
 
 const TONE = { sage: "Salbei", accent: "Akzent", neutral: "Neutral" } as const;
@@ -30,6 +36,16 @@ function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
   );
 }
 
+/** Die Überschrift bleibt über alle Arten hinweg dasselbe Element und trägt allein die Live-Ansage (D10). */
+function Titled({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <>
+      <h3 aria-live="polite">{title}</h3>
+      {children}
+    </>
+  );
+}
+
 function Row({ name, children }: { name: string; children: ReactNode }) {
   return (
     <>
@@ -45,8 +61,7 @@ const nameOf = (n: Node, catalog: Catalog) =>
 function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   return (
-    <>
-      <h3>{nameOf(node, catalog)}</h3>
+    <Titled title={nameOf(node, catalog)}>
       <dl className="tiv-detail__facts">
         {type && <Row name="Gerätetyp">{`${type.name} (${type.abbr})`}</Row>}
         <Row name="Betrieb">{node.fault ? "Ausgefallen" : "In Betrieb"}</Row>
@@ -58,7 +73,7 @@ function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
         {type && <Row name="Status">{type.status}</Row>}
       </dl>
       {type && <Sources ids={type.source} catalog={catalog} />}
-    </>
+    </Titled>
   );
 }
 
@@ -83,8 +98,9 @@ function EdgeDetail({
         (matches(p.a, y.type, catalog) && matches(p.b, x.type, catalog))),
   );
   return (
-    <>
-      <h3>{[x, y].map((n) => (n ? nameOf(n, catalog) : "?")).join(" ↔ ")}</h3>
+    <Titled
+      title={[x, y].map((n) => (n ? nameOf(n, catalog) : "?")).join(" ↔ ")}
+    >
       <dl className="tiv-detail__facts">
         <Row name="Verbindungsart">
           {catalog.protocols.connectionKinds.find((k) => k.id === kind)?.name ??
@@ -112,7 +128,7 @@ function EdgeDetail({
           <Sources ids={p.source} catalog={catalog} />
         </section>
       ))}
-    </>
+    </Titled>
   );
 }
 
@@ -130,12 +146,11 @@ function Body({ sel }: { sel: NonNullable<Selection> }) {
     const zone = topology.zones.find((z) => z.id === sel.id);
     if (zone)
       return (
-        <>
-          <h3>{zone.label ?? zone.id}</h3>
+        <Titled title={zone.label ?? zone.id}>
           <dl className="tiv-detail__facts">
             <Row name="Farbe">{TONE[zone.tone]}</Row>
           </dl>
-        </>
+        </Titled>
       );
   }
   return <p>Die Auswahl gibt es nicht mehr.</p>;
@@ -145,7 +160,10 @@ function Body({ sel }: { sel: NonNullable<Selection> }) {
 export function DetailPanel() {
   const selection = useUi((s) => s.selection);
   const [open, setOpen] = useState(true);
-  const [pinned, setPinned] = useState<Selection>();
+  const opened = useOpen((s) => s.opened);
+  const [pin, setPin] = useState<{ sel: Selection; opened: number }>();
+  // Beim Öffnen einer Datei oder eines Presets verfällt die Anheftung.
+  const pinned = pin?.opened === opened ? pin.sel : undefined;
   const shown = pinned ?? selection;
   return (
     <>
@@ -163,7 +181,7 @@ export function DetailPanel() {
           <Button
             aria-pressed={pinned !== undefined}
             onClick={() => {
-              setPinned(pinned ? undefined : selection);
+              setPin(pinned ? undefined : { sel: selection, opened });
             }}
           >
             {pinned ? (
@@ -175,7 +193,7 @@ export function DetailPanel() {
           </Button>
         )}
       </div>
-      <div id="tiv-detail-body" hidden={!open} aria-live="polite">
+      <div id="tiv-detail-body" hidden={!open}>
         {shown ? (
           <Body sel={shown} />
         ) : (

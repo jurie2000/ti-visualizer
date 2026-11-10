@@ -2,7 +2,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Topology } from "../schema";
-import { useTopology, useUi } from "../store";
+import { openTopology, resolveGuard, useTopology, useUi } from "../store";
 import { DetailPanel } from "./DetailPanel";
 
 const topo: Topology = {
@@ -134,5 +134,34 @@ describe("T-406 Detailpanel (FR-11)", () => {
     render(<DetailPanel />);
     select("node", "weg");
     expect(screen.getByText(/gibt es nicht mehr/)).toBeInTheDocument();
+  });
+
+  it("sagt nur die Überschrift an, nicht den ganzen Inhalt (aria-live)", () => {
+    const { container } = render(<DetailPanel />);
+    select("node", "kt1");
+    expect(container.querySelector("#tiv-detail-body")).not.toHaveAttribute(
+      "aria-live",
+    );
+    expect(screen.getByRole("heading", { name: "<b>KT</b>" })).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
+  });
+
+  it("löst Anheftung und Auswahl beim Öffnen einer Datei", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    select("node", "kt1");
+    await user.click(screen.getByRole("button", { name: "Anpinnen" }));
+    openTopology(topo);
+    await act(() => resolveGuard("discard")); // ungespeicherter Stand fragt erst
+    // Auswahl und Anheftung der alten Datei sind weg
+    expect(useUi.getState().selection).toBeUndefined();
+    select("node", "kon1");
+    expect(screen.queryByRole("heading", { name: "<b>KT</b>" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Anpinnen" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
   });
 });

@@ -15,8 +15,10 @@ import { useMemo, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import {
   openDropped,
+  simLocked,
   useCatalog,
   useSettings,
+  useSim,
   useTopology,
   useUi,
 } from "../store";
@@ -25,6 +27,7 @@ import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { GroupEdge } from "./GroupEdge";
+import { SimPlayer } from "./SimPlayer";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
 import {
   toFlow,
@@ -85,6 +88,10 @@ export function Canvas() {
   const catalog = useCatalog((s) => s.catalog);
   const mode = useSettings((s) => s.mode);
   const selection = useUi((s) => s.selection);
+  const sim = useSim((s) => s.sim);
+  const simSteps = useSim((s) => s.steps);
+  const reduceMotion = useSettings((s) => s.reduceMotion);
+  const locked = simLocked(sim);
   const select = useUi((s) => s.select);
   // Positionen während des Ziehens: erst beim Loslassen geht ein Schritt in den Verlauf
   const [drag, setDrag] = useState<Record<string, Point>>({});
@@ -101,7 +108,32 @@ export function Canvas() {
     () => toFlow(topology, catalog, selection, drag, mode),
     [topology, catalog, selection, drag, mode],
   );
-  const { edges, isolated } = flow;
+  const { isolated } = flow;
+  // Aktueller Schritt der Simulation: Kanten, Knoten und das Gerät eines E-Schritts
+  const lit =
+    sim.status === "idle" || sim.status === "cancelled"
+      ? undefined
+      : simSteps[sim.step];
+  const litNodes = new Set([
+    ...(lit?.nodes ?? []),
+    ...(lit?.anchor ? [lit.anchor] : []),
+  ]);
+  // Sammelkante (Modus Einfach): leuchtet, wenn beide Enden auf dem Pfad liegen
+  const edges = useMemo(
+    () =>
+      flow.edges.map((e) =>
+        lit?.edges.includes(e.id) ||
+        (e.type === "group" && litNodes.has(e.source) && litNodes.has(e.target))
+          ? {
+              ...e,
+              className: "is-sim",
+              ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
+            }
+          : e,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
+    [flow.edges, lit],
+  );
   const nodes = useMemo(
     () =>
       flow.nodes.map((n) => {
@@ -144,11 +176,17 @@ export function Canvas() {
   };
 
   // Quelle einer Verbindung per Tastatur: gestrichelter Rahmen (CSS `.is-source`)
-  const shown = connecting.source
-    ? nodes.map((n) =>
-        n.id === connecting.source ? { ...n, className: "is-source" } : n,
-      )
-    : nodes;
+  const shown = nodes.map((n) =>
+    litNodes.has(n.id)
+      ? {
+          ...n,
+          className: "is-sim",
+          ariaLabel: `${n.ariaLabel ?? ""}, aktueller Schritt`,
+        }
+      : n.id === connecting.source
+        ? { ...n, className: "is-source" }
+        : n,
+  );
 
   // Drop aus der Palette: Mauszeiger ist die Mitte des neuen Geräts
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -164,6 +202,10 @@ export function Canvas() {
       return;
     }
     e.preventDefault();
+    if (locked) {
+      toast.show("Während der Simulation ist die Topologie gesperrt.");
+      return;
+    }
     const p = screenToFlowPosition({ x: e.clientX, y: e.clientY });
     const result = addNode(type, {
       x: Math.round(p.x - NODE_SIZE.width / 2),
@@ -182,13 +224,16 @@ export function Canvas() {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        className={reduceMotion ? "is-reduced-motion" : undefined}
+        nodesDraggable={!locked}
+        nodesConnectable={!locked}
         onConnect={connecting.onConnect}
         onConnectEnd={connecting.onConnectEnd}
         onClickConnectStart={connecting.onClickConnectStart}
         onClickConnectEnd={connecting.onClickConnectEnd}
         isValidConnection={connecting.isValidConnection}
         onKeyDown={(e) => {
-          connecting.onKeyDown(e);
+          if (!locked) connecting.onKeyDown(e);
           menu.onKeyDown(e);
         }}
         onNodeContextMenu={menu.onNodeContextMenu}
@@ -218,6 +263,9 @@ export function Canvas() {
               : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
           </Panel>
         )}
+        <Panel position="bottom-center">
+          <SimPlayer />
+        </Panel>
         <Controls showInteractive={false} />
         <MiniMap
           pannable

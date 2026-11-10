@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { AnyCard, Topology } from "../schema";
-import { useSettings, useTopology, useUi } from "../store";
+import { useSettings, useSim, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
@@ -92,6 +92,7 @@ const node = (id: string) => el(".react-flow__node", id);
 beforeEach(() => {
   useSettings.setState({ mode: "advanced" });
   useUi.setState({ selection: undefined, pendingAction: undefined });
+  useSim.getState().close();
   useTopology.getState().reset(praxis(["kt"]));
 });
 
@@ -150,10 +151,9 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     const item = screen.getByRole("menuitem", { name: AKTION });
     expect(item).not.toHaveAttribute("aria-disabled");
     await user.click(item);
-    expect(useUi.getState().pendingAction).toEqual({
-      nodeId: "pvs",
-      actionId: expect.any(String) as string,
-    });
+    // der Player in der Canvas übernimmt die Aktion sofort
+    expect(useUi.getState().pendingAction).toBeUndefined();
+    expect(useSim.getState().nodeId).toBe("pvs");
     expect(screen.queryByRole("menu")).toBeNull();
   });
 
@@ -170,7 +170,7 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     expect(useUi.getState().pendingAction).toBeUndefined();
     await user.click(within(dialog).getAllByRole("radio")[1] as HTMLElement);
     await user.click(within(dialog).getByRole("button", { name: "Weiter" }));
-    expect(useUi.getState().pendingAction?.terminal).toBe("kt2");
+    expect(useSim.getState().steps[1]?.nodes).toContain("kt2");
     expect(screen.getByRole("status")).toHaveTextContent("gewählt");
   });
 

@@ -302,3 +302,12 @@ describe("Zustandsautomat (FR-9, FR-10)", () => {
     expect(run("cancel", "start", "resume", "next").status).toBe("cancelled");
   });
 });
+
+describe("bindFlow: Schritte außerhalb der Topologie (Rolle E)", () => {
+  it("nennt das Gerät der Topologie-Seite als Anker, E→E hat keinen", () => {
+    expect(bind("tim", "timc")[1]?.anchor).toBe("tim");
+    const card = bind("cardlinkErp", "avs");
+    expect(card[0]?.anchor).toBeUndefined();
+    expect(card[1]?.anchor).toBe("cardlink");
+  });
+});

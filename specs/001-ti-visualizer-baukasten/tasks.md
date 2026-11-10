@@ -450,7 +450,7 @@ abspielen.
     Ausgegraute Einträge bleiben fokussierbar (`aria-disabled`), damit die
     Begründung vorgelesen wird. Umfang rund 350 Zeilen Produktivcode (leicht über der Grenze, nicht geteilt).
 
-- [ ] **T-405 Simulations-Player** · FR: FR-9, FR-10 · Regeln: – · nach: T-403, T-404
+- [x] **T-405 Simulations-Player** · FR: FR-9, FR-10 · Regeln: – · nach: T-403, T-404
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),
     Tempo, Abbrechen (Esc), Fortschritt, Erklärtext als `aria-live`.
     Paket-Animation auf den Kanten, aus bei `prefers-reduced-motion`.
@@ -460,6 +460,17 @@ abspielen.
     Simulation gesperrt. Öffnen, Moduswechsel,
     Rückgängig und Störung brechen ab.
   - Fertig, wenn: RTL-Tests Steuerung und Sperre prüfen.
+  - Umgesetzt 2026-11-10: Auslegung: Der Player liest `pendingAction`,
+    räumt sie ab und ersetzt eine laufende Simulation. „Gesperrt“ heißt:
+    Ziehen, Verbinden, Palette und Drop sind aus; jede andere Änderung der
+    Topologie (Störung, Rückgängig, Öffnen, Karten) und der Moduswechsel
+    brechen ab. Schritte mit Rolle `E` tragen `anchor` (Gerät der
+    Topologie-Seite, in `bindFlow`); `E→E` hat keinen. Im Modus Einfach
+    leuchtet eine Sammelkante, wenn beide Enden auf dem Pfad liegen. Paket-
+    Animation als laufende Strichel auf der Kante, aus bei
+    `prefers-reduced-motion` und bei `reduceMotion`. Tempo bleibt im
+    Player (`simSpeed` aus den Einstellungen wird noch nicht gelesen).
+    Umfang rund 330 Zeilen inkl. CSS, nicht geteilt.
 
 - [ ] **T-406 Detailpanel** [P] · FR: FR-11 · Regeln: – · nach: T-202, T-104
   - Umfang: `DetailPanel` für Gerät, Kante und Zone: Protokoll,

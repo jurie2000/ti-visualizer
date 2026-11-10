@@ -12,6 +12,8 @@ export interface ActionState {
   disabledReason?: string;
   /** „Terminal wählen“: mehrere passende Terminals ohne Zuordnung (Regelwerk 6.0). */
   chooseTerminal?: string[];
+  /** Das eine Terminal, in dem die Karten stecken; der Player bindet T daran (Issue #70). */
+  terminal?: string;
 }
 
 interface Ctx {
@@ -22,8 +24,8 @@ interface Ctx {
   zugang: string | undefined;
   /** Terminals dieses Zugangs, die für den Auslöser zählen (Regelwerk 6.0). */
   terminals: Node[];
-  /** Terminals, unter denen die Nutzer wählen müssen (Karte steckt in mehreren). */
-  ambiguous: Set<string>;
+  /** Je Karte die passenden Terminals; mehr als eins heißt: Nutzer wählen. */
+  fits: string[][];
 }
 
 // Arbeitsplatz-PC und Tablet bieten die Aktionen dieser Primärsysteme an (Regelwerk 6.2, 6.7).
@@ -101,8 +103,8 @@ function needCard(
   );
   const [first] = fits;
   if (!first) return plugged[0]?.state.message ?? plugged[0]?.state.empMessage;
-  if (!fits.some((h) => h.node === ctx.trigger) && fits.length > 1)
-    fits.forEach((h) => ctx.ambiguous.add(h.node.id));
+  if (!fits.some((h) => h.node === ctx.trigger))
+    ctx.fits.push(fits.map((h) => h.node.id));
   return undefined;
 }
 
@@ -117,14 +119,14 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
   }
   if ("any" in e) {
     // Mehrdeutige Terminals zählen nur aus dem ersten erfüllten Zweig.
-    const outer = ctx.ambiguous;
+    const outer = ctx.fits;
     const branches = e.any.map((x) => {
-      ctx.ambiguous = new Set();
-      return { reason: unmet(ctx, x), ambiguous: ctx.ambiguous };
+      ctx.fits = [];
+      return { reason: unmet(ctx, x), fits: ctx.fits };
     });
-    ctx.ambiguous = outer;
+    ctx.fits = outer;
     const ok = branches.find((b) => !b.reason);
-    ok?.ambiguous.forEach((id) => outer.add(id));
+    if (ok) outer.push(...ok.fits);
     return ok
       ? undefined
       : [...new Set(branches.map((b) => b.reason))].join(" Oder: ");
@@ -248,12 +250,9 @@ export function availableActions(
           trigger: node,
           zugang,
           terminals,
-          ambiguous: new Set(),
+          fits: [],
         };
-        return {
-          reason: unmet(ctx, a.requires),
-          ambiguous: [...ctx.ambiguous],
-        };
+        return { reason: unmet(ctx, a.requires), fits: ctx.fits };
       });
       const ok = results.find((r) => !r.reason);
       if (!ok)
@@ -262,10 +261,14 @@ export function availableActions(
           enabled: false,
           disabledReason: results[0]?.reason ?? "",
         };
+      const choose = [...new Set(ok.fits.filter((f) => f.length > 1).flat())];
+      const [terminal] = ok.fits.flat();
       return {
         ...base,
         enabled: true,
-        ...(ok.ambiguous.length > 0 && { chooseTerminal: ok.ambiguous }),
+        ...(choose.length > 0
+          ? { chooseTerminal: choose }
+          : terminal && { terminal }),
       };
     });
 }

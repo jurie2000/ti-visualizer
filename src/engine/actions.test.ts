@@ -3,6 +3,7 @@ import type { AnyCard, Node, Topology } from "../schema";
 import { loadCatalog } from "../schema/loadCatalog";
 import { availableActions } from "./actions";
 import { MESSAGES } from "./cards";
+import { bindFlow } from "./simulation";
 
 const catalog = loadCatalog();
 
@@ -439,6 +440,20 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     );
     expect(byId.get("vsdm-pruefen")?.enabled).toBe(true);
     expect(byId.get("notfalldaten-lesen")?.enabled).toBe(true);
+  });
+
+  it("Issue #70: Menü und Player wählen dasselbe Terminal (Preset praxis, E-Rezept ausstellen)", () => {
+    const t = catalog.presets.find((p) => p.id === "praxis")
+      ?.topology as Topology;
+    const pvs = t.nodes.find((n) => n.type === "pvs") as Node;
+    const a = availableActions(pvs, t, catalog).find(
+      (x) => x.id === "erezept-ausstellen",
+    );
+    const action = catalog.actions.find((x) => x.id === "erezept-ausstellen");
+    const flow = catalog.flows.find((f) => f.id === action?.flow) as never;
+    expect(a?.chooseTerminal).toBeUndefined();
+    const steps = bindFlow(flow, pvs, t, catalog, a?.terminal);
+    expect(steps.map((s) => s.problem?.kind)).not.toContain("terminal-waehlen");
   });
 
   it("PC und Tablet bieten die Aktionen ihres Primärsystems an", () => {

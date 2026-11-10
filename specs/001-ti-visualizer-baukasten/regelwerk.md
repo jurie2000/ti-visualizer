@@ -514,7 +514,7 @@ KH).
 | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|
 | eRezept einlösen (eGK einlesen) | Zugang, TI, SMC-B, eGK, Prüfungsnachweis, E-Rezept, IDP | `erezeptEinloesen` | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
-| eRezept einlösen (Rezeptcode scannen) | Zugang, TI, SMC-B, E-Rezept, IDP | `erezeptEinloesen` | FP E-Rezept Apotheken |
+| eRezept einlösen (Rezeptcode scannen) | Zugang, TI, SMC-B, E-Rezept, IDP | `erezeptEinloesenCode` | FP E-Rezept Apotheken |
 | eRezept per CardLink einlösen (Fernversorgung) | Zugang, TI, CardLink am Zugang, eGK per NFC, SMC-B, Prüfungsnachweis, E-Rezept, IDP | `cardlinkErp` | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis (3 Tage), ePA, IDP | `epa` | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Apotheken |
@@ -570,7 +570,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
 | `epa` | P→K Authentisierung mit der SMC-B · P→IDP Token (über K→V) · Befugnis prüfen (Prüfungsnachweis oder PoPP) · P→ePA Dokument bzw. Abfrage (VAU, FHIR, über K→V) · ePA→P | plausibel | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
 | `tim` | Client→TI-Messenger-FD (Matrix, Internet) · FD→FD des Empfängers (Föderation über VZD) · Zustellung | plausibel | gemSpec_TI-M_Basis |
-| `erezeptEinloesen` | eGK-Weg: P→K ReadVSD mit eGK · K→V→VSDM Prüfungsnachweis · P→K Authentisierung mit der SMC-B · P→IDP Token (über K→V) · P→E-Rezept-FD Abruf mit Prüfungsnachweis (über K→V) · E-Rezept-FD→P Verordnung. Rezeptcode-Weg: ohne eGK und ohne VSDM | bestätigt | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
+| `erezeptEinloesen` | eGK-Weg: P→K ReadVSD mit eGK · K→V→VSDM Prüfungsnachweis · P→K Authentisierung mit der SMC-B · P→IDP Token (über K→V) · P→E-Rezept-FD Abruf mit Prüfungsnachweis (über K→V) · E-Rezept-FD→P Verordnung | bestätigt | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
+| `erezeptEinloesenCode` | Rezeptcode-Weg: wie `erezeptEinloesen` ohne eGK und ohne VSDM, also ab P→K Authentisierung mit der SMC-B | bestätigt | FP E-Rezept Apotheken |
 | `cardlinkErp` | eGK→Smartphone (NFC, CAN) · Smartphone→CardLink (Internet) · CardLink→K wie ein Kartenterminal · P→K ReadVSD · K→V→VSDM Prüfungsnachweis · P→E-Rezept-FD Abruf (über K→V) · E-Rezept-FD→P | bestätigt | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | `cardlinkVsdm` | wie `cardlinkErp` bis zum Prüfungsnachweis | bestätigt | gemSpec_eHealth-CardLink |
 | `mobkt` | eGK→Mobiles KT (offline lesen, speichern) · später Mobiles KT→P per USB (CT-API) | bestätigt | gemSpec_MobKT |

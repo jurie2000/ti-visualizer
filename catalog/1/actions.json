@@ -202,7 +202,7 @@
   {
     "id": "medikationsplan-lesen",
     "name": "Medikationsplan auslesen",
-    "offeredBy": { "types": ["pvs", "kis", "avs", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -213,6 +213,21 @@
             { "card": "smcb", "unlocked": true }
           ]
         }
+      ]
+    },
+    "flow": "emp",
+    "source": ["gemSysL_AMTS_A"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "medikationsplan-lesen-avs",
+    "name": "Medikationsplan auslesen (AVS)",
+    "offeredBy": { "types": ["avs"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "egk" },
+        { "card": "smcb", "unlocked": true }
       ]
     },
     "flow": "emp",
@@ -273,7 +288,7 @@
         { "service": "idp" }
       ]
     },
-    "flow": "erezeptEinloesen",
+    "flow": "erezeptEinloesenCode",
     "source": ["gematik_eRp_Apotheken"],
     "status": "bestätigt"
   },
@@ -332,7 +347,7 @@
     },
     "flow": "mobkt",
     "source": ["gemSpec_MobKT"],
-    "status": "bestätigt"
+    "status": "plausibel"
   },
   {
     "id": "mkt-daten-uebergeben",

@@ -239,3 +239,41 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     });
   });
 });
+
+describe("Echter Katalog: Nachbesserung T-401", () => {
+  const action = (id: string) => catalog.actions.find((a) => a.id === id);
+  const flow = (id: string) => catalog.flows.find((f) => f.id === id);
+
+  it("Regelwerk 7: Rezeptcode-Weg ohne eGK- und VSDM-Schritte", () => {
+    expect(action("erezept-einloesen-code")?.flow).toBe("erezeptEinloesenCode");
+    const code = flow("erezeptEinloesenCode")?.steps ?? [];
+    const egk = flow("erezeptEinloesen")?.steps ?? [];
+    expect(code.map((s) => [s.from, s.to])).toEqual(
+      egk.slice(2).map((s) => [s.from, s.to]),
+    );
+    expect(code.some((s) => s.to === "VSDM")).toBe(false);
+  });
+
+  it("Regelwerk 6.3: AVS liest den Medikationsplan nur mit SMC-B", () => {
+    expect(action("medikationsplan-lesen")?.offeredBy).toEqual({
+      types: ["pvs", "kis", "kt"],
+    });
+    const avs = action("medikationsplan-lesen-avs");
+    expect(avs?.offeredBy).toEqual({ types: ["avs"] });
+    const json = JSON.stringify(avs?.requires);
+    expect(json).toContain('"smcb"');
+    expect(json).not.toContain('"hba"');
+  });
+
+  it("Regelwerk 6.5: mobiles KT liest die eGK offline als plausibel", () => {
+    expect(action("mkt-egk-offline-einlesen")?.status).toBe("plausibel");
+  });
+
+  it("Regelwerk 7: eAU-Quittung läuft KK→KIM→P", () => {
+    const steps = flow("eau")?.steps ?? [];
+    expect(steps.slice(-2).map((s) => `${s.from}>${s.to}`)).toEqual([
+      "KK>KIM",
+      "KIM>P",
+    ]);
+  });
+});

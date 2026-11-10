@@ -379,13 +379,18 @@ Ziel: Austausch mit anderen Browsern über Dateien, abgesichert.
 Ziel: Abläufe über den Kontextmenü starten und Schritt für Schritt
 abspielen.
 
-- [ ] **T-401 Katalog: Aktionen und Abläufe** · FR: FR-6, FR-8, FR-9, FR-12 · Regeln: Regelwerk 6.2 bis 6.7, 7 · nach: T-104, T-905
+- [x] **T-401 Katalog: Aktionen und Abläufe** · FR: FR-6, FR-8, FR-9, FR-12 · Regeln: Regelwerk 6.2 bis 6.7, 7 · nach: T-104, T-905
   - Umfang: `actions.json` (Aktionen je Gerätetyp mit Voraussetzungen aus
     den Bausteinen 6.1), `flows.json` (Schritte, Protokolle, Erklärtexte
     aus dem Mockup, sinngemäß und mit Quelle, nicht wörtlich aus
     gematik-Dokumenten).
   - Fertig, wenn: Schema- und Referenztests grün sind und jede Aktion aus
     Regelwerk 6 genau einen Katalogeintrag hat.
+  - Nachbesserung 2026-11-10 (KI-Review PR #54): Daten-Fixes im Katalog
+    (Rezeptcode-Ablauf `erezeptEinloesenCode`, `medikationsplan-lesen-avs`
+    nur mit SMC-B nach 6.3, `mkt-egk-offline-einlesen` plausibel nach 6.5,
+    `eau` Quittung KK→KIM→P). Design-Punkte vertagt nach T-402/T-403
+    (Auslegung 2026-11-10, siehe dort).
 
 - [ ] **T-402 Aktions-Engine `availableActions`** · FR: FR-6, FR-7, FR-8 · Regeln: K-3, K-4, K-7 · nach: T-106, T-107, T-401
   - Umfang: `availableActions(node, topology, catalog)` mit `enabled` und
@@ -396,6 +401,16 @@ abspielen.
   - Fertig, wenn: je Aktion zwei Tests grün sind: eine Topologie, in der
     sie aktiv ist, und eine, in der sie mit der erwarteten Begründung
     ausgegraut ist.
+  - Vertagt aus T-401 (Auslegung 2026-11-10, vor Umsetzung entscheiden):
+    (a) `present` prüft nur „Typ existiert in der Topologie“, nicht
+    „verbunden mit“ oder „am Zugang“ (betrifft `mkt-daten-uebergeben`,
+    `erezept-cardlink-einloesen`, `cardlink-vsdm-pruefen`): entweder
+    Baustein „verbunden mit“ oder bewusste Vereinfachung im Regelwerk mit
+    Status `Vereinfachung`. (b) K-7 (eGK-PIN) ist im Katalog nicht
+    modelliert: `{card: egk, pin: true}` mit Schema-Erweiterung erwägen,
+    statt eMP-Aktions-IDs im Code zu führen. (c) `pc` und `tab` stehen in
+    keinem `offeredBy`; Regelwerk 6.2 verlangt die Aktionen ihres
+    Primärsystems, die Engine löst das über den Pfad auf.
 
 - [ ] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
   - Umfang: Schritte aus `flows.json` auf den Pfad binden. Zustandsautomat
@@ -404,6 +419,10 @@ abspielen.
   - Fertig, wenn: je Ablauf ein Test die Schrittfolge prüft, `notfalldaten`
     und `emp` ohne VPN und Fachdienst laufen und Abbrechen aus jedem
     Zustand nach `cancelled` führt.
+  - Vertagt aus T-401 (Auslegung 2026-11-10): Rollen in `flows.json` sind
+    uneinheitlich (`ERP` gegenüber Gerätetyp `erp`, `Smartphone` und `FD`
+    ohne Gerätetyp) und `checkReferences` prüft `from`/`to` nicht. Vor der
+    Umsetzung auf Gerätetyp-IDs normalisieren und die Prüfung ergänzen.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.

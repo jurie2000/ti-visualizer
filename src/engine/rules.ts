@@ -24,7 +24,11 @@ export const MESSAGES = {
   noPartner: "kann mit keinem anderen Gerät direkt verbunden werden.",
 } as const;
 
-const matches = (s: Selector, type: string, catalog: Catalog): boolean =>
+export const matches = (
+  s: Selector,
+  type: string,
+  catalog: Catalog,
+): boolean =>
   "types" in s
     ? s.types.includes(type)
     : (catalog.deviceTypes

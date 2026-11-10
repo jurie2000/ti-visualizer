@@ -472,12 +472,18 @@ abspielen.
     Player (`simSpeed` aus den Einstellungen wird noch nicht gelesen).
     Umfang rund 385 Zeilen inkl. CSS (ohne Tests), nicht geteilt.
 
-- [ ] **T-406 Detailpanel** [P] · FR: FR-11 · Regeln: – · nach: T-202, T-104
+- [x] **T-406 Detailpanel** [P] · FR: FR-11 · Regeln: – · nach: T-202, T-104
   - Umfang: `DetailPanel` für Gerät, Kante und Zone: Protokoll,
     Datenformat, TLS, Netzport (soweit belegt), Quelle mit Link.
     Einblendbar und anpinnbar.
   - Fertig, wenn: RTL-Test für eine Kante die Werte aus `protocols.json`
     und die Quelle zeigt.
+  - Umgesetzt 2026-11-10: Auslegung: „Datenformat“ steht im Katalog in der
+    Spalte „Protokoll und Datenformat“ (Regelwerk 3) und wird dort gezeigt;
+    unbelegte Angaben (`netPort`/`tls` null) entfallen (Regelwerk 3: „nur die
+    belegten Angaben“). Passen mehrere Protokollzeilen, erscheinen alle.
+    Anpinnen hält die Auswahl im Panel fest; Zonen zeigen Name und Farbe
+    (kein Protokoll). Umfang rund 190 Zeilen inkl. CSS (ohne Tests).
 
 - [ ] **T-407 E2E-Suite Aktionen** · FR: FR-6 bis FR-10 · Regeln: – · nach: T-405, T-406
   - Umfang: Suite `actions-sim`: Kontextmenü, ausgegraute Aktion,

@@ -470,7 +470,7 @@ abspielen.
     Animation als laufende Strichel auf der Kante, aus bei
     `prefers-reduced-motion` und bei `reduceMotion`. Tempo bleibt im
     Player (`simSpeed` aus den Einstellungen wird noch nicht gelesen).
-    Umfang rund 330 Zeilen inkl. CSS, nicht geteilt.
+    Umfang rund 385 Zeilen inkl. CSS (ohne Tests), nicht geteilt.
 
 - [ ] **T-406 Detailpanel** [P] · FR: FR-11 · Regeln: – · nach: T-202, T-104
   - Umfang: `DetailPanel` für Gerät, Kante und Zone: Protokoll,

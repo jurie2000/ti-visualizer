@@ -28,6 +28,7 @@ const LINKS: [string, string][] = [
     n,
   ]),
   ["mkt", "pvs"],
+  ["kim", "kk"],
   ["cardlink", "kon"],
   ["kon", "router"],
   ["router", "internet"],
@@ -87,12 +88,10 @@ const TRIGGER: Record<string, string> = {
   appEpa: "epaapp",
 };
 const ROLE: Record<string, string> = { K: "kon", T: "kt" };
-// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse, Smartphone und Empfängerseite sind Rolle E und laufen außerhalb der Pfadregel.
+// Regelwerk 6.0 kennt hier keinen Weg: Smartphone und Empfängerseite sind Rolle E und laufen außerhalb der Pfadregel.
 const NO_PATH = new Set([
   "tim:1",
   "tim:2",
-  "eau:4",
-  "eau:5",
   "cardlinkErp:0",
   "cardlinkErp:1",
   "cardlinkVsdm:0",
@@ -225,6 +224,24 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       ...t,
       nodes: t.nodes.map((n) => (n.id === "mkt" ? { ...n, fault: true } : n)),
     };
+    const kt: Topology = {
+      ...t,
+      edges: [
+        ...t.edges,
+        {
+          id: "kt-avs",
+          fault: false,
+          ends: [
+            { node: "kt", port: "p" },
+            { node: "avs", port: "p" },
+          ],
+        },
+      ],
+    };
+    expect(bind("notfalldaten", "avs", kt)[1]?.nodes).not.toEqual([
+      "avs",
+      "kt",
+    ]);
     const direct = bind("erezept", "pvs", wired)[5];
     expect(direct?.nodes).not.toEqual(["pvs", "erp"]);
     expect(bind("mobkt", "mkt", down)[1]?.nodes).toEqual([]);

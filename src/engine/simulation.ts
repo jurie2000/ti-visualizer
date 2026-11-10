@@ -25,6 +25,11 @@ const caps = (c: Cat, n: Node) =>
 
 type Path = { nodes: string[]; edges: string[] };
 
+const DIRECT: Record<string, string[]> = {
+  mkt: ["pvs", "kis", "avs", "pflege"],
+  kim: ["kk"],
+};
+
 // Weg zwischen zwei Knoten, die Rückrichtung eingeschlossen (ein Pfad ist ungerichtet).
 function between(
   topology: Topology,
@@ -48,28 +53,25 @@ function between(
         problem = { kind: "ausgefallen", at: r.at };
     }
   }
-  // Mobiles KT ↔ Primärsystem per USB liegt außerhalb der Pfadregel (Regelwerk 4.2, 7).
-  const cat = (id: string) =>
-    catalog.deviceTypes.find(
-      (d) => d.id === topology.nodes.find((n) => n.id === id)?.type,
-    );
-  const usb = topology.edges.find(
+  // Direkte Verbindungen außerhalb der Pfadregel (Regelwerk 4.2): mobiles KT ↔ Primärsystem (USB), KIM ↔ Krankenkasse.
+  const type = (id: string) => topology.nodes.find((n) => n.id === id);
+  const [na, nb] = [type(a), type(b)];
+  const direct = topology.edges.find(
     (e) =>
       !e.fault &&
       e.ends.some((x) => x.node === a) &&
       e.ends.some((x) => x.node === b),
   );
-  const [ta, tb] = [cat(a), cat(b)];
-  const ok = (id: string) => !topology.nodes.find((n) => n.id === id)?.fault;
   if (
-    usb &&
-    ok(a) &&
-    ok(b) &&
+    direct &&
+    na &&
+    nb &&
+    !na.fault &&
+    !nb.fault &&
     problem.kind === "kein-weg" &&
-    [ta, tb].some((t) => t?.capabilities.includes("cardSlots")) &&
-    [ta, tb].some((t) => t?.category === "primary")
+    (DIRECT[na.type]?.includes(nb.type) || DIRECT[nb.type]?.includes(na.type))
   )
-    return { nodes: [a, b], edges: [usb.id] };
+    return { nodes: [a, b], edges: [direct.id] };
   return problem;
 }
 

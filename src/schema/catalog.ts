@@ -32,7 +32,7 @@ export type Expr =
   | { all: Expr[] }
   | { any: Expr[] }
   | { not: Expr }
-  | { card: string; unlocked?: boolean | undefined }
+  | { card: string; unlocked?: boolean | undefined; pin?: boolean | undefined }
   | { need: "zugang" | "ti" | "pruefungsnachweis" | "befugnis" }
   | { service: string }
   | { present: string }
@@ -47,7 +47,12 @@ export const Expr: z.ZodType<Expr> = z.lazy(() =>
     z.strictObject({ all: z.array(Expr) }),
     z.strictObject({ any: z.array(Expr) }),
     z.strictObject({ not: Expr }),
-    z.strictObject({ card: Id, unlocked: z.boolean().optional() }),
+    z.strictObject({
+      card: Id,
+      unlocked: z.boolean().optional(),
+      // K-7: eGK-PIN als Einwilligung für eMP/AMTS
+      pin: z.boolean().optional(),
+    }),
     z.strictObject({
       need: z.enum(["zugang", "ti", "pruefungsnachweis", "befugnis"]),
     }),

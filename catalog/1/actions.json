@@ -186,7 +186,7 @@
     "requires": {
       "all": [
         { "need": "zugang" },
-        { "card": "egk" },
+        { "card": "egk", "pin": true },
         {
           "any": [
             { "card": "hba", "unlocked": true },
@@ -206,7 +206,7 @@
     "requires": {
       "all": [
         { "need": "zugang" },
-        { "card": "egk" },
+        { "card": "egk", "pin": true },
         {
           "any": [
             { "card": "hba", "unlocked": true },
@@ -226,7 +226,7 @@
     "requires": {
       "all": [
         { "need": "zugang" },
-        { "card": "egk" },
+        { "card": "egk", "pin": true },
         { "card": "smcb", "unlocked": true }
       ]
     },

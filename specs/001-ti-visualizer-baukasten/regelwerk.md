@@ -477,10 +477,20 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
+| **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **Befugnis (ePA)** | Prüfungsnachweis oder PoPP-Token. Dauer: 90 Tage in Praxis und Krankenhaus, 3 Tage in der Apotheke | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Praxen, gematik ePA für alle Apotheken (plausibel, Stand 2026 prüfen) |
 
 Die erste nicht erfüllte Bedingung liefert die Begründung im
 ausgegrauten Menüeintrag.
+
+**Auslegung (2026-11-10, T-402):** (a) „Gerät vorhanden“ ist bewusst nur
+ein Existenztest, Status `Vereinfachung` (Quellen nennen keine feste
+Verkabelung des KIM-Clientmoduls). (b) K-7 steht im Katalog als
+`{card: egk, pin: true}`, die Engine liest `pinActive` über `cardState`.
+(c) PC und Tablet erben die Aktionen der Primärsysteme (PVS, KIS, AVS), die
+sie direkt oder über Netzgeräte erreichen, ohne einen Weg über ein anderes
+Primärsystem. (d) Mehrere passende Terminals ohne Zuordnung: Aktion aktiv
+mit Liste `chooseTerminal`, wenn mehr als ein Terminal die Karten erfüllt.
 
 \* Im Modus Einfach gilt das KIM-Clientmodul als Teil des Primärsystems,
 der sektorale IDP als Teil der Versicherten-App (Vereinfachung).

@@ -392,7 +392,7 @@ abspielen.
     `eau` Quittung KK→KIM→P). Design-Punkte vertagt nach T-402/T-403
     (Auslegung 2026-11-10, siehe dort).
 
-- [ ] **T-402 Aktions-Engine `availableActions`** · FR: FR-6, FR-7, FR-8 · Regeln: K-3, K-4, K-7 · nach: T-106, T-107, T-401
+- [x] **T-402 Aktions-Engine `availableActions`** · FR: FR-6, FR-7, FR-8 · Regeln: K-3, K-4, K-7 · nach: T-106, T-107, T-401
   - Umfang: `availableActions(node, topology, catalog)` mit `enabled` und
     `disabledReason`. Bausteine aus Regelwerk 6.1 über den Pfad, erste
     nicht erfüllte Bedingung liefert die Begründung. Störungen an Gerät
@@ -411,6 +411,10 @@ abspielen.
     statt eMP-Aktions-IDs im Code zu führen. (c) `pc` und `tab` stehen in
     keinem `offeredBy`; Regelwerk 6.2 verlangt die Aktionen ihres
     Primärsystems, die Engine löst das über den Pfad auf.
+  - Entschieden 2026-11-10: (a) Vereinfachung „Gerät vorhanden“ in
+    Regelwerk 6.1, (b) `pin: true` im Katalog (Schema erweitert),
+    (c) PC/Tablet erben die Aktionen ihres Primärsystems. Umfang etwa 250
+    Zeilen Produktivcode, keine Teilung nötig.
 
 - [ ] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
   - Umfang: Schritte aus `flows.json` auf den Pfad binden. Zustandsautomat

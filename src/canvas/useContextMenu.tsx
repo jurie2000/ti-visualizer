@@ -18,6 +18,7 @@ export function useContextMenu() {
   const [choosing, setChoosing] = useState<{
     nodeId: string;
     actionId: string;
+    name: string;
     terminals: string[];
   }>();
 
@@ -58,6 +59,7 @@ export function useContextMenu() {
             setChoosing({
               nodeId: node.id,
               actionId: a.id,
+              name: a.name,
               terminals: a.chooseTerminal,
             });
             return;
@@ -147,6 +149,7 @@ export function useContextMenu() {
               terminal,
             });
           setChoosing(undefined);
+          if (choosing) toast.show(`„${choosing.name}“ gewählt.`);
         }}
       />
     </>

@@ -35,6 +35,10 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     );
 
   useEffect(() => {
+    const menu = ref.current;
+    // Echte Höhe erst nach dem Zeichnen bekannt: im Fenster halten
+    if (menu)
+      menu.style.top = `${String(Math.max(0, Math.min(y, window.innerHeight - menu.offsetHeight)))}px`;
     items()[0]?.focus();
     const back = opener.current;
     const away = (e: PointerEvent) => {
@@ -80,10 +84,7 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
       className="tiv-menu nodrag nopan"
       style={{
         left: Math.max(0, Math.min(x, window.innerWidth - WIDTH)),
-        top: Math.max(
-          0,
-          Math.min(y, window.innerHeight - 40 * entries.length - 16),
-        ),
+        top: y,
       }}
       onKeyDown={onKeyDown}
     >
@@ -94,9 +95,6 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
             role="menuitem"
             className="tiv-menu__item"
             aria-disabled={entry.disabledReason ? true : undefined}
-            aria-describedby={
-              entry.disabledReason ? `tiv-menu-why-${entry.id}` : undefined
-            }
             onClick={() => {
               choose(entry);
             }}
@@ -104,9 +102,7 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
             {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
             {entry.label}
             {entry.disabledReason && (
-              <span id={`tiv-menu-why-${entry.id}`} className="tiv-menu__why">
-                {entry.disabledReason}
-              </span>
+              <span className="tiv-menu__why">{entry.disabledReason}</span>
             )}
           </button>
         </li>

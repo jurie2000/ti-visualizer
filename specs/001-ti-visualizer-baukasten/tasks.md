@@ -448,7 +448,7 @@ abspielen.
     kommt mit T-406). Eine ausführbare Aktion landet als `pendingAction`
     (Gerät, Aktion, ggf. Terminal) in `useUi`; der Player (T-405) liest sie.
     Ausgegraute Einträge bleiben fokussierbar (`aria-disabled`), damit die
-    Begründung vorgelesen wird. Umfang etwa 250 Zeilen Produktivcode.
+    Begründung vorgelesen wird. Umfang rund 350 Zeilen Produktivcode (leicht über der Grenze, nicht geteilt).
 
 - [ ] **T-405 Simulations-Player** · FR: FR-9, FR-10 · Regeln: – · nach: T-403, T-404
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),

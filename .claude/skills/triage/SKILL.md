@@ -36,8 +36,10 @@ Ein Kommentar am Issue, auf Deutsch, höchstens 8 Zeilen:
 - **Vorschlag:** neue Task-ID (nächste freie in der passenden Phase in
   `tasks.md`) und Umfang in einem Satz
 
-Dazu genau ein Label der Klasse setzen. Ist die Einordnung unsicher, kein
-Label setzen und stattdessen eine konkrete Rückfrage stellen.
+Dazu genau ein Label der Klasse setzen, exakt in dieser Form (nur diese
+Befehle sind im CI erlaubt): `gh issue edit <nr> --add-label bug`, ebenso
+mit `spec-lücke`, `enhancement` oder `question`. Ist die Einordnung
+unsicher, kein Label setzen und stattdessen eine konkrete Rückfrage stellen.
 
 ## Nicht tun
 

@@ -13,9 +13,10 @@ on:
       - specs/**
       - "!specs/**/tasks.md"
 
-# Neuer Push ersetzt den laufenden Review.
+# Ein neuer Auslöser (Öffnen, Label ki-review) ersetzt den laufenden
+# Review. Andere Labels bekommen eine eigene Gruppe und brechen nichts ab.
 concurrency:
-  group: ki-review-${{ github.event.pull_request.number }}
+  group: ki-review-${{ github.event.pull_request.number }}-${{ (github.event.action == 'labeled' && github.event.label.name != 'ki-review') && github.run_id || 'review' }}
   cancel-in-progress: true
 
 # Minimal: Code lesen, PR kommentieren. Kein id-token (die Action nutzt

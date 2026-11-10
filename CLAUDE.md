@@ -52,8 +52,8 @@ Erst das Problem verstehen, dann beim ersten Punkt anhalten, der trägt:
 
 ## Tests
 
-- Jede Regel-ID genau ein Testfall mit der ID im Namen (D18), dazu die
-  Kriterien aus „Fertig, wenn“. Keine Varianten-Flut.
+- Jede Regel-ID hat mindestens einen Testfall mit der ID im Namen (D18),
+  dazu die Kriterien aus „Fertig, wenn“. Keine Varianten-Flut.
 - Bugfix: zuerst ein Test, der den Fehler zeigt, dann der Fix.
 - Vor dem PR: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
   `pnpm format:check`.

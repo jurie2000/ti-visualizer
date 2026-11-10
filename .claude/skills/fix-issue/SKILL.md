@@ -20,7 +20,8 @@ argument-hint: <issue-nummer>
 
 1. Bei Feature oder Spec-Lücke zuerst Spec und `tasks.md` ergänzen (neue
    Task-ID, „Umfang“, „Fertig, wenn“; Auslegung mit Quelle festhalten).
-   Bei Bug: Task-ID aus dem Triage-Kommentar oder `T-9xx` nehmen.
+   Bei Bug: Task-ID aus dem Triage-Kommentar, sonst die nächste freie
+   ID in der passenden Phase (T-9xx ist für Begleitaufgaben ohne Code).
 2. Branch `task/T-xxx-kurzname` von `main`.
 3. Bug: zuerst einen Test, der fehlschlägt und den Fehler zeigt. Dann die
    Ursache beheben, alle Aufrufer der geänderten Funktion prüfen.
@@ -28,4 +29,5 @@ argument-hint: <issue-nummer>
 5. Lokale Checks laufen lassen, PR mit Vorlage öffnen, im Text
    `Closes #$ARGUMENTS` nennen.
 6. KI-Review abwarten, jeden Befund disponieren
-   (`.github/review-richtlinien.md`), dann nach grünen Checks mergen.
+   (`.github/review-richtlinien.md`). Mergen nur, wenn der Nutzer das
+   freigegeben hat; sonst den PR zur Abnahme übergeben.

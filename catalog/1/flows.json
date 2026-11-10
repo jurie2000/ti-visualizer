@@ -29,18 +29,18 @@
       },
       {
         "from": "P",
-        "to": "IDP",
+        "to": "idp",
         "label": "Token holen (OAuth 2.0, über K→V)",
         "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
       },
       {
         "from": "P",
-        "to": "ERP",
+        "to": "erp",
         "label": "Verordnung einstellen (VAU, FHIR, über K→V)",
         "text": "Die verschlüsselte Verordnung wird im E-Rezept-Fachdienst eingestellt."
       },
       {
-        "from": "ERP",
+        "from": "erp",
         "to": "P",
         "label": "Rezept-ID",
         "text": "Der Fachdienst bestätigt mit der Rezept-ID."
@@ -73,7 +73,7 @@
       },
       {
         "from": "K",
-        "to": "VSDM",
+        "to": "vsdm",
         "label": "Abgleich, Prüfziffer (über K→V)",
         "text": "Über den VPN-Tunnel gleicht der Zugang die Stammdaten mit dem VSDM-Fachdienst ab und erhält die Prüfziffer."
       },
@@ -157,42 +157,42 @@
     "steps": [
       {
         "from": "P",
-        "to": "CM",
+        "to": "kimcm",
         "label": "eAU (SMTP)",
         "text": "Das Primärsystem übergibt die eAU an das KIM-Clientmodul."
       },
       {
-        "from": "CM",
+        "from": "kimcm",
         "to": "K",
         "label": "QES mit dem HBA über das Kartenterminal",
         "text": "Das Clientmodul lässt die eAU mit dem HBA qualifiziert signieren."
       },
       {
-        "from": "CM",
+        "from": "kimcm",
         "to": "K",
         "label": "Verschlüsselung mit der SMC-B",
         "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B."
       },
       {
-        "from": "CM",
-        "to": "KIM",
+        "from": "kimcm",
+        "to": "kim",
         "label": "Versand (mTLS, über K→V)",
         "text": "Über den VPN-Tunnel stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
       },
       {
-        "from": "KIM",
-        "to": "KK",
+        "from": "kim",
+        "to": "kk",
         "label": "Zustellung",
         "text": "Der KIM-Fachdienst stellt die eAU der Krankenkasse zu."
       },
       {
-        "from": "KK",
-        "to": "KIM",
+        "from": "kk",
+        "to": "kim",
         "label": "Quittung",
         "text": "Die Krankenkasse stellt die Empfangsquittung im KIM-Fachdienst ein."
       },
       {
-        "from": "KIM",
+        "from": "kim",
         "to": "P",
         "label": "Quittung (KIM→P)",
         "text": "Der KIM-Fachdienst liefert die Empfangsquittung zurück ans Primärsystem."
@@ -207,31 +207,31 @@
     "steps": [
       {
         "from": "P",
-        "to": "CM",
+        "to": "kimcm",
         "label": "Nachricht (SMTP)",
         "text": "Das Primärsystem übergibt die Nachricht an das KIM-Clientmodul."
       },
       {
-        "from": "CM",
-        "to": "VZD",
+        "from": "kimcm",
+        "to": "vzd",
         "label": "Empfänger aus dem VZD",
         "text": "Das Clientmodul schlägt die KIM-Adresse des Empfängers im Verzeichnisdienst nach."
       },
       {
-        "from": "CM",
+        "from": "kimcm",
         "to": "K",
         "label": "QES mit dem HBA — nur beim eArztbrief",
         "text": "Nur ein eArztbrief wird mit dem HBA qualifiziert signiert, eine einfache KIM-Nachricht nicht."
       },
       {
-        "from": "CM",
+        "from": "kimcm",
         "to": "K",
         "label": "Verschlüsselung mit der SMC-B",
         "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B."
       },
       {
-        "from": "CM",
-        "to": "KIM",
+        "from": "kimcm",
+        "to": "kim",
         "label": "Versand (mTLS, über K→V)",
         "text": "Über den VPN-Tunnel stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
       }
@@ -251,24 +251,24 @@
       },
       {
         "from": "P",
-        "to": "IDP",
+        "to": "idp",
         "label": "Token holen (über K→V)",
         "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
       },
       {
         "from": "P",
-        "to": "ePA",
+        "to": "epa",
         "label": "Befugnis prüfen (Prüfungsnachweis oder PoPP)",
         "text": "Die Befugnis wird über Prüfungsnachweis oder PoPP-Token nachgewiesen."
       },
       {
         "from": "P",
-        "to": "ePA",
+        "to": "epa",
         "label": "Dokument bzw. Abfrage (VAU, FHIR, über K→V)",
         "text": "Das verschlüsselte Dokument wird hochgeladen oder die Akte abgefragt."
       },
       {
-        "from": "ePA",
+        "from": "epa",
         "to": "P",
         "label": "Bestätigung bzw. Daten",
         "text": "Das Aktensystem antwortet mit Bestätigung oder den angeforderten Daten."
@@ -282,20 +282,20 @@
     "name": "TI-Messenger-Nachricht senden",
     "steps": [
       {
-        "from": "TIMC",
-        "to": "TIM",
+        "from": "timc",
+        "to": "tim",
         "label": "Nachricht (Matrix, Internet)",
         "text": "Der TI-Messenger-Client sendet die Nachricht über das Internet an seinen Fachdienst."
       },
       {
-        "from": "TIM",
-        "to": "TIM2",
+        "from": "tim",
+        "to": "tim",
         "label": "Föderation über den VZD",
         "text": "Der Fachdienst findet den Fachdienst des Empfängers über den Verzeichnisdienst und reicht weiter."
       },
       {
-        "from": "TIM2",
-        "to": "TIMC2",
+        "from": "tim",
+        "to": "timc",
         "label": "Zustellung",
         "text": "Die Nachricht wird dem Empfänger zugestellt."
       }
@@ -315,7 +315,7 @@
       },
       {
         "from": "K",
-        "to": "VSDM",
+        "to": "vsdm",
         "label": "Prüfungsnachweis (über K→V)",
         "text": "Über den VPN-Tunnel holt der Zugang den Prüfungsnachweis beim VSDM-Fachdienst."
       },
@@ -327,18 +327,18 @@
       },
       {
         "from": "P",
-        "to": "IDP",
+        "to": "idp",
         "label": "Token holen (über K→V)",
         "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
       },
       {
         "from": "P",
-        "to": "ERP",
+        "to": "erp",
         "label": "Abruf mit Prüfungsnachweis (über K→V)",
         "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
       },
       {
-        "from": "ERP",
+        "from": "erp",
         "to": "P",
         "label": "Verordnung",
         "text": "Der Fachdienst liefert die abgerufene Verordnung."
@@ -359,18 +359,18 @@
       },
       {
         "from": "P",
-        "to": "IDP",
+        "to": "idp",
         "label": "Token holen (über K→V)",
         "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
       },
       {
         "from": "P",
-        "to": "ERP",
+        "to": "erp",
         "label": "Abruf mit dem Rezeptcode (über K→V)",
         "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
       },
       {
-        "from": "ERP",
+        "from": "erp",
         "to": "P",
         "label": "Verordnung",
         "text": "Der Fachdienst liefert die abgerufene Verordnung."
@@ -384,19 +384,19 @@
     "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
     "steps": [
       {
-        "from": "eGK",
-        "to": "Smartphone",
+        "from": "egk",
+        "to": "erpapp",
         "label": "NFC, CAN",
         "text": "Die eGK wird per NFC am Smartphone der versicherten Person gelesen (Zugangsnummer CAN)."
       },
       {
-        "from": "Smartphone",
-        "to": "CardLink",
+        "from": "erpapp",
+        "to": "cardlink",
         "label": "Internet",
         "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."
       },
       {
-        "from": "CardLink",
+        "from": "cardlink",
         "to": "K",
         "label": "wie ein Kartenterminal",
         "text": "Der CardLink-Dienst bindet sich am Zugang wie ein Kartenterminal ein."
@@ -409,18 +409,18 @@
       },
       {
         "from": "K",
-        "to": "VSDM",
+        "to": "vsdm",
         "label": "Prüfungsnachweis (über K→V)",
         "text": "Über den VPN-Tunnel holt der Zugang den Prüfungsnachweis beim VSDM-Fachdienst."
       },
       {
         "from": "P",
-        "to": "ERP",
+        "to": "erp",
         "label": "Abruf (über K→V)",
         "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
       },
       {
-        "from": "ERP",
+        "from": "erp",
         "to": "P",
         "label": "Verordnung",
         "text": "Der Fachdienst liefert die Verordnung."
@@ -434,26 +434,26 @@
     "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
     "steps": [
       {
-        "from": "eGK",
-        "to": "Smartphone",
+        "from": "egk",
+        "to": "erpapp",
         "label": "NFC, CAN",
         "text": "Die eGK wird per NFC am Smartphone gelesen."
       },
       {
-        "from": "Smartphone",
-        "to": "CardLink",
+        "from": "erpapp",
+        "to": "cardlink",
         "label": "Internet",
         "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."
       },
       {
-        "from": "CardLink",
+        "from": "cardlink",
         "to": "K",
         "label": "wie ein Kartenterminal",
         "text": "Der CardLink-Dienst bindet sich am Zugang wie ein Kartenterminal ein."
       },
       {
         "from": "K",
-        "to": "VSDM",
+        "to": "vsdm",
         "label": "Prüfungsnachweis (über K→V)",
         "text": "Über den VPN-Tunnel wird der Prüfungsnachweis beim VSDM-Fachdienst geholt."
       }
@@ -466,13 +466,13 @@
     "name": "Mobiles Kartenterminal (offline)",
     "steps": [
       {
-        "from": "eGK",
-        "to": "MobKT",
+        "from": "egk",
+        "to": "mkt",
         "label": "offline lesen, speichern",
         "text": "Das mobile Kartenterminal liest die eGK ohne Netz und speichert die Daten zwischen."
       },
       {
-        "from": "MobKT",
+        "from": "mkt",
         "to": "P",
         "label": "später per USB (CT-API)",
         "text": "Am Arbeitsplatz übergibt das mobile Kartenterminal die Daten per USB an das Primärsystem."
@@ -486,14 +486,14 @@
     "name": "Versicherten-App (E-Rezept / ePA)",
     "steps": [
       {
-        "from": "App",
-        "to": "IDPSEK",
+        "from": "P",
+        "to": "idpsek",
         "label": "GesundheitsID (Internet)",
         "text": "Die App meldet sich über das Internet mit der GesundheitsID beim sektoralen IDP an."
       },
       {
-        "from": "App",
-        "to": "FD",
+        "from": "P",
+        "to": "erp",
         "label": "E-Rezept-FD bzw. ePA",
         "text": "Mit dem Token greift die App direkt auf den E-Rezept-Fachdienst oder das ePA-Aktensystem zu."
       }

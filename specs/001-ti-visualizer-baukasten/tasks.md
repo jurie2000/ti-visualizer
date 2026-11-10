@@ -416,7 +416,7 @@ abspielen.
     (c) PC/Tablet erben die Aktionen ihres Primärsystems. Umfang etwa 250
     Zeilen Produktivcode, keine Teilung nötig.
 
-- [ ] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
+- [x] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
   - Umfang: Schritte aus `flows.json` auf den Pfad binden. Zustandsautomat
     `idle → running(n) ⇄ paused → done | cancelled`. Schritt vor/zurück,
     Tempo.
@@ -427,6 +427,12 @@ abspielen.
     uneinheitlich (`ERP` gegenüber Gerätetyp `erp`, `Smartphone` und `FD`
     ohne Gerätetyp) und `checkReferences` prüft `from`/`to` nicht. Vor der
     Umsetzung auf Gerätetyp-IDs normalisieren und die Prüfung ergänzen.
+  - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die Rollen
+    `P`, `K`, `T` (Auslöser, Zugang, Terminal). `checkReferences` prüft
+    `from`/`to`. Auslegung: `TIM2` und `TIMC2` (zweite Instanz) sind `tim`
+    und `timc`, `App` ist der Auslöser (`P`), `FD` der E-Rezept-Dienst,
+    `Smartphone` die E-Rezept-App. Fehlt ein Gerät, hat der Schritt keinen
+    Pfad. Umfang etwa 130 Zeilen Produktivcode.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.

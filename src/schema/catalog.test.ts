@@ -280,6 +280,18 @@ describe("Referenzen (D5)", () => {
       "Protokoll",
     ],
     [
+      "Ablaufschritt mit unbekanntem Anfang",
+      "flows.0.steps.0.from",
+      "ERP",
+      "Gerätetyp",
+    ],
+    [
+      "Ablaufschritt mit unbekanntem Ziel",
+      "flows.0.steps.0.to",
+      "nix",
+      "Gerätetyp",
+    ],
+    [
       "Herausforderung mit unbekannter Prüfregel",
       "challenges.0.violatedChecks",
       ["nix"],

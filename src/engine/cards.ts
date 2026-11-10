@@ -29,7 +29,7 @@ export const MESSAGES = {
   emp: "Für den Medikationsplan ist die PIN der eGK nötig.",
 } as const;
 
-const names: Record<CardKind, string> = {
+export const CARD_NAMES: Record<CardKind, string> = {
   egk: "eGK",
   hba: "HBA",
   smcb: "SMC-B",
@@ -105,7 +105,7 @@ export function cardState(
       state: "expired",
       plugged: false,
       card,
-      message: `${names[kind]} ist seit ${germanDate(card.expires)} abgelaufen.`,
+      message: `${CARD_NAMES[kind]} ist seit ${germanDate(card.expires)} abgelaufen.`,
     };
   if (card.kind === "egk")
     return {
@@ -119,7 +119,7 @@ export function cardState(
       state: "locked",
       plugged: true,
       card,
-      message: `${names[kind]} ist nicht freigeschaltet.`,
+      message: `${CARD_NAMES[kind]} ist nicht freigeschaltet.`,
     };
   return { state: "ready", plugged: true, card };
 }

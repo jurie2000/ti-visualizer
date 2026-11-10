@@ -358,17 +358,45 @@ describe("T-402 Pfad, Karten, Terminal", () => {
       "kt2",
     ]);
     t = edit(
-      edit(
-        edit(t, "pvs", (n) => ({ ...n, config: { workplace: "AP-1" } })),
-        "kt",
-        (n) => ({ ...n, config: { workplace: "AP-1" } }),
-      ),
-      "kt2",
-      (n) => n,
+      edit(t, "pvs", (n) => ({ ...n, config: { workplace: "AP-1" } })),
+      "kt",
+      (n) => ({ ...n, config: { workplace: "AP-1" } }),
     );
-    expect(
-      state(t, "pvs", "erezept-ausstellen")?.chooseTerminal,
-    ).toBeUndefined();
+    const s = state(t, "pvs", "erezept-ausstellen");
+    expect(s?.enabled).toBe(true);
+    expect(s?.chooseTerminal).toBeUndefined();
+  });
+
+  it("Terminalwahl zählt nur Karten aus dem erfüllten any-Zweig", () => {
+    // Befugnis über PoPP (kein VSDM): die eGK in zwei Terminals ist dafür egal.
+    let t = without(full(), "vsdm");
+    t = {
+      ...t,
+      nodes: [
+        ...t.nodes,
+        {
+          id: "kt2",
+          type: "kt",
+          position: { x: 0, y: 0 },
+          fault: false,
+          cards: [egk()],
+        },
+      ],
+      edges: [
+        ...t.edges,
+        {
+          id: "sw-kt2",
+          fault: false,
+          ends: [
+            { node: "sw", port: "p" },
+            { node: "kt2", port: "p" },
+          ],
+        },
+      ],
+    };
+    const s = state(t, "avs", "epa-medikationsliste-einsehen");
+    expect(s?.enabled).toBe(true);
+    expect(s?.chooseTerminal).toBeUndefined();
   });
 
   it("Karten auf verschiedene Terminals des Zugangs verteilt zählen zusammen (6.1)", () => {

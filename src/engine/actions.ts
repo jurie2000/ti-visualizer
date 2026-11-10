@@ -1,5 +1,5 @@
 import type { Catalog, Expr, Node, Selector, Topology } from "../schema";
-import { cardState, type CardKind } from "./cards";
+import { CARD_NAMES, cardState, type CardKind } from "./cards";
 import { resolvePath, terminalFor, zugangOf, type PathResult } from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes" | "actions">;
@@ -28,12 +28,6 @@ interface Ctx {
 
 // Arbeitsplatz-PC und Tablet bieten die Aktionen dieser Primärsysteme an (Regelwerk 6.2, 6.7).
 const HOSTS = ["pvs", "kis", "avs"];
-
-const NAMES: Record<CardKind, string> = {
-  egk: "eGK",
-  hba: "HBA",
-  smcb: "SMC-B",
-};
 
 const caps = (c: Cat, n: Node) =>
   c.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
@@ -97,7 +91,7 @@ function needCard(
         (c) => c === "cardSlots" || c === "nfcCard",
       );
     return canHold
-      ? `Keine ${NAMES[kind]} gesteckt.`
+      ? `Keine ${CARD_NAMES[kind]} gesteckt.`
       : "Kein Kartenterminal erreichbar.";
   }
   const fits = plugged.filter(
@@ -122,10 +116,18 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
     return undefined;
   }
   if ("any" in e) {
-    const reasons = e.any.map((x) => unmet(ctx, x));
-    return reasons.every((r) => r !== undefined)
-      ? [...new Set(reasons)].join(" Oder: ")
-      : undefined;
+    // Mehrdeutige Terminals zählen nur aus dem ersten erfüllten Zweig.
+    const outer = ctx.ambiguous;
+    const branches = e.any.map((x) => {
+      ctx.ambiguous = new Set();
+      return { reason: unmet(ctx, x), ambiguous: ctx.ambiguous };
+    });
+    ctx.ambiguous = outer;
+    const ok = branches.find((b) => !b.reason);
+    ok?.ambiguous.forEach((id) => outer.add(id));
+    return ok
+      ? undefined
+      : [...new Set(branches.map((b) => b.reason))].join(" Oder: ");
   }
   if ("card" in e) return needCard(ctx, e);
   if ("present" in e)
@@ -215,24 +217,19 @@ export function availableActions(
     ? hostTypes(node, topology, catalog)
     : [node.type];
   // Je Zugang eine Auswertung: Terminals nach `zugangOf` gruppiert (6.0, 6.1).
-  const byId = new Map(topology.nodes.map((n) => [n.id, n]));
-  const candidates = caps(catalog, node).includes("cardSlots")
-    ? []
-    : (() => {
-        const c = terminalFor(topology, node.id, catalog);
-        const ids =
-          c.status === "one"
-            ? [c.terminal]
-            : c.status === "choose"
-              ? c.candidates
-              : [];
-        return ids.flatMap((id) => byId.get(id) ?? []);
-      })();
   const own = caps(catalog, node).includes("cardSlots");
+  const choice = own ? undefined : terminalFor(topology, node.id, catalog);
+  const ids =
+    choice?.status === "one"
+      ? [choice.terminal]
+      : choice?.status === "choose"
+        ? choice.candidates
+        : [];
   const groups = new Map<string | undefined, Node[]>();
-  for (const t of own ? [node] : candidates) {
+  if (own) groups.set(zugangOf(topology, node.id, catalog), []);
+  for (const t of topology.nodes.filter((n) => ids.includes(n.id))) {
     const z = zugangOf(topology, t.id, catalog);
-    groups.set(z, [...(groups.get(z) ?? []), ...(own ? [] : [t])]);
+    groups.set(z, [...(groups.get(z) ?? []), t]);
   }
   if (groups.size === 0)
     for (const n of topology.nodes)

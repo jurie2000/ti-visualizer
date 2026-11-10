@@ -181,12 +181,12 @@
       },
       {
         "from": "kim",
-        "to": "kk",
+        "to": "E",
         "label": "Zustellung",
         "text": "Der KIM-Fachdienst stellt die eAU der Krankenkasse zu."
       },
       {
-        "from": "kk",
+        "from": "E",
         "to": "kim",
         "label": "Quittung",
         "text": "Die Krankenkasse stellt die Empfangsquittung im KIM-Fachdienst ein."

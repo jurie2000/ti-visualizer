@@ -430,12 +430,12 @@ abspielen.
   - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die
     Rollen `P`, `K`, `T` (Auslöser, Zugang, Terminal) und `E` (außerhalb der
     Topologie). `checkReferences` prüft `from`/`to`. Auslegung: `App` ist
-    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` die Rolle `E`, bei `mobkt` ist `P` das USB-Primärsystem,
+    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` und `KK` die Rolle `E`, bei `mobkt` ist `P` das USB-Primärsystem,
     die Empfängerseite von `tim` ist `E`. `app` ist in `appErezept` und
     `appEpa` geteilt. Rollen folgen dem Pfad, nicht „erstes Gerät“. Ohne
     Pfad hat der Schritt keine Knoten und nennt `problem` (`fehlt`,
-    `kein-weg`, `ausgefallen`). `eGK`-Schritte stehen am Gerät, das die
-    Karte hält. Umfang etwa 170 Zeilen Produktivcode.
+    `kein-weg`, `ausgefallen`, `terminal-waehlen`). `eGK`-Schritte stehen am Gerät, das die
+    Karte hält. Umfang etwa 200 Zeilen Produktivcode.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.
@@ -449,9 +449,8 @@ abspielen.
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),
     Tempo, Abbrechen (Esc), Fortschritt, Erklärtext als `aria-live`.
     Paket-Animation auf den Kanten, aus bei `prefers-reduced-motion`.
-    Fehlt die Terminal-Wahl, zeigt der Player „Terminal wählen“ statt
-    `problem: fehlt` (Vormerkung aus T-403). Die Krankenkassen-Schritte von `eau` tragen
-    `problem: kein-weg`, der Player zeigt das nicht als Fehler. Topologie während der
+    Bei `problem: terminal-waehlen` zeigt der Player „Terminal wählen“
+    (aus T-403). Topologie während der
     Simulation gesperrt. Öffnen, Moduswechsel,
     Rückgängig und Störung brechen ab.
   - Fertig, wenn: RTL-Tests Steuerung und Sperre prüfen.

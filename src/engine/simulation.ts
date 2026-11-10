@@ -10,21 +10,22 @@ export interface BoundStep {
   /** Knoten- und Kanten-IDs des Pfads, leer ohne Pfad (siehe `problem`). */
   nodes: string[];
   edges: string[];
-  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). `kein-weg` trägt auch die Krankenkassen-Schritte von `eau` (Vereinfachung, Regelwerk 7): kein Fehler. */
+  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). */
   problem?: Problem;
 }
 
 export type Problem =
   | { kind: "fehlt" } // Gerät der Rolle nicht in der Topologie
   | { kind: "kein-weg" } // beide Enden da, Regelwerk 6.0 kennt keinen Weg
-  | { kind: "ausgefallen"; at: string }; // Störung auf dem Weg
+  | { kind: "ausgefallen"; at: string } // Störung auf dem Weg
+  | { kind: "terminal-waehlen" }; // mehrere Terminals passen, T und K sind offen
 
 const caps = (c: Cat, n: Node) =>
   c.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
 
 type Path = { nodes: string[]; edges: string[] };
 
-/** Weg zwischen zwei Knoten, die Rückrichtung eingeschlossen (ein Pfad ist ungerichtet). */
+// Weg zwischen zwei Knoten, die Rückrichtung eingeschlossen (ein Pfad ist ungerichtet).
 function between(
   topology: Topology,
   a: string,
@@ -32,13 +33,6 @@ function between(
   catalog: Cat,
 ): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
-  const direct = topology.edges.find(
-    (e) =>
-      !e.fault &&
-      e.ends.some((x) => x.node === a) &&
-      e.ends.some((x) => x.node === b),
-  );
-  if (direct) return { nodes: [a, b], edges: [direct.id] };
   let problem: Problem = { kind: "kein-weg" };
   for (const kind of ["ti", "local"] as const) {
     for (const [x, y] of [
@@ -54,10 +48,32 @@ function between(
         problem = { kind: "ausgefallen", at: r.at };
     }
   }
+  // Mobiles KT ↔ Primärsystem per USB liegt außerhalb der Pfadregel (Regelwerk 4.2, 7).
+  const cat = (id: string) =>
+    catalog.deviceTypes.find(
+      (d) => d.id === topology.nodes.find((n) => n.id === id)?.type,
+    );
+  const usb = topology.edges.find(
+    (e) =>
+      !e.fault &&
+      e.ends.some((x) => x.node === a) &&
+      e.ends.some((x) => x.node === b),
+  );
+  const [ta, tb] = [cat(a), cat(b)];
+  const ok = (id: string) => !topology.nodes.find((n) => n.id === id)?.fault;
+  if (
+    usb &&
+    ok(a) &&
+    ok(b) &&
+    problem.kind === "kein-weg" &&
+    [ta, tb].some((t) => t?.capabilities.includes("cardSlots")) &&
+    [ta, tb].some((t) => t?.category === "primary")
+  )
+    return { nodes: [a, b], edges: [usb.id] };
   return problem;
 }
 
-/** Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs. */
+// Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs.
 function roleBinder(
   trigger: Node,
   topology: Topology,
@@ -128,14 +144,19 @@ export function bindFlow(
   terminal?: string,
 ): BoundStep[] {
   const bind = roleBinder(trigger, topology, catalog, terminal);
+  const choosing =
+    !terminal && terminalFor(topology, trigger.id, catalog).status === "choose";
   return flow.steps.map((s) => {
     const base = { label: s.label, text: s.text };
     if (s.from === "E" || s.to === "E")
       return { ...base, nodes: [], edges: [] };
     const a = bind(s.from);
     const b = bind(s.to);
+    const open = [s.from, s.to].some((x) => x === "T" || x === "K");
     const r: Path | Problem =
-      a && b ? between(topology, a, b, catalog) : { kind: "fehlt" };
+      a && b
+        ? between(topology, a, b, catalog)
+        : { kind: open && choosing ? "terminal-waehlen" : "fehlt" };
     return "nodes" in r
       ? { ...base, ...r }
       : { ...base, nodes: [], edges: [], problem: r };

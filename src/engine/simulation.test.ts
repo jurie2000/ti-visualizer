@@ -87,7 +87,7 @@ const TRIGGER: Record<string, string> = {
   appEpa: "epaapp",
 };
 const ROLE: Record<string, string> = { K: "kon", T: "kt" };
-// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse (zweimal), Smartphone (Rolle E) und Empfängerseite laufen außerhalb der Pfadregel.
+// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse, Smartphone und Empfängerseite sind Rolle E und laufen außerhalb der Pfadregel.
 const NO_PATH = new Set([
   "tim:1",
   "tim:2",
@@ -196,10 +196,38 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     };
     const flow = catalog.flows.find((f) => f.id === "notfalldaten") as never;
     const pvs = two.nodes.find((n) => n.id === "pvs") as Node;
-    expect(bindFlow(flow, pvs, two, catalog)[1]?.nodes).toEqual([]);
+    expect(bindFlow(flow, pvs, two, catalog)[1]).toMatchObject({
+      nodes: [],
+      problem: { kind: "terminal-waehlen" },
+    });
     expect(bindFlow(flow, pvs, two, catalog, "kt2")[1]?.nodes.at(-1)).toBe(
       "kt2",
     );
+  });
+
+  it("eine direkte Kante ersetzt keinen Pfad nach 6.0 (USB nur Terminal ↔ Primärsystem)", () => {
+    const t = build();
+    const wired: Topology = {
+      ...t,
+      edges: [
+        ...t.edges,
+        {
+          id: "pvs-erp",
+          fault: false,
+          ends: [
+            { node: "pvs", port: "p" },
+            { node: "erp", port: "p" },
+          ],
+        },
+      ],
+    };
+    const down: Topology = {
+      ...t,
+      nodes: t.nodes.map((n) => (n.id === "mkt" ? { ...n, fault: true } : n)),
+    };
+    const direct = bind("erezept", "pvs", wired)[5];
+    expect(direct?.nodes).not.toEqual(["pvs", "erp"]);
+    expect(bind("mobkt", "mkt", down)[1]?.nodes).toEqual([]);
   });
 
   it("Störung auf dem Weg: Schritt ohne Pfad statt erfundener Kante", () => {

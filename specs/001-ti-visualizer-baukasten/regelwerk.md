@@ -576,9 +576,8 @@ Rollen: P = Primärsystem, CM = KIM-Clientmodul, K = Zugang
 Im Katalog stehen `P` (Auslöser), `K`, `T` und sonst Gerätetyp-IDs
 (`CM` ist `kimcm`, `V` ist `vpn`); `E` ist eine Seite außerhalb der
 Topologie (Empfänger von `tim`, Smartphone der versicherten Person bei
-CardLink). Auslegung 2026-11-10: Bei `mobkt` ist `P` das per USB
-verbundene Primärsystem. Ohne Weg nach 6.0 hat ein Schritt keine Knoten,
-so bei der Krankenkasse (`eau`, Vereinfachung).
+CardLink, Krankenkasse bei `eau`). Auslegung 2026-11-10: Bei `mobkt` ist `P` das per USB
+verbundene Primärsystem. Ohne Weg nach 6.0 hat ein Schritt keine Knoten.
 „über K→V“ heißt: Das Primärsystem spricht selbst mit dem Dienst, der
 Zugang leitet die Pakete nur durch den VPN-Tunnel weiter. Erklärtexte je
 Schritt stehen im Mockup und werden in den Katalog übernommen.

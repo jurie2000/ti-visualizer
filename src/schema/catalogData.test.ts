@@ -272,7 +272,7 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
   it("Regelwerk 7: eAU-Quittung läuft KK→KIM→P", () => {
     const steps = flow("eau")?.steps ?? [];
     expect(steps.slice(-2).map((s) => `${s.from}>${s.to}`)).toEqual([
-      "kk>kim",
+      "E>kim",
       "kim>P",
     ]);
   });

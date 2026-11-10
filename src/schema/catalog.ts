@@ -196,8 +196,8 @@ export const actions = z.array(
   }),
 );
 
-/** Rollen in Abläufen (Regelwerk 7): Auslöser, Zugang, Terminal, E = außerhalb der Topologie (Empfängerseite). Sonst steht dort eine Gerätetyp-ID. */
-export const FLOW_ROLES = ["P", "K", "T", "E"];
+/** Rollen in Abläufen (Regelwerk 7): Auslöser, Zugang, Terminal, E = außerhalb der Topologie (Empfängerseite, Smartphone der versicherten Person). Sonst steht dort eine Gerätetyp-ID. */
+const FLOW_ROLES = ["P", "K", "T", "E"];
 
 export const flows = z.array(
   z.strictObject({

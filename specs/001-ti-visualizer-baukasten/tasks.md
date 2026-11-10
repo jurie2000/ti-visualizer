@@ -430,7 +430,7 @@ abspielen.
   - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die
     Rollen `P`, `K`, `T` (Auslöser, Zugang, Terminal) und `E` (außerhalb der
     Topologie). `checkReferences` prüft `from`/`to`. Auslegung: `App` ist
-    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` die E-Rezept-App,
+    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` die Rolle `E`, bei `mobkt` ist `P` das USB-Primärsystem,
     die Empfängerseite von `tim` ist `E`. `app` ist in `appErezept` und
     `appEpa` geteilt. Rollen folgen dem Pfad, nicht „erstes Gerät“. Ohne
     Pfad hat der Schritt keine Knoten und nennt `problem` (`fehlt`,

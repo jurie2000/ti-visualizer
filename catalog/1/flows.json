@@ -384,13 +384,13 @@
     "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
     "steps": [
       {
-        "from": "erpapp",
-        "to": "erpapp",
+        "from": "E",
+        "to": "E",
         "label": "NFC, CAN",
         "text": "Die eGK wird per NFC am Smartphone der versicherten Person gelesen (Zugangsnummer CAN)."
       },
       {
-        "from": "erpapp",
+        "from": "E",
         "to": "cardlink",
         "label": "Internet",
         "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."
@@ -434,13 +434,13 @@
     "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
     "steps": [
       {
-        "from": "erpapp",
-        "to": "erpapp",
+        "from": "E",
+        "to": "E",
         "label": "NFC, CAN",
         "text": "Die eGK wird per NFC am Smartphone gelesen."
       },
       {
-        "from": "erpapp",
+        "from": "E",
         "to": "cardlink",
         "label": "Internet",
         "text": "Das Smartphone verbindet die eGK über das Internet mit dem CardLink-Dienst."

@@ -32,6 +32,13 @@ function between(
   catalog: Cat,
 ): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
+  const direct = topology.edges.find(
+    (e) =>
+      !e.fault &&
+      e.ends.some((x) => x.node === a) &&
+      e.ends.some((x) => x.node === b),
+  );
+  if (direct) return { nodes: [a, b], edges: [direct.id] };
   let problem: Problem = { kind: "kein-weg" };
   for (const kind of ["ti", "local"] as const) {
     for (const [x, y] of [
@@ -64,6 +71,20 @@ function roleBinder(
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
   // Ohne Pfad zählt das einzige Gerät des Typs (etwa das Smartphone); das ist eindeutig, anders als „erstes Gerät“.
+  // Ein Terminal löst nicht selbst aus: `P` ist das direkt verbundene Primärsystem (mobiles KT per USB).
+  const primary =
+    own.includes("cardSlots") &&
+    topology.edges
+      .map((e) => e.ends.map((x) => x.node))
+      .flatMap(([x, y]) =>
+        x === trigger.id ? [y] : y === trigger.id ? [x] : [],
+      )
+      .find(
+        (id) =>
+          catalog.deviceTypes.find(
+            (d) => d.id === topology.nodes.find((n) => n.id === id)?.type,
+          )?.category === "primary",
+      );
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>
       anchors.some((a) => a && "nodes" in between(topology, a, c.id, catalog)),
@@ -77,7 +98,7 @@ function roleBinder(
   return (role) => {
     switch (role) {
       case "P":
-        return trigger.id;
+        return primary || trigger.id;
       case "T":
         return term;
       case "K":

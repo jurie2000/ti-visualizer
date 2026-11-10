@@ -87,13 +87,15 @@ const TRIGGER: Record<string, string> = {
   appEpa: "epaapp",
 };
 const ROLE: Record<string, string> = { K: "kon", T: "kt" };
-// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse (zweimal) und CardLink↔Smartphone laufen außerhalb der Pfadregel.
+// Regelwerk 6.0 kennt hier keinen Weg: Krankenkasse (zweimal), Smartphone (Rolle E) und Empfängerseite laufen außerhalb der Pfadregel.
 const NO_PATH = new Set([
   "tim:1",
   "tim:2",
   "eau:4",
   "eau:5",
+  "cardlinkErp:0",
   "cardlinkErp:1",
+  "cardlinkVsdm:0",
   "cardlinkVsdm:1",
 ]);
 
@@ -103,11 +105,12 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     (id) => {
       const flow = catalog.flows.find((f) => f.id === id);
       const trigger = TRIGGER[id] ?? "pvs";
+      const primary = trigger === "mkt" ? "pvs" : trigger;
       const bound = bind(id, trigger);
       expect(bound.map((s) => s.label)).toEqual(
         flow?.steps.map((s) => s.label),
       );
-      const node = (r: string) => (r === "P" ? trigger : (ROLE[r] ?? r));
+      const node = (r: string) => (r === "P" ? primary : (ROLE[r] ?? r));
       flow?.steps.forEach((s, i) => {
         const nodes = bound[i]?.nodes ?? [];
         if (NO_PATH.has(`${id}:${String(i)}`)) {
@@ -121,6 +124,24 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       });
     },
   );
+
+  it("mobkt: P ist das per USB verbundene Primärsystem, nicht das mobile KT", () => {
+    expect(bind("mobkt", "mkt")[1]).toMatchObject({
+      nodes: ["mkt", "pvs"],
+      edges: ["mkt-pvs"],
+    });
+  });
+
+  it("CardLink ohne E-Rezept-App: Schritte laufen ohne Problem", () => {
+    const steps = bind("cardlinkVsdm", "cardlink", build(["erpapp"]));
+    expect(steps.map((s) => s.problem)).toEqual([
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]);
+    expect(steps[2]?.nodes).toEqual(["cardlink", "kon"]);
+  });
 
   it("tim: Empfängerseite liegt außerhalb der Topologie, ohne Problem", () => {
     const steps = bind("tim", "timc");

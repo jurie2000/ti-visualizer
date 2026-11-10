@@ -489,11 +489,22 @@ abspielen.
     Auswahl den ganzen Inhalt vor). Öffnen einer Datei oder eines Presets
     löst Anheftung und Auswahl (sonst zeigt das Panel Reste der alten Datei).
 
-- [ ] **T-407 E2E-Suite Aktionen** · FR: FR-6 bis FR-10 · Regeln: – · nach: T-405, T-406
+- [x] **T-407 E2E-Suite Aktionen** · FR: FR-6 bis FR-10 · Regeln: – · nach: T-405, T-406
   - Umfang: Suite `actions-sim`: Kontextmenü, ausgegraute Aktion,
     Simulation abspielen und abbrechen, Bearbeiten gesperrt. Alle
     Aktionen aus den Erfolgskriterien der Spec auf einem Preset.
   - Fertig, wenn: die Suite in der CI grün ist. **Ergebnis von P4.**
+  - Umgesetzt 2026-11-10: Auslegung: Kein Preset bietet alle Aktionen der
+    Erfolgskriterien an. „E-Rezept einlösen“ steht nur am AVS
+    (`actions.json`), die übrigen am PVS. Die Suite nutzt deshalb Arztpraxis
+    (ausstellen, KIM, NFDM, eMP, VSDM, eGK stecken) und Apotheke (einlösen).
+    KIM-Mail braucht ein KIM-Clientmodul (Regelwerk 6.1, „Gerät vorhanden“);
+    der Test fügt es aus der Palette hinzu und zeigt so zugleich eine
+    ausgegraute Aktion. Läuft in Chromium, Firefox und WebKit. Ein natives
+    `<select>` meldet in WebKit selbst eine `style-src`-Verletzung (auch auf
+    einer leeren Seite mit dieser CSP); nur der Test mit der Kartenart darf
+    sie ignorieren. Die vertagten Punkte aus T-406 (Panel-`aria-live`,
+    Anheftung beim Öffnen) sind in PR #69 behoben und hier abgedeckt.
 
 ---
 

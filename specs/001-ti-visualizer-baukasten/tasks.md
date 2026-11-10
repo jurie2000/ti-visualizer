@@ -577,6 +577,18 @@ Sicherheitsprüfung.
   - Fertig, wenn: der Bericht FR-1 bis FR-22 vollständig abgedeckt zeigt
     und die Seite mit Tag `v1.0.0` deployt ist. **Ergebnis von P7.**
 
+- [ ] **T-706 Release für die lokale Nutzung** · FR: – · Regeln: – · nach: T-705
+  - Umfang: Zum Tag `v1.0.0` ein GitHub Release mit dem gebauten
+    `dist/` als ZIP, gebaut mit relativem `base` (`./`), damit es ohne
+    die Pages-Adresse läuft. Release-Workflow auf Tags `v*`, der baut und
+    das ZIP anhängt. Kurze Anleitung im README und in den Release-Notes,
+    wie man die App lokal startet (z. B. `npx serve` oder
+    `python3 -m http.server`), weil Browser Module über `file://`
+    blockieren. Kein PWA-Umbau.
+  - Fertig, wenn: das Release `v1.0.0` das ZIP enthält und ein
+    E2E-Durchlauf die entpackte App über einen lokalen Server startet,
+    ein Preset öffnet und speichert.
+
 ---
 
 ## Optional nach P7

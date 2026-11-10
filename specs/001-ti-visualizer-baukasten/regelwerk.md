@@ -494,6 +494,10 @@ Primärsystem. (d) Karten dürfen auf mehrere Terminals desselben Zugangs vertei
 dieses. Steckt eine benötigte Karte in mehr als einem Terminal ohne
 Zuordnung, ist die Aktion aktiv mit Liste `chooseTerminal`. Bei mehreren
 Zugängen gilt die Aktion, wenn sie an einem von ihnen erfüllt ist.
+(e) Bei Alternativen („oder“) im Menüeintrag nennt die Begründung alle
+Alternativen, damit klar ist, was fehlt. Bekannte Grenze bei mehreren
+Zugängen: der Weg zum Dienst ist nicht an den Zugang der Karte gebunden
+(Issue #60).
 
 \* Im Modus Einfach gilt das KIM-Clientmodul als Teil des Primärsystems,
 der sektorale IDP als Teil der Versicherten-App (Vereinfachung).

@@ -437,13 +437,18 @@ abspielen.
     `kein-weg`, `ausgefallen`, `terminal-waehlen`). `eGK`-Schritte stehen am Gerät, das die
     Karte hält. Umfang etwa 200 Zeilen Produktivcode.
 
-- [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
+- [x] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.
     Ausgegraute Einträge mit Schloss-Icon und Begründung. Einträge für
     alle Geräte: Details, Ausfall simulieren / wieder in Betrieb.
     An Kanten: trennen / wiederherstellen. Dialog „Welches Terminal?“.
   - Fertig, wenn: RTL-Tests Tastaturbedienung und ausgegraute Einträge
     prüfen. Ausgegraut ist nicht nur über Farbe erkennbar.
+  - Umgesetzt 2026-11-10: Auslegung: „Details“ wählt das Gerät (Panel
+    kommt mit T-406). Eine ausführbare Aktion landet als `pendingAction`
+    (Gerät, Aktion, ggf. Terminal) in `useUi`; der Player (T-405) liest sie.
+    Ausgegraute Einträge bleiben fokussierbar (`aria-disabled`), damit die
+    Begründung vorgelesen wird. Umfang rund 350 Zeilen Produktivcode (leicht über der Grenze, nicht geteilt).
 
 - [ ] **T-405 Simulations-Player** · FR: FR-9, FR-10 · Regeln: – · nach: T-403, T-404
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),

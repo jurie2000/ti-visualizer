@@ -187,9 +187,15 @@
       },
       {
         "from": "KK",
+        "to": "KIM",
+        "label": "Quittung",
+        "text": "Die Krankenkasse stellt die Empfangsquittung im KIM-Fachdienst ein."
+      },
+      {
+        "from": "KIM",
         "to": "P",
         "label": "Quittung (KIM→P)",
-        "text": "Die Empfangsquittung läuft über KIM zurück ins Primärsystem."
+        "text": "Der KIM-Fachdienst liefert die Empfangsquittung zurück ans Primärsystem."
       }
     ],
     "source": ["gemSpec_CM_KOMLE", "PM_eAU", "KIM-DK"],
@@ -339,6 +345,38 @@
       }
     ],
     "source": ["gemF_eRp_Autorisierung_Apo", "FP_eHealth-CardLink"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "erezeptEinloesenCode",
+    "name": "E-Rezept in der Apotheke einlösen (Rezeptcode)",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Authentisierung mit der SMC-B",
+        "text": "Die Apotheke weist sich mit der SMC-B aus."
+      },
+      {
+        "from": "P",
+        "to": "IDP",
+        "label": "Token holen (über K→V)",
+        "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
+      },
+      {
+        "from": "P",
+        "to": "ERP",
+        "label": "Abruf mit Prüfungsnachweis (über K→V)",
+        "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
+      },
+      {
+        "from": "ERP",
+        "to": "P",
+        "label": "Verordnung",
+        "text": "Der Fachdienst liefert die abgerufene Verordnung."
+      }
+    ],
+    "source": ["gematik_eRp_Apotheken"],
     "status": "bestätigt"
   },
   {

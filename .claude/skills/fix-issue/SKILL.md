@@ -26,7 +26,9 @@ argument-hint: <issue-nummer>
 3. Bug: zuerst einen Test, der fehlschlägt und den Fehler zeigt. Dann die
    Ursache beheben, alle Aufrufer der geänderten Funktion prüfen.
 4. Regeln aus `CLAUDE.md` (Code, Kommentare, Größe) einhalten.
-5. Lokale Checks laufen lassen, PR mit Vorlage öffnen, im Text
+5. Vor dem PR den eigenen Diff gegen die Checkliste in
+   `.github/review-richtlinien.md` prüfen und Treffer beheben. Lokale
+   Checks laufen lassen, PR mit Vorlage öffnen, im Text
    `Closes #$ARGUMENTS` nennen.
 6. KI-Review abwarten, jeden Befund disponieren (neuer Lauf nur nach Hoch,
    höchstens einmal)

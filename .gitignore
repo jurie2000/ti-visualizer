@@ -8,3 +8,5 @@ design/mockup/*.zip
 test-results/
 playwright-report/
 reports/
+.claude/settings.local.json
+.claude/worktrees/

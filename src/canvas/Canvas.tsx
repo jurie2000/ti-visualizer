@@ -33,6 +33,7 @@ import {
   type GroupFlowEdge,
 } from "./toFlow";
 import { useConnecting } from "./useConnecting";
+import { useContextMenu } from "./useContextMenu";
 import "./canvas.css";
 
 const nodeTypes: NodeTypes = { device: DeviceNode };
@@ -73,7 +74,7 @@ const ariaLabelConfig = {
  * dieselbe Ansicht kennt). Drop aus der Palette: `onDrop` unten.
  *
  * Erweiterungspunkte:
- * Verbinden (T-204) steckt in `useConnecting`.
+ * Verbinden (T-204) steckt in `useConnecting`, das Kontextmenü (T-404) in `useContextMenu`.
  */
 export function Canvas() {
   const topology = useTopology((s) => s.topology);
@@ -94,6 +95,7 @@ export function Canvas() {
   >({});
 
   const connecting = useConnecting();
+  const menu = useContextMenu();
 
   const flow = useMemo(
     () => toFlow(topology, catalog, selection, drag, mode),
@@ -185,7 +187,12 @@ export function Canvas() {
         onClickConnectStart={connecting.onClickConnectStart}
         onClickConnectEnd={connecting.onClickConnectEnd}
         isValidConnection={connecting.isValidConnection}
-        onKeyDown={connecting.onKeyDown}
+        onKeyDown={(e) => {
+          connecting.onKeyDown(e);
+          menu.onKeyDown(e);
+        }}
+        onNodeContextMenu={menu.onNodeContextMenu}
+        onEdgeContextMenu={menu.onEdgeContextMenu}
         onPaneClick={() => {
           connecting.cancelClick();
           select(undefined);
@@ -221,6 +228,7 @@ export function Canvas() {
           }}
         />
       </ReactFlow>
+      {menu.element}
       <ExclusionDialog
         open={connecting.exclusion !== undefined}
         reason={connecting.exclusion ?? ""}

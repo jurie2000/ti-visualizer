@@ -80,6 +80,8 @@ function install(
   handle: OpenHandle | null,
 ) {
   useTopology.getState().replace(topology);
+  // Eine Auswahl der alten Topologie darf kein Gerät der neuen treffen
+  useUi.getState().select(undefined);
   // Dasselbe Objekt übergeben: der Vergleich „ungespeichert“ läuft per Referenz
   useFile
     .getState()

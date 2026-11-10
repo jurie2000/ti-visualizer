@@ -484,6 +484,10 @@ abspielen.
     belegten Angaben“). Passen mehrere Protokollzeilen, erscheinen alle.
     Anpinnen hält die Auswahl im Panel fest; Zonen zeigen Name und Farbe
     (kein Protokoll). Umfang rund 190 Zeilen inkl. CSS (ohne Tests).
+  - Nachbesserung (2026-11-10, aus dem KI-Review): `aria-live` liegt nur
+    noch auf einer dauerhaften Überschrift in `Body` (sonst liest der Screenreader bei jeder
+    Auswahl den ganzen Inhalt vor). Öffnen einer Datei oder eines Presets
+    löst Anheftung und Auswahl (sonst zeigt das Panel Reste der alten Datei).
 
 - [ ] **T-407 E2E-Suite Aktionen** · FR: FR-6 bis FR-10 · Regeln: – · nach: T-405, T-406
   - Umfang: Suite `actions-sim`: Kontextmenü, ausgegraute Aktion,

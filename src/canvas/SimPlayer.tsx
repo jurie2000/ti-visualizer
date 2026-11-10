@@ -77,8 +77,10 @@ export function SimPlayer() {
   }, [sim, send]);
 
   // Öffnen, Rückgängig, Störung und Moduswechsel brechen ab (Regelwerk 7).
+  // Auch nach `done`: „Zurück“ setzt sonst eine Simulation mit veralteten Schritten fort.
+  const live = sim.status !== "idle" && sim.status !== "cancelled";
   useEffect(() => {
-    if (!locked) return;
+    if (!live) return;
     const cancel = () => {
       send("cancel");
     };
@@ -92,7 +94,7 @@ export function SimPlayer() {
       offTopology();
       offMode();
     };
-  }, [locked, send]);
+  }, [live, send]);
 
   // Canvas verschwindet (Startansicht): nichts bleibt hängen.
   useEffect(

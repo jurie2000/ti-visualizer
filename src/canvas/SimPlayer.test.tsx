@@ -6,6 +6,7 @@ import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AnyCard, Topology } from "../schema";
 import { useSettings, useSim, useTopology, useUi } from "../store";
+import { PalettePanel } from "../panels/PalettePanel";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
@@ -107,6 +108,7 @@ const live = () => {
 beforeEach(() => {
   useSettings.setState({ mode: "advanced", reduceMotion: false });
   useUi.setState({ selection: undefined, pendingAction: undefined });
+  useSim.getState().send({ tempo: 1 });
   useSim.getState().close();
   useTopology.getState().reset(praxis(["kt"]));
 });
@@ -188,6 +190,26 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(useSim.getState().sim.tempo).toBe(0.5);
   });
 
+  it("Palette und Drop fügen während der Simulation nichts hinzu", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <PalettePanel />
+        <Canvas />
+      </>,
+      { wrapper },
+    );
+    start();
+    const before = useTopology.getState().topology.nodes.length;
+    await user.click(
+      screen.getByRole("button", {
+        name: /PVS Praxisverwaltungssystem hinzufügen/,
+      }),
+    );
+    expect(useTopology.getState().topology.nodes).toHaveLength(before);
+    expect(useSim.getState().sim.status).toBe("running");
+  });
+
   it("sperrt die Topologie während der Simulation und gibt sie danach frei", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });
@@ -228,6 +250,24 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     render(<Canvas />, { wrapper });
     start();
     act(act_);
+    expect(useSim.getState().sim.status).toBe("cancelled");
+  });
+
+  it("Änderung nach dem Ende bricht ab, „Zurück“ setzt nichts Veraltetes fort", () => {
+    render(<Canvas />, { wrapper });
+    start();
+    for (let i = 0; i < 7; i++)
+      act(() => {
+        useSim.getState().send("next");
+      });
+    expect(useSim.getState().sim.status).toBe("done");
+    act(() => {
+      useTopology.getState().toggleFault("rt");
+    });
+    expect(useSim.getState().sim.status).toBe("cancelled");
+    act(() => {
+      useSim.getState().send("prev");
+    });
     expect(useSim.getState().sim.status).toBe("cancelled");
   });
 

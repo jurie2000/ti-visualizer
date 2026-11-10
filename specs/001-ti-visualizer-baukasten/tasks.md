@@ -449,7 +449,9 @@ abspielen.
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),
     Tempo, Abbrechen (Esc), Fortschritt, Erklärtext als `aria-live`.
     Paket-Animation auf den Kanten, aus bei `prefers-reduced-motion`.
-    Topologie während der Simulation gesperrt. Öffnen, Moduswechsel,
+    Fehlt die Terminal-Wahl, zeigt der Player „Terminal wählen“ statt
+    `problem: fehlt` (Vormerkung aus T-403). Topologie während der
+    Simulation gesperrt. Öffnen, Moduswechsel,
     Rückgängig und Störung brechen ab.
   - Fertig, wenn: RTL-Tests Steuerung und Sperre prüfen.
 

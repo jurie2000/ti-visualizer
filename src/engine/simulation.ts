@@ -10,7 +10,7 @@ export interface BoundStep {
   /** Knoten- und Kanten-IDs des Pfads, leer ohne Pfad (siehe `problem`). */
   nodes: string[];
   edges: string[];
-  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). */
+  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). `kein-weg` ist auch die dokumentierte Vereinfachung aus Regelwerk 7 (Krankenkasse, Smartphone→CardLink). */
   problem?: Problem;
 }
 

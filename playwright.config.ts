@@ -52,6 +52,22 @@ export default defineConfig({
       testMatch: "datei.spec.ts",
       use: { ...devices["Desktop Safari"] },
     },
+    // Suite `actions-sim` wie `datei` in drei Browsern (WebKit: Inline-Styles verletzen dort die CSP).
+    {
+      name: "actions-sim",
+      testMatch: "actions-sim.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "actions-sim-firefox",
+      testMatch: "actions-sim.spec.ts",
+      use: { ...devices["Desktop Firefox"] },
+    },
+    {
+      name: "actions-sim-webkit",
+      testMatch: "actions-sim.spec.ts",
+      use: { ...devices["Desktop Safari"] },
+    },
     {
       // Injection-Suite und Fuzzing (T-305)
       name: "security",

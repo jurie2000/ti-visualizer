@@ -573,6 +573,11 @@ KH).
 
 Rollen: P = Primärsystem, CM = KIM-Clientmodul, K = Zugang
 (Konnektor/TI-Gateway), T = Kartenterminal, V = VPN-Zugangsdienst.
+Im Katalog stehen `P` (Auslöser), `K`, `T` und sonst Gerätetyp-IDs
+(`CM` ist `kimcm`, `V` ist `vpn`); `E` ist eine Seite außerhalb der
+Topologie (Empfänger von `tim`, Smartphone der versicherten Person bei
+CardLink). Auslegung 2026-11-10: Bei `mobkt` ist `P` das per USB
+verbundene Primärsystem. Ohne Weg nach 6.0 hat ein Schritt keine Knoten.
 „über K→V“ heißt: Das Primärsystem spricht selbst mit dem Dienst, der
 Zugang leitet die Pakete nur durch den VPN-Tunnel weiter. Erklärtexte je
 Schritt stehen im Mockup und werden in den Katalog übernommen.
@@ -592,7 +597,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `cardlinkErp` | eGK→Smartphone (NFC, CAN) · Smartphone→CardLink (Internet) · CardLink→K wie ein Kartenterminal · P→K ReadVSD · K→V→VSDM Prüfungsnachweis · P→E-Rezept-FD Abruf (über K→V) · E-Rezept-FD→P | bestätigt | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | `cardlinkVsdm` | wie `cardlinkErp` bis zum Prüfungsnachweis | bestätigt | gemSpec_eHealth-CardLink |
 | `mobkt` | eGK→Mobiles KT (offline lesen, speichern) · später Mobiles KT→P per USB (CT-API) | bestätigt | gemSpec_MobKT |
-| `app` | App→Internet→sektoraler IDP (GesundheitsID) · App→E-Rezept-FD bzw. ePA | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| `appErezept` | App→Internet→sektoraler IDP (GesundheitsID) · App→E-Rezept-FD | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| `appEpa` | App→Internet→sektoraler IDP (GesundheitsID) · App→ePA | bestätigt | gemSpec_Aktensystem_ePAfueralle, gemSpec_IDP_Sek |
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.

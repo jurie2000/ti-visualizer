@@ -196,6 +196,9 @@ export const actions = z.array(
   }),
 );
 
+// Rollen in Abläufen (Regelwerk 7): Auslöser, Zugang, Terminal, E = außerhalb der Topologie (Empfängerseite, Smartphone der versicherten Person). Sonst steht dort eine Gerätetyp-ID.
+const FLOW_ROLES = ["P", "K", "T", "E"];
+
 export const flows = z.array(
   z.strictObject({
     id: Id,
@@ -402,9 +405,14 @@ export function checkReferences(c: Catalog): string[] {
     expr(`Aktion ${a.id}`, a.requires);
     ref(`Aktion ${a.id}`, a.flow, flowIds, "Ablauf");
   }
+  const ends = new Set([...types, ...FLOW_ROLES]);
   for (const f of c.flows)
-    for (const s of f.steps)
-      if (s.protocol) ref(`Ablauf ${f.id}`, s.protocol, protos, "Protokoll");
+    for (const s of f.steps) {
+      const w = `Ablauf ${f.id}`;
+      ref(w, s.from, ends, "Gerätetyp");
+      ref(w, s.to, ends, "Gerätetyp");
+      if (s.protocol) ref(w, s.protocol, protos, "Protokoll");
+    }
   for (const k of c.checks) expr(`Prüfregel ${k.id}`, k.when);
   for (const h of c.challenges) {
     const w = `Herausforderung ${h.id}`;

@@ -416,7 +416,7 @@ abspielen.
     (c) PC/Tablet erben die Aktionen ihres Primärsystems. Umfang etwa 250
     Zeilen Produktivcode, keine Teilung nötig.
 
-- [ ] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
+- [x] **T-403 Simulations-Engine** [P] · FR: FR-8, FR-9, FR-10 · Regeln: Regelwerk 7 · nach: T-107, T-401
   - Umfang: Schritte aus `flows.json` auf den Pfad binden. Zustandsautomat
     `idle → running(n) ⇄ paused → done | cancelled`. Schritt vor/zurück,
     Tempo.
@@ -427,6 +427,15 @@ abspielen.
     uneinheitlich (`ERP` gegenüber Gerätetyp `erp`, `Smartphone` und `FD`
     ohne Gerätetyp) und `checkReferences` prüft `from`/`to` nicht. Vor der
     Umsetzung auf Gerätetyp-IDs normalisieren und die Prüfung ergänzen.
+  - Umgesetzt 2026-11-10: `flows.json` nutzt Gerätetyp-IDs, dazu die
+    Rollen `P`, `K`, `T` (Auslöser, Zugang, Terminal) und `E` (außerhalb der
+    Topologie). `checkReferences` prüft `from`/`to`. Auslegung: `App` ist
+    der Auslöser, `FD` der E-Rezept-Dienst, `Smartphone` die Rolle `E`, bei `mobkt` ist `P` das USB-Primärsystem,
+    die Empfängerseite von `tim` ist `E`. `app` ist in `appErezept` und
+    `appEpa` geteilt. Rollen folgen dem Pfad, nicht „erstes Gerät“. Ohne
+    Pfad hat der Schritt keine Knoten und nennt `problem` (`fehlt`,
+    `kein-weg`, `ausgefallen`, `terminal-waehlen`). `eGK`-Schritte stehen am Gerät, das die
+    Karte hält. Umfang etwa 200 Zeilen Produktivcode.
 
 - [ ] **T-404 Kontextmenü und Störungen** · FR: FR-6, FR-7, FR-18 · Regeln: – · nach: T-402, T-202
   - Umfang: `ContextMenu` per Rechtsklick, Menütaste und Shift+F10.
@@ -440,7 +449,10 @@ abspielen.
   - Umfang: `SimPlayer` mit Play/Pause (Leertaste), Schritt (Pfeiltasten),
     Tempo, Abbrechen (Esc), Fortschritt, Erklärtext als `aria-live`.
     Paket-Animation auf den Kanten, aus bei `prefers-reduced-motion`.
-    Topologie während der Simulation gesperrt. Öffnen, Moduswechsel,
+    Bei `problem: terminal-waehlen` zeigt der Player „Terminal wählen“
+    (aus T-403). Schritte mit Rolle `E` tragen keine Knoten;
+    der Player markiert dort das Gerät auf der Topologie-Seite selbst. Topologie während der
+    Simulation gesperrt. Öffnen, Moduswechsel,
     Rückgängig und Störung brechen ab.
   - Fertig, wenn: RTL-Tests Steuerung und Sperre prüfen.
 

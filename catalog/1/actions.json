@@ -402,7 +402,7 @@
         { "any": [{ "service": "idpsek" }, { "card": "egk" }] }
       ]
     },
-    "flow": "app",
+    "flow": "appErezept",
     "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
   },
@@ -411,7 +411,7 @@
     "name": "ePA-App: Akte ansehen und Befugnis verwalten",
     "offeredBy": { "types": ["epaapp"] },
     "requires": { "all": [{ "service": "epa" }, { "service": "idpsek" }] },
-    "flow": "app",
+    "flow": "appEpa",
     "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
   }

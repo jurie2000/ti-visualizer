@@ -171,7 +171,7 @@ export function DetailPanel() {
             ) : (
               <Pin aria-hidden="true" />
             )}
-            {pinned ? "Angepinnt" : "Anpinnen"}
+            Anpinnen
           </Button>
         )}
       </div>

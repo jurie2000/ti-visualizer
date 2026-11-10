@@ -113,12 +113,12 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(screen.getByText(/wählen, um Details/)).toBeVisible();
   });
 
-  it("hält angepinnten Inhalt trotz neuer Auswahl und meldet den Zustand als Text", async () => {
+  it("hält angepinnten Inhalt trotz neuer Auswahl und meldet den Zustand per aria-pressed", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
     select("node", "kt1");
     await user.click(screen.getByRole("button", { name: "Anpinnen" }));
-    expect(screen.getByRole("button", { name: "Angepinnt" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Anpinnen" })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
@@ -126,7 +126,7 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(
       screen.getByRole("heading", { name: "<b>KT</b>" }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Angepinnt" }));
+    await user.click(screen.getByRole("button", { name: "Anpinnen" }));
     expect(screen.queryByRole("heading", { name: "<b>KT</b>" })).toBeNull();
   });
 

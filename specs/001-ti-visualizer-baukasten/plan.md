@@ -542,6 +542,8 @@ WebKit für die Suite `datei`).
 
 ### KI-Triage und Agenten-Regeln
 
+Diagramme und Übersicht: [ki-workflow.md](./ki-workflow.md).
+
 - **Regeln für alle Agenten** (Ablauf, Größe, Code, Kommentare, Tests)
   stehen in der Repo-`CLAUDE.md` und gelten lokal wie im CI.
 - **Triage** (`.github/workflows/ki-triage.yml`, Sonnet): neue Issues

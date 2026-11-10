@@ -19,13 +19,7 @@ argument-hint: <task-id>
    mehrere Treffer, Reihenfolge, Abbruch), Fehlerfälle, Tastatur und
    Screenreader bei UI. Bei Engine-Code zusätzlich: woran wird gebunden
    (Pfad, nicht „erstes Gerät“)? Ist die Antwort unklar, nach `quellen.md`
-   entscheiden und als Auslegung festhalten. Bleibt eine Fachfrage offen
-   (Widerspruch, Lücke), alle offenen Fragen sammeln und in **einem** Aufruf
-   an den Agenten `fachentscheider` geben (Fable). Das Ergebnis als
-   „Auslegung (Datum)“ eintragen. Schlägt der Aufruf fehl (Limit, Fehler,
-   nicht verfügbar): nicht wiederholen und nicht warten, selbst nach
-   `quellen.md` entscheiden und „Auslegung ohne Fachentscheider“ vermerken,
-   damit Justin sie gezielt prüft. Der Task bleibt nie daran hängen.
+   entscheiden und als Auslegung festhalten.
 5. Branch `task/$ARGUMENTS-kurzname` von `main`, umsetzen nach `CLAUDE.md`.
 6. Tests: je Regel-ID mindestens ein Testfall mit der ID im Namen, dazu die
    Kriterien aus „Fertig, wenn“. Die Negativ- und Randfälle aus der Skizze

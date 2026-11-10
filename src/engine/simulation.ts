@@ -10,12 +10,12 @@ export interface BoundStep {
   /** Knoten- und Kanten-IDs des Pfads, leer ohne Pfad (siehe `problem`). */
   nodes: string[];
   edges: string[];
-  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). `kein-weg` ist auch die dokumentierte Vereinfachung aus Regelwerk 7 (Krankenkasse, Smartphone→CardLink). */
+  /** Warum der Pfad fehlt. Ohne Angabe: Schritt außerhalb der Topologie (Rolle E). `kein-weg` trägt auch die Krankenkassen-Schritte von `eau` (Vereinfachung, Regelwerk 7): kein Fehler. */
   problem?: Problem;
 }
 
 export type Problem =
-  | { kind: "fehlt" } // Gerät der Rolle nicht in der Topologie oder nicht über den Pfad erreichbar
+  | { kind: "fehlt" } // Gerät der Rolle nicht in der Topologie
   | { kind: "kein-weg" } // beide Enden da, Regelwerk 6.0 kennt keinen Weg
   | { kind: "ausgefallen"; at: string }; // Störung auf dem Weg
 
@@ -70,7 +70,7 @@ function roleBinder(
     own.includes("cardSlots") || own.includes("netConfig:terminal")
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
-  // Ohne Pfad zählt das einzige Gerät des Typs (etwa das Smartphone); das ist eindeutig, anders als „erstes Gerät“.
+  // Ohne Pfad zählt das einzige Gerät des Typs; das ist eindeutig, anders als „erstes Gerät“.
   // Ein Terminal löst nicht selbst aus: `P` ist das direkt verbundene Primärsystem (mobiles KT per USB).
   const primary =
     own.includes("cardSlots") &&

@@ -16,7 +16,7 @@ describe("Tastaturkürzel (FR-22, D10, T-702)", () => {
     ui();
     await user.click(screen.getByRole("button", { name: "Tastaturkürzel" }));
     const dialog = screen.getByRole("dialog", { name: "Tastaturkürzel" });
-    for (const was of ["Rückgängig", "Wiederholen", "Gerät duplizieren"])
+    for (const was of ["Gerät kopieren", "Kopie einfügen"])
       expect(dialog).toHaveTextContent(was);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: "Tastaturkürzel" })).toBeNull();

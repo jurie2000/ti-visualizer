@@ -12,7 +12,7 @@ import {
 import { useToast } from "../ui/Toast";
 import { OWN_KEYS } from "./keys";
 
-/** Kürzel für Rückgängig, Wiederholen, Duplizieren, Kopieren, Einfügen und Löschen (FR-16, D10). */
+/** Kürzel für Kopieren, Einfügen und Löschen (FR-16, D10). */
 export function EditShortcuts() {
   const toast = useToast();
   const clip = useRef<{ clip: Clip; pastes: number }>(undefined);
@@ -23,27 +23,6 @@ export function EditShortcuts() {
       return;
     }
     action();
-  };
-  const dropStaleSelection = () => {
-    const { selection: sel, select } = useUi.getState();
-    const t = useTopology.getState().topology;
-    if (
-      sel &&
-      ![...t.nodes, ...t.edges, ...t.zones].some((e) => e.id === sel.id)
-    )
-      select(undefined);
-  };
-  const undo = () => {
-    run(() => {
-      useTopology.getState().undo();
-      dropStaleSelection();
-    });
-  };
-  const redo = () => {
-    run(() => {
-      useTopology.getState().redo();
-      dropStaleSelection();
-    });
   };
   const copy = () => {
     const sel = useUi.getState().selection;
@@ -79,9 +58,6 @@ export function EditShortcuts() {
         );
     });
   };
-  const duplicate = () => {
-    if (copy()) paste();
-  };
   const remove = () => {
     const sel = useUi.getState().selection;
     if (sel?.kind !== "node" && sel?.kind !== "edge") return;
@@ -102,10 +78,7 @@ export function EditShortcuts() {
         action();
       };
       if ((e.ctrlKey || e.metaKey) && !e.altKey) {
-        if (k === "z") handle(e.shiftKey ? redo : undo);
-        else if (k === "y") handle(redo);
-        else if (k === "d") handle(duplicate);
-        else if (k === "v") handle(paste);
+        if (k === "v") handle(paste);
         // markierter Text auf der Seite behält sein Kopieren
         else if (k === "c" && !window.getSelection()?.toString()) copy();
       } else if (

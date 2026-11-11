@@ -16,11 +16,8 @@ const GROUPS: { title: string; rows: [string, string][] }[] = [
   {
     title: "Bearbeiten",
     rows: [
-      [label("Z"), "Rückgängig"],
-      [`${label("Y")} oder ${label("Umschalt+Z")}`, "Wiederholen"],
       [label("C"), "Gerät kopieren"],
       [label("V"), "Kopie einfügen"],
-      [label("D"), "Gerät duplizieren"],
       ["Entf oder Rücktaste", "Gerät oder Verbindung löschen"],
     ],
   },

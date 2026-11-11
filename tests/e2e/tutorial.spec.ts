@@ -184,7 +184,9 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
     await karte(page)
       .getByRole("button", { name: "Tutorial schließen" })
       .click();
-    await page.getByRole("button", { name: "Startansicht" }).click();
+    await page
+      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+      .click();
     await page
       .getByRole("button", {
         name: /^Tutorial fortsetzen \(Schritt 2 von 16\)/,

@@ -145,7 +145,9 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("E-Rezept einlösen ist am AVS der Apotheke ausführbar (FR-6)", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Startansicht" }).click();
+    await page
+      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+      .click();
     await öffne(page, /Öffnen.*Apotheke/);
     await starte(page, "avs1", "E-Rezept einlösen \\(eGK einlesen\\)");
     await bisZumEnde(page);
@@ -275,7 +277,9 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await gerät(page, "kon1").click();
     await expect(titel).toContainText("Praxisverwaltungssystem");
 
-    await page.getByRole("button", { name: "Startansicht" }).click();
+    await page
+      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+      .click();
     await öffne(page, /Öffnen.*Apotheke/);
     await gerät(page, "kon1").click();
     await expect(titel).toContainText("Konnektor");

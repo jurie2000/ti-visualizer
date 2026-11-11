@@ -46,15 +46,15 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await expect(page.getByRole("button", { name: "Details" })).toBeFocused();
   });
 
-  test("Kopfleiste 1024 px: Bearbeiten-Knöpfe als Symbole mit Namen", async ({
+  test("Kopfleiste 1024 px: Knöpfe erreichbar, kein Seitenscroll", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto("./");
     await preset(page);
-    const rückgängig = page.getByRole("button", { name: "Rückgängig" });
-    await expect(rückgängig).toBeVisible();
-    expect((await rückgängig.boundingBox())?.width).toBeLessThan(60);
+    await expect(
+      page.getByRole("button", { name: "Sicherheitsprüfung" }),
+    ).toBeVisible();
     expect(await keinSeitenScroll(page)).toBe(true);
   });
 

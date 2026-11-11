@@ -21,9 +21,6 @@ export const useUi = create<{
   tutorial: boolean;
   /** Aktionen, die im Tutorial bis zum Ende durchliefen (Prüfung der Aktions-Schritte). */
   played: string[];
-  /** Listenansicht statt Fläche (FR-22). */
-  listView: boolean;
-  setListView: (on: boolean) => void;
   select: (selection: Selection) => void;
   startAction: (action: PendingAction | undefined) => void;
   openDialog: (dialog: string | undefined) => void;
@@ -36,10 +33,6 @@ export const useUi = create<{
   pendingAction: undefined,
   tutorial: false,
   played: [],
-  listView: false,
-  setListView: (listView) => {
-    set({ listView });
-  },
   select: (selection) => {
     set({ selection });
   },

@@ -541,7 +541,10 @@ Sicherheitsprüfung.
     Verbindung: Zugang ist der erste im Plan, `pairedWith` nur bei genau
     einem Zugang. Gateway und DNS nur für Terminal, Client und Infra,
     nicht für Zugang und Router. Ist .1 oder .2 belegt, vergibt die App
-    ab .10. Quelle: Regelwerk 8, `quellen.md` (DVO, Betriebsarten).
+    ab .10. `routeTI` bekommt jeder Client, in Reihe ohne Wirkung. Bei
+    abgeleiteten Feldern steht in `rule` die Standard-Beschreibung, das
+    Formular (T-502b) zeigt sie als Standard, nicht als Regel. Quelle:
+    Regelwerk 8, `quellen.md` (DVO, Betriebsarten).
 
 - [ ] **T-502b Formular Geräteeinstellungen** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-502a
   - Umfang: Formular im Detailpanel je Config-Variante, nur im Modus

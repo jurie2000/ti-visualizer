@@ -43,7 +43,7 @@
     "field": "dns",
     "name": "DNS der Clients",
     "default": null,
-    "rule": "TI-Namen löst der Zugang auf",
+    "rule": "TI-Namen löst der Zugang auf. Wegen Rückbau von Split-DNS (C_12389) neu zu prüfen",
     "source": ["gemILF_PS"],
     "status": "plausibel"
   },
@@ -108,7 +108,7 @@
     "name": "Zertifikat gSMC-K",
     "default": "2029-03-31",
     "rule": "geprüft gegen simDate",
-    "source": ["Arch"],
+    "source": ["Arch", "gemF_Laufzeitverlaengerung_gSMC-K"],
     "status": "bestätigt"
   },
   {

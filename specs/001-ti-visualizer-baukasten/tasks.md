@@ -621,7 +621,7 @@ Sicherheitsprüfung.
     getippte Texte müssen wie Dateitexte von Steuer- und
     Formatzeichen befreit werden (`persistence/parse.ts`, `strip`).
 
-- [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
+- [x] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
   - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per
     Strg+Z / Strg+Y (Strg+Umschalt+Z), auf macOS ⌘ statt Strg (D10), Löschen von Gerät oder Kante per
     Entf/Rücktaste. Kürzel greifen nicht, solange

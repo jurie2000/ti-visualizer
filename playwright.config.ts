@@ -36,6 +36,11 @@ export default defineConfig({
       testMatch: "build-and-connect.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "edit",
+      testMatch: "edit.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Suite `datei` als einzige in drei Browsern (Safari-Annäherung: WebKit).
     {
       name: "datei",

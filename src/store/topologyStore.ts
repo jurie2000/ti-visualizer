@@ -65,7 +65,7 @@ interface TopologyState {
 
 const clamp = (v: number) => Math.max(-LIMITS.coord, Math.min(LIMITS.coord, v));
 
-const freeId = (prefix: string, t: Topology) => {
+export const freeId = (prefix: string, t: Topology) => {
   const used = new Set([...t.nodes, ...t.edges, ...t.zones].map((e) => e.id));
   let n = 1;
   while (used.has(`${prefix}-${String(n)}`)) n++;

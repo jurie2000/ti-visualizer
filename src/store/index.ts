@@ -6,3 +6,4 @@ export * from "./fileStore";
 export * from "./autosave";
 export * from "./openFile";
 export * from "./simStore";
+export * from "./edit";

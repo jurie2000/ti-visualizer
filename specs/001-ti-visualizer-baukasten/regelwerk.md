@@ -700,7 +700,7 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
 
 | ID | Regel | Feld | Schwere | Status | Quelle |
 |---|---|---|---|---|---|
-| P-8 | Ungültige IP-Adresse | `ip` | Fehler | Vereinfachung | keine (Netzwerkgrundlagen) |
+| P-8 | Ungültige IP-Adresse | `ip` | Fehler | Vereinfachung | keine |
 | P-9 | IP-Konflikt | `ip` | Fehler | Vereinfachung | keine |
 | P-10 | Ungültige Subnetzmaske | `mask` | Fehler | Vereinfachung | keine |
 | P-11 | Netz- oder Broadcast-Adresse als Geräteadresse | `ip`, `mask` | Fehler | Vereinfachung | keine |
@@ -711,6 +711,24 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
 
 P-8 bis P-14 sind allgemeine Netzwerkregeln ohne TI-Bezug. Sie brauchen
 keinen gematik-Beleg.
+
+Auslegung (2026-11-11, T-504): nur IPv4. Ungesetzte Felder melden nichts,
+nur die Maske gilt ungesetzt als Standardwert (Regelwerk 8). Jedes Gerät
+mit Konfiguration wird geprüft.
+
+- P-8, P-12: vier Zahlen 0 bis 255 ohne führende Nullen.
+- P-9: ein Befund je Adresse mit allen Geräten, die sie führen. Ungültige
+  Adressen zählen nicht (P-8).
+- P-10: zusammenhängende Einsen, Präfix /1 bis /30. /0, /31 und /32 gelten
+  als ungültig, weil kein Hostbereich bleibt.
+- P-11, P-13, P-14, P-15 setzen gültige Werte voraus, sonst melden P-8,
+  P-10 und P-12.
+- P-13: Gateway liegt im Netz aus eigener IP und eigener Maske.
+- P-14: kein anderes Gerät trägt die Gateway-Adresse.
+- P-15: gilt für Clients und stationäre Kartenterminals. Die IP des Geräts
+  muss im Netz des Zugangs (dessen IP und Maske) liegen. Zugang nach
+  `zugangOf`; ohne bestimmbaren Zugang keine Aussage. Eine weitere Maske
+  am Gerät (z. B. /16, Herausforderung 3) ist kein Verstoß.
 
 **Betrieb (nur Erweitert)**
 

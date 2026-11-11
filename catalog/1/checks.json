@@ -63,6 +63,78 @@
     "status": "Vereinfachung"
   },
   {
+    "id": "P-8",
+    "name": "Ungültige IP-Adresse",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Eine IPv4-Adresse besteht aus vier Zahlen von 0 bis 255, durch Punkte getrennt. Mit einem ungültigen Wert kann das Gerät nicht im Netz erreicht werden.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-9",
+    "name": "IP-Konflikt",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Zwei Geräte mit derselben IP-Adresse stören sich gegenseitig: Pakete erreichen mal das eine, mal das andere Gerät.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-10",
+    "name": "Ungültige Subnetzmaske",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Eine Subnetzmaske besteht aus einer lückenlosen Folge von Einsen, gefolgt von Nullen (z. B. 255.255.255.0), und lässt mindestens zwei Hostadressen übrig.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-11",
+    "name": "Netz- oder Broadcast-Adresse als Geräteadresse",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Die erste Adresse eines Subnetzes bezeichnet das Netz, die letzte alle Geräte darin (Broadcast). Beide dürfen keinem Gerät gehören.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-12",
+    "name": "Ungültiges Gateway",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Das Gateway muss eine gültige IPv4-Adresse sein, sonst weiß das Gerät nicht, wohin es Pakete außerhalb seines Netzes schickt.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-13",
+    "name": "Gateway nicht im eigenen Subnetz",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Ein Gerät erreicht sein Gateway nur direkt, wenn es im selben Subnetz liegt. Sonst gehen Pakete in andere Netze verloren.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-14",
+    "name": "Gateway gibt es im Netz nicht",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Kein anderes Gerät der Topologie trägt die als Gateway eingetragene Adresse. Pakete in andere Netze finden keinen Weg.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-15",
+    "name": "Gerät in anderem Subnetz als sein Zugang",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Das Gerät liegt nicht im Subnetz seines Zugangs (Konnektor oder TI-Gateway) und erreicht ihn deshalb nicht direkt.",
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
     "id": "P-18",
     "name": "Zertifikat der gSMC-K abgelaufen",
     "severity": "Fehler",

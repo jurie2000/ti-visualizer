@@ -1,4 +1,5 @@
 import type { Catalog, Node, Topology } from "../schema";
+import { ADDRESSING } from "./addressing";
 import { cardState } from "./cards";
 import { resolvePath, zugangOf } from "./paths";
 import { matches } from "./rules";
@@ -61,6 +62,8 @@ function neighbours(t: Topology) {
 }
 
 const RULES: Record<string, Rule> = {
+  ...ADDRESSING,
+
   "P-1": ({ t }) =>
     t.nodes
       .filter((n) => n.fault)

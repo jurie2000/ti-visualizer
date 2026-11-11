@@ -574,7 +574,7 @@ Sicherheitsprüfung.
     ist. Property-Test: Ergebnis hängt nicht von der Reihenfolge der
     Knoten ab.
 
-- [ ] **T-504 Prüfregeln Adressierung** [P] · FR: FR-17, FR-19 · Regeln: P-8 bis P-15 · nach: T-503, T-502b
+- [x] **T-504 Prüfregeln Adressierung** [P] · FR: FR-17, FR-19 · Regeln: P-8 bis P-15 · nach: T-503, T-502b
   - Umfang: Prüfregeln für IP, Maske, Gateway und Subnetz, nur im Modus
     Erweitert.
   - Fertig, wenn: je Regel ein positiver und ein negativer Testfall grün

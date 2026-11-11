@@ -57,6 +57,11 @@ describe("Tutorial-Inhalte (FR-20, T-601)", () => {
     expect(catalogSchema.safeParse(c).success).toBe(false);
   });
 
+  it("setzt vor dem Einlösen den VSDM-Dienst, den der Prüfungsnachweis braucht", () => {
+    const i = steps.findIndex((s) => s.action === "erezept-einloesen-egk");
+    expect(steps.slice(0, i).flatMap((s) => s.devices)).toContain("vsdm");
+  });
+
   it("meldet unbekannte Persona, Gerät und Aktion", () => {
     const c = withFirst({ persona: "x", devices: ["y"], action: "z" });
     expect(checkReferences(catalogSchema.parse(c))).toEqual([

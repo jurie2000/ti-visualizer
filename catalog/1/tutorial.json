@@ -117,12 +117,12 @@
       "id": "fachdienste",
       "part": "praxis",
       "title": "Fachdienste",
-      "text": "Hinter dem VPN-Zugang liegen die Fachdienste. Für das E-Rezept braucht es den Identity Provider für die Anmeldung und den E-Rezept-Fachdienst.",
+      "text": "Hinter dem VPN-Zugang liegen die Fachdienste. Für das E-Rezept braucht es den Identity Provider für die Anmeldung, den E-Rezept-Fachdienst und den VSDM-Dienst der Krankenkasse, der die Versichertendaten der eGK prüft.",
       "story": "Frau Hoffmann, 165 zu 100 — da drückt nicht nur der Kopf. Ich verordne Ramipril 5 mg. Das Rezept geht nicht in die Handtasche, sondern in den E-Rezept-Fachdienst. Da fällt es auch nicht zwischen die Kassenbons.",
       "persona": "behrens",
-      "task": "Setze IDP und E-Rezept aus „Fachdienste“ und verbinde beide mit dem VPN-Zugang.",
-      "devices": ["vpn", "idp", "erp"],
-      "source": ["gemSpec_FD_eRp", "gemSpec_IDP_FD"],
+      "task": "Setze IDP aus „Zentrale Dienste“ sowie E-Rezept und VSDM aus „Fachdienste“ und verbinde alle drei mit dem VPN-Zugang.",
+      "devices": ["vpn", "idp", "erp", "vsdm"],
+      "source": ["gemSpec_FD_eRp", "gemSpec_IDP_FD", "gemSysL_VSDM"],
       "status": "Vereinfachung"
     },
     {

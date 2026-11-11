@@ -10,6 +10,7 @@ import {
   saveNow,
   useAutosave,
 } from "./autosave";
+import { useOpen } from "./openFile";
 import { emptyTopology, useTopology } from "./topologyStore";
 import { useSettings } from "./settingsStore";
 
@@ -49,7 +50,9 @@ describe("Autosave (T-304)", () => {
     await start();
 
     expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");
+    useOpen.setState({ imported: { fileName: "alt.json", list: [] } });
     restoreAutosave();
+    expect(useOpen.getState().imported).toBeUndefined();
     expect(useTopology.getState().topology).toEqual(praxis);
     expect(useTopology.getState().past).toHaveLength(1); // Rückgängig möglich
     expect(useSettings.getState().mode).toBe("advanced");

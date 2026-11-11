@@ -74,7 +74,7 @@ function Befunde({ onClose }: { onClose: () => void }) {
                     focus(f);
                   }}
                 >
-                  {`${f.name} auswählen`}
+                  {`${f.name} auswählen: ${[...f.nodes.map((n) => label(n) ?? n), ...f.edges].join(", ")}`}
                 </Button>
               )}
             </li>

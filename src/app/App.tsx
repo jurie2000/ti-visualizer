@@ -1,4 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
+import { Network } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
@@ -12,11 +13,10 @@ import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
 import { TutorialCard } from "../panels/TutorialCard";
-import { TopologyList } from "./TopologyList";
 import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
-import { EditControls } from "./EditControls";
+import { EditShortcuts } from "./EditShortcuts";
 import { ModeSwitch } from "./ModeSwitch";
 import { SaveControls } from "./SaveControls";
 import { StartScreen } from "./StartScreen";
@@ -27,7 +27,6 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
-  const listView = useUi((s) => s.listView);
   // Unter 1100 px sind Palette und Detailpanel Überlagerungen (T-703)
   const [overlay, setOverlay] = useState<"palette" | "detail" | null>(null);
   useEffect(() => {
@@ -90,26 +89,26 @@ export function App() {
     <ToastProvider>
       <div className="tiv-shell">
         <header className="tiv-header">
-          <h1>TI Visualizer</h1>
+          <h1>
+            <button
+              type="button"
+              className="tiv-home"
+              aria-label="TI Visualizer, zur Startansicht"
+              title="Zur Startansicht"
+              onClick={() => {
+                setStarted(false);
+              }}
+            >
+              <span className="tiv-home__logo" aria-hidden="true">
+                <Network size={19} />
+              </span>
+              TI Visualizer
+            </button>
+          </h1>
           <div className="tiv-header__actions">
             {started && (
               <>
-                <EditControls />
-                <Button
-                  onClick={() => {
-                    setStarted(false);
-                  }}
-                >
-                  Startansicht
-                </Button>
-                <Button
-                  aria-pressed={listView}
-                  onClick={() => {
-                    useUi.getState().setListView(!listView);
-                  }}
-                >
-                  Listenansicht
-                </Button>
+                <EditShortcuts />
                 <Button
                   onClick={() => {
                     useUi.getState().openDialog("security");
@@ -173,7 +172,7 @@ export function App() {
                   ))}
                 </div>
                 {tutorial && <TutorialCard />}
-                {listView ? <TopologyList /> : <Canvas />}
+                <Canvas />
               </section>
               <aside
                 className="tiv-detail"

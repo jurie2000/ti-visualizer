@@ -13,9 +13,7 @@ test.describe("edit", { tag: "@edit" }, () => {
     await expect(kanten(page).first()).toBeVisible();
   });
 
-  test("Gerät ziehen: Position bleibt, ein Rückgängig-Schritt", async ({
-    page,
-  }) => {
+  test("Gerät ziehen: Position bleibt", async ({ page }) => {
     const knoten = gerät(page, "sw1");
     const vorher = await knoten.boundingBox();
     if (!vorher) throw new Error("Switch nicht sichtbar");
@@ -27,32 +25,9 @@ test.describe("edit", { tag: "@edit" }, () => {
     await page.mouse.up();
     const nachher = await knoten.boundingBox();
     expect(nachher?.x).toBeGreaterThan(vorher.x + 50);
-    // ein Schritt: einmal Rückgängig stellt die alte Position her
-    await page.keyboard.press("ControlOrMeta+z");
-    const zurück = await knoten.boundingBox();
-    expect(zurück?.x).toBeCloseTo(vorher.x, 0);
-    expect(zurück?.y).toBeCloseTo(vorher.y, 0);
-    await page.keyboard.press("ControlOrMeta+y");
-    const wieder = await knoten.boundingBox();
-    expect(wieder?.x).toBeCloseTo(nachher?.x ?? 0, 0);
   });
 
-  test("Rückgängig und Wiederholen über mehrere Schritte", async ({ page }) => {
-    const vorher = await page.locator(".react-flow__node").count();
-    const hinzu = page.getByRole("button", { name: /Switch hinzufügen$/ });
-    await hinzu.click();
-    await hinzu.click();
-    await expect(page.locator(".react-flow__node")).toHaveCount(vorher + 2);
-    await page.getByRole("button", { name: "Rückgängig" }).click();
-    await page.getByRole("button", { name: "Rückgängig" }).click();
-    await expect(page.locator(".react-flow__node")).toHaveCount(vorher);
-    await page.keyboard.press("ControlOrMeta+Shift+z");
-    await expect(page.locator(".react-flow__node")).toHaveCount(vorher + 1);
-    await page.getByRole("button", { name: "Wiederholen" }).click();
-    await expect(page.locator(".react-flow__node")).toHaveCount(vorher + 2);
-  });
-
-  test("Gerät löschen samt Kanten und wiederherstellen", async ({ page }) => {
+  test("Gerät löschen samt Kanten", async ({ page }) => {
     const alle = await page.locator(".react-flow__node").count();
     const verbunden = await kanten(page).count();
     await gerät(page, "sw1").click();
@@ -60,20 +35,13 @@ test.describe("edit", { tag: "@edit" }, () => {
     await expect(gerät(page, "sw1")).toHaveCount(0);
     await expect(page.locator(".react-flow__node")).toHaveCount(alle - 1);
     expect(await kanten(page).count()).toBeLessThan(verbunden);
-    await page.keyboard.press("ControlOrMeta+z");
-    await expect(gerät(page, "sw1")).toBeVisible();
-    await expect(kanten(page)).toHaveCount(verbunden);
   });
 
-  test("Duplizieren und Anordnen sind je ein Schritt", async ({ page }) => {
+  test("Anordnen sitzt in der Zoomleiste und behält alle Geräte", async ({
+    page,
+  }) => {
     const alle = await page.locator(".react-flow__node").count();
-    await gerät(page, "sw1").click();
-    await page.getByRole("button", { name: "Duplizieren" }).click();
-    await expect(page.locator(".react-flow__node")).toHaveCount(alle + 1);
     await page.getByRole("button", { name: "Anordnen" }).click();
-    await page.getByRole("button", { name: "Rückgängig" }).click();
-    await expect(page.locator(".react-flow__node")).toHaveCount(alle + 1);
-    await page.getByRole("button", { name: "Rückgängig" }).click();
     await expect(page.locator(".react-flow__node")).toHaveCount(alle);
   });
 });

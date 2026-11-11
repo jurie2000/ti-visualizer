@@ -682,7 +682,7 @@ Sicherheitsprüfung.
 
 ## P7: Barrierefreiheit, Tablet, Release
 
-- [x] **T-701 Listenansicht** · FR: FR-22 · Regeln: – · nach: T-404, T-506
+- [x] **T-701 Listenansicht** (entfernt mit T-708) · FR: FR-22 · Regeln: – · nach: T-404, T-506
   - Umfang: `TopologyList` als Textalternative: Geräte mit Kategorie,
     Karten und Verbindungen, bedienbar wie eine Tabelle. Aktionen und
     Sicherheitsprüfung von dort erreichbar.
@@ -718,6 +718,28 @@ Sicherheitsprüfung.
     Fortschrittsbalken, runde Knöpfe, Tempo-Regler.
   - Fertig, wenn: ein Test das Paket bei laufender Simulation findet und
     bei `reduceMotion` nicht.
+
+- [ ] **T-708 Kopfleiste wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-707 · Issue #105
+  - Umfang: Logo links führt zur Startansicht. Knöpfe Rückgängig,
+    Wiederholen, Duplizieren, Listenansicht und Startansicht entfallen,
+    samt `TopologyList`, `listView` und den Kürzeln Strg+Z, Strg+Y und
+    Strg+D. Anordnen wandert in die Zoomleiste. Übrige Knöpfe als
+    Ovalkasten, Modus und Farbschema als Umschalter-Pille.
+    Auslegung (2026-11-11): Justin hat die Streichung im Chat angewiesen;
+    die Listenansicht (T-701) als Textalternative zu FR-22 entfällt damit.
+    Spec angepasst: `spec.md` (FR-16, FR-22), `plan.md` (D25, Layout,
+    Screenreader, Tests), `regelwerk.md` (Simulation). Anordnen ist ohne
+    Rückgängig nicht umkehrbar; Justin nimmt das in Kauf.
+  - Fertig, wenn: Unit- und E2E-Suiten ohne die entfernten Knöpfe grün sind.
+
+- [ ] **T-709 Verlauf im Store entfernen** · FR: FR-16 · Regeln: – · nach: T-708 · Folge aus Review #110
+  - Umfang: `undo`, `redo`, `past`, `future` und `HISTORY_LIMIT` aus dem
+    Topologie-Store entfernen, ohne Oberfläche sind sie unerreichbar
+    (D25 entfällt, Entscheidung Justin 2026-11-11). Tests, die `past` als
+    Schrittzähler nutzen, auf Topologie-Vergleich umstellen; Hinweis
+    „Undo/Redo“ in `architektur.md`. Unsaved-Erkennung und Autosave
+    prüfen.
+  - Fertig, wenn: kein Aufrufer mehr existiert und die Suiten grün sind.
 
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,

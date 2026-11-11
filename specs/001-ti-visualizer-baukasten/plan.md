@@ -34,7 +34,7 @@ GitHub Pages. Fachlich freigegeben durch Justin am 2026-11-05 (T-907).
 | D22 | **Icons aus Lucide** (`lucide-react`, ISC-Lizenz), ergänzt um wenige eigene SVGs | Die Icon-Pfade im Mockup stammen aus dieser Familie. |
 | D23 | **Eine Datei `.tiv.json` enthält immer eine Topologie, Einstellungen nur optional dazu.** Einstellungen werden nie allein gespeichert. Beim Speichern sind sie per Häkchen „Einstellungen mitspeichern“ wählbar (Standard aus). Beim Öffnen wird nur die Topologie übernommen. Enthält die Datei Einstellungen, fragt die App, ob sie übernommen werden sollen (Standard nein) | Vom Nutzer festgelegt (2026-11-04). Weitergegebene Dateien bringen nie ungefragt fremden Tutorial-Fortschritt, gelöste Herausforderungen oder eine fremde Ansicht mit. Eigene Einstellungen lassen sich trotzdem auf ein anderes Gerät mitnehmen. |
 | D24 | **Weitergeben nur als Datei.** Kein Link mit Topologie, keine Vorlagen-Bibliothek in v1 | Vom Nutzer festgelegt (2026-11-04). Ein einziger Weg ist einfacher zu bauen, zu testen und abzusichern. Die Datei lässt sich per E-Mail, Moodle oder USB weitergeben. |
-| D25 | **Undo/Redo** im Topologie-Store (Verlauf mit 80 Schritten, wie im Mockup) | FR-16. |
+| D25 | ~~**Undo/Redo** im Topologie-Store (Verlauf mit 80 Schritten, wie im Mockup)~~ entfällt in der Oberfläche (Entscheidung Justin 2026-11-11, T-708); der Verlauf im Store wird mit T-709 entfernt | FR-16. |
 | D26 | **CI/CD-Pipeline mit GitHub Actions** in festen Stufen: Statische Prüfung → Unit-Tests mit Coverage → Sonar-Analyse mit Quality Gate → Build-Test → E2E-Tests mit Playwright → Deployment. **Schlanker Kern ab P0**, weitere Prüfungen erst nach P7 und optional (Ausbaustufen) | Vom Nutzer gewünscht (2026-11-04), Umfang nach dem Prüfbericht gekürzt. Die Zeit in P0 gehört dem fachlichen Kern. |
 | D27 | **SonarQube Cloud** (ehemals SonarCloud) für Codequalität, Sicherheit und Coverage | Für öffentliche Repos kostenlos, direkt mit GitHub verbunden, kommentiert Pull Requests. |
 | D28 | **Architekturdiagramme als Mermaid** in [architektur.md](./architektur.md) | GitHub zeigt Mermaid direkt an. Diagramme liegen versioniert als Text neben dem Plan. |
@@ -132,7 +132,7 @@ Zusatz.
 ```
 ┌───────────────────────────── Kopfleiste (62 px) ─────────────────────────────┐
 │ Logo · Topologiename · Geräteanzahl │ Modus Einfach/Erweitert │ Suchen │      │
-│ Rückgängig/Wiederholen │ Öffnen │ Speichern │ Prüfung │ ☾ │ ?                │
+│ Öffnen │ Speichern │ Prüfung │ ☾ │ ?                                      │
 ├──────────────┬──────────────────────────────────────────────┬────────────────┤
 │ Palette      │ Canvas (Gitter, Zonen, Knoten, Kanten)       │ Detailpanel    │
 │ (links,      │                                              │ (rechts,       │
@@ -168,7 +168,7 @@ Zusatz.
 | Tastaturkürzel | `ShortcutsDialog` | FR-22 |
 | Konnektor/TI-Gateway-Hinweis | `ExclusionDialog` | FR-4 |
 | neu | `ImpressumDialog` (mit Katalogversion und Stand der Fachdaten), Hinweis „nicht als Datei gespeichert“, `ImportFindingsDialog` (Importbefunde) | FR-5, D19, D34 |
-| neu: Textalternative zur Fläche | `TopologyList` (Geräte und Verbindungen als Liste, für Screenreader) | D10 |
+| ~~neu: Textalternative zur Fläche~~ | ~~`TopologyList`~~ entfällt (Entscheidung Justin 2026-11-11, T-708) | D10 |
 
 ### Design-Tokens und Stile
 
@@ -587,9 +587,9 @@ Diagramme und Übersicht: [ki-workflow.md](./ki-workflow.md).
 | `smoke` | App lädt, Startansicht, Preset öffnen, Impressum erreichbar | P0 |
 | `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar, Moduswechsel mit Sammelkanten | P2 |
 | `datei` | Speichern in Kontext A → Öffnen in neuem Kontext B: Topologie kommt an, Einstellungen nur nach Zustimmung. Datei ohne Einstellungen. Autosave und Wiederherstellen | P3 |
-| `edit` | Gerät mit der Maus ziehen, Rückgängig und Wiederholen über mehrere Schritte, Gerät löschen samt Kanten und wiederherstellen | P5 (T-508) |
+| `edit` | Gerät mit der Maus ziehen, Gerät löschen samt Kanten, Anordnen | P5 (T-508) |
 | `actions-sim` | Kontextmenü, ausgegraute Aktion, Simulation abspielen und abbrechen, Bearbeiten während der Simulation gesperrt | P4 |
-| `a11y` | Axe auf Hauptansichten und Dialogen, Durchlauf nur per Tastatur, Listenansicht | ab P0 wachsend |
+| `a11y` | Axe auf Hauptansichten und Dialogen, Durchlauf nur per Tastatur | ab P0 wachsend |
 
 In der CI läuft Chromium, für `datei` zusätzlich Firefox und WebKit
 (Safari-Engine: Download-Weg und CSP-Vorbehalt aus T-004). Bei Fehlern
@@ -779,16 +779,12 @@ im Repo „Private vulnerability reporting“ aktiviert.
 - Semantik: Rollen und Labels für Knoten und Kanten.
 
 **Screenreader**
-- Die Fläche allein ist für Screenreader kaum nutzbar. Deshalb gibt es
-  eine **Listenansicht** (`TopologyList`) als Textalternative: alle
-  Geräte mit Kategorie, gesteckten Karten und Verbindungen, bedienbar
-  wie eine Tabelle. Aktionen und Sicherheitsprüfung sind auch dort
-  erreichbar.
+- Die Listenansicht (`TopologyList`) als Textalternative zur Fläche
+  entfällt (Entscheidung Justin 2026-11-11, T-708). Die Fläche selbst bleibt per Tastatur bedienbar (Rollen und Labels für Knoten und Kanten).
 - Persona-Bilder im Tutorial bekommen Alt-Texte, die in `tutorial.json`
   stehen.
 
-Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
-über die Listenansicht.
+Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 
 ## Abdeckung der Anforderungen
 
@@ -806,7 +802,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
 | FR-13 | `ModeSwitch`, Sichtbarkeit je Gerätetyp im Katalog, Sammelkanten (`GroupEdge`, `collapseHidden`, D36) |
 | FR-14 | Anschlüsse in `device-types`, `PortPicker`, `autoPorts` |
 | FR-15 | `ZoneNode` |
-| FR-16 | Undo/Redo (D25), Kopieren/Einfügen, automatisch anordnen, Minimap, Einpassen |
+| FR-16 | Kopieren/Einfügen, automatisch anordnen, Minimap, Einpassen (Undo/Redo entfällt, D25) |
 | FR-17 | Einstellungen im `DetailPanel`, `config-defaults.json` |
 | FR-18 | `CardChip`, `PlugCardDialog`, Störung an Gerät und Verbindung per Kontextmenü |
 | FR-19 | `runChecks`, `SecurityDialog` |
@@ -854,7 +850,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur, einer nur
 | P4 | Kontextmenü, Aktionen, Pfade, Simulation, Detailpanel | Abläufe abspielen |
 | P5 | Modus Erweitert: Anschlüsse, Einstellungen, Zonen, Editor-Hilfen, Sicherheitsprüfung | Erweiterte Ansicht |
 | P6 | Tutorial, Herausforderungen | Lernfunktionen |
-| P7 | Barrierefreiheit-Feinschliff (Listenansicht), Tablet-Layout, E2E, optische Abnahme | Release v1 |
+| P7 | Barrierefreiheit-Feinschliff, Tablet-Layout, E2E, optische Abnahme | Release v1 |
 | danach | optionale Ausbaustufen der Pipeline, z. B. Mutation-Testing für die Auswertung in der Arbeit | nach Bedarf |
 
 ## Risiken und offene Punkte

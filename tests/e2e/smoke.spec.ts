@@ -48,7 +48,9 @@ test.describe("smoke", { tag: "@smoke" }, () => {
     await expect(
       page.getByRole("group", { name: /^PVS: Praxisverwaltungssystem/ }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Startansicht" }).click();
+    await page
+      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+      .click();
     await expect(
       page.getByRole("heading", { name: "Womit möchten Sie beginnen?" }),
     ).toBeVisible();

@@ -27,7 +27,9 @@ describe("App-Shell", () => {
     expect(useTopology.getState().topology.nodes.length).toBeGreaterThan(0);
     expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
     expect(screen.getByRole("main")).toHaveFocus();
-    await user.click(screen.getByRole("button", { name: "Startansicht" }));
+    await user.click(
+      screen.getByRole("button", { name: "TI Visualizer, zur Startansicht" }),
+    );
     expect(screen.getByRole("main")).toHaveFocus();
     expect(screen.getAllByRole("listitem")).toHaveLength(5);
     // Leerer Start ersetzt die Topologie
@@ -42,7 +44,9 @@ describe("App-Shell", () => {
     act(() => {
       useTopology.getState().addNode("switch", { x: 0, y: 0 });
     });
-    await user.click(screen.getByRole("button", { name: "Startansicht" }));
+    await user.click(
+      screen.getByRole("button", { name: "TI Visualizer, zur Startansicht" }),
+    );
     await user.click(screen.getByRole("button", { name: /Arztpraxis/ }));
     expect(await screen.findByText(/erst speichern\?/)).toBeVisible();
     expect(useTopology.getState().topology.nodes).toHaveLength(1);

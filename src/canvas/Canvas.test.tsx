@@ -76,6 +76,9 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       within(view).getByRole("button", { name: "Vergrößern" }),
     ).toBeInTheDocument();
     expect(
+      within(view).getByRole("button", { name: "Anordnen" }),
+    ).toBeEnabled();
+    expect(
       screen.getByRole("img", { name: "Übersichtskarte" }),
     ).toBeInTheDocument();
   });

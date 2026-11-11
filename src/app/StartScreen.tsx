@@ -13,7 +13,7 @@ import { PresetCard } from "./PresetCard";
 /**
  * Startansicht (FR-2): die Presets und der leere Start.
  * Öffnen läuft über `openTopology` (T-303): fragt bei ungespeichertem Stand nach
- * und ersetzt per `replace`, die verlassene Arbeit bleibt mit „Rückgängig“ erreichbar.
+ * und ersetzt per `replace`; ungespeicherte Arbeit geht danach verloren.
  */
 export function StartScreen({ onResume }: { onResume: () => void }) {
   const presets = useCatalog((s) => s.catalog.presets);

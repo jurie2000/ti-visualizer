@@ -49,6 +49,7 @@ describe("Verbinden per Tastatur", () => {
     render(<Canvas />, { wrapper });
     const before = useTopology.getState().topology.edges.length;
     await verbinden("sw1", "rt1");
+    await userEvent.click(screen.getByRole("button", { name: "Verbinden" }));
     expect(useTopology.getState().topology.edges).toHaveLength(before + 1);
     expect(screen.getByRole("status")).toHaveTextContent(/Verbunden: /);
   });
@@ -143,6 +144,7 @@ describe("Verbinden per Klick: Punkt, dann Zielgerät", () => {
     );
     expect(ziel("rt1")).toHaveClass("is-active");
     await klickZiel(user, "rt1");
+    await user.click(screen.getByRole("button", { name: "Verbinden" }));
     expect(useTopology.getState().topology.edges).toHaveLength(before + 1);
     expect(screen.getByRole("status")).toHaveTextContent(/Verbunden: /);
   });

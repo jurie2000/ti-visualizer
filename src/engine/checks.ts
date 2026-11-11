@@ -2,6 +2,7 @@ import type { Catalog, Node, Topology } from "../schema";
 import { ADDRESSING } from "./addressing";
 import { cardState } from "./cards";
 import { resolvePath, zugangOf } from "./paths";
+import { BETRIEB } from "./checksBetrieb";
 import { matches } from "./rules";
 
 // Prüfregeln des Regelwerks 9, Teil Zustand (P-1 bis P-7, P-18, P-22,
@@ -26,6 +27,8 @@ export interface Finding {
 
 interface Hit {
   subject: string;
+  /** Überschreibt die Schwere der Regel (P-17a: Warnung, ab 50 Tagen Fehler). */
+  severity?: Severity;
   nodes: string[];
   edges?: string[];
 }
@@ -63,6 +66,7 @@ function neighbours(t: Topology) {
 
 const RULES: Record<string, Rule> = {
   ...ADDRESSING,
+  ...BETRIEB,
 
   "P-1": ({ t }) =>
     t.nodes
@@ -266,7 +270,7 @@ export function runChecks(
         finding: {
           key: `${check.id}:${hit.subject}`,
           id: check.id,
-          severity: check.severity,
+          severity: hit.severity ?? check.severity,
           name: check.name,
           explanation: check.explanation,
           nodes: hit.nodes,

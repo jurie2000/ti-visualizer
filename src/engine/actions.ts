@@ -1,5 +1,6 @@
 import type { Catalog, Expr, Node, Selector, Topology } from "../schema";
 import { CARD_NAMES, cardState, type CardKind } from "./cards";
+import { gatewayGrund, routeGrund, tunnelGrund } from "./checksBetrieb";
 import { resolvePath, terminalFor, zugangOf, type PathResult } from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes" | "actions">;
@@ -26,6 +27,10 @@ interface Ctx {
   terminals: Node[];
   /** Je Karte die passenden Terminals; mehr als eins heißt: Nutzer wählen. */
   fits: string[][];
+  /** Modus Erweitert: Prüfregeln, die den Pfad unterbrechen, gelten mit. */
+  advanced: boolean;
+  /** Nicht gepairte Terminals des Zugangs: ihre Karten sind unsichtbar (P-30). */
+  unpaired: Node[];
 }
 
 // Arbeitsplatz-PC und Tablet bieten die Aktionen dieser Primärsysteme an (Regelwerk 6.2, 6.7).
@@ -69,7 +74,12 @@ function needZugang(ctx: Ctx): string | undefined {
     )
       ? "Kein Zugang erreichbar."
       : "Kein Zugang (Konnektor oder TI-Gateway) im Netz.";
-  return reach(ctx, ctx.trigger.id, [ctx.zugang], "Kein Zugang erreichbar.");
+  return (
+    reach(ctx, ctx.trigger.id, [ctx.zugang], "Kein Zugang erreichbar.") ??
+    (ctx.advanced
+      ? gatewayGrund(ctx.trigger, ctx.topology, ctx.catalog)
+      : undefined)
+  );
 }
 
 // Karte X (6.1): steckt im Auslöser selbst (NFC, mobiles KT) oder in einem
@@ -79,14 +89,28 @@ function needCard(
   e: Extract<Expr, { card: string }>,
 ): string | undefined {
   const kind = e.card as CardKind;
-  const holders = [ctx.trigger, ...ctx.terminals].map((node) => ({
-    node,
-    state: cardState(ctx.topology, node.id, kind),
-  }));
+  // Ein nicht gepairtes Terminal als Auslöser verbirgt seine Karten ebenso (P-30).
+  const c = caps(ctx.catalog, ctx.trigger);
+  const selfHidden =
+    ctx.advanced &&
+    ctx.trigger.config?.paired === false &&
+    c.includes("cardSlots") &&
+    c.includes("netConfig:terminal");
+  const holders = [...(selfHidden ? [] : [ctx.trigger]), ...ctx.terminals].map(
+    (node) => ({
+      node,
+      state: cardState(ctx.topology, node.id, kind),
+    }),
+  );
   const plugged = holders.filter((h) => h.state.plugged);
   if (plugged.length === 0) {
     const msg = holders.find((h) => h.state.message)?.state.message;
     if (msg) return msg;
+    const hidden = [...(selfHidden ? [ctx.trigger] : []), ...ctx.unpaired].find(
+      (k) => cardState(ctx.topology, k.id, kind).plugged,
+    );
+    if (hidden)
+      return `${nameOf(ctx, hidden.id)} ist nicht gepairt, die ${CARD_NAMES[kind]} ist unsichtbar (P-30).`;
     const canHold =
       ctx.terminals.length > 0 ||
       caps(ctx.catalog, ctx.trigger).some(
@@ -151,14 +175,23 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
         const r = needZugang(ctx);
         if (r || !ctx.zugang) return r;
         const vpn = ofType(ctx, "vpn");
-        return vpn.length === 0
-          ? "Kein VPN-Zugangsdienst im Netz."
-          : reach(
-              ctx,
-              ctx.zugang,
-              vpn,
-              "Der Zugang hat keinen Weg zum VPN-Zugangsdienst.",
-            );
+        const weg =
+          vpn.length === 0
+            ? "Kein VPN-Zugangsdienst im Netz."
+            : reach(
+                ctx,
+                ctx.zugang,
+                vpn,
+                "Der Zugang hat keinen Weg zum VPN-Zugangsdienst.",
+              );
+        const zugang = ctx.topology.nodes.find((n) => n.id === ctx.zugang);
+        return (
+          weg ??
+          (ctx.advanced && zugang
+            ? (tunnelGrund(zugang, ctx.topology, ctx.catalog) ??
+              routeGrund(ctx.trigger, ctx.topology, ctx.catalog))
+            : undefined)
+        );
       }
       case "pruefungsnachweis":
         return unmet(ctx, {
@@ -215,7 +248,9 @@ export function availableActions(
   node: Node,
   topology: Topology,
   catalog: Cat,
+  mode: "simple" | "advanced" = "simple",
 ): ActionState[] {
+  const advanced = mode === "advanced";
   const types = ["pc", "tab"].includes(node.type)
     ? hostTypes(node, topology, catalog)
     : [node.type];
@@ -230,10 +265,13 @@ export function availableActions(
         : [];
   const groups = new Map<string | undefined, Node[]>();
   if (own) groups.set(zugangOf(topology, node.id, catalog), []);
+  const unpairedIds = new Set<string>();
   for (const t of topology.nodes.filter((n) => ids.includes(n.id))) {
     const z = zugangOf(topology, t.id, catalog);
-    groups.set(z, [...(groups.get(z) ?? []), t]);
+    if (advanced && t.config?.paired === false) unpairedIds.add(t.id);
+    else groups.set(z, [...(groups.get(z) ?? []), t]);
   }
+  const unpaired = topology.nodes.filter((n) => unpairedIds.has(n.id));
   if (groups.size === 0)
     for (const n of topology.nodes)
       if (caps(catalog, n).includes("zugang")) groups.set(n.id, []);
@@ -251,6 +289,8 @@ export function availableActions(
           zugang,
           terminals,
           fits: [],
+          advanced,
+          unpaired,
         };
         return { reason: unmet(ctx, a.requires), fits: ctx.fits };
       });

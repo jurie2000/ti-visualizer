@@ -2,7 +2,7 @@ import type { Edge as FlowEdge, Node as FlowNode } from "@xyflow/react";
 import { useState, type KeyboardEvent, type MouseEvent } from "react";
 import { TerminalDialog } from "../dialogs/TerminalDialog";
 import { availableActions } from "../engine/actions";
-import { useCatalog, useTopology, useUi } from "../store";
+import { useCatalog, useSettings, useTopology, useUi } from "../store";
 import { useToast } from "../ui/Toast";
 import { ContextMenu, type MenuEntry } from "./ContextMenu";
 
@@ -13,6 +13,7 @@ export function useContextMenu() {
   const topology = useTopology((s) => s.topology);
   const toggleFault = useTopology((s) => s.toggleFault);
   const catalog = useCatalog((s) => s.catalog);
+  const mode = useSettings((s) => s.mode);
   const toast = useToast();
   const [target, setTarget] = useState<Target>();
   const [choosing, setChoosing] = useState<{
@@ -47,7 +48,7 @@ export function useContextMenu() {
     }
     const node = topology.nodes.find((x) => x.id === t.id);
     if (!node) return [];
-    const actions = availableActions(node, topology, catalog).map(
+    const actions = availableActions(node, topology, catalog, mode).map(
       (a): MenuEntry => ({
         id: `action-${a.id}`,
         label: a.name,

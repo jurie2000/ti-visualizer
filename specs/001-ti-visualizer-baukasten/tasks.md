@@ -580,7 +580,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: je Regel ein positiver und ein negativer Testfall grün
     ist und die Regeln im Modus Einfach nicht melden.
 
-- [ ] **T-505 Prüfregeln Betrieb** [P] · FR: FR-17, FR-19 · Regeln: P-16, P-17, P-17a, P-19 bis P-21, P-23 bis P-30 · nach: T-503, T-502b
+- [x] **T-505 Prüfregeln Betrieb** [P] · FR: FR-17, FR-19 · Regeln: P-16, P-17, P-17a, P-19 bis P-21, P-23 bis P-30 · nach: T-503, T-502b
   - Umfang: Prüfregeln für Update, Zeit, Betriebsart, Firewall, DHCP,
     VLAN, Gateway, TI-Route, DNS, Arbeitsplatz, Pairing. Regeln, die den
     Pfad unterbrechen, fließen im Modus Erweitert in `availableActions`
@@ -589,7 +589,20 @@ Sicherheitsprüfung.
     ist, plus ein Test, dass P-27 die Aktion „eRezept ausstellen“
     ausgraut.
   - Dabei die Ausnahme `TEILWEISE` in `scripts/check-regelwerk-katalog.ts`
-    entfernen (T-503 hat sie für die Familie P eingeführt).
+    entfernen (T-503 hat sie für die Familie P eingeführt). T-504 läuft
+    parallel: T-505 verengt sie auf P-8 bis P-15 (`NOCH_OFFEN`), T-504
+    streicht den Rest.
+  - Auslegung (2026-11-11): Pfadwirkung in `availableActions(…, mode)`,
+    nur im Modus Erweitert: P-16, P-17, P-17a (erst ab 50 Tagen, die
+    Warnung sperrt nichts) und P-21 sperren Aktionen mit „TI-Pfad“; P-25
+    und P-26 sperren alles mit Zugang; P-27 sperrt den TI-Pfad (nicht
+    NFDM/eMP über den Zugang im LAN); P-30 verbirgt die Karten im Terminal.
+    P-19, P-20, P-23, P-24, P-28 und P-29 melden nur. „Segment“ wie bei
+    P-6; der Zugang eines Clients ist der im Segment (mehrere: es genügt
+    ein passender). Ungesetzte Felder und unbekannte Adressen (`ip` des
+    Zugangs oder Routers fehlt) gelten als passend. P-17a: Warnung ab 30,
+    Fehler ab 50 Tagen (`>=`). P-29 nur, wenn es ein Kartenterminal gibt.
+    Quelle: Regelwerk 8 und 9, `quellen.md` (gemSpec_Kon, Betriebsarten).
 
 - [ ] **T-506 Sicherheitsprüfung** · FR: FR-19 · Regeln: – · nach: T-503
   - Umfang: `SecurityDialog` aus der Kopfleiste: Befunde nach Schwere

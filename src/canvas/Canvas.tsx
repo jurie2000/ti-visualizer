@@ -1,6 +1,5 @@
 import {
   Background,
-  Controls,
   MiniMap,
   Panel,
   ReactFlow,
@@ -30,6 +29,7 @@ import { DeviceNode } from "./DeviceNode";
 import { ZoneButton } from "./ZoneButton";
 import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
+import { ZoomBar } from "./ZoomBar";
 import { SimPacket } from "./SimPacket";
 import { SimPlayer } from "./SimPlayer";
 import { containedNodes } from "../engine/zones";
@@ -67,10 +67,6 @@ const ariaLabelConfig = {
   }) =>
     `Nach ${{ up: "oben", down: "unten", left: "links", right: "rechts" }[direction] ?? direction} verschoben, neue Position x ${String(x)}, y ${String(y)}`,
   "edge.a11yDescription.default": "Enter oder Leertaste wählt die Verbindung.",
-  "controls.ariaLabel": "Ansicht",
-  "controls.zoomIn.ariaLabel": "Vergrößern",
-  "controls.zoomOut.ariaLabel": "Verkleinern",
-  "controls.fitView.ariaLabel": "Alles einpassen",
   "minimap.ariaLabel": "Übersichtskarte",
   "handle.ariaLabel": "Anschlusspunkt",
 };
@@ -306,10 +302,7 @@ export function Canvas() {
         <Panel position="top-right">
           <ZoneButton />
         </Panel>
-        <Panel position="bottom-center">
-          <SimPlayer />
-        </Panel>
-        <Controls showInteractive={false} />
+        <ZoomBar />
         <MiniMap
           pannable
           zoomable
@@ -320,6 +313,7 @@ export function Canvas() {
           }}
         />
       </ReactFlow>
+      <SimPlayer />
       {menu.element}
       <ExclusionDialog
         open={connecting.exclusion !== undefined}

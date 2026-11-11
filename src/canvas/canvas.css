@@ -8,11 +8,6 @@
     var(--color-bg) 70%,
     transparent
   );
-  --xy-controls-button-background-color: var(--color-surface);
-  --xy-controls-button-background-color-hover: var(--color-neutral-300);
-  --xy-controls-button-color: var(--color-text);
-  --xy-controls-button-color-hover: var(--color-text);
-  --xy-controls-button-border-color: var(--color-neutral-300);
   --xy-attribution-background-color: color-mix(
     in srgb,
     var(--color-surface) 80%,
@@ -424,12 +419,11 @@
 
 .tiv-sim {
   display: grid;
+  flex: none;
   gap: 10px;
-  width: min(640px, calc(100vw - 32px));
   padding: 13px 18px 15px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 12px;
+  background: var(--color-neutral-100);
+  border-top: 1px solid var(--color-divider);
 }
 .tiv-sim[hidden] {
   display: none;
@@ -567,4 +561,34 @@
 }
 .tiv-ports-row .is-used {
   font-weight: 700;
+}
+
+/* Zoomleiste (Mockup): Pille unten links auf der Fläche */
+.tiv-zoom__bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+  box-shadow: var(--shadow-sm);
+}
+.tiv-zoom__round {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+}
+.tiv-zoom__fit {
+  height: 32px;
+  border-radius: 999px;
+}
+.tiv-zoom__level {
+  min-width: 48px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }

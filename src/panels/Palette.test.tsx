@@ -1,11 +1,12 @@
 import { ReactFlowProvider } from "@xyflow/react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { IDLE } from "../engine/simulation";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "../canvas/Canvas";
 import { DRAG_TYPE } from "../canvas/deviceStyle";
-import { useCatalog, useTopology } from "../store";
+import { useCatalog, useSim, useTopology } from "../store";
 import { Palette } from "./Palette";
 import { PalettePanel } from "./PalettePanel";
 
@@ -91,6 +92,27 @@ describe("Palette", () => {
     add.focus();
     await user.keyboard("{Enter}{Enter}{Enter}");
     expect(pvsCount()).toBe(3);
+  });
+
+  it("T-703 meldet onAdded nur bei tatsächlich hinzugefügtem Gerät", async () => {
+    const user = userEvent.setup();
+    const onAdded = vi.fn();
+    render(
+      <ToastProvider>
+        <ReactFlowProvider>
+          <PalettePanel onAdded={onAdded} />
+        </ReactFlowProvider>
+      </ToastProvider>,
+    );
+    const add = screen.getByRole("button", {
+      name: "PVS Praxisverwaltungssystem hinzufügen",
+    });
+    useSim.setState({ sim: { ...IDLE, status: "running" } });
+    await user.click(add);
+    expect(onAdded).not.toHaveBeenCalled();
+    useSim.setState({ sim: IDLE });
+    await user.click(add);
+    expect(onAdded).toHaveBeenCalledTimes(1);
   });
 
   it("fügt per Drop auf die Canvas hinzu", () => {

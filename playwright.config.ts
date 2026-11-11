@@ -42,6 +42,12 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
+      // Tablet und kleine Bildschirme (T-703): Breiten setzt die Suite selbst
+      name: "responsive",
+      testMatch: "responsive.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
       // Nur Chromium: Kartenart ist ein natives <select>, das in WebKit die CSP meldet.
       name: "tutorial",
       testMatch: "tutorial.spec.ts",

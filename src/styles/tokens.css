@@ -55,6 +55,12 @@
   --tiv-focus: #944d1e;
   --tiv-focus-width: 3px;
 
+  /* Kopfleisten-Knöpfe und Umschalter: im Dunkeln heben sie sich vom Kopfband ab */
+  --tiv-btn-bg: var(--color-neutral-100);
+  --tiv-btn-bd: var(--color-divider);
+  --tiv-seg-bg: var(--color-neutral-200);
+  --tiv-seg-on: var(--color-neutral-100);
+
   /* Status: Text, Rand, Fläche */
   --tiv-error-fg: #7a2c00;
   --tiv-error-bd: #b3400b;
@@ -158,6 +164,10 @@
     --color-accent-2-800: #c6d3ac; /* Mockup lässt 800 hell: 1,4:1 auf dunklem 100 */
     --color-accent-2-900: #c6d3ac;
     --tiv-focus: #f0b37f;
+    --tiv-btn-bg: #3d3831;
+    --tiv-btn-bd: #6f6759;
+    --tiv-seg-bg: #1b1917;
+    --tiv-seg-on: #554d44;
     --tiv-error-fg: #ffc2a0;
     --tiv-error-bd: #e8845a;
     --tiv-error-bg: #3b2219;
@@ -212,6 +222,10 @@
   --color-accent-2-800: #c6d3ac; /* Mockup lässt 800 hell: 1,4:1 auf dunklem 100 */
   --color-accent-2-900: #c6d3ac;
   --tiv-focus: #f0b37f;
+  --tiv-btn-bg: #3d3831;
+  --tiv-btn-bd: #6f6759;
+  --tiv-seg-bg: #1b1917;
+  --tiv-seg-on: #554d44;
   --tiv-error-fg: #ffc2a0;
   --tiv-error-bd: #e8845a;
   --tiv-error-bg: #3b2219;

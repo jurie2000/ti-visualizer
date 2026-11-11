@@ -391,3 +391,21 @@
   gap: 8px;
   align-items: center;
 }
+
+/* Anschluss-Punkte (T-501): gefüllt = belegt, hohl = frei; Zustand steht auch im Text */
+.tiv-ports-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.625rem;
+}
+.tiv-ports-row li {
+  display: inline-flex;
+  gap: 2px;
+}
+.tiv-ports-row .is-used {
+  font-weight: 700;
+}

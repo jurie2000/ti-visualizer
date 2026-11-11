@@ -9,7 +9,8 @@ import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
 import { plugCardDialog } from "../dialogs/PlugCardDialog";
-import { useUi } from "../store";
+import { isFree } from "../engine/rules";
+import { useSettings, useTopology, useUi } from "../store";
 import { CardChip } from "./CardChip";
 import { HiddenToggle } from "./HiddenToggle";
 import type { DeviceFlowNode } from "./toFlow";
@@ -34,6 +35,8 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const dragging = useConnection().inProgress;
   const clicked = useStore((s) => s.connectionClickStartHandle !== null);
   const connecting = dragging || clicked;
+  const advanced = useSettings((s) => s.mode === "advanced");
+  const topology = useTopology((s) => s.topology);
   return (
     <div
       className={`tiv-node tiv-shape-${shape}${selected ? " is-selected" : ""}${node.fault ? " is-fault" : ""}`}
@@ -61,6 +64,23 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
             )}
           </span>
           <span className="tiv-node__name">{node.label ?? device.name}</span>
+          {advanced && (
+            <ul className="tiv-ports-row" aria-label="Anschlüsse">
+              {device.ports.map((p) => {
+                const free = isFree(topology, node.id, p);
+                return (
+                  <li
+                    key={p.id}
+                    className={free ? "is-free" : "is-used"}
+                    aria-label={`${p.name}: ${free ? "frei" : "belegt"}`}
+                  >
+                    <span aria-hidden="true">{free ? "○" : "●"}</span>
+                    <span aria-hidden="true">{p.name}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <div className="tiv-node__slot">
             {node.cards?.map((c) => (
               <CardChip

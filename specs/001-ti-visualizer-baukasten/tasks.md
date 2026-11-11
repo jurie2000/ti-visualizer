@@ -521,7 +521,7 @@ abspielen.
 Ziel: Anschlüsse, Einstellungen, Zonen, Editor-Hilfen und
 Sicherheitsprüfung.
 
-- [ ] **T-501 Anschlüsse und PortPicker** · FR: FR-14 · Regeln: A-1 bis A-4 · nach: T-207
+- [x] **T-501 Anschlüsse und PortPicker** · FR: FR-14 · Regeln: A-1 bis A-4 · nach: T-207
   - Umfang: Anschluss-Punkte am `DeviceNode` nur im Modus Erweitert.
     `PortPicker` beim Verbinden, belegte Anschlüsse erkennbar.
   - Fertig, wenn: RTL-Test zeigt: im Modus Erweitert wählt der Nutzer

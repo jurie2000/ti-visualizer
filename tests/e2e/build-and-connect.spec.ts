@@ -27,6 +27,10 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await expect(gerät(page, "switch-1")).toBeVisible();
     const vorher = await page.locator(".react-flow__edge").count();
     await perTastatur(page, "switch-1", "sw1");
+    await page
+      .getByRole("dialog", { name: "Anschlüsse wählen" })
+      .getByRole("button", { name: "Verbinden" })
+      .click();
     await expect(page.locator(".tiv-toasts")).toContainText("Verbunden: ");
     await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
   });
@@ -108,6 +112,10 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
       await expect(gerät(page, "switch-1")).toBeVisible();
       const vorher = await page.locator(".react-flow__edge").count();
       await perKlick(page, "switch-1", "sw1");
+      await page
+        .getByRole("dialog", { name: "Anschlüsse wählen" })
+        .getByRole("button", { name: "Verbinden" })
+        .click();
       await expect(page.locator(".tiv-toasts")).toContainText("Verbunden: ");
       await expect(page.locator(".react-flow__edge")).toHaveCount(vorher + 1);
     });

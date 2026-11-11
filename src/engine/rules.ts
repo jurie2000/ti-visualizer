@@ -87,7 +87,7 @@ const used = (topology: Topology, node: string, port: string) =>
     e.ends.some((end) => end.node === node && end.port === port),
   );
 
-const isFree = (topology: Topology, node: string, port: Port) =>
+export const isFree = (topology: Topology, node: string, port: Port) =>
   port.multi || !used(topology, node, port.id);
 
 interface Candidate extends PortPair {
@@ -144,6 +144,24 @@ export function autoPorts(
     catalog,
   ).find((c) => c.freeA && c.freeB);
   return hit && { a: hit.a, b: hit.b };
+}
+
+/** Alle verträglichen Anschlusspaare zweier Geräte für den PortPicker (A-3, Modus Erweitert); `free` heißt: beide Anschlüsse frei. */
+export function portPairs(
+  topology: Topology,
+  a: string,
+  b: string,
+  catalog: Catalog,
+): (PortPair & { free: boolean })[] {
+  const na = topology.nodes.find((n) => n.id === a);
+  const nb = topology.nodes.find((n) => n.id === b);
+  if (!na || !nb) return [];
+  return candidates(
+    topology,
+    { node: a, type: na.type },
+    { node: b, type: nb.type },
+    catalog,
+  ).map((c) => ({ a: c.a, b: c.b, free: c.freeA && c.freeB }));
 }
 
 /** A-4: Läuft eine Verbindung über `wifi`, ist sie eine WLAN-Verbindung. */

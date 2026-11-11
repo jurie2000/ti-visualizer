@@ -24,6 +24,7 @@ import {
 } from "../store";
 import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
+import { PortPicker } from "../dialogs/PortPicker";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { GroupEdge } from "./GroupEdge";
@@ -282,6 +283,7 @@ export function Canvas() {
         reason={connecting.exclusion ?? ""}
         onClose={connecting.closeExclusion}
       />
+      <PortPicker pair={connecting.picking} onClose={connecting.closePicking} />
     </>
   );
 }

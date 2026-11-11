@@ -228,3 +228,9 @@ a {
   margin: 4px 0 12px;
   padding-left: 18px;
 }
+.tiv-ports {
+  margin: 0 0 12px;
+}
+.tiv-ports label {
+  display: block;
+}

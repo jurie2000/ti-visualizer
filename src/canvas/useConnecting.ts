@@ -6,7 +6,8 @@ import {
 } from "@xyflow/react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { validateConnection } from "../engine/rules";
-import { useCatalog, useTopology } from "../store";
+import { useCatalog, useSettings, useTopology } from "../store";
+import type { PickPair } from "../dialogs/PortPicker";
 import { useToast } from "../ui/Toast";
 
 /** Regeln, deren Verstoß der ExclusionDialog erklärt: X-1 und V-10 (Konnektor an TI-Gateway). */
@@ -23,6 +24,7 @@ export function useConnecting() {
   const connect = useTopology((s) => s.connect);
   const [source, setSource] = useState<string>();
   const [exclusion, setExclusion] = useState<string>();
+  const [picking, setPicking] = useState<PickPair>();
   // Klick-Zug: Quelle vom ersten Klick, und ob der zweite Klick verbunden hat.
   // React Flow liefert im Klick-Modus kein Prüfergebnis an `onClickConnectEnd`.
   const clickFrom = useRef<string>(undefined);
@@ -61,6 +63,13 @@ export function useConnecting() {
   };
 
   const tryConnect = (a: string, b: string) => {
+    // A-3: im Modus Erweitert wählt der Nutzer die Anschlüsse; die Paarprüfung läuft vorher
+    if (useSettings.getState().mode === "advanced") {
+      const r = check(a, b);
+      if (r.ok) setPicking({ a, b });
+      else reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
+      return;
+    }
     const r = connect(a, b);
     if (r.ok) toast.show(`Verbunden: ${nameOf(a)} mit ${nameOf(b)}.`);
     else reject(r.reason, r.ruleId);
@@ -70,6 +79,11 @@ export function useConnecting() {
     /** Gerät, das per Tastatur als Quelle gewählt ist. */
     source,
     exclusion,
+    /** Geräte, zwischen denen der PortPicker offen ist. */
+    picking,
+    closePicking: () => {
+      setPicking(undefined);
+    },
     closeExclusion: () => {
       setExclusion(undefined);
     },

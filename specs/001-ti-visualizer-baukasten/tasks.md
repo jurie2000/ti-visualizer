@@ -611,7 +611,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: RTL-Test Auswahl und Hervorhebung prüft und ein Test
     zeigt, dass jede simulierte Störung (P-1, P-2) gefunden wird.
 
-- [ ] **T-507 Zonen** [P] · FR: FR-15 · Regeln: – · nach: T-202
+- [x] **T-507 Zonen** [P] · FR: FR-15 · Regeln: – · nach: T-202
   - Umfang: `ZoneNode`: Geräte gruppieren, Zone benennen, einfärben (nur
     feste Töne), verschieben, entfernen. Rückgängig machbar.
   - Fertig, wenn: RTL-Tests alle fünf Handlungen abdecken.

@@ -1,6 +1,14 @@
 import type { Edge as FlowEdge, Node as FlowNode } from "@xyflow/react";
 import { collapseHidden } from "../engine/collapse";
-import type { Catalog, Node as TopoNode, Point, Topology } from "../schema";
+import { containedNodes } from "../engine/zones";
+import type {
+  Catalog,
+  Node as TopoNode,
+  Point,
+  Tone,
+  Topology,
+  Zone,
+} from "../schema";
 import type { Mode, Selection } from "../store";
 import { NODE_SIZE } from "./deviceStyle";
 import { describeEdge, type EdgeKind } from "./edgeKind";
@@ -14,6 +22,9 @@ export interface DeviceNodeData extends Record<string, unknown> {
   category: Catalog["categories"][number] | undefined;
   /** Namen ausgeblendeter Geräte, die nur an diesem Gerät hängen (Modus Einfach). */
   hidden: string[];
+}
+export interface ZoneNodeData extends Record<string, unknown> {
+  zone: Zone;
 }
 export interface ConnectionEdgeData extends Record<string, unknown> {
   kind: EdgeKind;
@@ -30,9 +41,16 @@ export interface GroupEdgeData extends Record<string, unknown> {
   hidden: string[];
 }
 
+export type ZoneFlowNode = FlowNode<ZoneNodeData, "zone">;
 export type DeviceFlowNode = FlowNode<DeviceNodeData, "device">;
 export type ConnectionFlowEdge = FlowEdge<ConnectionEdgeData, "connection">;
 export type GroupFlowEdge = FlowEdge<GroupEdgeData, "group">;
+
+export const TONE_NAME: Record<Tone, string> = {
+  sage: "Salbei",
+  accent: "Akzent",
+  neutral: "Neutral",
+};
 
 /**
  * Bildet die Topologie auf React-Flow-Elemente ab. Die Topologie bleibt die
@@ -47,7 +65,7 @@ export function toFlow(
   drag: Record<string, Point> = {},
   mode: Mode = "advanced",
 ): {
-  nodes: DeviceFlowNode[];
+  nodes: (ZoneFlowNode | DeviceFlowNode)[];
   edges: (ConnectionFlowEdge | GroupFlowEdge)[];
   /** Namen ausgeblendeter Geräte ohne sichtbaren Nachbarn (Modus Einfach). */
   isolated: string[];
@@ -61,7 +79,24 @@ export function toFlow(
     const d = catalog.deviceTypes.find((t) => t.id === n?.type);
     return n?.label ?? d?.name ?? id;
   };
-  const nodes: DeviceFlowNode[] = [];
+  const nodes: (ZoneFlowNode | DeviceFlowNode)[] = [];
+  // Zonen zuerst und mit negativem zIndex: sie liegen hinter Geräten und Kanten
+  for (const zone of topology.zones) {
+    const selected = selection?.kind === "zone" && selection.id === zone.id;
+    const count = containedNodes(zone, topology.nodes, NODE_SIZE).length;
+    nodes.push({
+      id: zone.id,
+      type: "zone",
+      position: drag[zone.id] ?? { x: zone.area.x, y: zone.area.y },
+      width: zone.area.w,
+      height: zone.area.h,
+      zIndex: -1,
+      selected,
+      domAttributes: { "aria-roledescription": "Zone" },
+      ariaLabel: `Zone: ${zone.label ?? "ohne Namen"}, ${TONE_NAME[zone.tone]}, ${String(count)} Geräte${selected ? ", ausgewählt" : ""}`,
+      data: { zone },
+    });
+  }
   for (const node of view.nodes) {
     const device = catalog.deviceTypes.find((d) => d.id === node.type);
     if (!device) continue;

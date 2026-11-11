@@ -1,14 +1,19 @@
 import { z } from "zod";
 import { create } from "zustand";
+import { NODE_SIZE } from "../canvas/deviceStyle";
 import { defaultConfig } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
 import { autoPorts, validateConnection } from "../engine/rules";
+import { containedNodes } from "../engine/zones";
+import { strip } from "../persistence";
 import {
   configVariantOf,
   configVariants,
   LIMITS,
   type AnyCard,
   type Point,
+  type Rect,
+  type Tone,
   type Topology,
 } from "../schema";
 import { useCatalog } from "./catalogStore";
@@ -53,6 +58,17 @@ interface TopologyState {
   unplugCard: (nodeId: string, kind: CardKind) => void;
   /** Setzt Felder der Geräteeinstellungen (Regelwerk 8); `undefined` leert ein Feld. Prüft gegen das Schema der Variante. */
   setConfig: (nodeId: string, patch: Record<string, unknown>) => ActionResult;
+  /** Legt eine Zone an (FR-15); die Geräte darin ergeben sich aus der Lage. */
+  addZone: (area: Rect) => ActionResult;
+  /** Name (leer löscht ihn), Farbe aus festen Tönen, Größe. */
+  setZone: (
+    id: string,
+    patch: { label?: string; tone?: Tone; w?: number; h?: number },
+  ) => ActionResult;
+  /** Setzt die obere linke Ecke; die Geräte in der Zone ziehen als ein Schritt mit. */
+  moveZone: (id: string, to: Point) => void;
+  /** Entfernt nur die Zone, die Geräte bleiben. */
+  removeZone: (id: string) => void;
   /** Schaltet die Störung von Gerät oder Kante um. */
   toggleFault: (id: string) => void;
   /** Lehnt zu lange Texte ab (Grenzen aus `LIMITS`). */
@@ -63,6 +79,7 @@ interface TopologyState {
   redo: () => void;
 }
 
+const MAX_SIDE = 100_000;
 const clamp = (v: number) => Math.max(-LIMITS.coord, Math.min(LIMITS.coord, v));
 
 const freeId = (prefix: string, t: Topology) => {
@@ -185,6 +202,104 @@ export const useTopology = create<TopologyState>((set, get) => {
 
     unplugCard: (nodeId, kind) => {
       commit(unplugCard(get().topology, nodeId, kind));
+    },
+
+    addZone: (area) => {
+      const t = get().topology;
+      if (t.zones.length >= LIMITS.zones)
+        return fail(
+          `Mehr als ${String(LIMITS.zones)} Zonen sind nicht möglich.`,
+        );
+      const id = freeId("zone", t);
+      commit({
+        ...t,
+        zones: [
+          ...t.zones,
+          {
+            id,
+            tone: "sage",
+            area: {
+              x: clamp(area.x),
+              y: clamp(area.y),
+              w: Math.min(area.w, MAX_SIDE),
+              h: Math.min(area.h, MAX_SIDE),
+            },
+          },
+        ],
+      });
+      return { ok: true, id };
+    },
+
+    setZone: (id, patch) => {
+      const t = get().topology;
+      const zone = t.zones.find((z) => z.id === id);
+      if (!zone) return fail("Diese Zone gibt es nicht.");
+      const { label, w, h, tone } = patch;
+      const name = label === undefined ? undefined : strip(label).trim();
+      if (name !== undefined && name.length > LIMITS.name)
+        return fail(
+          `Der Name darf höchstens ${String(LIMITS.name)} Zeichen haben.`,
+        );
+      for (const side of [w, h])
+        if (side !== undefined && !(side > 0 && side <= MAX_SIDE))
+          return fail(
+            `Die Größe muss zwischen 1 und ${String(MAX_SIDE)} liegen.`,
+          );
+      const { label: oldLabel, ...rest } = zone;
+      const kept = name === undefined ? oldLabel : name;
+      commit({
+        ...t,
+        zones: t.zones.map((z) =>
+          z.id === id
+            ? {
+                ...rest,
+                ...(kept && { label: kept }),
+                tone: tone ?? zone.tone,
+                area: {
+                  ...zone.area,
+                  w: w ?? zone.area.w,
+                  h: h ?? zone.area.h,
+                },
+              }
+            : z,
+        ),
+      });
+      return { ok: true };
+    },
+
+    moveZone: (id, to) => {
+      const t = get().topology;
+      const zone = t.zones.find((z) => z.id === id);
+      if (!zone) return;
+      const dx = clamp(to.x) - zone.area.x;
+      const dy = clamp(to.y) - zone.area.y;
+      const inside = new Set(
+        containedNodes(zone, t.nodes, NODE_SIZE).map((n) => n.id),
+      );
+      commit({
+        ...t,
+        zones: t.zones.map((z) =>
+          z.id === id
+            ? { ...z, area: { ...z.area, x: z.area.x + dx, y: z.area.y + dy } }
+            : z,
+        ),
+        nodes: t.nodes.map((n) =>
+          inside.has(n.id)
+            ? {
+                ...n,
+                position: {
+                  x: clamp(n.position.x + dx),
+                  y: clamp(n.position.y + dy),
+                },
+              }
+            : n,
+        ),
+      });
+    },
+
+    removeZone: (id) => {
+      const t = get().topology;
+      commit({ ...t, zones: t.zones.filter((z) => z.id !== id) });
     },
 
     toggleFault: (id) => {

@@ -70,7 +70,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
     render(<Canvas />, { wrapper });
     const view = screen.getByLabelText("Ansicht");
     expect(
-      within(view).getByRole("button", { name: "Alles einpassen" }),
+      within(view).getByRole("button", { name: "Einpassen" }),
     ).toBeInTheDocument();
     expect(
       within(view).getByRole("button", { name: "Vergrößern" }),

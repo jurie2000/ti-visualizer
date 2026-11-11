@@ -179,8 +179,9 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   }) => {
     await menüAn(page, "pvs1");
     await eintrag(page, "Medikationsplan auslesen").click();
-    await page.getByRole("button", { name: /^Tempo 1×/ }).click();
-    await expect(page.getByRole("button", { name: /^Tempo 2×/ })).toBeVisible();
+    const tempo = page.getByRole("slider", { name: "Tempo" });
+    await tempo.fill("2");
+    await expect(tempo).toHaveAttribute("aria-valuetext", "2×");
     // vier Schritte zu je 1 s, kein fester Wartepunkt
     await expect(spieler(page)).toContainText("Ablauf beendet.", {
       timeout: 15_000,

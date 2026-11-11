@@ -1,6 +1,5 @@
 import {
   Background,
-  Controls,
   MiniMap,
   Panel,
   ReactFlow,
@@ -30,6 +29,8 @@ import { DeviceNode } from "./DeviceNode";
 import { ZoneButton } from "./ZoneButton";
 import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
+import { ZoomBar } from "./ZoomBar";
+import { SimPacket } from "./SimPacket";
 import { SimPlayer } from "./SimPlayer";
 import { containedNodes } from "../engine/zones";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
@@ -66,10 +67,6 @@ const ariaLabelConfig = {
   }) =>
     `Nach ${{ up: "oben", down: "unten", left: "links", right: "rechts" }[direction] ?? direction} verschoben, neue Position x ${String(x)}, y ${String(y)}`,
   "edge.a11yDescription.default": "Enter oder Leertaste wählt die Verbindung.",
-  "controls.ariaLabel": "Ansicht",
-  "controls.zoomIn.ariaLabel": "Vergrößern",
-  "controls.zoomOut.ariaLabel": "Verkleinern",
-  "controls.fitView.ariaLabel": "Alles einpassen",
   "minimap.ariaLabel": "Übersichtskarte",
   "handle.ariaLabel": "Anschlusspunkt",
 };
@@ -107,6 +104,9 @@ export function Canvas() {
     Record<string, { width: number; height: number }>
   >({});
 
+  // Teilstrecke des Pakets im aktuellen Schritt, -1 ohne Paket
+  const [hop, setHop] = useState(-1);
+
   const connecting = useConnecting();
   const menu = useContextMenu();
 
@@ -132,13 +132,13 @@ export function Canvas() {
         (e.type === "group" && litNodes.has(e.source) && litNodes.has(e.target))
           ? {
               ...e,
-              className: "is-sim",
+              className: lit?.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
               ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
             }
           : e,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
-    [flow.edges, lit],
+    [flow.edges, lit, hop],
   );
   const nodes = useMemo(
     () =>
@@ -291,6 +291,7 @@ export function Canvas() {
         ariaLabelConfig={ariaLabelConfig}
       >
         <Background />
+        {!reduceMotion && <SimPacket hop={hop} onHop={setHop} />}
         {isolated.length > 0 && (
           <Panel position="top-left" className="tiv-hint">
             {isolated.length === 1
@@ -301,10 +302,7 @@ export function Canvas() {
         <Panel position="top-right">
           <ZoneButton />
         </Panel>
-        <Panel position="bottom-center">
-          <SimPlayer />
-        </Panel>
-        <Controls showInteractive={false} />
+        <ZoomBar />
         <MiniMap
           pannable
           zoomable
@@ -315,6 +313,7 @@ export function Canvas() {
           }}
         />
       </ReactFlow>
+      <SimPlayer />
       {menu.element}
       <ExclusionDialog
         open={connecting.exclusion !== undefined}

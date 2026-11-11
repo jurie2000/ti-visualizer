@@ -1,5 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { act } from "react";
@@ -133,6 +133,19 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(node("pvs")).toHaveAccessibleName(/aktueller Schritt/);
   });
 
+  it("zeigt je Schritt ein Paket, bei reduzierter Bewegung keins (FR-9, D6)", () => {
+    const { unmount } = render(<Canvas />, { wrapper });
+    start();
+    expect(document.querySelector(".tiv-packet")).toHaveClass("is-moving");
+    unmount();
+    useSim.getState().close();
+    useSettings.setState({ reduceMotion: true });
+    render(<Canvas />, { wrapper });
+    start();
+    expect(document.querySelector(".tiv-packet")).toBeNull();
+    expect(node("pvs")).toHaveClass("is-sim");
+  });
+
   it("bedient sich per Tastatur: Pfeiltasten, Leertaste, Esc", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });
@@ -180,14 +193,14 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(live()).toHaveTextContent("Ablauf beendet");
   });
 
-  it("wechselt das Tempo reihum", async () => {
-    const user = userEvent.setup();
+  it("stellt das Tempo per Regler ein", () => {
     render(<Canvas />, { wrapper });
     start();
-    await user.click(screen.getByRole("button", { name: /Tempo 1×/ }));
+    const slider = screen.getByRole("slider", { name: "Tempo" });
+    expect(slider).toHaveAttribute("aria-valuetext", "1×");
+    fireEvent.change(slider, { target: { value: "2" } });
     expect(useSim.getState().sim.tempo).toBe(2);
-    await user.click(screen.getByRole("button", { name: /Tempo 2×/ }));
-    expect(useSim.getState().sim.tempo).toBe(0.5);
+    expect(slider).toHaveAttribute("aria-valuetext", "2×");
   });
 
   it("Palette und Drop fügen während der Simulation nichts hinzu", async () => {

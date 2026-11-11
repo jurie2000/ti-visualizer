@@ -22,7 +22,14 @@ export type PathKind = "ti" | "local";
 export type PathResult =
   | { ok: true; nodes: string[]; edges: string[]; zugang?: string }
   | { ok: false; reason: "kein-weg" }
-  | { ok: false; reason: "ausgefallen"; at: string };
+  | {
+      ok: false;
+      reason: "ausgefallen";
+      at: string;
+      /** Der sonst gültige Weg, gestört oder nicht (für die Simulation). */
+      nodes: string[];
+      edges: string[];
+    };
 
 type Catalogue = Pick<Catalog, "deviceTypes">;
 
@@ -201,7 +208,12 @@ export function resolvePath(
   // in Wegreihenfolge: Knoten, Kante, Knoten, ...
   const inOrder = ignoring.nodes.flatMap((n, i) => [n, ignoring.edges[i]]);
   const at = inOrder.find((id) => id !== undefined && faulty.has(id));
-  return { ok: false, reason: "ausgefallen", at: at as string };
+  return {
+    ok: false,
+    reason: "ausgefallen",
+    at: at as string,
+    ...ignoring,
+  };
 }
 
 export type TerminalChoice =

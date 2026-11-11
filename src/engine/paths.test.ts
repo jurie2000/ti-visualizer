@@ -193,7 +193,7 @@ describe("Pfadregel 6.0", () => {
   it("Ausgefallenes Gerät unterbricht den Pfad und wird genannt", () => {
     const t = praxis();
     (t.nodes.find((n) => n.id === "kon") as Node).fault = true;
-    expect(resolvePath(t, "pvs", "erp", catalog)).toEqual({
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
       ok: false,
       reason: "ausgefallen",
       at: "kon",
@@ -204,7 +204,7 @@ describe("Pfadregel 6.0", () => {
     const t = praxis();
     (t.edges.find((e) => e.id === "rt-net") as Topology["edges"][0]).fault =
       true;
-    expect(resolvePath(t, "pvs", "erp", catalog)).toEqual({
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
       ok: false,
       reason: "ausgefallen",
       at: "rt-net",
@@ -214,7 +214,7 @@ describe("Pfadregel 6.0", () => {
   it("Ausgefallener Auslöser findet keinen Pfad und wird genannt", () => {
     const t = praxis();
     (t.nodes.find((n) => n.id === "pvs") as Node).fault = true;
-    expect(resolvePath(t, "pvs", "erp", catalog)).toEqual({
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
       ok: false,
       reason: "ausgefallen",
       at: "pvs",

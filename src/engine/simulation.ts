@@ -19,7 +19,7 @@ export interface BoundStep {
 export type Problem =
   | { kind: "fehlt" } // Gerät der Rolle nicht in der Topologie
   | { kind: "kein-weg" } // beide Enden da, Regelwerk 6.0 kennt keinen Weg
-  | { kind: "ausgefallen"; at: string } // Störung auf dem Weg
+  | { kind: "ausgefallen"; at: string; reached: Path } // Störung auf dem Weg; `reached` bis dorthin
   | { kind: "terminal-waehlen" }; // mehrere Terminals passen, T und K sind offen
 
 const caps = (c: Cat, n: Node) =>
@@ -32,6 +32,22 @@ const DIRECT: Record<string, string[]> = {
   mkt: ["pvs", "kis", "avs", "pflege"],
   kim: ["kk"],
 };
+
+/** Der Teil des Wegs bis zur Störung: Gerät bis einschließlich, bei einer Kante bis zu ihr. */
+function reachedPath(full: Path, topology: Topology): Path {
+  const down = new Set(
+    [...topology.nodes, ...topology.edges]
+      .filter((x) => x.fault)
+      .map((x) => x.id),
+  );
+  const order = full.nodes.flatMap((n, i) => [n, full.edges[i]]);
+  const i = order.findIndex((id) => id !== undefined && down.has(id));
+  const nodes = full.nodes.slice(0, Math.floor(i / 2) + 1);
+  // Ein einzelnes Gerät ist kein Weg: das Paket kommt gar nicht erst los
+  return nodes.length < 2
+    ? { nodes: [], edges: [] }
+    : { nodes, edges: full.edges.slice(0, Math.ceil(i / 2)) };
+}
 
 // Weg zwischen zwei Knoten, die Rückrichtung eingeschlossen (ein Pfad ist ungerichtet).
 function between(
@@ -52,8 +68,17 @@ function between(
         return x === a
           ? r
           : { nodes: [...r.nodes].reverse(), edges: [...r.edges].reverse() };
-      if (r.reason === "ausgefallen")
-        problem = { kind: "ausgefallen", at: r.at };
+      if (r.reason === "ausgefallen") {
+        const full =
+          x === a
+            ? r
+            : { nodes: [...r.nodes].reverse(), edges: [...r.edges].reverse() };
+        problem = {
+          kind: "ausgefallen",
+          at: r.at,
+          reached: reachedPath(full, topology),
+        };
+      }
     }
   }
   // Direkte Verbindungen außerhalb der Pfadregel (Regelwerk 4.2): mobiles KT ↔ Primärsystem (USB), KIM ↔ Krankenkasse.
@@ -166,7 +191,11 @@ export function bindFlow(
         : { kind: open && choosing ? "terminal-waehlen" : "fehlt" };
     return "nodes" in r
       ? { ...base, ...r }
-      : { ...base, nodes: [], edges: [], problem: r };
+      : {
+          ...base,
+          ...(r.kind === "ausgefallen" ? r.reached : { nodes: [], edges: [] }),
+          problem: r,
+        };
   });
 }
 

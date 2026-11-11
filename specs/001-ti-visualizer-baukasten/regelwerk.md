@@ -605,7 +605,7 @@ Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 
 **Simulation und Bearbeitung:** Während eine Simulation läuft oder
 pausiert, ist die Topologie gesperrt. Öffnen einer Datei, Moduswechsel,
-Rückgängig und Störungen brechen die Simulation ab.
+Störungen und jede Änderung der Topologie brechen die Simulation ab.
 
 **Kein fachlicher Zustand (Vereinfachung):** Das Modell merkt sich nicht,
 ob ein Rezept ausgestellt oder ein Medikationsplan geschrieben wurde.

@@ -727,7 +727,19 @@ Sicherheitsprüfung.
     Ovalkasten, Modus und Farbschema als Umschalter-Pille.
     Auslegung (2026-11-11): Justin hat die Streichung im Chat angewiesen;
     die Listenansicht (T-701) als Textalternative zu FR-22 entfällt damit.
+    Spec angepasst: `spec.md` (FR-16, FR-22), `plan.md` (D25, Layout,
+    Screenreader, Tests), `regelwerk.md` (Simulation). Anordnen ist ohne
+    Rückgängig nicht umkehrbar; Justin nimmt das in Kauf.
   - Fertig, wenn: Unit- und E2E-Suiten ohne die entfernten Knöpfe grün sind.
+
+- [ ] **T-709 Verlauf im Store entfernen** · FR: FR-16 · Regeln: – · nach: T-708 · Folge aus Review #110
+  - Umfang: `undo`, `redo`, `past`, `future` und `HISTORY_LIMIT` aus dem
+    Topologie-Store entfernen, ohne Oberfläche sind sie unerreichbar
+    (D25 entfällt, Entscheidung Justin 2026-11-11). Tests, die `past` als
+    Schrittzähler nutzen, auf Topologie-Vergleich umstellen; Hinweis
+    „Undo/Redo“ in `architektur.md`. Unsaved-Erkennung und Autosave
+    prüfen.
+  - Fertig, wenn: kein Aufrufer mehr existiert und die Suiten grün sind.
 
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,

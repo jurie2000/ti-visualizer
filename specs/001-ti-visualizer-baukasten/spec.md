@@ -45,9 +45,8 @@ Log-Import und Replay gehören nicht dazu.
    erklärenden Meldung.
 4. Benutzer fasst Geräte in **Zonen** zusammen (z. B. „Praxisnetz“,
    „Telematikinfrastruktur“), benennt und färbt sie.
-5. Benutzer nutzt die üblichen Editor-Hilfen: Rückgängig/Wiederholen,
-   Kopieren/Einfügen/Duplizieren, automatisch anordnen, Zoom, Minimap,
-   „alles einpassen“.
+5. Benutzer nutzt die Editor-Hilfen: Kopieren/Einfügen, automatisch
+   anordnen, Zoom, Minimap, „alles einpassen“.
 6. Benutzer speichert seine Topologie als Datei, auf Wunsch zusammen mit
    seinen Einstellungen, und öffnet sie später wieder, auch in einem
    anderen Browser oder auf einem anderen Gerät. Beim Öffnen wird die
@@ -137,9 +136,9 @@ Log-Import und Replay gehören nicht dazu.
   viele Verbindungen ein Anschluss trägt, legt das Regelwerk fest.
 - **FR-15**: **Zonen**: Geräte gruppieren, Zone benennen, einfärben,
   verschieben und entfernen.
-- **FR-16**: **Editor-Hilfen**: Rückgängig/Wiederholen, Kopieren/Einfügen/
-  Duplizieren, automatisch anordnen (rückgängig machbar), Zoom, Minimap,
-  alles einpassen.
+- **FR-16**: **Editor-Hilfen**: Kopieren/Einfügen, automatisch anordnen,
+  Zoom, Minimap, alles einpassen. Rückgängig/Wiederholen und Duplizieren
+  entfallen (Entscheidung Justin 2026-11-11, T-708).
 - **FR-17**: **Geräteeinstellungen** im Modus Erweitert, soweit für das
   Verständnis der TI nötig: IP-Adresse, Netzmaske, Gateway, DNS, VLAN,
   DHCP, Betriebsart des Konnektors (Reihe/Parallel), Secure Internet
@@ -159,7 +158,8 @@ Log-Import und Replay gehören nicht dazu.
   mit Aufgabenstellung. Das System erkennt, wenn der Fehler behoben ist,
   und merkt sich gelöste Herausforderungen in den Einstellungen.
 - **FR-22**: **Hell-/Dunkelmodus** und vollständige Tastaturbedienung mit
-  Übersicht der Tastaturkürzel.
+  Übersicht der Tastaturkürzel. Eine Listenansicht als Textalternative
+  zur Fläche entfällt (Entscheidung Justin 2026-11-11, T-708).
 
 ## Komponentenkatalog
 

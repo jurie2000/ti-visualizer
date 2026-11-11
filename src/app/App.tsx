@@ -26,6 +26,33 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
+  // Unter 1100 px sind Palette und Detailpanel Überlagerungen (T-703)
+  const [overlay, setOverlay] = useState<"palette" | "detail" | null>(null);
+  useEffect(() => {
+    if (overlay)
+      document.querySelector<HTMLElement>(`.tiv-${overlay}`)?.focus();
+  }, [overlay]);
+  useEffect(() => {
+    if (!overlay) return;
+    const onKey = (e: KeyboardEvent) => {
+      // Nur aus der Überlagerung selbst; Dialoge, Verbinden und Menüs behalten ihr Escape
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (
+        !(e.target as Element).closest(
+          ".tiv-palette, .tiv-detail, .tiv-overlaybar",
+        )
+      )
+        return;
+      document
+        .querySelector<HTMLElement>('.tiv-overlaybar [aria-expanded="true"]')
+        ?.focus();
+      setOverlay(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [overlay]);
   // Beim Ansichtswechsel verschwindet der bediente Button: Fokus auf den neuen Hauptbereich (D10)
   const mainRef = useRef<HTMLElement>(null);
   const first = useRef(true);
@@ -87,6 +114,10 @@ export function App() {
             <ThemeToggle />
           </div>
         </header>
+        <p className="tiv-smallhint" role="note">
+          Der Baukasten ist für größere Bildschirme gedacht. Presets und Dateien
+          lassen sich trotzdem ansehen und abspielen.
+        </p>
         <ReactFlowProvider>
           {!started ? (
             <main
@@ -105,14 +136,41 @@ export function App() {
             </main>
           ) : (
             <main ref={mainRef} tabIndex={-1} className="tiv-main">
-              <aside className="tiv-palette" aria-label="Palette">
-                <PalettePanel />
+              <aside
+                className="tiv-palette"
+                aria-label="Palette"
+                tabIndex={-1}
+                data-open={overlay === "palette"}
+              >
+                <PalettePanel
+                  onAdded={() => {
+                    setOverlay(null);
+                  }}
+                />
               </aside>
               <section className="tiv-canvas" aria-label="Canvas">
+                <div className="tiv-overlaybar">
+                  {(["palette", "detail"] as const).map((k) => (
+                    <Button
+                      key={k}
+                      aria-expanded={overlay === k}
+                      onClick={() => {
+                        setOverlay(overlay === k ? null : k);
+                      }}
+                    >
+                      {k === "palette" ? "Palette" : "Details"}
+                    </Button>
+                  ))}
+                </div>
                 {tutorial && <TutorialCard />}
                 <Canvas />
               </section>
-              <aside className="tiv-detail" aria-label="Detailpanel">
+              <aside
+                className="tiv-detail"
+                aria-label="Detailpanel"
+                tabIndex={-1}
+                data-open={overlay === "detail"}
+              >
                 <DetailPanel />
               </aside>
             </main>

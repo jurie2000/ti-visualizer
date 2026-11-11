@@ -50,6 +50,19 @@ describe("Editor-Hilfen: Kürzel (FR-16, D10, T-508)", () => {
     expect(t().topology.nodes).toHaveLength(0);
   });
 
+  it("T-703 Symbole sind für Screenreader verborgen, der Name bleibt", () => {
+    ui();
+    for (const name of [
+      "Rückgängig",
+      "Wiederholen",
+      "Duplizieren",
+      "Anordnen",
+    ]) {
+      const knopf = screen.getByRole("button", { name });
+      expect(knopf.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    }
+  });
+
   it("FR-16 Kopfleisten-Knöpfe sind je nach Verlauf bedienbar", async () => {
     const user = userEvent.setup();
     ui();

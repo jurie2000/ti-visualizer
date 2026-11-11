@@ -13,7 +13,7 @@ const visibleSimple = (d: DeviceType) => d.visibleSimple;
  * übereinander landen). Läuft innerhalb des `ReactFlowProvider`.
  * Im Modus Einfach zeigt sie nur Typen mit `visibleSimple` (Regelwerk 11).
  */
-export function PalettePanel() {
+export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
@@ -37,7 +37,10 @@ export function PalettePanel() {
       y: Math.round(center.y - NODE_SIZE.height / 2 + shift),
     });
     if (!result.ok) toast.show(result.reason);
-    else if (result.id) select({ kind: "node", id: result.id });
+    else if (result.id) {
+      select({ kind: "node", id: result.id });
+      onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
+    }
   };
 
   return (

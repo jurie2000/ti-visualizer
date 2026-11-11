@@ -1,3 +1,4 @@
+import { LayoutGrid, Redo2, Copy, Undo2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
   arrange,
@@ -140,7 +141,8 @@ export function EditControls() {
         title={label("Z")}
         aria-keyshortcuts={keyshortcuts("Z")}
       >
-        Rückgängig
+        <Undo2 size={18} aria-hidden="true" className="tiv-edit__icon" />
+        <span className="tiv-edit__text">Rückgängig</span>
       </Button>
       <Button
         onClick={redo}
@@ -148,7 +150,8 @@ export function EditControls() {
         title={label("Y")}
         aria-keyshortcuts={keyshortcuts("Y")}
       >
-        Wiederholen
+        <Redo2 size={18} aria-hidden="true" className="tiv-edit__icon" />
+        <span className="tiv-edit__text">Wiederholen</span>
       </Button>
       <Button
         onClick={duplicate}
@@ -156,10 +159,12 @@ export function EditControls() {
         title={label("D")}
         aria-keyshortcuts={keyshortcuts("D")}
       >
-        Duplizieren
+        <Copy size={18} aria-hidden="true" className="tiv-edit__icon" />
+        <span className="tiv-edit__text">Duplizieren</span>
       </Button>
-      <Button onClick={doArrange} disabled={locked}>
-        Anordnen
+      <Button onClick={doArrange} disabled={locked} title="Anordnen">
+        <LayoutGrid size={18} aria-hidden="true" className="tiv-edit__icon" />
+        <span className="tiv-edit__text">Anordnen</span>
       </Button>
     </div>
   );

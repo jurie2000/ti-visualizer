@@ -695,7 +695,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: ein E2E-Durchlauf nur per Tastatur Preset öffnen, Gerät
     ergänzen, verbinden, Aktion abspielen und speichern schafft.
 
-- [ ] **T-703 Tablet und kleine Bildschirme** [P] · FR: – · Regeln: – · nach: T-203, T-406
+- [x] **T-703 Tablet und kleine Bildschirme** [P] · FR: – · Regeln: – · nach: T-203, T-406
   - Umfang: unter 1100 px Palette und Detailpanel als Überlagerung, unter
     700 px Hinweis, Presets und Dateien bleiben ansehbar.
   - Fertig, wenn: Playwright-Tests in beiden Breiten grün sind.

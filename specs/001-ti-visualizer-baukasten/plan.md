@@ -229,6 +229,11 @@ catalog/
 - Prüfregeln und Voraussetzungen sind als kleine, deklarative Ausdrücke
   beschrieben (z. B. `{ "card": "hba", "unlocked": true }`), die die
   Engine auswertet. Kein ausführbarer Code im JSON.
+  Auslegung (2026-11-11, T-503): Das gilt für Voraussetzungen. Prüfregeln
+  brauchen Graphbedingungen (Pfad, Segment, Pairing), die der Ausdruck
+  nicht trägt. Ihre Logik steht in `engine/checks.ts`, der Katalog hält
+  Name, Schwere, Erklärtext, Quelle und Status (`checks.json`, Feld
+  `explanation` statt `when`). Das gilt auch für T-504 und T-505.
 - Ein Vitest-Test prüft Schemas und Referenzen (jede Regel zeigt auf
   existierende Typen, Anschlüsse, Protokolle, Quellen).
 

@@ -232,7 +232,8 @@ export const checks = z.array(
     name: Text,
     severity: z.enum(["Fehler", "Warnung", "Hinweis"]),
     onlyAdvanced: z.boolean(),
-    when: Expr,
+    /** Lerntext: warum die Regel zählt. Die Logik steht in `engine/checks.ts`. */
+    explanation: Text,
     ...sourced,
   }),
 );
@@ -413,7 +414,6 @@ export function checkReferences(c: Catalog): string[] {
       ref(w, s.to, ends, "Gerätetyp");
       if (s.protocol) ref(w, s.protocol, protos, "Protokoll");
     }
-  for (const k of c.checks) expr(`Prüfregel ${k.id}`, k.when);
   for (const h of c.challenges) {
     const w = `Herausforderung ${h.id}`;
     ref(w, h.preset, presetIds, "Preset");

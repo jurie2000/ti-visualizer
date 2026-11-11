@@ -5,13 +5,16 @@ import { ID, regelwerkRows } from "./regelwerk.ts";
 
 // Familien, die der Katalog immer führt (T-104). Weitere kommen über die Katalogdaten dazu.
 const KATALOG_FAMILIEN = ["G", "V", "X"];
+// Prüfregeln: T-505 entfernt diese Ausnahme, dann steht P vollständig im Katalog.
+const TEILWEISE = "P";
 
 export type KatalogRegel = { id: string; status?: string; source?: string[] };
 
 /**
  * Vergleicht je Regel-Familie (Buchstabe), die im Katalog vorkommt. Familien
- * ohne Katalogeinträge (K, P …) liegen noch in der Engine und werden
- * nicht verlangt.
+ * ohne Katalogeinträge (K …) liegen noch in der Engine und werden nicht
+ * verlangt. Familie P wächst mit T-503 bis T-505: fehlende Einträge sind
+ * bis dahin erlaubt.
  */
 export function pruefeRegelwerkKatalog(
   regelwerk: string,
@@ -26,8 +29,9 @@ export function pruefeRegelwerkKatalog(
   const sortiert = (q: string[]) => [...q].sort().join(", ");
   for (const r of soll.filter((s) => familien.has(s.id[0]))) {
     const k = katalog.find((x) => x.id === r.id);
-    if (!k) fehler.push(`${r.id}: fehlt im Katalog`);
-    else {
+    if (!k) {
+      if (r.id[0] !== TEILWEISE) fehler.push(`${r.id}: fehlt im Katalog`);
+    } else {
       if (r.status === "?")
         fehler.push(`${r.id}: Status im Regelwerk unlesbar`);
       else if (k.status !== r.status)

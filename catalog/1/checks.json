@@ -178,5 +178,131 @@
     "explanation": "Der Zugang baut den VPN-Tunnel in die TI über das Internet auf. Er braucht dafür eine Verbindung zum Router oder direkt zum VPN-Zugangsdienst.",
     "source": ["Betriebsarten"],
     "status": "bestätigt"
+  },
+  {
+    "id": "P-16",
+    "name": "Kritisches Update nicht eingespielt, deshalb kein VPN-Tunnel",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Fehlt ein kritisches Update nach Ablauf der Frist, baut der Zugang keinen VPN-Tunnel mehr auf. Alle Dienste der TI sind dann nicht erreichbar.",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-17",
+    "name": "Zeitabweichung des Zugangs über 3600 s",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Weicht die Uhr des Zugangs um mehr als 3600 Sekunden von der TI-Zeit ab (NTP_MAX_TIMEDIFFERENCE), geht der Zugang in den Fehlerzustand.",
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-17a",
+    "name": "Keine Zeitsynchronisation seit 30 Tagen",
+    "severity": "Warnung",
+    "onlyAdvanced": true,
+    "explanation": "Nach 30 Tagen ohne Zeitsynchronisation warnt der Zugang (NTP_WARN_PERIOD), nach 50 Tagen ist es ein Fehler (NTP_GRACE_PERIOD).",
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-19",
+    "name": "Parallelbetrieb ohne Firewall",
+    "severity": "Warnung",
+    "onlyAdvanced": true,
+    "explanation": "Im Parallelbetrieb schützt der Zugang das LAN nicht vor dem Internet. Dann braucht das Netz eine eigene Firewall.",
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-20",
+    "name": "Parallelbetrieb ohne Router",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Der Parallelbetrieb setzt einen Router voraus, der den Weg ins Internet bereitstellt. Ohne Router erreicht der Zugang das Internet nicht.",
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-21",
+    "name": "Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Der VPN-Tunnel braucht UDP 500 und 4500 (IPsec). Blockiert die Firewall des Routers sie, kommt kein Tunnel zustande.",
+    "source": ["gemSpec_VPN_ZugD"],
+    "status": "plausibel"
+  },
+  {
+    "id": "P-23",
+    "name": "DHCP aktiv, aber kein DHCP-Server im Segment",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Ein Gerät mit DHCP bezieht seine Adresse von einem DHCP-Server im selben Segment. Ohne Server bekommt es keine Adresse.",
+    "source": ["gemSpec_Kon"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-24",
+    "name": "Gerät in anderem VLAN als der Zugang",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Geräte und Zugang müssen im selben Segment liegen. Ein anderes VLAN trennt sie, obwohl sie am selben Switch hängen.",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-25",
+    "name": "Reihenbetrieb: Gateway eines Clients ist nicht der Zugang",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "In Reihe liegt der Zugang zwischen LAN und Router. Das Gateway der Clients muss der Zugang sein, sonst läuft der Verkehr an ihm vorbei.",
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-26",
+    "name": "Parallelbetrieb: Gateway eines Clients ist nicht der Router",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Im Parallelbetrieb führt der Router ins Internet. Das Gateway der Clients muss der Router sein.",
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-27",
+    "name": "Parallelbetrieb: Client ohne Route 100.102.0.0/15 über den Zugang",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Im Parallelbetrieb braucht jeder Client die Route 100.102.0.0/15 über den Zugang, sonst erreicht er offene Fachdienste und WANDA nicht.",
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-28",
+    "name": "DNS eines Clients ist nicht der Zugang",
+    "severity": "Warnung",
+    "onlyAdvanced": true,
+    "explanation": "TI-Namen löst der Zugang auf. Mit einem anderen DNS-Server scheitert die Namensauflösung der TI. Wegen des Rückbaus von Split-DNS (C_12389) neu zu prüfen.",
+    "source": ["gemILF_PS"],
+    "status": "plausibel"
+  },
+  {
+    "id": "P-29",
+    "name": "Arbeitsplatz eines Clients keinem Kartenterminal zugeordnet",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet. Ohne passendes Terminal findet der Client keine Karten.",
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-30",
+    "name": "Kartenterminal nicht gepairt, Karten darin sind unsichtbar",
+    "severity": "Fehler",
+    "onlyAdvanced": true,
+    "explanation": "Ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus. Die Karten im Terminal sind für ihn unsichtbar.",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
   }
 ]

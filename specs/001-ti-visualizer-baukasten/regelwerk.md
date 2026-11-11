@@ -735,7 +735,7 @@ mit Konfiguration wird geprüft.
 | ID | Regel | Feld | Schwere | Status | Quelle |
 |---|---|---|---|---|---|
 | P-16 | Kritisches Update nicht eingespielt, deshalb kein VPN-Tunnel | `updateOk` | Fehler | bestätigt | Arch |
-| P-17 | Zeitabweichung des Zugangs über 3600 s führt zum Fehlerzustand | `timeOffset` | Fehler | bestätigt | gemSpec_Kon (NTP_MAX_TIMEDIFFERENCE) |
+| P-17 | Zeitabweichung des Zugangs über 3600 s (NTP_MAX_TIMEDIFFERENCE) führt zum Fehlerzustand | `timeOffset` | Fehler | bestätigt | gemSpec_Kon |
 | P-17a | Keine Zeitsynchronisation seit 30 Tagen (Warnung) bzw. 50 Tagen (Fehler) | `lastTimeSync`, `simDate` | Warnung / Fehler | bestätigt | gemSpec_Kon |
 | P-19 | Parallelbetrieb ohne Firewall. Der Zugang schützt das LAN dann nicht vor dem Internet | `mode`, Firewall-Knoten | Warnung | bestätigt | Betriebsarten |
 | P-20 | Parallelbetrieb ohne Router | `mode`, Router-Knoten | Fehler | bestätigt | Betriebsarten |

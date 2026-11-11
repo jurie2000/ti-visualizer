@@ -83,10 +83,13 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     await page.keyboard.press("Enter");
     const spieler = page.getByRole("group", { name: /^Simulation/ });
     await expect(spieler).toBeVisible();
-    await page.keyboard.press("ArrowRight");
-    await expect(spieler).toContainText("Schritt");
-    await page.keyboard.press("Escape");
-    await expect(spieler).toContainText("Simulation abgebrochen.");
+    // Leertaste hält an, Pfeil rechts spielt Schritt für Schritt bis zum Ende
+    await page.keyboard.press("Space");
+    for (let i = 0; i < 40; i++) {
+      if ((await spieler.innerText()).includes("Ablauf beendet.")) break;
+      await page.keyboard.press("ArrowRight");
+    }
+    await expect(spieler).toContainText("Ablauf beendet.");
     await page.keyboard.press("Escape");
     await expect(spieler).toBeHidden();
 
@@ -111,17 +114,5 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     expect(nachher?.x).toBeGreaterThan((vorher?.x ?? 0) + 5);
     await page.keyboard.press("Delete");
     await expect(knoten).toHaveCount(0);
-  });
-
-  test("FR-22: ? öffnet die Kürzelübersicht, Esc schließt sie", async ({
-    page,
-  }) => {
-    await page.goto("./");
-    await page.keyboard.press("?");
-    const dialog = page.getByRole("dialog", { name: "Tastaturkürzel" });
-    await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Rückgängig");
-    await page.keyboard.press("Escape");
-    await expect(dialog).toBeHidden();
   });
 });

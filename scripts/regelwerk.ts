@@ -15,6 +15,9 @@ export type Row = {
 const alias: Record<string, string[]> = {
   "keine (Editorregel)": ["editor"],
   "FP Konnektor/TI-Gateway": ["FP_Konnektor"],
+  "keine (Simulation)": ["editor"],
+  keine: ["editor"],
+  "gemF_Laufzeitverlängerung_gSMC-K": ["gemF_Laufzeitverlaengerung_gSMC-K"],
 };
 
 const quellen = (cell: string): string[] =>
@@ -42,11 +45,13 @@ export function regelwerkRows(text: string): Row[] {
         )?.[1] ?? "?",
       source: quellen(cells[cells.length - 1] ?? ""),
     }));
-  // „siehe X-1“ (V-10) übernimmt die Quellen von X-1
+  // „siehe X-1“ (V-10) und „X-1“ (P-32) übernehmen die Quellen von X-1
   const x1 = rows.find((r) => r.id === "X-1")?.source ?? [];
   return rows.map((r) => ({
     ...r,
-    source: r.source.flatMap((q) => (q === "siehe X-1" ? x1 : [q])),
+    source: r.source.flatMap((q) =>
+      q === "siehe X-1" || q === "X-1" ? x1 : [q],
+    ),
   }));
 }
 

@@ -588,6 +588,8 @@ Sicherheitsprüfung.
   - Fertig, wenn: je Regel ein positiver und ein negativer Testfall grün
     ist, plus ein Test, dass P-27 die Aktion „eRezept ausstellen“
     ausgraut.
+  - Dabei die Ausnahme `TEILWEISE` in `scripts/check-regelwerk-katalog.ts`
+    entfernen (T-503 hat sie für die Familie P eingeführt).
 
 - [ ] **T-506 Sicherheitsprüfung** · FR: FR-19 · Regeln: – · nach: T-503
   - Umfang: `SecurityDialog` aus der Kopfleiste: Befunde nach Schwere

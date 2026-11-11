@@ -603,7 +603,7 @@ Sicherheitsprüfung.
     Fehler ab 50 Tagen (`>=`). P-29 nur, wenn es ein Kartenterminal gibt.
     Quelle: Regelwerk 8 und 9, `quellen.md` (gemSpec_Kon, Betriebsarten).
 
-- [ ] **T-506 Sicherheitsprüfung** · FR: FR-19 · Regeln: – · nach: T-503
+- [x] **T-506 Sicherheitsprüfung** · FR: FR-19 · Regeln: – · nach: T-503
   - Umfang: `SecurityDialog` aus der Kopfleiste: Befunde nach Schwere
     (Icon und Text, nicht nur Farbe), Klick hebt das Gerät hervor.
     Importbefunde aus T-301 erscheinen hier. Hinweis auf vereinfachte

@@ -5,11 +5,12 @@ import { AutosaveDialog } from "../dialogs/AutosaveDialog";
 import { ImportFindingsDialog } from "../dialogs/ImportFindingsDialog";
 import { OpenDialog } from "../dialogs/OpenDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
+import { SecurityDialog } from "../dialogs/SecurityDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
-import { initAutosave, useOpen } from "../store";
+import { initAutosave, useOpen, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
@@ -59,13 +60,22 @@ export function App() {
           <h1>TI Visualizer</h1>
           <div className="tiv-header__actions">
             {started && (
-              <Button
-                onClick={() => {
-                  setStarted(false);
-                }}
-              >
-                Startansicht
-              </Button>
+              <>
+                <Button
+                  onClick={() => {
+                    setStarted(false);
+                  }}
+                >
+                  Startansicht
+                </Button>
+                <Button
+                  onClick={() => {
+                    useUi.getState().openDialog("security");
+                  }}
+                >
+                  Sicherheitsprüfung
+                </Button>
+              </>
             )}
             <SaveControls />
             <ModeSwitch />
@@ -108,6 +118,7 @@ export function App() {
         <OpenDialog />
         <UnsavedGuardDialog />
         <ImportFindingsDialog />
+        <SecurityDialog />
         <AutosaveDialog
           onRestored={() => {
             setStarted(true);

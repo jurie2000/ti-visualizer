@@ -1,1 +1,110 @@
-[]
+[
+  {
+    "id": "P-1",
+    "name": "Gerät ist ausgefallen",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Ein ausgefallenes Gerät leitet nichts weiter. Alle Wege über dieses Gerät sind unterbrochen, bis es wieder läuft.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-2",
+    "name": "Verbindung ist unterbrochen",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Eine unterbrochene Verbindung trennt die beiden Geräte. Wege, die über sie laufen, sind nicht mehr verfügbar.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-3",
+    "name": "Gesteckte Karte ist abgelaufen",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Das Zertifikat einer abgelaufenen Karte wird nicht mehr akzeptiert. Die Karte zählt als nicht gesteckt, bis sie ersetzt ist.",
+    "source": ["gemSpec_PKI"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-4",
+    "name": "Kein Zugang (Konnektor, Highspeed-Konnektor, TI-Gateway)",
+    "severity": "Warnung",
+    "onlyAdvanced": false,
+    "explanation": "Ohne Zugang zur Telematikinfrastruktur kann keine Praxis, Apotheke oder Klinik Dienste der TI nutzen.",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-5",
+    "name": "Kartenterminal erreicht seinen Zugang nicht",
+    "severity": "Warnung",
+    "onlyAdvanced": false,
+    "explanation": "Ein Kartenterminal arbeitet nur mit seinem Zugang zusammen. Ohne Netzweg dorthin sind die Karten im Terminal für die TI unsichtbar.",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-6",
+    "name": "WLAN im selben Segment wie Kartenterminal oder Zugang",
+    "severity": "Warnung",
+    "onlyAdvanced": false,
+    "explanation": "Drahtlose Geräte sollten nicht im Segment von Kartenterminals und Zugang liegen. Ein eigenes VLAN trennt sie.",
+    "source": ["DVO"],
+    "status": "plausibel"
+  },
+  {
+    "id": "P-7",
+    "name": "Gerät ist mit nichts verbunden",
+    "severity": "Hinweis",
+    "onlyAdvanced": false,
+    "explanation": "Ein Gerät ohne Verbindung nimmt an keinem Weg teil. Es ist vermutlich vergessen worden.",
+    "source": ["editor"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-18",
+    "name": "Zertifikat der gSMC-K abgelaufen",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Die gSMC-K weist den Konnektor gegenüber der TI aus. Ist ihr Zertifikat abgelaufen, baut der Konnektor keine Verbindung mehr auf.",
+    "source": ["Arch", "gemF_Laufzeitverlaengerung_gSMC-K"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-22",
+    "name": "HBA oder SMC-B nicht freigeschaltet",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "HBA und SMC-B müssen mit ihrer PIN freigeschaltet sein, sonst können sie nicht signieren oder sich authentisieren.",
+    "source": ["gemILF_PS_AMTS", "gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-31",
+    "name": "Kartenterminal mit mehr als einem Zugang gepairt",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Ein Kartenterminal arbeitet immer nur mit einem Konnektor zusammen. Pairing und direkte Verbindungen dürfen nur auf einen Zugang zeigen.",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "id": "P-32",
+    "name": "Konnektor und TI-Gateway in derselben Topologie",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Eine Topologie bildet in diesem Lernmodell eine Einrichtung mit einem Zugangsweg ab: Konnektor oder TI-Gateway, nicht beide.",
+    "source": ["FP_Konnektor", "gemF_TI-Gateway"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "P-33",
+    "name": "Zugang ohne Weg ins Internet",
+    "severity": "Fehler",
+    "onlyAdvanced": false,
+    "explanation": "Der Zugang baut den VPN-Tunnel in die TI über das Internet auf. Er braucht dafür eine Verbindung zum Router oder direkt zum VPN-Zugangsdienst.",
+    "source": ["Betriebsarten"],
+    "status": "bestätigt"
+  }
+]

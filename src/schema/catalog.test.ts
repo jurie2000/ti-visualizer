@@ -135,7 +135,7 @@ const valid = {
       name: "Kein Zugang",
       severity: "Warnung",
       onlyAdvanced: false,
-      when: { not: { present: "kon" } },
+      explanation: "Ohne Zugang keine TI.",
       ...base,
     },
   ],

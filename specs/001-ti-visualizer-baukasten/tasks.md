@@ -566,7 +566,7 @@ Sicherheitsprüfung.
     ab. Während einer Simulation ist das Formular gesperrt (Regelwerk 7).
     Quelle: Regelwerk 8, `quellen.md` (DVO).
 
-- [ ] **T-503 Prüfregeln Zustand** [P] · FR: FR-19 · Regeln: P-1 bis P-7, P-18, P-22, P-31, P-32, P-33 · nach: T-106, T-107
+- [x] **T-503 Prüfregeln Zustand** [P] · FR: FR-19 · Regeln: P-1 bis P-7, P-18, P-22, P-31, P-32, P-33 · nach: T-106, T-107
   - Umfang: `checks.json` (Teil Zustand) und `runChecks(topology, mode)`
     in `src/engine/checks.ts` mit Schwere, Erklärung und betroffenem
     Gerät.

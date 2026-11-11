@@ -665,6 +665,36 @@ dort einstellbar sind. Alle anderen gelten in beiden Modi.
 | P-32 | Konnektor und TI-Gateway in derselben Topologie | Node `type` | Fehler | Vereinfachung | X-1 |
 | P-33 | Zugang ohne Weg ins Internet (weder zum Router noch direkt zum VPN-Zugangsdienst) | Kanten | Fehler | bestätigt | Betriebsarten |
 
+Auslegung (2026-11-11, T-503): Die Regeln hängen an Geräten und Kanten,
+nicht am „ersten Gerät“. Ein Befund nennt Regel, Schwere, Erklärtext und
+die betroffenen Geräte (und Kante). Ungesetzte Felder gelten als
+Standardwert (Regelwerk 8), nicht als Verstoß.
+
+- P-1, P-2: Ausfälle melden nur diese Regeln. P-5 und P-33 prüfen die
+  Verdrahtung ohne Rücksicht auf Ausfälle, damit ein Ausfall nicht doppelt
+  erscheint.
+- P-3, P-22: wie K-3 und K-4 (`cardState`). Ablauf am `simDate` gilt noch.
+  Eine abgelaufene Karte meldet nur P-3, nicht zusätzlich P-22. Ungesetztes
+  `unlocked` zählt als nicht freigeschaltet.
+- P-4: nur bei mindestens einem Gerät. Ein ausgefallener Zugang ist
+  vorhanden (P-1).
+- P-5: gilt für das stationäre eHealth-KT (`kt`), nicht für das mobile
+  Kartenterminal (offline) und nicht für CardLink. Ein Terminal ohne
+  bestimmbaren Zugang (nach 6.0) meldet P-5, sofern es einen Zugang gibt.
+- P-6: nur Access Points. Das Segment reicht über Switches und weitere
+  Access Points, nicht über Router und Firewall. Gleiches VLAN (ungesetzt:
+  „TI“) wie ein Kartenterminal oder Zugang im Segment löst die Warnung aus.
+  Das Preset Klinikum meldet sie daher (Access Point im Standard-VLAN).
+- P-7: eine unterbrochene Kante zählt als Verbindung.
+- P-18: Konnektor und Highspeed-Konnektor. Das TI-Gateway hat keine gSMC-K.
+- P-31: gepairt heißt `pairedWith` plus jede direkte Verbindung zu einem
+  Zugang. Mehr als ein verschiedener Zugang ergibt den Fehler.
+- P-32: ein Befund für die ganze Topologie, mit allen Zugängen beider
+  Seiten (Ausschlussregel X-1).
+- P-33: Weg über Switches, Access Points und Firewalls zu Router oder
+  VPN-Zugangsdienst (oder Internet). Primärsysteme und Terminals leiten
+  nicht weiter. Je Zugang ein Befund.
+
 **Adressierung (nur Erweitert)**
 
 | ID | Regel | Feld | Schwere | Status | Quelle |

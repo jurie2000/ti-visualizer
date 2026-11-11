@@ -620,6 +620,13 @@ Sicherheitsprüfung.
     den Weg „Zonenname eintippen“ in der Injection-Suite ergänzen;
     getippte Texte müssen wie Dateitexte von Steuer- und
     Formatzeichen befreit werden (`persistence/parse.ts`, `strip`).
+  - Auslegung (2026-11-11): „Geräte gruppieren“ heißt: Zone um das
+    gewählte Gerät anlegen und weitere Geräte hineinschieben. Die Canvas
+    kennt nur eine Einzelauswahl, Mehrfachauswahl ist Folgearbeit
+    (Issue #92). Ein Gerät gehört zur Zone, wenn die Mitte seiner Kachel
+    darin liegt. Größe nur über Zahlenfelder; Form-Presets, Ziehen und
+    Darstellungsmenü sind Features (Issues #85 bis #87). Die automatische
+    Anordnung ohne Kreuzungen ist ein eigenes Ticket (Issue #88).
 
 - [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
   - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per

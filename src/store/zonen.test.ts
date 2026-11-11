@@ -38,7 +38,7 @@ describe("FR-15 Zonen im Store", () => {
 
   it("benennt: entfernt Steuer- und Formatzeichen, leerer Name löscht ihn", () => {
     const id = zone();
-    expect(s().setZone(id, { label: "  Pra‮is\u0000  " }).ok).toBe(true);
+    expect(s().setZone(id, { label: "  Pra\u202eis\u0000  " }).ok).toBe(true);
     expect(zones()[0]?.label).toBe("Prais");
     s().setZone(id, { label: " " });
     expect(zones()[0]).not.toHaveProperty("label");

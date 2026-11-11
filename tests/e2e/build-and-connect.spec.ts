@@ -91,6 +91,9 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   });
 
   test.describe("Maus", () => {
+    // Die Kopfleiste ist bei 1280 px breiter als das Fenster, der Klick scrollt die Seite (T-708 behebt das)
+    test.use({ viewport: { width: 1440, height: 900 } });
+
     /** Punkt am Gerät anklicken, dann das Zielgerät. */
     async function perKlick(page: Page, quelle: string, ziel: string) {
       await page.getByRole("button", { name: "Einpassen" }).click();

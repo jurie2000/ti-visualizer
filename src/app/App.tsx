@@ -11,7 +11,7 @@ import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
 import { TutorialCard } from "../panels/TutorialCard";
-import { initAutosave, useOpen, useUi } from "../store";
+import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { EditControls } from "./EditControls";
@@ -95,6 +95,8 @@ export function App() {
             >
               <StartScreen
                 onResume={() => {
+                  // Switch und Konnektor stehen nur im Modus Erweitert in der Palette
+                  useSettings.getState().set({ mode: "advanced" });
                   useUi.getState().setTutorial(true);
                   setStarted(true);
                 }}

@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
 import { APOTHEKEN_ZONE, stepDone } from "../engine/tutorialChecks";
 import { containedNodes } from "../engine/zones";
@@ -34,6 +34,8 @@ export function TutorialCard() {
   const persona = personas.find((p) => p.id === step?.persona);
   const zone = topology.zones.find((z) => z.label === APOTHEKEN_ZONE);
   const needZone = step?.part === "apotheke" && !zone;
+  // Nur einmal je Karte anlegen: Rückgängig darf keine weitere Zone nachziehen.
+  const zoneAngelegt = useRef(false);
 
   // Merkt Aktionen, die der Player ohne Problem bis zum Ende abspielte.
   useEffect(
@@ -50,7 +52,8 @@ export function TutorialCard() {
   // Teil 2 braucht den Bereich der Apotheke: unter die Praxis legen und die
   // Ansicht dorthin setzen, denn die Palette setzt neue Geräte in die Mitte.
   useEffect(() => {
-    if (!needZone) return;
+    if (!needZone || zoneAngelegt.current) return;
+    zoneAngelegt.current = true;
     const t = useTopology.getState();
     if (t.topology.zones.some((z) => z.label === APOTHEKEN_ZONE)) return;
     const { nodes } = t.topology;
@@ -59,9 +62,8 @@ export function TutorialCard() {
       Math.max(-ZONE.gap, ...nodes.map((n) => n.position.y)) +
       NODE_SIZE.height +
       ZONE.gap;
-    const r = t.addZone({ x, y, w: ZONE.w, h: ZONE.h });
-    if (!r.ok || !r.id) return;
-    t.setZone(r.id, { label: APOTHEKEN_ZONE });
+    const r = t.addZone({ x, y, w: ZONE.w, h: ZONE.h }, APOTHEKEN_ZONE);
+    if (!r.ok) return;
     void setCenter(x + ZONE.w / 2, y + ZONE.h / 2, { zoom: 1 });
   }, [needZone, setCenter]);
 

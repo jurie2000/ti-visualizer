@@ -59,7 +59,8 @@ interface TopologyState {
   /** Setzt Felder der Geräteeinstellungen (Regelwerk 8); `undefined` leert ein Feld. Prüft gegen das Schema der Variante. */
   setConfig: (nodeId: string, patch: Record<string, unknown>) => ActionResult;
   /** Legt eine Zone an (FR-15); die Geräte darin ergeben sich aus der Lage. */
-  addZone: (area: Rect) => ActionResult;
+  /** `label` nur für feste Namen aus dem Code (Tutorial), ein Rückgängig-Schritt. */
+  addZone: (area: Rect, label?: string) => ActionResult;
   /** Name (leer löscht ihn), Farbe aus festen Tönen, Größe. */
   setZone: (
     id: string,
@@ -204,7 +205,7 @@ export const useTopology = create<TopologyState>((set, get) => {
       commit(unplugCard(get().topology, nodeId, kind));
     },
 
-    addZone: (area) => {
+    addZone: (area, label) => {
       const t = get().topology;
       if (t.zones.length >= LIMITS.zones)
         return fail(
@@ -217,6 +218,7 @@ export const useTopology = create<TopologyState>((set, get) => {
           ...t.zones,
           {
             id,
+            ...(label && { label }),
             tone: "sage",
             area: {
               x: clamp(area.x),

@@ -714,7 +714,8 @@ Sicherheitsprüfung.
     es bis zum letzten erreichten Gerät und bleibt dort (rot, anderes Icon).
     Aus bei reduzierter
     Bewegung. Dort trägt das aktuelle Gerät die Textmarke „Aktueller
-    Schritt“.
+    Schritt“. Der Player folgt dem Mockup: Status-Badge (Text und Icon),
+    Fortschrittsbalken, runde Knöpfe, Tempo-Regler.
   - Fertig, wenn: ein Test das Paket bei laufender Simulation findet und
     bei `reduceMotion` nicht.
 

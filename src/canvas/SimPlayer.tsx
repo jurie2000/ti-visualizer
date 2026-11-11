@@ -1,3 +1,4 @@
+import { Check, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
 import { useEffect, useRef, type KeyboardEvent } from "react";
 import {
   bindFlow,
@@ -136,14 +137,25 @@ export function SimPlayer() {
   };
 
   const step = steps[sim.step];
-  const text =
-    sim.status === "cancelled"
-      ? "Simulation abgebrochen."
-      : step
-        ? [`${step.label}: ${step.text}`, problemText(step, nameOf)]
-            .filter(Boolean)
-            .join(" ") + (sim.status === "done" ? " Ablauf beendet." : "")
-        : "";
+  const failed = step?.problem?.kind === "ausgefallen";
+  // Zustand steht als Text und Icon im Badge, die Farbe kommt dazu (D10)
+  const badge =
+    sim.status === "done"
+      ? { tone: "ok", Icon: Check, text: "Abgeschlossen" }
+      : sim.status === "cancelled"
+        ? { tone: "error", Icon: X, text: "Abgebrochen" }
+        : failed
+          ? { tone: "error", Icon: X, text: "Gestört" }
+          : sim.status === "paused"
+            ? { tone: "warn", Icon: Pause, text: "Pausiert" }
+            : { tone: "warn", Icon: Play, text: "Läuft" };
+  const progress =
+    sim.status === "done"
+      ? `Alle ${String(steps.length)} Schritte abgeschlossen`
+      : sim.status === "cancelled"
+        ? `Abgebrochen bei Schritt ${String(sim.step + 1)}`
+        : `Schritt ${String(Math.min(sim.step + 1, steps.length))} von ${String(steps.length)}`;
+  const problem = step ? problemText(step, nameOf) : "";
 
   return (
     // Tastenkürzel des Players (Space, Pfeile, Esc): Container nimmt den Fokus (D10)
@@ -157,54 +169,93 @@ export function SimPlayer() {
       className="tiv-sim nodrag nopan"
       onKeyDown={onKeyDown}
     >
-      <p className="tiv-sim__title">
-        {name} · Schritt {Math.min(sim.step + 1, steps.length)} von{" "}
-        {steps.length}
-      </p>
-      <div aria-live="polite" aria-atomic="true" className="tiv-sim__text">
-        {text}
+      <div className="tiv-sim__title">
+        <span className={`tiv-sim__badge is-${badge.tone}`}>
+          <badge.Icon size={14} aria-hidden="true" />
+          {badge.text}
+        </span>
+        <span className="tiv-sim__name">{name}</span>
+        <span className="tiv-sim__progress">{progress}</span>
       </div>
-      <div className="tiv-sim__controls">
-        <Button onClick={toggle} disabled={!locked}>
-          {sim.status === "running" ? "Pause" : "Weiter abspielen"}
-        </Button>
-        <Button
-          onClick={() => {
-            send("prev");
-          }}
-          disabled={sim.status === "cancelled"}
-        >
-          Zurück
-        </Button>
-        <Button
-          onClick={() => {
-            send("next");
-          }}
-          disabled={!locked}
-        >
-          Schritt
-        </Button>
-        <Button
-          onClick={() => {
-            send({
-              tempo:
-                TEMPOS[(TEMPOS.indexOf(sim.tempo) + 1) % TEMPOS.length] ?? 1,
-            });
-          }}
-        >
-          Tempo {sim.tempo}× (ändern)
-        </Button>
-        {locked ? (
+      <progress
+        className={`tiv-sim__bar is-${badge.tone}`}
+        aria-label="Fortschritt"
+        max={steps.length}
+        value={sim.status === "done" ? steps.length : sim.step + 1}
+      />
+      <div className="tiv-sim__body">
+        <div className="tiv-sim__controls">
           <Button
+            className="tiv-sim__round"
+            aria-label="Zurück"
             onClick={() => {
-              send("cancel");
+              send("prev");
             }}
+            disabled={sim.status === "cancelled"}
           >
-            Abbrechen (Esc)
+            <SkipBack size={17} aria-hidden="true" />
           </Button>
-        ) : (
-          <Button onClick={closePlayer}>Schließen</Button>
-        )}
+          <Button
+            variant="primary"
+            className="tiv-sim__round is-play"
+            aria-label={sim.status === "running" ? "Pause" : "Weiter abspielen"}
+            onClick={toggle}
+            disabled={!locked}
+          >
+            {sim.status === "running" ? (
+              <Pause size={20} aria-hidden="true" />
+            ) : (
+              <Play size={20} aria-hidden="true" />
+            )}
+          </Button>
+          <Button
+            className="tiv-sim__round"
+            aria-label="Schritt"
+            onClick={() => {
+              send("next");
+            }}
+            disabled={!locked}
+          >
+            <SkipForward size={17} aria-hidden="true" />
+          </Button>
+          <label className="tiv-sim__tempo">
+            Tempo
+            <input
+              type="range"
+              min={0}
+              max={TEMPOS.length - 1}
+              step={1}
+              value={TEMPOS.indexOf(sim.tempo)}
+              aria-valuetext={`${String(sim.tempo)}×`}
+              onChange={(e) => {
+                send({ tempo: TEMPOS[Number(e.target.value)] ?? 1 });
+              }}
+            />
+            <span aria-hidden="true">{sim.tempo}×</span>
+          </label>
+          {locked ? (
+            <Button
+              onClick={() => {
+                send("cancel");
+              }}
+            >
+              Abbrechen (Esc)
+            </Button>
+          ) : (
+            <Button onClick={closePlayer}>Schließen</Button>
+          )}
+        </div>
+        <div aria-live="polite" aria-atomic="true" className="tiv-sim__text">
+          {sim.status === "cancelled" ? (
+            "Simulation abgebrochen."
+          ) : step ? (
+            <>
+              <strong>{step.label}</strong>: {step.text}
+              {problem && ` ${problem}`}
+              {sim.status === "done" && " Ablauf beendet."}
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );

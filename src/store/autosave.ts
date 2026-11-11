@@ -9,6 +9,7 @@ import {
 } from "../persistence";
 import type { Topology } from "../schema";
 import { useCatalog } from "./catalogStore";
+import { useOpen } from "./openFile";
 import { useSettings } from "./settingsStore";
 import { useTopology } from "./topologyStore";
 
@@ -153,6 +154,8 @@ export function restoreAutosave(): void {
   const s = useAutosave.getState().start;
   if (s?.kind !== "wiederherstellen") return;
   useTopology.getState().replace(s.topology);
+  // Importbefunde gehören zur ersetzten Topologie (Sicherheitsprüfung, T-506)
+  useOpen.setState({ imported: undefined });
   useAutosave.setState({ start: undefined });
 }
 

@@ -44,6 +44,8 @@ interface OpenState {
   guard: (() => void) | undefined;
   /** Befunde der zuletzt geöffneten Datei, bis der Benutzer sie quittiert. */
   findings: { fileName: string; list: Finding[] } | undefined;
+  /** Dieselben Befunde, bis eine andere Topologie eingesetzt wird; die Sicherheitsprüfung zeigt sie. */
+  imported: { fileName: string; list: Finding[] } | undefined;
   /** Zählt jedes Ersetzen durch Datei oder Preset (die App wechselt dann zur Arbeitsfläche). */
   opened: number;
 }
@@ -52,6 +54,7 @@ export const useOpen = create<OpenState>(() => ({
   pending: undefined,
   guard: undefined,
   findings: undefined,
+  imported: undefined,
   opened: 0,
 }));
 
@@ -86,7 +89,7 @@ function install(
   useFile
     .getState()
     .markSaved(useTopology.getState().topology, fileName, handle);
-  useOpen.setState((s) => ({ opened: s.opened + 1 }));
+  useOpen.setState((s) => ({ opened: s.opened + 1, imported: undefined }));
 }
 
 /** Preset oder leerer Start: kein Dateibezug, nie als eigene Datei gekennzeichnet. */
@@ -108,10 +111,10 @@ export function confirmOpen(
     install(pending.topology, pending.fileName, pending.handle);
     if (withSettings && pending.settings)
       useSettings.getState().set(fromFileSettings(pending.settings));
-    if (pending.findings.length > 0)
-      useOpen.setState({
-        findings: { fileName: pending.fileName, list: pending.findings },
-      });
+    if (pending.findings.length > 0) {
+      const found = { fileName: pending.fileName, list: pending.findings };
+      useOpen.setState({ findings: found, imported: found });
+    }
   });
 }
 

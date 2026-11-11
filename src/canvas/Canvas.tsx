@@ -30,6 +30,7 @@ import { DeviceNode } from "./DeviceNode";
 import { ZoneButton } from "./ZoneButton";
 import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
+import { SimPacket } from "./SimPacket";
 import { SimPlayer } from "./SimPlayer";
 import { containedNodes } from "../engine/zones";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
@@ -291,6 +292,7 @@ export function Canvas() {
         ariaLabelConfig={ariaLabelConfig}
       >
         <Background />
+        {!reduceMotion && <SimPacket />}
         {isolated.length > 0 && (
           <Panel position="top-left" className="tiv-hint">
             {isolated.length === 1

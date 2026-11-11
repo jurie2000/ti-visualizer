@@ -357,12 +357,61 @@
     stroke-dashoffset: -18;
   }
 }
+.tiv-packet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+  offset-rotate: 0deg;
+  offset-distance: 100%;
+  pointer-events: none;
+}
+.tiv-packet.is-moving {
+  animation: tiv-packet-move var(--tiv-packet-ms) ease-in-out forwards;
+}
+@keyframes tiv-packet-move {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+/* Reduzierte Bewegung: kein Paket, dafür Text am Gerät (nicht nur Farbe) */
 .is-reduced-motion .react-flow__edge.is-sim .tiv-edge {
   animation: none;
+}
+.is-reduced-motion .react-flow__node.is-sim .tiv-node::after {
+  content: "Aktueller Schritt";
+  display: block;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-surface);
 }
 @media (prefers-reduced-motion: reduce) {
   .react-flow__edge.is-sim .tiv-edge {
     animation: none;
+  }
+  .tiv-packet {
+    display: none;
+  }
+  .react-flow__node.is-sim .tiv-node::after {
+    content: "Aktueller Schritt";
+    display: block;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--color-surface);
   }
 }
 

@@ -707,6 +707,14 @@ Sicherheitsprüfung.
   - Fertig, wenn: alle Suiten grün sind und Justin die Screenshots
     abgenommen hat.
 
+- [ ] **T-707 Paket in der Simulation** · FR: FR-9 · Regeln: – · nach: T-405 · Issue #103
+  - Umfang: Je Schritt wandert ein Paket (Mockup: runder Punkt mit
+    Paket-Icon) entlang des Pfads von Gerät zu Gerät, aus bei reduzierter
+    Bewegung. Dort trägt das aktuelle Gerät die Textmarke „Aktueller
+    Schritt“.
+  - Fertig, wenn: ein Test das Paket bei laufender Simulation findet und
+    bei `reduceMotion` nicht.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

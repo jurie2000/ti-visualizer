@@ -133,6 +133,19 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(node("pvs")).toHaveAccessibleName(/aktueller Schritt/);
   });
 
+  it("zeigt je Schritt ein Paket, bei reduzierter Bewegung keins (FR-9, D6)", () => {
+    const { unmount } = render(<Canvas />, { wrapper });
+    start();
+    expect(document.querySelector(".tiv-packet")).toHaveClass("is-moving");
+    unmount();
+    useSim.getState().close();
+    useSettings.setState({ reduceMotion: true });
+    render(<Canvas />, { wrapper });
+    start();
+    expect(document.querySelector(".tiv-packet")).toBeNull();
+    expect(node("pvs")).toHaveClass("is-sim");
+  });
+
   it("bedient sich per Tastatur: Pfeiltasten, Leertaste, Esc", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });

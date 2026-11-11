@@ -2,7 +2,14 @@ import { create } from "zustand";
 import { defaultConfig } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
 import { autoPorts, validateConnection } from "../engine/rules";
-import { LIMITS, type AnyCard, type Point, type Topology } from "../schema";
+import {
+  configVariantOf,
+  configVariants,
+  LIMITS,
+  type AnyCard,
+  type Point,
+  type Topology,
+} from "../schema";
 import { useCatalog } from "./catalogStore";
 
 /** D25: so viele Schritte merkt sich Rückgängig. */
@@ -43,6 +50,8 @@ interface TopologyState {
   removeEdge: (id: string) => void;
   plugCard: (nodeId: string, card: AnyCard) => ActionResult;
   unplugCard: (nodeId: string, kind: CardKind) => void;
+  /** Setzt Felder der Geräteeinstellungen (Regelwerk 8); `undefined` leert ein Feld. Prüft gegen das Schema der Variante. */
+  setConfig: (nodeId: string, patch: Record<string, unknown>) => ActionResult;
   /** Schaltet die Störung von Gerät oder Kante um. */
   toggleFault: (id: string) => void;
   /** Lehnt zu lange Texte ab (Grenzen aus `LIMITS`). */
@@ -182,6 +191,43 @@ export const useTopology = create<TopologyState>((set, get) => {
       const flip = <T extends { id: string; fault: boolean }>(e: T): T =>
         e.id === id ? { ...e, fault: !e.fault } : e;
       commit({ ...t, nodes: t.nodes.map(flip), edges: t.edges.map(flip) });
+    },
+
+    setConfig: (nodeId, patch) => {
+      const t = get().topology;
+      const c = catalog();
+      const node = t.nodes.find((n) => n.id === nodeId);
+      const type = c.deviceTypes.find((d) => d.id === node?.type);
+      const variant = type && configVariantOf(type.capabilities);
+      if (!node || !variant)
+        return fail("Dieses Gerät hat keine Einstellungen.");
+      const schema = configVariants[variant];
+      const label = (field: string) =>
+        c.configDefaults.find((d) => d.field === field)?.name ?? field;
+      for (const field of Object.keys(patch))
+        if (!Object.hasOwn(schema.shape, field))
+          return fail(`${label(field)} gibt es bei diesem Gerät nicht.`);
+      // `undefined` leert das Feld
+      const config: Record<string, unknown> = Object.fromEntries(
+        Object.entries({ ...node.config, ...patch }).filter(
+          ([, v]) => v !== undefined,
+        ),
+      );
+      const parsed = schema.strict().safeParse(config);
+      if (!parsed.success) {
+        const field = String(parsed.error.issues[0]?.path[0] ?? "");
+        return fail(`${label(field)}: ungültiger Wert.`);
+      }
+      const partner = config["pairedWith"];
+      if (typeof partner === "string" && !t.nodes.some((n) => n.id === partner))
+        return fail(`${label("pairedWith")}: Das Gerät gibt es nicht.`);
+      commit({
+        ...t,
+        nodes: t.nodes.map((n) =>
+          n.id === nodeId ? { ...n, config: parsed.data } : n,
+        ),
+      });
+      return { ok: true };
     },
 
     setMeta: (meta) => {

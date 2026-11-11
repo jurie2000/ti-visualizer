@@ -546,13 +546,22 @@ Sicherheitsprüfung.
     Formular (T-502b) zeigt sie als Standard, nicht als Regel. Quelle:
     Regelwerk 8, `quellen.md` (DVO, Betriebsarten).
 
-- [ ] **T-502b Formular Geräteeinstellungen** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-502a
+- [x] **T-502b Formular Geräteeinstellungen** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-502a
   - Umfang: Formular im Detailpanel je Config-Variante, nur im Modus
     Erweitert. Native Eingaben (Text, Checkbox, Radio, Datum), CSS-Klassen
     statt Inline-Styles. Store-Aktion `setConfig` prüft gegen das Schema.
   - Fertig, wenn: Tests prüfen, dass jedes Feld aus Regelwerk 8 im
     Formular vorkommt und Eingaben das Schema einhalten (ungültige IP,
     Datum, Zahl werden abgelehnt, nichts geht verloren).
+  - Auslegung (2026-11-11): `ip`, `mask`, `gateway`, `dns` müssen IPv4 in
+    Punktschreibweise sein (Schema, `z.ipv4()`); Maske nur so, kein
+    CIDR. Text-, Zahl- und Datumsfelder übernehmen beim Verlassen oder
+    mit Enter (ein Rückgängig-Schritt statt einer je Taste); ein
+    ungültiger Wert bleibt im Feld stehen, mit Fehlermeldung, und wird
+    nicht gespeichert. Leeres Feld löscht den Wert. Checkbox und Radio
+    gelten sofort. `pairedWith` wählt per Radio unter den vorhandenen
+    Zugängen oder „keiner“. Während einer Simulation ist das Formular
+    gesperrt (Regelwerk 7). Quelle: Regelwerk 8, `quellen.md` (DVO).
 
 - [ ] **T-503 Prüfregeln Zustand** [P] · FR: FR-19 · Regeln: P-1 bis P-7, P-18, P-22, P-31, P-32, P-33 · nach: T-106, T-107
   - Umfang: `checks.json` (Teil Zustand) und `runChecks(topology, mode)`

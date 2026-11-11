@@ -50,10 +50,10 @@ export const AnyCard = z.discriminatedUnion("kind", [Card, PinCard]);
 // Netzwerkeinstellungen (Regelwerk 8). Die Variante legt der Katalog über die
 // Fähigkeit `netConfig:<variante>` fest, nicht die Datei.
 export const NetConfig = z.object({
-  ip: text(45).optional(),
-  mask: text(45).optional(),
-  gateway: text(45).optional(),
-  dns: text(45).optional(),
+  ip: z.ipv4().optional(),
+  mask: z.ipv4().optional(),
+  gateway: z.ipv4().optional(),
+  dns: z.ipv4().optional(),
   vlan: text(32).optional(),
   dhcp: z.boolean().optional(),
 });

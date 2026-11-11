@@ -111,6 +111,12 @@ export function pasteClip(
   return { ok: true, topology: next, ids: [...ids.values()], skippedEdges };
 }
 
+// Viele getrennte Teile würden sonst über das Schema-Limit hinauslaufen.
+const clamp = (p: { x: number; y: number }) => ({
+  x: Math.min(p.x, LIMITS.coord),
+  y: Math.min(p.y, LIMITS.coord),
+});
+
 /**
  * Ordnet alle Geräte in Spalten nach Abstand (Kanten) vom am stärksten
  * vernetzten Gerät; getrennte Teile stehen untereinander. Zonen bleiben stehen.
@@ -142,7 +148,9 @@ export function arrange(t: Topology): Topology {
       level = [
         ...new Set(
           level
-            .flatMap((id) => [...(links.get(id) ?? [])].sort())
+            .flatMap((id) =>
+              [...(links.get(id) ?? [])].sort((a, b) => a.localeCompare(b)),
+            )
             .filter((id) => !seen.has(id)),
         ),
       ];
@@ -155,7 +163,7 @@ export function arrange(t: Topology): Topology {
     ...t,
     nodes: t.nodes.map((n) => ({
       ...n,
-      position: position.get(n.id) ?? n.position,
+      position: clamp(position.get(n.id) ?? n.position),
     })),
   };
 }

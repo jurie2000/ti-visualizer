@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { validateConnection } from "../engine/rules";
-import type { Topology } from "../schema";
+import { LIMITS, type Topology } from "../schema";
 import { useCatalog } from "./catalogStore";
 import { arrange, copyNodes, pasteClip } from "./edit";
 import { emptyTopology, useTopology } from "./topologyStore";
@@ -135,6 +135,16 @@ describe("Editor-Hilfen: Anordnen (FR-16, T-508)", () => {
     expect(arrange(t)).toEqual(t);
   });
 
+  it("[FR-16] anordnen: bleibt bei sehr vielen getrennten Geräten im Koordinatenlimit", () => {
+    const nodes = Array.from({ length: 600 }, (_, i) => ({
+      id: `n${String(i)}`,
+      fault: false,
+      type: "pvs",
+      position: { x: 0, y: 0 },
+    }));
+    const t = arrange({ ...emptyTopology(), nodes });
+    expect(t.nodes.every((n) => n.position.y <= LIMITS.coord)).toBe(true);
+  });
   it("FR-16 anordnen ohne Geräte legt keinen Schritt an", () => {
     s().replace(arrange(s().topology));
     expect(s().past).toHaveLength(0);

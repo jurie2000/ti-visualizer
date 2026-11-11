@@ -28,7 +28,7 @@ export function TopologyList() {
   const view =
     mode === "simple"
       ? collapseHidden(topology, catalog)
-      : { ...topology, groups: [] };
+      : { ...topology, groups: [], stubs: [], isolated: [] };
   const name = (id: string) => {
     const n = topology.nodes.find((x) => x.id === id);
     return (
@@ -130,6 +130,13 @@ export function TopologyList() {
                             {g.hidden.map(name).join(", ")}
                           </li>
                         ))}
+                      {view.stubs
+                        .filter((h) => h.at === node.id)
+                        .map((h) => (
+                          <li key={h.hidden.join()}>
+                            Ausgeblendet: {h.hidden.map(name).join(", ")}
+                          </li>
+                        ))}
                     </ul>
                   </td>
                   <td>
@@ -149,6 +156,11 @@ export function TopologyList() {
             })}
           </tbody>
         </table>
+      )}
+      {view.isolated.length > 0 && (
+        <p>
+          Nur im Modus Erweitert sichtbar: {view.isolated.map(name).join(", ")}
+        </p>
       )}
       <SimPlayer />
       {menu.element}

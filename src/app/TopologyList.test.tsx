@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog, type Topology } from "../schema";
-import { useSettings, useSim, useTopology, useUi } from "../store";
+import { useFile, useSettings, useSim, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { App } from "./App";
 import { TopologyList } from "./TopologyList";
@@ -52,6 +52,8 @@ beforeEach(() => {
   useUi.setState({ listView: false, dialog: undefined });
   useSim.getState().close();
   useTopology.getState().reset(topology);
+  // Ohne Datei und ohne Änderung gilt der Stand als gespeichert (keine Rückfrage)
+  useFile.getState().markSaved(useTopology.getState().topology, null);
 });
 
 describe("Listenansicht (FR-22)", () => {
@@ -81,6 +83,25 @@ describe("Listenansicht (FR-22)", () => {
     renderList();
     expect(screen.queryByRole("rowheader", { name: /gestört/ })).toBeNull();
     expect(screen.getAllByRole("rowheader")).toHaveLength(2);
+  });
+
+  it("nennt im Modus Einfach Sackgassen- und Inselgeräte (Regelwerk 11)", () => {
+    useSettings.setState({ mode: "simple" });
+    useTopology.getState().reset({
+      ...topology,
+      nodes: [
+        ...topology.nodes,
+        { id: "lis1", type: "lis", position: { x: 0, y: 0 }, fault: false },
+      ],
+    });
+    renderList();
+    // ris1 hängt als Sackgasse am PVS, lis1 hat keinen sichtbaren Nachbarn
+    expect(
+      row(/^Praxisverwaltungssystem/).getByText(/^Ausgeblendet: Radiologie/),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/Nur im Modus Erweitert sichtbar: Labor/),
+    ).toBeVisible();
   });
 
   it("startet eine Aktion über das Menü und gibt den Fokus an den Knopf zurück", async () => {
@@ -131,9 +152,6 @@ describe("Listenansicht (FR-22)", () => {
     const user = userEvent.setup();
     render(<App />);
     await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
-    // Der Stand aus dem Test davor ist ungespeichert: Rückfrage übergehen
-    const discard = screen.queryByRole("button", { name: "Verwerfen" });
-    if (discard) await user.click(discard);
     const toggle = screen.getByRole("button", { name: "Listenansicht" });
     expect(toggle).toHaveAttribute("aria-pressed", "false");
     await user.click(toggle);

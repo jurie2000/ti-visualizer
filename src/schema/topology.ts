@@ -90,6 +90,16 @@ export const configVariants = {
   infra: InfraConfig,
 } as const;
 
+/** Variante aus der Fähigkeit `netConfig:<variante>` eines Gerätetyps. */
+export const configVariantOf = (capabilities: readonly string[]) => {
+  const name = capabilities
+    .find((c) => c.startsWith("netConfig:"))
+    ?.slice("netConfig:".length);
+  return name !== undefined && Object.hasOwn(configVariants, name)
+    ? (name as keyof typeof configVariants)
+    : undefined;
+};
+
 // Ohne Katalog ist die Variante unbekannt: das Knotenschema lässt alle Felder
 // der Varianten zu (sonst würde Zod sie verwerfen). Die Prüfung gegen die
 // Variante des Gerätetyps (`configVariants`) folgt beim Öffnen mit dem Katalog.

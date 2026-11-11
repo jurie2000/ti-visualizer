@@ -1,1 +1,146 @@
-[]
+[
+  {
+    "field": "ip",
+    "name": "IP-Adresse",
+    "default": null,
+    "rule": "Router .1, Konnektor .2, sonst ab .10 im Netz 192.168.10.0/24",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  },
+  {
+    "field": "mask",
+    "name": "Netzmaske",
+    "default": "255.255.255.0",
+    "rule": "keine",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  },
+  {
+    "field": "mode",
+    "name": "Betriebsart",
+    "default": "reihe",
+    "rule": "Reihe: Zugang zwischen LAN und Router. Parallel: Zugang als Gerät im LAN. In beiden Fällen braucht der Zugang einen Weg ins Internet (P-33)",
+    "source": ["Betriebsarten", "gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "gateway",
+    "name": "Gateway der Clients",
+    "default": null,
+    "rule": "Reihe: Zugang. Parallel: Router",
+    "source": ["Betriebsarten", "DVO"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "routeTI",
+    "name": "Route in die TI (Parallel)",
+    "default": true,
+    "rule": "100.102.0.0/15 über den Zugang, für offene Fachdienste und WANDA",
+    "source": ["gemILF_PS", "gemSpec_Net"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "dns",
+    "name": "DNS der Clients",
+    "default": null,
+    "rule": "TI-Namen löst der Zugang auf",
+    "source": ["gemILF_PS"],
+    "status": "plausibel"
+  },
+  {
+    "field": "sis",
+    "name": "SIS",
+    "default": false,
+    "rule": "Reihe: Internet über SIS möglich. Parallel: SIS optional",
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "dhcp",
+    "name": "DHCP-Client",
+    "default": false,
+    "rule": "bezieht die Adresse von einem DHCP-Server im Segment",
+    "source": ["gemSpec_Kon"],
+    "status": "Vereinfachung"
+  },
+  {
+    "field": "dhcpServer",
+    "name": "DHCP-Server",
+    "default": false,
+    "rule": "Zugang oder Router kann DHCP-Server sein",
+    "source": ["gemSpec_Kon"],
+    "status": "plausibel"
+  },
+  {
+    "field": "vlan",
+    "name": "VLAN",
+    "default": "TI",
+    "rule": "Geräte müssen im selben Segment wie der Zugang liegen",
+    "source": ["DVO"],
+    "status": "Vereinfachung"
+  },
+  {
+    "field": "workplace",
+    "name": "Arbeitsplatz",
+    "default": "AP-1",
+    "rule": "jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet",
+    "source": ["gemILF_PS"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "paired",
+    "name": "Pairing",
+    "default": true,
+    "rule": "ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "pairedWith",
+    "name": "Pairing mit",
+    "default": null,
+    "rule": "der verbundene Zugang",
+    "source": ["gemSpec_KT"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "certExpires",
+    "name": "Zertifikat gSMC-K",
+    "default": "2029-03-31",
+    "rule": "geprüft gegen simDate",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "timeOffset",
+    "name": "Zeitabweichung",
+    "default": 0,
+    "rule": "Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s",
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "lastTimeSync",
+    "name": "Letzte Zeitsynchronisation",
+    "default": null,
+    "rule": "gleich simDate; Warnung nach 30 Tagen, kritisch nach 50 Tagen",
+    "source": ["gemSpec_Kon"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "updateOk",
+    "name": "Kritisches Update",
+    "default": true,
+    "rule": "fehlt es nach Frist, baut der Zugang keinen VPN-Tunnel mehr auf",
+    "source": ["Arch"],
+    "status": "bestätigt"
+  },
+  {
+    "field": "ipsecAllowed",
+    "name": "IPsec an der Router-Firewall",
+    "default": true,
+    "rule": "UDP 500/4500 für den VPN-Tunnel",
+    "source": ["gemSpec_VPN_ZugD"],
+    "status": "plausibel"
+  }
+]

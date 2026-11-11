@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { defaultConfig } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
 import { autoPorts, validateConnection } from "../engine/rules";
 import { LIMITS, type AnyCard, type Point, type Topology } from "../schema";
@@ -93,9 +94,13 @@ export const useTopology = create<TopologyState>((set, get) => {
           `Mehr als ${String(LIMITS.nodes)} Geräte sind nicht möglich.`,
         );
       const id = freeId(type, t);
+      const config = defaultConfig(type, t, catalog());
       commit({
         ...t,
-        nodes: [...t.nodes, { id, type, position, fault: false }],
+        nodes: [
+          ...t.nodes,
+          { id, type, position, fault: false, ...(config && { config }) },
+        ],
       });
       return { ok: true, id };
     },

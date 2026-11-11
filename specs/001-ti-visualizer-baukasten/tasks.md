@@ -528,12 +528,28 @@ Sicherheitsprüfung.
     den Anschluss, im Modus Einfach nicht. Ein voller Anschluss liefert
     die Meldung aus G-3.
 
-- [ ] **T-502 Geräteeinstellungen** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-406, T-501
-  - Umfang: `config-defaults.json` aus Regelwerk 8. Formular im
-    Detailpanel je Config-Variante, nur im Modus Erweitert. Standardwerte
-    beim Hinzufügen eines Geräts.
+- [x] **T-502a Konfig-Standardwerte** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-406, T-501
+  - Umfang: `config-defaults.json` aus Regelwerk 8, `defaultConfig`
+    (`src/engine/config.ts`) und Standardwerte beim Hinzufügen eines
+    Geräts mit `netConfig:`-Fähigkeit.
   - Fertig, wenn: Tests prüfen, dass jedes Feld aus Regelwerk 8 im
-    Katalog und im Formular vorkommt und Eingaben das Schema einhalten.
+    Katalog und im Schema vorkommt, die Standardwerte (IP-Vergabe,
+    Gateway, DNS, Pairing, SIS) stimmen und das Schema erfüllen.
+  - Auslegung (2026-11-11): Abgeleitete Standardwerte (`ip`, `gateway`,
+    `dns`, `pairedWith`, `lastTimeSync`) stehen im Katalog als `null`
+    und werden im Code gesetzt. Beim Hinzufügen gibt es noch keine
+    Verbindung: Zugang ist der erste im Plan, `pairedWith` nur bei genau
+    einem Zugang. Gateway und DNS nur für Terminal, Client und Infra,
+    nicht für Zugang und Router. Ist .1 oder .2 belegt, vergibt die App
+    ab .10. Quelle: Regelwerk 8, `quellen.md` (DVO, Betriebsarten).
+
+- [ ] **T-502b Formular Geräteeinstellungen** · FR: FR-17 · Regeln: Regelwerk 8 · nach: T-502a
+  - Umfang: Formular im Detailpanel je Config-Variante, nur im Modus
+    Erweitert. Native Eingaben (Text, Checkbox, Radio, Datum), CSS-Klassen
+    statt Inline-Styles. Store-Aktion `setConfig` prüft gegen das Schema.
+  - Fertig, wenn: Tests prüfen, dass jedes Feld aus Regelwerk 8 im
+    Formular vorkommt und Eingaben das Schema einhalten (ungültige IP,
+    Datum, Zahl werden abgelehnt, nichts geht verloren).
 
 - [ ] **T-503 Prüfregeln Zustand** [P] · FR: FR-19 · Regeln: P-1 bis P-7, P-18, P-22, P-31, P-32, P-33 · nach: T-106, T-107
   - Umfang: `checks.json` (Teil Zustand) und `runChecks(topology, mode)`
@@ -543,13 +559,13 @@ Sicherheitsprüfung.
     ist. Property-Test: Ergebnis hängt nicht von der Reihenfolge der
     Knoten ab.
 
-- [ ] **T-504 Prüfregeln Adressierung** [P] · FR: FR-17, FR-19 · Regeln: P-8 bis P-15 · nach: T-503, T-502
+- [ ] **T-504 Prüfregeln Adressierung** [P] · FR: FR-17, FR-19 · Regeln: P-8 bis P-15 · nach: T-503, T-502b
   - Umfang: Prüfregeln für IP, Maske, Gateway und Subnetz, nur im Modus
     Erweitert.
   - Fertig, wenn: je Regel ein positiver und ein negativer Testfall grün
     ist und die Regeln im Modus Einfach nicht melden.
 
-- [ ] **T-505 Prüfregeln Betrieb** [P] · FR: FR-17, FR-19 · Regeln: P-16, P-17, P-17a, P-19 bis P-21, P-23 bis P-30 · nach: T-503, T-502
+- [ ] **T-505 Prüfregeln Betrieb** [P] · FR: FR-17, FR-19 · Regeln: P-16, P-17, P-17a, P-19 bis P-21, P-23 bis P-30 · nach: T-503, T-502b
   - Umfang: Prüfregeln für Update, Zeit, Betriebsart, Firewall, DHCP,
     VLAN, Gateway, TI-Route, DNS, Arbeitsplatz, Pairing. Regeln, die den
     Pfad unterbrechen, fließen im Modus Erweitert in `availableActions`
@@ -755,7 +771,7 @@ Sie blockieren die genannten Tasks.
 | FR-14 | T-103, T-105, T-501 |
 | FR-15 | T-507 |
 | FR-16 | T-201, T-202, T-508 |
-| FR-17 | T-502, T-504, T-505 |
+| FR-17 | T-502a, T-502b, T-504, T-505 |
 | FR-18 | T-101, T-106, T-205, T-404 |
 | FR-19 | T-503 bis T-506 |
 | FR-20 | T-601, T-602 |
@@ -776,7 +792,7 @@ Sie blockieren die genannten Tasks.
 | K-1 bis K-9 (5) | T-106, T-205 |
 | Pfadregel (6.0), Bausteine (6.1) | T-107, T-402 |
 | Aktionen (6.2 bis 6.7), Abläufe (7) | T-401 bis T-403 |
-| Konfiguration (8) | T-502 |
+| Konfiguration (8) | T-502a, T-502b |
 | P-1 bis P-7, P-18, P-22, P-31 bis P-33 (9) | T-503 |
 | P-8 bis P-15 (9) | T-504 |
 | P-16, P-17, P-17a, P-19 bis P-21, P-23 bis P-30 (9) | T-505 |

@@ -689,7 +689,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: ein E2E-Durchlauf nur über die Listenansicht eine Aktion
     startet und die Sicherheitsprüfung öffnet.
 
-- [ ] **T-702 Tastatur und Kürzel** · FR: FR-22 · Regeln: – · nach: T-508, T-405
+- [x] **T-702 Tastatur und Kürzel** · FR: FR-22 · Regeln: – · nach: T-508, T-405
   - Umfang: Lücken in der Tastaturbedienung schließen, `ShortcutsDialog`
     mit allen Kürzeln.
   - Fertig, wenn: ein E2E-Durchlauf nur per Tastatur Preset öffnen, Gerät

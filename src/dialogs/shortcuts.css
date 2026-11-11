@@ -1,0 +1,11 @@
+.tiv-keys > div {
+  display: flex;
+  gap: 12px;
+  margin: 4px 0;
+}
+.tiv-keys dt {
+  flex: 0 0 15em;
+}
+.tiv-keys dd {
+  margin: 0;
+}

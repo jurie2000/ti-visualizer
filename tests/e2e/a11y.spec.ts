@@ -30,6 +30,14 @@ test.describe("a11y", { tag: "@a11y" }, () => {
         const result = await new AxeBuilder({ page }).withTags(tags).analyze();
         expect(result.violations).toEqual([]);
       });
+
+      test("Tastaturkürzel-Dialog ohne Axe-Verstöße", async ({ page }) => {
+        await page.goto("./");
+        await page.getByRole("button", { name: "Tastaturkürzel" }).click();
+        await expect(page.getByRole("dialog")).toBeVisible();
+        const result = await new AxeBuilder({ page }).withTags(tags).analyze();
+        expect(result.violations).toEqual([]);
+      });
     });
   }
 });

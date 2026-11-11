@@ -6,6 +6,7 @@ import { ImportFindingsDialog } from "../dialogs/ImportFindingsDialog";
 import { OpenDialog } from "../dialogs/OpenDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { SecurityDialog } from "../dialogs/SecurityDialog";
+import { ShortcutsDialog } from "../dialogs/ShortcutsDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
@@ -125,6 +126,7 @@ export function App() {
           >
             Impressum
           </Button>
+          <ShortcutsDialog />
         </footer>
         <PlugCardDialog />
         <OpenDialog />

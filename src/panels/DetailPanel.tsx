@@ -6,11 +6,13 @@ import type { Catalog, Edge, Node, Topology } from "../schema";
 import {
   useCatalog,
   useOpen,
+  useSettings,
   useTopology,
   useUi,
   type Selection,
 } from "../store";
 import { Button } from "../ui/Button";
+import { ConfigForm } from "./ConfigForm";
 
 const TONE = { sage: "Salbei", accent: "Akzent", neutral: "Neutral" } as const;
 
@@ -60,6 +62,7 @@ const nameOf = (n: Node, catalog: Catalog) =>
 
 function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
+  const advanced = useSettings((s) => s.mode) === "advanced";
   return (
     <>
       <dl className="tiv-detail__facts">
@@ -72,6 +75,7 @@ function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
         )}
         {type && <Row name="Status">{type.status}</Row>}
       </dl>
+      {advanced && <ConfigForm node={node} />}
       {type && <Sources ids={type.source} catalog={catalog} />}
     </>
   );

@@ -77,7 +77,7 @@ export function SimPlayer() {
     };
   }, [sim, send]);
 
-  // Öffnen, Rückgängig, Störung und Moduswechsel brechen ab (Regelwerk 7).
+  // Öffnen, Störung, Moduswechsel und jede andere Änderung der Topologie brechen ab (Regelwerk 7).
   // Auch nach `done`: „Zurück“ setzt sonst eine Simulation mit veralteten Schritten fort.
   const live = sim.status !== "idle" && sim.status !== "cancelled";
   useEffect(() => {

@@ -21,8 +21,8 @@ export function UnsavedGuardDialog() {
       }}
     >
       <p>
-        Ungespeicherte Änderungen — erst speichern? Der bisherige Stand bleibt
-        nach dem Ersetzen mit „Rückgängig“ erreichbar.
+        Ungespeicherte Änderungen — erst speichern? Ohne Speichern geht der
+        bisherige Stand beim Ersetzen verloren.
       </p>
       <Button
         variant="primary"

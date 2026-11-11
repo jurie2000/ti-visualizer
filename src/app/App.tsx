@@ -10,6 +10,7 @@ import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
+import { TutorialCard } from "../panels/TutorialCard";
 import { initAutosave, useOpen, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
@@ -23,6 +24,7 @@ import "./app.css";
 export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
+  const tutorial = useUi((s) => s.tutorial);
   // Beim Ansichtswechsel verschwindet der bediente Button: Fokus auf den neuen Hauptbereich (D10)
   const mainRef = useRef<HTMLElement>(null);
   const first = useRef(true);
@@ -91,7 +93,12 @@ export function App() {
               tabIndex={-1}
               className="tiv-main tiv-main--start"
             >
-              <StartScreen />
+              <StartScreen
+                onResume={() => {
+                  useUi.getState().setTutorial(true);
+                  setStarted(true);
+                }}
+              />
             </main>
           ) : (
             <main ref={mainRef} tabIndex={-1} className="tiv-main">
@@ -99,6 +106,7 @@ export function App() {
                 <PalettePanel />
               </aside>
               <section className="tiv-canvas" aria-label="Canvas">
+                {tutorial && <TutorialCard />}
                 <Canvas />
               </section>
               <aside className="tiv-detail" aria-label="Detailpanel">

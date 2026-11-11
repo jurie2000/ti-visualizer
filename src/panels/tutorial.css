@@ -1,0 +1,47 @@
+.tiv-tutorial {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  max-height: 40%;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+.tiv-tutorial__avatar {
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.tiv-tutorial__body {
+  flex: 1 1 24rem;
+  min-width: 0;
+}
+.tiv-tutorial__body h2,
+.tiv-tutorial__body p {
+  margin: 0 0 6px;
+}
+.tiv-tutorial__body h2 {
+  font-size: 1.1rem;
+}
+.tiv-tutorial__kicker {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+.tiv-tutorial__story {
+  font-style: italic;
+}
+.tiv-tutorial__task {
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-sm);
+}
+.tiv-tutorial__task[data-done="true"] {
+  border-color: var(--color-accent-2);
+}
+.tiv-tutorial__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

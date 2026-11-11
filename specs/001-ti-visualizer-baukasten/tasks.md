@@ -659,7 +659,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: Schema-Test grün ist und jeder Schritt auf eine
     vorhandene Aktion oder ein vorhandenes Gerät zeigt.
 
-- [ ] **T-602 Tutorial-Karte** · FR: FR-20 · Regeln: – · nach: T-601, T-405
+- [x] **T-602 Tutorial-Karte** · FR: FR-20 · Regeln: – · nach: T-601, T-405
   - Umfang: `TutorialCard` mit Avatar, Schritt x/y, Vor/Zurück,
     Fortschritt in den Einstellungen.
   - Fertig, wenn: ein E2E-Test beide Teile vollständig durchspielt.

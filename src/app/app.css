@@ -36,6 +36,13 @@
 .tiv-canvas {
   position: relative;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* Die Tutorial-Karte steht über der Fläche; React Flow füllt den Rest. */
+.tiv-canvas > .react-flow {
+  flex: 1;
+  min-height: 0;
 }
 .tiv-palette {
   border-right: 1px solid var(--color-neutral-300);
@@ -271,4 +278,9 @@ a {
   color: var(--tiv-error-fg);
   background: var(--tiv-error-bg);
   border-left: 4px solid var(--tiv-error-bd);
+}
+.tiv-start__tutorial {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }

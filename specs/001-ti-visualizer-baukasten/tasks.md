@@ -16,7 +16,7 @@
 | Feld | Bedeutung |
 |---|---|
 | `[ ]` / `[x]` | offen / erledigt. Das Häkchen setzt der PR, der den Task abschließt |
-| **T-xxx** | Task-ID. Hunderter = Phase (T-0xx = P0, T-1xx = P1 …), T-8xx optional, T-9xx Begleitaufgaben ohne Code |
+| **T-xxx** | Task-ID. Hunderter = Phase (T-0xx = P0, T-1xx = P1 …), T-8xx optional, T-9xx Begleitaufgaben ohne Code, T-10xx = Phase Feedback (P10) |
 | [P] | kann parallel zu anderen [P]-Tasks derselben Phase laufen |
 | FR | betroffene Anforderungen aus der Spec |
 | Regeln | Regel-IDs aus dem Regelwerk. Jede genannte Regel braucht einen Test mit der ID im Namen, z. B. `it("[K-3] …")` (D18) |
@@ -725,6 +725,73 @@ Sicherheitsprüfung.
   - Fertig, wenn: das Release `v1.0.0` das ZIP enthält und ein
     E2E-Durchlauf die entpackte App über einen lokalen Server startet,
     ein Preset öffnet und speichert.
+
+---
+
+## P10: Feedback
+
+Quelle: Abgleich des TI-Architekturdiagramms eines Kollegen (2026-11-11,
+„Diagramm zum TI Aufbau“) mit Regelwerk, Plan und Katalog. Das Diagramm
+unterscheidet vier Schnittstellenklassen (Internet, TI 1.0 intern, TI 1.0
+offen, TI 2.0 Internet-only) und trennt VSDM 1.0/2.0 sowie VZD LDAP/FHIR.
+Die Tasks sind unabhängig von P0 bis P7 und werden nach Bedarf gezogen.
+
+- [ ] **T-1001 Auslegungen und Umfang festhalten** (ohne Code) · FR: – · Regeln: X-1 · nach: –
+  - Umfang: Je Punkt eine „Auslegung (Datum)“ im Regelwerk bzw. eine
+    Entscheidung Dxx in plan.md, Quellen nach `quellen.md`:
+    (a) v1 = TI 1.0 mit Vorgriff auf PoPP und TI-Gateway (Begriffsklärung
+    TI 1.0/2.0), (b) VSDM v1 = VSDM 1.0, (c) VZD v1 = FHIR oder LDAP,
+    (d) TI-M Pro/ePA als ein Typ `tim`, (e) bewusst außerhalb des Scopes
+    in spec.md „Außerhalb des Scopes“: Fed. Master, KSR, FDZ,
+    Trust Client, TI-Basismodul, Auth Modul, PoPP Modul, Consumer,
+    NCPeH, WANDA, Bestandsnetze, TIM FdV. Sonst je Komponente ein Issue.
+  - Fertig, wenn: jeder Punkt (a) bis (e) dort steht, wo ihn ein Leser
+    sucht, und `pnpm format:check` grün ist.
+
+- [ ] **T-1002 Offene Fachfragen zum Diagramm klären** (ohne Code) · FR: – · Regeln: P-33 · nach: –
+  - Umfang: Fragen an den Kollegen bzw. Quellenprüfung, Ergebnis als
+    Auslegung im Regelwerk: (a) VPN-ZugD beim TI-Gateway fachlich richtig
+    oder Tunnel Zug. Modul → TI-Gateway, (b) HSK mit oder ohne VPN-ZugD,
+    (c) PoPP Client über den Zugang oder nur Internet, (d) „VSDM Modul“
+    im Clientsystem = VSDM-2.0-Client, (e) E-Rechnung = DiPag.
+  - Fertig, wenn: jede Frage entschieden ist und mit Quelle im Regelwerk
+    steht. Blockiert die Änderungen von T-1003 und T-1005, die davon
+    abhängen.
+
+- [ ] **T-1003 Schnittstellenklasse je Dienst** · FR: FR-11 · Regeln: – · nach: T-1001, T-104, T-406
+  - Umfang: Attribut `interfaceClass` (`internet`, `ti1-intern`,
+    `ti1-offen`, `ti2-internet`) je Diensttyp im Katalog samt Schema,
+    Anzeige im Detailpanel, Abschnitt im Regelwerk.
+  - Fertig, wenn: Schema-Test grün ist, jeder Diensttyp eine Klasse hat
+    und ein Komponententest die Klasse im Detailpanel zeigt.
+
+- [ ] **T-1004 Katalog: Ports ohne Regel bereinigen** [P] · FR: – · Regeln: – · nach: T-1001, T-104
+  - Umfang: `idpsek`, `popp`, `tim` haben Port `ti`, aber keine
+    Erlaubnisregel nutzt ihn. Port streichen oder Regel ergänzen, je nach
+    T-1001. Kategorie von `idpsek` prüfen. Prüfung, ob `tsl` (PKI) und
+    `kim` einen Internet-Port brauchen (Quellenbeleg).
+  - Fertig, wenn: ein Katalog-Test meldet jeden Port ohne mindestens eine
+    Erlaubnisregel als Fehler und grün ist.
+
+- [ ] **T-1005 VSDM 1.0 und 2.0 trennen** · FR: FR-12 · Regeln: V-4 bis V-10 · nach: T-1001, T-1002
+  - Umfang: Nur wenn T-1001 (b) „beides“ entscheidet: Typ `vsdm2` mit
+    Port `net`, Typ „VSDM Intermediär“, Verbindungsregeln und Protokolle,
+    Pfadregel für Internet-Wege erweitern.
+  - Fertig, wenn: je neue Regel ein Test mit ID im Namen grün ist und
+    die Aktion „Versichertenstammdaten“ beide Wege unterscheidet.
+
+- [ ] **T-1006 Preset „Kreiskrankenhaus Nord, TI 2.0“ angleichen** [P] · FR: FR-2 · Regeln: Presets (13) · nach: T-1001, T-1002
+  - Umfang: Das Preset enthält nur TI-1.0-Dienste über den VPN-ZugD.
+    Umbenennen oder um Internet-only-Dienste (PoPP, Sek.IDP) ergänzen.
+  - Fertig, wenn: Name und Inhalt zur Auslegung aus T-1001 passen und
+    `runChecks` für das Preset grün ist.
+
+- [ ] **T-1007 Glossar füllen** [P] · FR: FR-11 · Regeln: – · nach: T-1001
+  - Umfang: `catalog/1/glossary.json` (aktuell leer) mit Zugang, offener
+    Fachdienst, TI 1.0/2.0, ZETA und den Begriffen aus T-1001. Texte
+    nie als HTML.
+  - Fertig, wenn: Schema-Test grün ist und das Detailpanel einen Begriff
+    anzeigt.
 
 ---
 

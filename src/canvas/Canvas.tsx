@@ -27,20 +27,24 @@ import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { PortPicker } from "../dialogs/PortPicker";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
+import { ZoneButton } from "./ZoneButton";
+import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
 import { SimPlayer } from "./SimPlayer";
+import { containedNodes } from "../engine/zones";
 import { DRAG_TYPE, NODE_SIZE, categoryColor } from "./deviceStyle";
 import {
   toFlow,
   type DeviceFlowNode,
   type ConnectionFlowEdge,
   type GroupFlowEdge,
+  type ZoneFlowNode,
 } from "./toFlow";
 import { useConnecting } from "./useConnecting";
 import { useContextMenu } from "./useContextMenu";
 import "./canvas.css";
 
-const nodeTypes: NodeTypes = { device: DeviceNode };
+const nodeTypes: NodeTypes = { device: DeviceNode, zone: ZoneNode };
 const edgeTypes: EdgeTypes = {
   connection: ConnectionEdge,
   group: GroupEdge,
@@ -48,7 +52,7 @@ const edgeTypes: EdgeTypes = {
 
 const ariaLabelConfig = {
   "node.a11yDescription.default":
-    "Enter oder Leertaste wählt das Gerät, danach verschieben die Pfeiltasten es. Mit Umschalt geht es in größeren Schritten. Die Taste V wählt das Gerät als Quelle einer Verbindung, V am Zielgerät verbindet.",
+    "Enter oder Leertaste wählt das Gerät oder die Zone, danach verschieben die Pfeiltasten es. Mit Umschalt geht es in größeren Schritten. Die Taste V wählt ein Gerät als Quelle einer Verbindung, V am Zielgerät verbindet.",
   "node.a11yDescription.keyboardDisabled":
     "Enter oder Leertaste wählt das Gerät.",
   "node.a11yDescription.ariaLiveMessage": ({
@@ -60,7 +64,7 @@ const ariaLabelConfig = {
     x: number;
     y: number;
   }) =>
-    `Gerät nach ${{ up: "oben", down: "unten", left: "links", right: "rechts" }[direction] ?? direction} verschoben, neue Position x ${String(x)}, y ${String(y)}`,
+    `Nach ${{ up: "oben", down: "unten", left: "links", right: "rechts" }[direction] ?? direction} verschoben, neue Position x ${String(x)}, y ${String(y)}`,
   "edge.a11yDescription.default": "Enter oder Leertaste wählt die Verbindung.",
   "controls.ariaLabel": "Ansicht",
   "controls.zoomIn.ariaLabel": "Vergrößern",
@@ -83,6 +87,7 @@ const ariaLabelConfig = {
 export function Canvas() {
   const topology = useTopology((s) => s.topology);
   const moveNodes = useTopology((s) => s.moveNodes);
+  const moveZone = useTopology((s) => s.moveZone);
   const addNode = useTopology((s) => s.addNode);
   const { screenToFlowPosition } = useReactFlow();
   const toast = useToast();
@@ -144,7 +149,9 @@ export function Canvas() {
     [flow.nodes, sizes],
   );
 
-  const onNodesChange = (changes: NodeChange<DeviceFlowNode>[]) => {
+  const onNodesChange = (
+    changes: NodeChange<DeviceFlowNode | ZoneFlowNode>[],
+  ) => {
     const dropped: Record<string, Point> = {};
     for (const c of changes) {
       if (c.type === "position" && c.position) {
@@ -152,13 +159,40 @@ export function Canvas() {
           x: Math.round(c.position.x),
           y: Math.round(c.position.y),
         };
-        if (c.dragging) setDrag((d) => ({ ...d, [c.id]: position }));
+        const zone = topology.zones.find((z) => z.id === c.id);
+        if (zone) {
+          // Geräte in der Zone ziehen mit (FR-15), der Store bucht alles als einen Schritt
+          const inside = containedNodes(zone, topology.nodes, NODE_SIZE);
+          if (c.dragging) {
+            const dx = position.x - zone.area.x;
+            const dy = position.y - zone.area.y;
+            setDrag((d) => ({
+              ...d,
+              [c.id]: position,
+              ...Object.fromEntries(
+                inside.map((n) => [
+                  n.id,
+                  { x: n.position.x + dx, y: n.position.y + dy },
+                ]),
+              ),
+            }));
+          } else {
+            moveZone(c.id, position);
+            const gone = new Set([c.id, ...inside.map((n) => n.id)]);
+            setDrag((d) =>
+              Object.fromEntries(
+                Object.entries(d).filter(([id]) => !gone.has(id)),
+              ),
+            );
+          }
+        } else if (c.dragging) setDrag((d) => ({ ...d, [c.id]: position }));
         else dropped[c.id] = position;
       } else if (c.type === "dimensions" && c.dimensions) {
         const size = c.dimensions;
         setSizes((m) => ({ ...m, [c.id]: size }));
       } else if (c.type === "select" && c.selected) {
-        select({ kind: "node", id: c.id });
+        const isZone = topology.zones.some((z) => z.id === c.id);
+        select({ kind: isZone ? "zone" : "node", id: c.id });
       }
     }
     const ids = Object.keys(dropped);
@@ -264,6 +298,9 @@ export function Canvas() {
               : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
           </Panel>
         )}
+        <Panel position="top-right">
+          <ZoneButton />
+        </Panel>
         <Panel position="bottom-center">
           <SimPlayer />
         </Panel>
@@ -272,6 +309,7 @@ export function Canvas() {
           pannable
           zoomable
           nodeColor={(n) => {
+            if (n.type === "zone") return "transparent";
             const device = (n as DeviceFlowNode).data.device;
             return categoryColor(device.category);
           }}

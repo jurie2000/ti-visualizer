@@ -1,6 +1,7 @@
 import { Pin, PinOff } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { describeEdge } from "../canvas/edgeKind";
+import { TONE_NAME } from "../canvas/toFlow";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology } from "../schema";
 import {
@@ -13,8 +14,7 @@ import {
 } from "../store";
 import { Button } from "../ui/Button";
 import { ConfigForm } from "./ConfigForm";
-
-const TONE = { sage: "Salbei", accent: "Akzent", neutral: "Neutral" } as const;
+import { ZoneForm } from "./ZoneForm";
 
 /** Quellen mit Link (nur https laut Schema), Texte nie als HTML (D10). */
 function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
@@ -167,9 +167,12 @@ function Body({ sel }: { sel: Selection }) {
       found = true;
       title = zone.label ?? zone.id;
       content = (
-        <dl className="tiv-detail__facts">
-          <Row name="Farbe">{TONE[zone.tone]}</Row>
-        </dl>
+        <>
+          <dl className="tiv-detail__facts">
+            <Row name="Farbe">{TONE_NAME[zone.tone]}</Row>
+          </dl>
+          <ZoneForm zone={zone} />
+        </>
       );
     }
   }

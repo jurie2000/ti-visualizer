@@ -85,7 +85,8 @@ const safe = (s: string, max = 60) =>
 
 /** Steuer-, Format- (u. a. Rechts-nach-links) und Zeilentrenner-Zeichen; im Fließtext bleibt der Zeilenumbruch. */
 const HIDDEN = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu;
-const strip = (s: string, keepNewline = false) =>
+/** Auch für getippte Texte (Zonenname, T-507): gleiche Reinigung wie beim Öffnen. */
+export const strip = (s: string, keepNewline = false) =>
   s.replace(HIDDEN, (c) => (keepNewline && c === "\n" ? c : ""));
 
 const KINDS = { Node: "Gerät", Edge: "Verbindung", Zone: "Zone" } as const;

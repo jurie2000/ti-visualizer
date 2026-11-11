@@ -278,6 +278,25 @@ test.describe("injection", { tag: "@security" }, () => {
     await w.pruefen();
   });
 
+  test("Weg: Zonenname eintippen — Nutzlast bleibt Text, Formatzeichen fallen weg", async ({
+    page,
+  }) => {
+    const w = await wache(page);
+    await page.goto("./");
+    await page.getByRole("button", { name: /Leerer Start/ }).click();
+    await page.getByRole("button", { name: "Zone anlegen" }).click();
+    for (const p of PAYLOADS) {
+      const feld = page.getByLabel("Name", { exact: true });
+      await feld.fill(`\u202E${p.slice(0, 100)}`);
+      await feld.press("Enter");
+      await expect(page.locator(".tiv-zone__name").first()).toHaveText(
+        p.slice(0, 100),
+      );
+    }
+    await expect(page.locator(".tiv-zone i, .tiv-zone img")).toHaveCount(0);
+    await w.pruefen();
+  });
+
   test("CSP: fremdes Inline-Skript wird blockiert und gemeldet, App bleibt ohne Verletzung", async ({
     page,
   }) => {

@@ -175,6 +175,7 @@ export const Topology = z
 
 export type Point = z.infer<typeof Point>;
 export type Rect = z.infer<typeof Rect>;
+export type Tone = z.infer<typeof Tone>;
 export type Endpoint = z.infer<typeof Endpoint>;
 export type Card = z.infer<typeof Card>;
 export type PinCard = z.infer<typeof PinCard>;

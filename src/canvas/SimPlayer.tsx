@@ -114,7 +114,7 @@ export function SimPlayer() {
     close();
     document
       .querySelector<HTMLElement>(
-        `.react-flow__node[data-id="${CSS.escape(nodeId)}"]`,
+        `.react-flow__node[data-id="${CSS.escape(nodeId)}"], [data-sim-return="${CSS.escape(nodeId)}"]`,
       )
       ?.focus();
   };

@@ -11,6 +11,7 @@ import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
 import { TutorialCard } from "../panels/TutorialCard";
+import { TopologyList } from "./TopologyList";
 import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
@@ -25,6 +26,7 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
+  const listView = useUi((s) => s.listView);
   // Beim Ansichtswechsel verschwindet der bediente Button: Fokus auf den neuen Hauptbereich (D10)
   const mainRef = useRef<HTMLElement>(null);
   const first = useRef(true);
@@ -73,6 +75,14 @@ export function App() {
                   Startansicht
                 </Button>
                 <Button
+                  aria-pressed={listView}
+                  onClick={() => {
+                    useUi.getState().setListView(!listView);
+                  }}
+                >
+                  Listenansicht
+                </Button>
+                <Button
                   onClick={() => {
                     useUi.getState().openDialog("security");
                   }}
@@ -109,7 +119,7 @@ export function App() {
               </aside>
               <section className="tiv-canvas" aria-label="Canvas">
                 {tutorial && <TutorialCard />}
-                <Canvas />
+                {listView ? <TopologyList /> : <Canvas />}
               </section>
               <aside className="tiv-detail" aria-label="Detailpanel">
                 <DetailPanel />

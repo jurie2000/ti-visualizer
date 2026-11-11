@@ -647,10 +647,15 @@ Sicherheitsprüfung.
 
 ## P6: Tutorial und Herausforderungen
 
-- [ ] **T-601 Tutorial-Inhalte** [P] · FR: FR-20 · Regeln: – · nach: T-401
+- [x] **T-601 Tutorial-Inhalte** [P] · FR: FR-20 · Regeln: – · nach: T-401
   - Umfang: `tutorial.json` mit zwei Teilen (Praxis bis E-Rezept,
     Apotheke bis Einlösung), Personas mit Alt-Texten, Persona-Bilder als
     WebP in `src/assets/`.
+  - Auslegung (2026-11-11): Texte und Personas stammen aus dem Mockup
+    (Marta, Dr. Behrens, Jana, Herr Aydın; Kai gehört zu den
+    Herausforderungen). Die Handlungsanweisungen („how“) und Bereichs-
+    prüfungen des Mockups entfallen hier, sie sind UI (T-602). Schritte
+    führen `devices` und `action`, Status „Vereinfachung“ (didaktisch).
   - Fertig, wenn: Schema-Test grün ist und jeder Schritt auf eine
     vorhandene Aktion oder ein vorhandenes Gerät zeigt.
 

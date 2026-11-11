@@ -1,1 +1,227 @@
-{ "personas": [], "steps": [] }
+{
+  "personas": [
+    {
+      "id": "marta",
+      "name": "Marta Hoffmann",
+      "text": "Patientin, 58",
+      "image": "marta.webp",
+      "alt": "Porträt von Marta Hoffmann: Frau mit grauem Bob und Strickpullover, die lächelnd den Kopf an die Hand lehnt."
+    },
+    {
+      "id": "behrens",
+      "name": "Dr. Behrens",
+      "text": "Hausärztin und Praxisinhaberin",
+      "image": "behrens.webp",
+      "alt": "Porträt von Dr. Behrens: lächelnde Frau mit kurzen dunklen Haaren, Brille, weißem Kittel und Stethoskop."
+    },
+    {
+      "id": "jana",
+      "name": "Jana",
+      "text": "Medizinische Fachangestellte (MFA) am Empfang",
+      "image": "jana.webp",
+      "alt": "Porträt von Jana: lächelnde junge Frau mit blondem Pferdeschwanz in dunkelblauer Berufskleidung."
+    },
+    {
+      "id": "aydin",
+      "name": "Herr Aydın",
+      "text": "Apotheker, Apotheke am Markt",
+      "image": "aydin.webp",
+      "alt": "Porträt von Herrn Aydın: lächelnder Mann mit Vollbart in weißem Kittel vor einem Medikamentenregal."
+    }
+  ],
+  "steps": [
+    {
+      "id": "willkommen",
+      "part": "praxis",
+      "title": "Willkommen",
+      "text": "Die Telematikinfrastruktur (TI) ist ein abgeschottetes Netz für das Gesundheitswesen. Du baust jetzt eine Arztpraxis Schritt für Schritt auf und schickst danach ein E-Rezept durch die TI. Links liegt die Gerätepalette: Geräte auf die Canvas ziehen oder einfach anklicken.",
+      "story": "Seit Tagen pocht mein Kopf wie ein schlecht konfigurierter Router. Also sitze ich im Wartezimmer von Dr. Behrens. Heute Abend will ich meine Tabletten abholen — ganz ohne Zettel. Klingt nach Zauberei? Ist Telematik.",
+      "persona": "marta",
+      "devices": ["pvs"],
+      "source": ["gemSpec_Uebersicht"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "primaersystem",
+      "part": "praxis",
+      "title": "Das Primärsystem",
+      "text": "Jede Praxis arbeitet mit einem Praxisverwaltungssystem (PVS). Es löst alle TI-Vorgänge aus, spricht aber nie selbst mit einem Fachdienst.",
+      "story": "Frau Hoffmann, einmal die Karte bitte! Moment — erst mal muss mein PVS hochfahren. Ohne das bin ich hier nur die Dame mit dem Kaffeebecher.",
+      "persona": "jana",
+      "task": "Setze ein PVS aus „Primärsysteme“ auf die Canvas.",
+      "devices": ["pvs"],
+      "source": ["gemILF_PS"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "kartenterminal",
+      "part": "praxis",
+      "title": "Das Kartenterminal",
+      "text": "Karten steckt man nicht in den Rechner, sondern in ein zugelassenes eHealth-Kartenterminal.",
+      "story": "Dieses Kästchen mit Schlitz ist unser Kartenterminal. Es sieht aus wie ein Kassenautomat, will aber kein Geld — nur Ihre Karte. Sehr genügsam.",
+      "persona": "jana",
+      "task": "Setze ein eHealth-KT aus „Kartenterminals“ auf die Canvas.",
+      "devices": ["kt"],
+      "source": ["gemSpec_KT"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "karten-stecken",
+      "part": "praxis",
+      "title": "Karten stecken",
+      "text": "Die Praxis braucht drei Karten: Die SMC-B weist die Praxis aus, der HBA die Ärztin oder den Arzt, die eGK die versicherte Person.",
+      "story": "Drei Karten, ein Terminal: SMC-B für die Praxis, der HBA für die Chefin, Ihre eGK für Sie. Keine Sorge, das ist das einzige Kartenspiel hier, bei dem niemand verliert.",
+      "persona": "jana",
+      "task": "Klicke das Kartenterminal an und stecke rechts im Detailpanel SMC-B, HBA und eGK.",
+      "devices": ["kt", "smcb", "hba", "egk"],
+      "source": ["gemSpec_KT"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "praxisnetz",
+      "part": "praxis",
+      "title": "Das Praxisnetz",
+      "text": "PVS und Kartenterminal hängen gemeinsam an einem Switch — so entsteht das lokale Netz der Praxis.",
+      "story": "Mein Rechner und das Terminal müssen miteinander reden. Der Switch ist sozusagen unser Wartezimmer fürs Netz — alle kommen rein, keiner drängelt.",
+      "persona": "jana",
+      "task": "Setze einen Switch aus „Lokales Netz“ und verbinde PVS und Kartenterminal damit.",
+      "devices": ["pvs", "kt", "switch"],
+      "source": ["DVO"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "konnektor",
+      "part": "praxis",
+      "title": "Der Konnektor",
+      "text": "Der Konnektor ist das Tor der Praxis zur TI: Er spricht die Karten an, signiert und baut den verschlüsselten Tunnel auf.",
+      "story": "Im Technikschrank blinkt unser Konnektor. Er ist der Türsteher der Praxis: Ohne gültigen Ausweis kommt kein Datenpaket raus. Und er lässt sich nicht bestechen.",
+      "persona": "behrens",
+      "task": "Setze einen Konnektor aus „Netzwerk“ und verbinde den Switch mit seinem LAN-Anschluss.",
+      "devices": ["kon", "switch"],
+      "source": ["gemSpec_Kon"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "weg-in-die-ti",
+      "part": "praxis",
+      "title": "Der Weg in die TI",
+      "text": "Über seinen WAN-Anschluss baut der Konnektor einen IPsec-Tunnel zum VPN-Zugangsdienst auf. Ab hier ist die Praxis Teil der TI.",
+      "story": "Jetzt der Tunnel in die TI. Verschlüsselt, abhörsicher, keine Werbepausen. Wenn nur die Autobahn so zuverlässig wäre.",
+      "persona": "behrens",
+      "task": "Setze den VPN-Zugangsdienst und verbinde ihn mit dem Konnektor.",
+      "devices": ["kon", "vpn"],
+      "source": ["gemSpec_VPN_ZugD"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "fachdienste",
+      "part": "praxis",
+      "title": "Fachdienste",
+      "text": "Hinter dem VPN-Zugang liegen die Fachdienste. Für das E-Rezept braucht es den Identity Provider für die Anmeldung, den E-Rezept-Fachdienst und den VSDM-Dienst der Krankenkasse, der die Versichertendaten der eGK prüft.",
+      "story": "Frau Hoffmann, 165 zu 100 — da drückt nicht nur der Kopf. Ich verordne Ramipril 5 mg. Das Rezept geht nicht in die Handtasche, sondern in den E-Rezept-Fachdienst. Da fällt es auch nicht zwischen die Kassenbons.",
+      "persona": "behrens",
+      "task": "Setze IDP aus „Zentrale Dienste“ sowie E-Rezept und VSDM aus „Fachdienste“ und verbinde alle drei mit dem VPN-Zugang.",
+      "devices": ["vpn", "idp", "erp", "vsdm"],
+      "source": ["gemSpec_FD_eRp", "gemSpec_IDP_FD", "gemSysL_VSDM"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "erstes-erezept",
+      "part": "praxis",
+      "title": "Dein erstes E-Rezept",
+      "text": "Alles ist bereit. Beobachte, wie die Verordnung vom PVS über Konnektor, Kartenterminal und Tunnel zum Fachdienst wandert.",
+      "story": "Ein Klick, mein HBA unterschreibt — digital und rechtsgültig. Endlich kann niemand mehr über meine Handschrift lästern.",
+      "persona": "behrens",
+      "task": "Rechtsklick auf das PVS → „E-Rezept ausstellen“. Lass die Simulation bis zum Ende laufen.",
+      "devices": ["pvs", "kon", "kt", "vpn", "erp"],
+      "action": "erezept-ausstellen",
+      "source": ["gemILF_PS_eRp"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "praxis-fertig",
+      "part": "praxis",
+      "title": "Praxis fertig",
+      "text": "Deine Arztpraxis ist an die TI angebunden. Im zweiten Teil kommt eine Apotheke dazu — mit eigenem Netz und eigenem Konnektor, aber derselben TI.",
+      "story": "Das war’s schon? Kein Zettel, kein Stempel, kein „Wo hab ich das Rezept bloß hingelegt?“. Meine Karte ist jetzt der Schlüssel — und die verliere ich hoffentlich seltener als Rezepte.",
+      "persona": "marta",
+      "devices": ["pvs", "erp"],
+      "action": "erezept-ausstellen",
+      "source": ["gemILF_PS_eRp"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "apotheke-nebenan",
+      "part": "apotheke",
+      "title": "Eine Apotheke nebenan",
+      "text": "Praxis und Apotheke sind getrennte Einrichtungen: eigene Räume, eigenes Netz, eigener Konnektor. Das Apothekenverwaltungssystem (AVS) ist ihr Primärsystem.",
+      "story": "Zwei Straßen weiter: die Apotheke am Markt. Die haben mit der Praxis nichts am Hut — und trotzdem sollen sie mein Rezept kennen. Da bin ich ja mal gespannt.",
+      "persona": "marta",
+      "task": "Setze ein AVS (Apothekenverwaltungssystem) für die Apotheke auf die Canvas.",
+      "devices": ["avs"],
+      "source": ["gematik_eRp_Apotheken"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "apotheken-terminal",
+      "part": "apotheke",
+      "title": "Terminal der Apotheke",
+      "text": "Auch die Apotheke hat ein eigenes Kartenterminal mit eigener SMC-B. Die eGK bringt die Kundin mit.",
+      "story": "Guten Abend! Karte bitte einmal hier drauf. Keine Angst, das Terminal beißt nicht — es liest nur.",
+      "persona": "aydin",
+      "task": "Setze ein Kartenterminal für die Apotheke und stecke SMC-B und eGK.",
+      "devices": ["kt", "smcb", "egk"],
+      "source": ["gemSpec_KT"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "apotheken-netz",
+      "part": "apotheke",
+      "title": "Netz der Apotheke",
+      "text": "Das Apothekennetz bleibt vom Praxisnetz vollständig getrennt — zwischen beiden liegt kein Kabel.",
+      "story": "Unser Netz ist unser Netz. Mit der Praxis sind wir befreundet, aber nicht verkabelt. Gute Nachbarschaft braucht keine gemeinsamen Leitungen.",
+      "persona": "aydin",
+      "task": "Setze einen Switch für die Apotheke und verbinde AVS und Kartenterminal damit.",
+      "devices": ["avs", "kt", "switch"],
+      "source": ["DVO"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "apotheken-konnektor",
+      "part": "apotheke",
+      "title": "Eigener Konnektor",
+      "text": "Die Apotheke bekommt einen eigenen Konnektor. Sein Tunnel führt zum selben VPN-Zugangsdienst — dort treffen sich beide Einrichtungen, aber nur innerhalb der TI.",
+      "story": "Auch wir haben einen Türsteher im Hinterzimmer. Sein Tunnel führt zur selben TI wie der der Praxis — man trifft sich also, aber nur auf neutralem Boden.",
+      "persona": "aydin",
+      "task": "Setze einen Konnektor für die Apotheke. Verbinde ihn mit dem Apotheken-Switch und mit dem vorhandenen VPN-Zugang.",
+      "devices": ["kon", "vpn"],
+      "source": ["gemSpec_Kon", "gemSpec_VPN_ZugD"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "rezept-einloesen",
+      "part": "apotheke",
+      "title": "Rezept einlösen",
+      "text": "Die Apotheke holt das E-Rezept der Praxis beim Fachdienst ab. Der Weg führt über ihren eigenen Konnektor — nicht über die Praxis.",
+      "story": "Ah, da ist es: Ramipril 5 mg, heute Vormittag ausgestellt von Dr. Behrens. Frisch aus der Leitung, noch warm.",
+      "persona": "aydin",
+      "task": "Rechtsklick auf das AVS → „E-Rezept einlösen (eGK einlesen)“ und die Simulation durchlaufen lassen.",
+      "devices": ["avs", "kon", "erp"],
+      "action": "erezept-einloesen-egk",
+      "source": ["gemF_eRp_Autorisierung_Apo"],
+      "status": "Vereinfachung"
+    },
+    {
+      "id": "geschafft",
+      "part": "apotheke",
+      "title": "Geschafft",
+      "text": "Zwei getrennte Einrichtungen, eine gemeinsame TI: Praxis und Apotheke tauschen nichts direkt aus, sondern nur über die Fachdienste.",
+      "story": "Tabletten in der Tasche, Kopf schon etwas leichter. Praxis und Apotheke haben kein Wort direkt miteinander gewechselt — alles lief über die TI. Nennen wir es: gut vernetzt, trotzdem getrennt.",
+      "persona": "marta",
+      "devices": ["avs", "erp"],
+      "action": "erezept-einloesen-egk",
+      "source": ["gemF_eRp_Autorisierung_Apo"],
+      "status": "Vereinfachung"
+    }
+  ]
+}

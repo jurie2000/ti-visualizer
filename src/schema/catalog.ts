@@ -255,8 +255,39 @@ export const presets = z.array(
 );
 
 export const tutorial = z.strictObject({
-  personas: z.array(z.strictObject({ id: Id, name: Text, text: Text })),
-  steps: z.array(z.strictObject({ id: Id, title: Text, text: Text })),
+  personas: z.array(
+    z.strictObject({
+      id: Id,
+      name: Text,
+      /** Rolle der Figur, steht neben dem Bild. */
+      text: Text,
+      /** Dateiname in `src/assets/` (WebP). */
+      image: z.string().regex(/^[\w-]+\.webp$/),
+      /** Alt-Text des Bildes (D10). */
+      alt: Text,
+    }),
+  ),
+  steps: z.array(
+    z
+      .strictObject({
+        id: Id,
+        part: z.enum(["praxis", "apotheke"]),
+        title: Text,
+        text: Text,
+        /** Aussage der Persona in Ich-Form. */
+        story: Text,
+        persona: Id,
+        task: Text.optional(),
+        /** Gerätetypen, um die es im Schritt geht. */
+        devices: z.array(Id),
+        /** Aktion, die im Schritt ausgelöst wird. */
+        action: Id.optional(),
+        ...sourced,
+      })
+      .refine((st) => st.devices.length > 0 || st.action !== undefined, {
+        message: "Schritt braucht ein Gerät oder eine Aktion",
+      }),
+  ),
 });
 
 export const glossary = z.array(
@@ -320,6 +351,7 @@ export function checkReferences(c: Catalog): string[] {
   const checkIds = ids(c.checks);
   const flowIds = ids(c.flows);
   const presetIds = ids(c.presets);
+  const personaIds = ids(c.tutorial.personas);
 
   const ref = (where: string, id: string, known: Set<string>, what: string) => {
     if (!known.has(id)) errors.push(`${where}: ${what} „${id}“ fehlt`);
@@ -361,6 +393,8 @@ export function checkReferences(c: Catalog): string[] {
     ["Prüfregeln", c.checks],
     ["Herausforderungen", c.challenges],
     ["Presets", c.presets],
+    ["Tutorial-Personas", c.tutorial.personas],
+    ["Tutorial-Schritte", c.tutorial.steps],
     ["Quellen", c.sources],
   ];
   for (const [what, xs] of lists)
@@ -424,6 +458,14 @@ export function checkReferences(c: Catalog): string[] {
       ref(w, a, actionIds, "Aktion");
     });
   }
+  for (const st of c.tutorial.steps) {
+    const w = `Tutorial-Schritt ${st.id}`;
+    ref(w, st.persona, personaIds, "Persona");
+    st.devices.forEach((t) => {
+      ref(w, t, types, "Gerätetyp");
+    });
+    if (st.action) ref(w, st.action, actionIds, "Aktion");
+  }
   for (const p of c.presets) {
     const w = `Preset ${p.id}`;
     const typeOf = new Map(p.topology.nodes.map((n) => [n.id, n.type]));
@@ -471,6 +513,7 @@ export function checkReferences(c: Catalog): string[] {
   withSource("Prüfregel", c.checks);
   withSource("Herausforderung", c.challenges);
   withSource("Preset", c.presets);
+  withSource("Tutorial-Schritt", c.tutorial.steps);
   withSource("Glossar", c.glossary);
 
   return errors;

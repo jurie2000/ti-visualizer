@@ -44,7 +44,8 @@ type Rule = (x: Ctx) => Hit[];
 const EXITS = ["router", "vpn", "internet"];
 
 const ends = (e: Topology["edges"][number]) => e.ends.map((x) => x.node);
-const sorted = (xs: Iterable<string>) => [...xs].sort();
+const sorted = (xs: Iterable<string>) =>
+  [...xs].sort((a, b) => a.localeCompare(b));
 
 /** Kantenmenge als Nachbarschaft; Kanten zu unbekannten Knoten zählen nicht. */
 function neighbours(t: Topology) {
@@ -143,15 +144,22 @@ const RULES: Record<string, Rule> = {
   },
 
   // Das TI-Gateway hat keine gSMC-K (Regelwerk 8), ein Streuwert zählt nicht.
-  "P-18": ({ t, zugaenge }) =>
-    zugaenge
-      .filter(
-        (n) =>
+  // Ungesetzt gilt der Standardwert aus `config-defaults.json`.
+  "P-18": ({ t, c, zugaenge }) => {
+    const standard = c.configDefaults.find(
+      (d) => d.field === "certExpires",
+    )?.default;
+    return zugaenge
+      .filter((n) => {
+        const ablauf = n.config?.certExpires ?? standard;
+        return (
           n.type !== "gateway" &&
-          n.config?.certExpires !== undefined &&
-          n.config.certExpires < t.simDate,
-      )
-      .map((n) => ({ subject: n.id, nodes: [n.id] })),
+          typeof ablauf === "string" &&
+          ablauf < t.simDate
+        );
+      })
+      .map((n) => ({ subject: n.id, nodes: [n.id] }));
+  },
 
   "P-22": ({ t }) =>
     t.nodes.flatMap((n) =>

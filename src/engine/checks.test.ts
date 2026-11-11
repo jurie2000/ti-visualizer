@@ -383,6 +383,11 @@ describe("P-18 gSMC-K-Zertifikat abgelaufen", () => {
     expect(ids(run(cert("kon", "2026-11-01")))).not.toContain("P-18");
     expect(ids(run(cert("kon")))).not.toContain("P-18");
   });
+  it("[P-18] positiv: ungesetzt gilt der Standard 2029-03-31 gegen simDate", () => {
+    const t = cert("kon");
+    t.simDate = "2029-04-01";
+    expect(ids(run(t))).toContain("P-18");
+  });
   it("[P-18] negativ: TI-Gateway hat keine gSMC-K, ein Streuwert zählt nicht", () => {
     expect(ids(run(cert("gateway", "2020-01-01")))).not.toContain("P-18");
   });

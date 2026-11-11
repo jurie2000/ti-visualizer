@@ -23,6 +23,15 @@ test.describe("a11y", { tag: "@a11y" }, () => {
         expect(result.violations).toEqual([]);
       });
 
+      test("Listenansicht ohne Axe-Verstöße", async ({ page }) => {
+        await page.goto("./");
+        await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+        await page.getByRole("button", { name: "Listenansicht" }).click();
+        await expect(page.getByRole("table")).toBeVisible();
+        const result = await new AxeBuilder({ page }).withTags(tags).analyze();
+        expect(result.violations).toEqual([]);
+      });
+
       test("Impressum-Dialog ohne Axe-Verstöße", async ({ page }) => {
         await page.goto("./");
         await page.getByRole("button", { name: "Impressum" }).click();
@@ -32,4 +41,36 @@ test.describe("a11y", { tag: "@a11y" }, () => {
       });
     });
   }
+
+  // FR-22: Aktion und Sicherheitsprüfung ohne die Fläche, nur über die Liste
+  test("Durchlauf nur über die Listenansicht: Aktion starten, Sicherheitsprüfung öffnen (FR-22)", async ({
+    page,
+  }) => {
+    await page.goto("./");
+    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    await page.getByRole("button", { name: "Erweitert" }).click();
+    await page.getByRole("button", { name: "Listenansicht" }).click();
+    await expect(page.locator(".react-flow")).toHaveCount(0);
+
+    const knopf = page.getByRole("button", {
+      name: "Aktionen: Praxisverwaltungssystem",
+    });
+    await knopf.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("menu")).toBeVisible();
+    await page.getByRole("menuitem", { name: /^E-Rezept ausstellen/ }).click();
+    const spieler = page.getByRole("group", { name: /^Simulation/ });
+    await expect(spieler).toBeVisible();
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Schließen" }).click();
+    await expect(knopf).toBeFocused();
+
+    await page
+      .getByRole("button", { name: "Sicherheitsprüfung" })
+      .last()
+      .click();
+    await expect(
+      page.getByRole("dialog", { name: "Sicherheitsprüfung" }),
+    ).toBeVisible();
+  });
 });

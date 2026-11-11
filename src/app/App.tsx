@@ -11,6 +11,7 @@ import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
 import { PalettePanel } from "../panels/PalettePanel";
 import { TutorialCard } from "../panels/TutorialCard";
+import { TopologyList } from "./TopologyList";
 import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
@@ -25,6 +26,7 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
+  const listView = useUi((s) => s.listView);
   // Unter 1100 px sind Palette und Detailpanel Überlagerungen (T-703)
   const [overlay, setOverlay] = useState<"palette" | "detail" | null>(null);
   useEffect(() => {
@@ -100,6 +102,14 @@ export function App() {
                   Startansicht
                 </Button>
                 <Button
+                  aria-pressed={listView}
+                  onClick={() => {
+                    useUi.getState().setListView(!listView);
+                  }}
+                >
+                  Listenansicht
+                </Button>
+                <Button
                   onClick={() => {
                     useUi.getState().openDialog("security");
                   }}
@@ -162,7 +172,7 @@ export function App() {
                   ))}
                 </div>
                 {tutorial && <TutorialCard />}
-                <Canvas />
+                {listView ? <TopologyList /> : <Canvas />}
               </section>
               <aside
                 className="tiv-detail"

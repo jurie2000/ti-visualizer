@@ -13,7 +13,7 @@ const visibleSimple = (d: DeviceType) => d.visibleSimple;
  * übereinander landen). Läuft innerhalb des `ReactFlowProvider`.
  * Im Modus Einfach zeigt sie nur Typen mit `visibleSimple` (Regelwerk 11).
  */
-export function PalettePanel() {
+export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
@@ -21,6 +21,7 @@ export function PalettePanel() {
   const toast = useToast();
 
   const add = (type: string) => {
+    onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
     if (simLocked(useSim.getState().sim)) {
       toast.show("Während der Simulation ist die Topologie gesperrt.");
       return;

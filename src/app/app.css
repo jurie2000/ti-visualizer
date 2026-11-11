@@ -119,6 +119,10 @@ a {
   gap: 12px;
   align-items: center;
 }
+.tiv-edit {
+  display: flex;
+  gap: 4px;
+}
 .tiv-main--start {
   display: block;
   overflow: auto;

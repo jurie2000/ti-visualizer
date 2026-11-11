@@ -628,7 +628,7 @@ Sicherheitsprüfung.
     Darstellungsmenü sind Features (Issues #85 bis #87). Die automatische
     Anordnung ohne Kreuzungen ist ein eigenes Ticket (Issue #88).
 
-- [ ] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
+- [x] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
   - Umfang: Rückgängig und Wiederholen in der Kopfleiste und per
     Strg+Z / Strg+Y (Strg+Umschalt+Z), auf macOS ⌘ statt Strg (D10), Löschen von Gerät oder Kante per
     Entf/Rücktaste. Kürzel greifen nicht, solange

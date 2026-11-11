@@ -13,6 +13,7 @@ import { PalettePanel } from "../panels/PalettePanel";
 import { initAutosave, useOpen, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
+import { EditControls } from "./EditControls";
 import { ModeSwitch } from "./ModeSwitch";
 import { SaveControls } from "./SaveControls";
 import { StartScreen } from "./StartScreen";
@@ -61,6 +62,7 @@ export function App() {
           <div className="tiv-header__actions">
             {started && (
               <>
+                <EditControls />
                 <Button
                   onClick={() => {
                     setStarted(false);

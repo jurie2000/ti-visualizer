@@ -32,6 +32,11 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
+      name: "keyboard",
+      testMatch: "keyboard.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
       name: "build-and-connect",
       testMatch: "build-and-connect.spec.ts",
       use: { ...devices["Desktop Chrome"] },

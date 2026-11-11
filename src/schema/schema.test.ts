@@ -197,12 +197,4 @@ describe("NetConfig-Varianten", () => {
     expect(router.safeParse({ ipsecAllowed: "ja" }).success).toBe(false);
     expect(infra.safeParse({ ip: "10.0.0.2", dhcp: false }).success).toBe(true);
   });
-
-  it("[Regelwerk 8] verlangen IPv4-Adressen für ip, mask, gateway und dns", () => {
-    for (const f of ["ip", "mask", "gateway", "dns"])
-      for (const bad of ["999.1.1.1", "abc", "1.2.3", ""])
-        expect(configVariants.infra.safeParse({ [f]: bad }).success).toBe(
-          false,
-        );
-  });
 });

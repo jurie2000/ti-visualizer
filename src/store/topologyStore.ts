@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { create } from "zustand";
 import { defaultConfig } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
@@ -218,9 +219,24 @@ export const useTopology = create<TopologyState>((set, get) => {
         const field = String(parsed.error.issues[0]?.path[0] ?? "");
         return fail(`${label(field)}: ungültiger Wert.`);
       }
+      // Nur das Formular (Eingabe) verlangt IPv4; geöffnete Dateien prüfen P-8 und P-12.
+      for (const field of ["ip", "mask", "gateway", "dns"] as const) {
+        const v = config[field];
+        if (v !== undefined && !z.ipv4().safeParse(v).success)
+          return fail(`${label(field)}: ungültiger Wert.`);
+      }
       const partner = config["pairedWith"];
-      if (typeof partner === "string" && !t.nodes.some((n) => n.id === partner))
-        return fail(`${label("pairedWith")}: Das Gerät gibt es nicht.`);
+      if (
+        typeof partner === "string" &&
+        !t.nodes.some(
+          (n) =>
+            n.id === partner &&
+            c.deviceTypes
+              .find((d) => d.id === n.type)
+              ?.capabilities.includes("zugang"),
+        )
+      )
+        return fail(`${label("pairedWith")}: Das ist kein Zugang.`);
       commit({
         ...t,
         nodes: t.nodes.map((n) =>

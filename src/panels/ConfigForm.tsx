@@ -81,15 +81,24 @@ function InputField({
     setDraft(storedText);
     setError(undefined);
   }
-  const commit = () => {
+  const commit = (badInput = false) => {
     const raw = draft.trim();
+    // Unvollständiges Datum liefert "": nicht als Löschen werten, sonst geht der Wert verloren.
+    if (badInput) {
+      setError(`${entry.name}: unvollständiges Datum.`);
+      return;
+    }
     if (raw === storedText) {
       setError(undefined);
       return;
     }
     const r = setConfig(node.id, {
       [entry.field]:
-        raw === "" ? undefined : kind === "number" ? Number(raw) : raw,
+        raw === ""
+          ? undefined
+          : kind === "number" && /^-?\d+$/.test(raw)
+            ? Number(raw)
+            : raw,
     });
     setError(r.ok ? undefined : r.reason);
   };
@@ -108,9 +117,11 @@ function InputField({
         onChange={(e) => {
           setDraft(e.target.value);
         }}
-        onBlur={commit}
+        onBlur={(e) => {
+          commit(e.currentTarget.validity.badInput);
+        }}
         onKeyDown={(e) => {
-          if (e.key === "Enter") commit();
+          if (e.key === "Enter") commit(e.currentTarget.validity.badInput);
         }}
       />
       <p id={`${id}-hint`} className="tiv-config__hint">

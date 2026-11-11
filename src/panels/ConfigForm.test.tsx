@@ -126,6 +126,10 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     await user.tab();
     expect(screen.getByRole("alert")).toBeInTheDocument();
     await user.clear(n);
+    await user.type(n, "0x10");
+    await user.tab();
+    expect(nodeOf("kon-1")?.config?.timeOffset).toBeUndefined();
+    await user.clear(n);
     await user.type(n, "99999999999");
     await user.tab();
     expect(nodeOf("kon-1")?.config?.timeOffset).toBeUndefined();
@@ -162,8 +166,29 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     await user.click(screen.getByLabelText("<i>Zugang</i>"));
     expect(nodeOf("kt-1")?.config).toMatchObject({ pairedWith: "kon-1" });
     expect(document.querySelector("label i")).toBeNull();
-    const r = useTopology.getState().setConfig("kt-1", { pairedWith: "weg" });
-    expect(r.ok).toBe(false);
+    const set = useTopology.getState().setConfig;
+    expect(set("kt-1", { pairedWith: "weg" }).ok).toBe(false);
+    expect(set("kt-1", { pairedWith: "pvs-1" }).ok).toBe(false);
+  });
+
+  it("[Regelwerk 8] setConfig verlangt IPv4 für ip, mask, gateway und dns", () => {
+    for (const f of ["ip", "mask", "gateway", "dns"])
+      for (const bad of ["999.1.1.1", "abc", "1.2.3", ""])
+        expect(useTopology.getState().setConfig("pvs-1", { [f]: bad }).ok).toBe(
+          false,
+        );
+  });
+
+  it("[Regelwerk 8] ein unvollständiges Datum löscht den gespeicherten Wert nicht", () => {
+    render(<DetailPanel />);
+    open("kon-1");
+    const d = screen.getByLabelText("Zertifikat gSMC-K");
+    const before = nodeOf("kon-1")?.config?.certExpires;
+    Object.defineProperty(d, "validity", { value: { badInput: true } });
+    fireEvent.change(d, { target: { value: "" } });
+    fireEvent.blur(d);
+    expect(nodeOf("kon-1")?.config?.certExpires).toBe(before);
+    expect(screen.getByRole("alert")).toHaveTextContent(/unvollständig/);
   });
 
   it("[Regelwerk 8] setConfig lehnt fremde Felder und Geräte ohne Einstellungen ab", () => {

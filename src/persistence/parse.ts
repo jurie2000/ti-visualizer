@@ -9,6 +9,7 @@ import {
   TivFile,
   Topology,
   Zone,
+  configVariantOf,
   configVariants,
   type Catalog,
 } from "../schema";
@@ -402,14 +403,8 @@ function checkConfig(
 ): NodeT {
   const { config, ...rest } = node;
   if (config === undefined) return node;
-  const name = types
-    .get(node.type)
-    ?.capabilities.find((c) => c.startsWith("netConfig:"))
-    ?.slice("netConfig:".length);
-  const variant =
-    name !== undefined && Object.hasOwn(configVariants, name)
-      ? configVariants[name as keyof typeof configVariants]
-      : undefined;
+  const name = configVariantOf(types.get(node.type)?.capabilities ?? []);
+  const variant = name && configVariants[name];
   const parsed = variant?.safeParse(config);
   if (!parsed?.success) {
     add({

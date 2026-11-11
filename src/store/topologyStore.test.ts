@@ -24,6 +24,19 @@ describe("Topologie-Store (T-201)", () => {
     expect(s().topology.nodes).toHaveLength(2);
   });
 
+  it("[Regelwerk 8] setzt Standardwerte und zählt die IP weiter", () => {
+    const router = add("router");
+    const a = add("pc");
+    const b = add("pc");
+    const ip = (id: string) =>
+      s().topology.nodes.find((n) => n.id === id)?.config?.ip;
+    expect([ip(router), ip(a), ip(b)]).toEqual([
+      "192.168.10.1",
+      "192.168.10.10",
+      "192.168.10.11",
+    ]);
+  });
+
   it("Rückgängig und Wiederholen stellen den Stand schrittweise her", () => {
     add("pc");
     add("switch");

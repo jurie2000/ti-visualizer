@@ -240,10 +240,13 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       ...t,
       nodes: t.nodes.map((n) => (n.id === "vpn" ? { ...n, fault: true } : n)),
     };
-    expect(bind("erezept", "pvs", down)[4]).toMatchObject({
-      nodes: [],
+    const step = bind("erezept", "pvs", down)[4];
+    expect(step).toMatchObject({
       problem: { kind: "ausgefallen", at: "vpn" },
     });
+    // das Paket läuft bis zum gestörten Gerät, nicht darüber hinaus
+    expect(step?.nodes.at(-1)).toBe("vpn");
+    expect(step?.edges).toHaveLength((step?.nodes.length ?? 0) - 1);
   });
 
   it("fehlendes Gerät: Schritt ohne Pfad statt Absturz", () => {

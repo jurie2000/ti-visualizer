@@ -1,54 +1,71 @@
 import { ViewportPortal, useReactFlow } from "@xyflow/react";
-import { Package } from "lucide-react";
-import type { CSSProperties } from "react";
+import { Package, PackageX } from "lucide-react";
+import { useEffect, type CSSProperties } from "react";
 import { stepDelayMs } from "../engine/simulation";
 import { useSim } from "../store";
 import { boxOf, onBorder } from "./ConnectionEdge";
 
 /**
- * Paket der Simulation (FR-9, D6): wandert je Schritt entlang des Pfads von
- * Gerät zu Gerät. Ohne Abspielen steht es am Ziel des Schritts. Bei reduzierter
- * Bewegung zeigt die Canvas stattdessen die Textmarke am Gerät (canvas.css).
+ * Paket der Simulation (FR-9, D6): wandert je Schritt Verbindung für
+ * Verbindung von Gerät zu Gerät. `hop` ist die Teilstrecke, auf der es gerade
+ * ist (die Canvas hebt diese Kante hervor). Ohne Abspielen steht es am Ziel,
+ * bei gestörtem Schritt am letzten erreichten Gerät (anderes Icon, nicht nur
+ * Farbe). Bei reduzierter Bewegung zeigt die Canvas stattdessen die Textmarke
+ * am Gerät (canvas.css).
  */
-export function SimPacket() {
+export function SimPacket({
+  hop,
+  onHop,
+}: {
+  hop: number;
+  onHop: (hop: number) => void;
+}) {
   const { getInternalNode } = useReactFlow();
   const { sim, steps } = useSim();
   const step = steps[sim.step];
-  if (sim.status === "idle" || sim.status === "cancelled" || !step) return null;
+  const running = sim.status === "running";
 
   // Im Modus Einfach fehlen versteckte Geräte des Pfads
-  const boxes = step.nodes.flatMap((id) => {
+  const boxes = (step?.nodes ?? []).flatMap((id) => {
     const n = getInternalNode(id);
     return n ? [boxOf(n)] : [];
   });
-  const [first, second] = boxes;
-  const last = boxes[boxes.length - 1];
-  const beforeLast = boxes[boxes.length - 2];
-  if (!first || !second || !last || !beforeLast) return null;
+  const hops = boxes.length - 1;
 
-  const points = [
-    onBorder(first, second),
-    ...boxes.slice(1, -1).map((b) => ({ x: b.cx, y: b.cy })),
-    onBorder(last, beforeLast),
-  ];
-  const d = points
-    .map((p, i) => `${i ? "L" : "M"} ${String(p.x)},${String(p.y)}`)
-    .join(" ");
+  useEffect(() => {
+    onHop(running ? 0 : Math.max(hops - 1, -1));
+    return () => {
+      onHop(-1);
+    };
+  }, [sim.step, running, hops, onHop]);
+
+  const a = boxes[hop];
+  const b = boxes[hop + 1];
+  if (sim.status === "cancelled" || !step || !a || !b) return null;
+
+  // Endpunkte am Rand der Geräte, dazwischen die Mitte
+  const from = hop === 0 ? onBorder(a, b) : { x: a.cx, y: a.cy };
+  const to = hop === hops - 1 ? onBorder(b, a) : { x: b.cx, y: b.cy };
+  const failed = step.problem?.kind === "ausgefallen";
+  const Icon = failed ? PackageX : Package;
 
   return (
     <ViewportPortal>
       <div
-        key={sim.step}
+        key={`${String(sim.step)}-${String(hop)}`}
         aria-hidden="true"
-        className={`tiv-packet${sim.status === "running" ? " is-moving" : ""}`}
+        className={`tiv-packet${running ? " is-moving" : ""}${failed ? " is-failed" : ""}`}
+        onAnimationEnd={() => {
+          if (hop < hops - 1) onHop(hop + 1);
+        }}
         style={
           {
-            offsetPath: `path("${d}")`,
-            "--tiv-packet-ms": `${String(stepDelayMs(sim.tempo) * 0.75)}ms`,
+            offsetPath: `path("M ${String(from.x)},${String(from.y)} L ${String(to.x)},${String(to.y)}")`,
+            "--tiv-packet-ms": `${String((stepDelayMs(sim.tempo) * 0.75) / hops)}ms`,
           } as CSSProperties
         }
       >
-        <Package size={16} />
+        <Icon size={16} />
       </div>
     </ViewportPortal>
   );

@@ -108,6 +108,9 @@ export function Canvas() {
     Record<string, { width: number; height: number }>
   >({});
 
+  // Teilstrecke des Pakets im aktuellen Schritt, -1 ohne Paket
+  const [hop, setHop] = useState(-1);
+
   const connecting = useConnecting();
   const menu = useContextMenu();
 
@@ -133,13 +136,13 @@ export function Canvas() {
         (e.type === "group" && litNodes.has(e.source) && litNodes.has(e.target))
           ? {
               ...e,
-              className: "is-sim",
+              className: lit?.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
               ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
             }
           : e,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
-    [flow.edges, lit],
+    [flow.edges, lit, hop],
   );
   const nodes = useMemo(
     () =>
@@ -292,7 +295,7 @@ export function Canvas() {
         ariaLabelConfig={ariaLabelConfig}
       >
         <Background />
-        {!reduceMotion && <SimPacket />}
+        {!reduceMotion && <SimPacket hop={hop} onHop={setHop} />}
         {isolated.length > 0 && (
           <Panel position="top-left" className="tiv-hint">
             {isolated.length === 1

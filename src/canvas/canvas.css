@@ -348,7 +348,11 @@
 }
 .react-flow__edge.is-sim .tiv-edge {
   stroke: var(--tiv-focus) !important;
-  stroke-width: 6px !important;
+  stroke-width: 4px !important;
+}
+/* Teilstrecke, auf der das Paket gerade ist: dicker und gestrichelt laufend */
+.react-flow__edge.is-hop .tiv-edge {
+  stroke-width: 7px !important;
   stroke-dasharray: 10 8 !important;
   animation: tiv-packet 0.6s linear infinite;
 }
@@ -372,6 +376,9 @@
   offset-rotate: 0deg;
   offset-distance: 100%;
   pointer-events: none;
+}
+.tiv-packet.is-failed {
+  background: var(--tiv-error-bd);
 }
 .tiv-packet.is-moving {
   animation: tiv-packet-move var(--tiv-packet-ms) ease-in-out forwards;

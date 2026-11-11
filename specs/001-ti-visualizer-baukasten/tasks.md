@@ -709,7 +709,10 @@ Sicherheitsprüfung.
 
 - [ ] **T-707 Paket in der Simulation** · FR: FR-9 · Regeln: – · nach: T-405 · Issue #103
   - Umfang: Je Schritt wandert ein Paket (Mockup: runder Punkt mit
-    Paket-Icon) entlang des Pfads von Gerät zu Gerät, aus bei reduzierter
+    Paket-Icon) Verbindung für Verbindung entlang des Pfads von Gerät zu
+    Gerät, die aktuelle Kante ist hervorgehoben. Bei gestörtem Schritt läuft
+    es bis zum letzten erreichten Gerät und bleibt dort (rot, anderes Icon).
+    Aus bei reduzierter
     Bewegung. Dort trägt das aktuelle Gerät die Textmarke „Aktueller
     Schritt“.
   - Fertig, wenn: ein Test das Paket bei laufender Simulation findet und

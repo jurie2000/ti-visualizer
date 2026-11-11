@@ -3,15 +3,18 @@ import {
   Position,
   useConnection,
   useStore,
+  useUpdateNodeInternals,
   type NodeProps,
 } from "@xyflow/react";
 import { AlertTriangle, CircleCheck } from "lucide-react";
-import type { CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
 import { plugCardDialog } from "../dialogs/PlugCardDialog";
 import { isFree } from "../engine/rules";
 import { useSettings, useTopology, useUi } from "../store";
 import { CardChip } from "./CardChip";
+import { boxOf } from "./ConnectionEdge";
+import { handleSide } from "./handleSide";
 import { HiddenToggle } from "./HiddenToggle";
 import type { DeviceFlowNode } from "./toFlow";
 
@@ -22,11 +25,11 @@ import type { DeviceFlowNode } from "./toFlow";
  * Erweiterungspunkte:
  * - Handles (T-204): Die Kanten laufen schwebend (siehe `ConnectionEdge`), die
  *   Handles legen nur fest, wo man verbindet. Quelle: sichtbarer Punkt am
- *   rechten Rand. Ziel: die ganze Kachel, aber nur während ein Zug läuft,
+ *   Rand zum Partnergerät (`handleSide`, Issue #106). Ziel: die ganze Kachel, aber nur während ein Zug läuft,
  *   damit das Verschieben des Geräts unberührt bleibt.
  * - Karten-Chips (T-205): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
  */
-export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
+export function DeviceNode({ id, data, selected }: NodeProps<DeviceFlowNode>) {
   const { node, device, category, hidden } = data;
   const nfc = device.capabilities.includes("nfcCard");
   const hasCards = nfc || device.capabilities.includes("cardSlots");
@@ -35,6 +38,22 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const dragging = useConnection().inProgress;
   const clicked = useStore((s) => s.connectionClickStartHandle !== null);
   const connecting = dragging || clicked;
+  // Seite zum Partner; der Selektor liefert nur die Seite, es rendert nur ein Wechsel
+  const side = useStore((s) => {
+    const self = s.nodeLookup.get(id);
+    if (!self) return Position.Right;
+    const partners = s.edges.flatMap((e) => {
+      const other =
+        e.source === id ? e.target : e.target === id ? e.source : null;
+      const n = other ? s.nodeLookup.get(other) : undefined;
+      return n ? [boxOf(n)] : [];
+    });
+    return handleSide(boxOf(self), partners);
+  });
+  const updateInternals = useUpdateNodeInternals();
+  useEffect(() => {
+    updateInternals(id);
+  }, [id, side, updateInternals]);
   const advanced = useSettings((s) => s.mode === "advanced");
   const topology = useTopology((s) => s.topology);
   return (
@@ -121,7 +140,7 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
       />
       <Handle
         type="source"
-        position={Position.Right}
+        position={side}
         className="tiv-handle tiv-handle--source"
       />
     </div>

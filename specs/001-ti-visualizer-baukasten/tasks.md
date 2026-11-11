@@ -726,6 +726,14 @@ Sicherheitsprüfung.
     E2E-Durchlauf die entpackte App über einen lokalen Server startet,
     ein Preset öffnet und speichert.
 
+- [x] **T-708 Anschlusspunkte an der Seite zum Partner** · FR: FR-14 · Regeln: – · nach: T-204 (Issue #106)
+  - Umfang: Der sichtbare Anschlusspunkt (`DeviceNode`) sitzt an der Seite,
+    an der die Mittellinie zum Schwerpunkt der verbundenen Geräte den Rand
+    schneidet (`handleSide`), ohne Partner rechts. Verbindungslogik
+    unverändert.
+  - Fertig, wenn: Tests zeigen den Seitenwechsel beim Verschieben des
+    Partners und die Unabhängigkeit von der Kantenreihenfolge.
+
 ---
 
 ## Optional nach P7

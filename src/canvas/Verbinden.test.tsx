@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
@@ -192,5 +192,36 @@ describe("Verbinden per Klick: Punkt, dann Zielgerät", () => {
     // nur `click`: das `mousedown` von user.click scheitert in jsdom an d3-zoom
     fireEvent.click(pane);
     expect(ziel("rt1")).not.toHaveClass("is-active");
+  });
+});
+
+describe("Anschlusspunkt an der Seite zum Partner (Issue #106)", () => {
+  const seite = (id: string) =>
+    node(id).querySelector(".tiv-handle--source")?.className ?? "";
+
+  it("wechselt mit der Lage des Partners", () => {
+    const ids = ["sw1", "pvs1"];
+    useTopology.getState().reset({
+      ...praxis,
+      nodes: praxis.nodes.filter((n) => ids.includes(n.id)),
+      edges: praxis.edges.filter((e) =>
+        e.ends.every((x) => ids.includes(x.node)),
+      ),
+      zones: [],
+    });
+    expect(useTopology.getState().topology.edges.length).toBeGreaterThan(0);
+    render(<Canvas />, { wrapper });
+    act(() => {
+      useTopology
+        .getState()
+        .moveNodes({ sw1: { x: 500, y: 200 }, pvs1: { x: 100, y: 200 } });
+    });
+    expect(seite("sw1")).toContain("react-flow__handle-left");
+    expect(seite("pvs1")).toContain("react-flow__handle-right");
+    act(() => {
+      useTopology.getState().moveNodes({ pvs1: { x: 500, y: -200 } });
+    });
+    expect(seite("sw1")).toContain("react-flow__handle-top");
+    expect(seite("pvs1")).toContain("react-flow__handle-bottom");
   });
 });

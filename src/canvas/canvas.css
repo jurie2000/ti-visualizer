@@ -185,7 +185,7 @@
   );
 }
 
-/* Anschlusspunkte: Quelle ist ein sichtbarer Punkt am rechten Rand (Form und Rahmen, nicht nur Farbe).
+/* Anschlusspunkte: Quelle ist ein sichtbarer Punkt an der Seite zum Partner (Form und Rahmen, nicht nur Farbe).
    Das Ziel deckt die Kachel ab, solange ein Zug läuft; die Kanten laufen schwebend. */
 .tiv-handle {
   border: 2px solid var(--color-text);
@@ -194,10 +194,15 @@
 .tiv-handle--source {
   width: 14px;
   height: 14px;
-  right: 10px;
-  top: 50%;
   border-radius: 50%;
   cursor: crosshair;
+}
+/* Seitlich innen; oben und unten auf dem Rand (React-Flow-Standard), dort liegt kein Text. */
+.tiv-handle--source.react-flow__handle-right {
+  right: 10px;
+}
+.tiv-handle--source.react-flow__handle-left {
+  left: 10px;
 }
 /* Größere Trefferfläche, auch wenn die Canvas herausgezoomt ist */
 .tiv-handle--source::before {

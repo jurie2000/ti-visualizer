@@ -93,7 +93,7 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   test.describe("Maus", () => {
     /** Punkt am Gerät anklicken, dann das Zielgerät. */
     async function perKlick(page: Page, quelle: string, ziel: string) {
-      await page.getByRole("button", { name: "Alles einpassen" }).click();
+      await page.getByRole("button", { name: "Einpassen" }).click();
       await page.waitForTimeout(500);
       const von = await gerät(page, quelle)
         .locator(".tiv-handle--source")
@@ -136,7 +136,7 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     }) => {
       const vorher = await page.locator(".react-flow__edge").count();
       // alles einpassen, damit beide Geräte sichtbar sind
-      await page.getByRole("button", { name: "Alles einpassen" }).click();
+      await page.getByRole("button", { name: "Einpassen" }).click();
       await page.waitForTimeout(500);
       const von = await gerät(page, "pvs1")
         .locator(".tiv-handle--source")

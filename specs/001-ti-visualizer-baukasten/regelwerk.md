@@ -680,12 +680,13 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
   vorhanden (P-1).
 - P-5: gilt für das stationäre eHealth-KT (`kt`), nicht für das mobile
   Kartenterminal (offline) und nicht für CardLink. Ein Terminal ohne
-  bestimmbaren Zugang (nach 6.0) meldet P-5, sofern es einen Zugang gibt.
+  bestimmbaren Zugang (`zugangOf`, 6.0 samt der Vereinfachung „einziger Zugang“) meldet P-5, sofern es einen Zugang gibt.
 - P-6: nur Access Points. Das Segment reicht über Switches und weitere
   Access Points, nicht über Router und Firewall. Gleiches VLAN (ungesetzt:
   „TI“) wie ein Kartenterminal oder Zugang im Segment löst die Warnung aus.
   Das Preset Klinikum meldet sie daher (Access Point im Standard-VLAN).
-- P-7: eine unterbrochene Kante zählt als Verbindung.
+- P-7: eine unterbrochene Kante zählt als Verbindung, eine Kante zu einem
+  unbekannten Knoten nicht.
 - P-18: Konnektor und Highspeed-Konnektor. Das TI-Gateway hat keine gSMC-K.
 - P-31: gepairt heißt `pairedWith` plus jede direkte Verbindung zu einem
   Zugang. Mehr als ein verschiedener Zugang ergibt den Fehler.

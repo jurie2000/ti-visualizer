@@ -65,14 +65,16 @@ const RULES: Record<string, Rule> = {
       .filter((n) => n.fault)
       .map((n) => ({ subject: n.id, nodes: [n.id] })),
 
-  "P-2": ({ t }) =>
-    t.edges
+  "P-2": ({ t }) => {
+    const known = new Set(t.nodes.map((n) => n.id));
+    return t.edges
       .filter((e) => e.fault)
       .map((e) => ({
         subject: e.id,
-        nodes: sorted(ends(e)),
+        nodes: sorted(ends(e).filter((id) => known.has(id))),
         edges: [e.id],
-      })),
+      }));
+  },
 
   "P-3": ({ t }) =>
     t.nodes.flatMap((n) =>
@@ -134,7 +136,7 @@ const RULES: Record<string, Rule> = {
   },
 
   "P-7": ({ t }) => {
-    const linked = new Set(t.edges.flatMap(ends));
+    const linked = neighbours(t);
     return t.nodes
       .filter((n) => !linked.has(n.id))
       .map((n) => ({ subject: n.id, nodes: [n.id] }));

@@ -184,27 +184,27 @@ describe("runChecks Grundlagen", () => {
 });
 
 describe("P-1 Gerät ausgefallen", () => {
-  it("P-1 positiv: ausgefallenes Gerät", () => {
+  it("[P-1] positiv: ausgefallenes Gerät", () => {
     const t = healthy();
     patch(t, "kon", { fault: true });
     const f = run(t).filter((x) => x.id === "P-1");
     expect(f).toHaveLength(1);
     expect(f[0]).toMatchObject({ nodes: ["kon"], severity: "Fehler" });
   });
-  it("P-1 negativ: laufende Geräte", () => {
+  it("[P-1] negativ: laufende Geräte", () => {
     expect(ids(run(healthy()))).not.toContain("P-1");
   });
 });
 
 describe("P-2 Verbindung unterbrochen", () => {
-  it("P-2 positiv: nennt Kante und beide Geräte", () => {
+  it("[P-2] positiv: nennt Kante und beide Geräte", () => {
     const t = healthy();
     breakEdge(t, "e1");
     const f = run(t).filter((x) => x.id === "P-2");
     expect(f).toHaveLength(1);
     expect(f[0]).toMatchObject({ edges: ["e1"], nodes: ["pvs", "sw"] });
   });
-  it("P-2 negativ: intakte Kanten", () => {
+  it("[P-2] negativ: intakte Kanten", () => {
     expect(ids(run(healthy()))).not.toContain("P-2");
   });
 });
@@ -219,15 +219,15 @@ describe("P-3 Karte abgelaufen", () => {
     });
     return t;
   };
-  it("P-3 positiv: Ablauf vor simDate", () => {
+  it("[P-3] positiv: Ablauf vor simDate", () => {
     const f = run(withCard("2026-10-31")).filter((x) => x.id === "P-3");
     expect(f).toHaveLength(1);
     expect(f[0]?.nodes).toEqual(["kt"]);
   });
-  it("P-3 negativ: Ablauf am simDate gilt noch (wie K-3)", () => {
+  it("[P-3] negativ: Ablauf am simDate gilt noch (wie K-3)", () => {
     expect(ids(run(withCard("2026-11-01")))).not.toContain("P-3");
   });
-  it("P-3 je Karte ein Befund, auch bei zwei abgelaufenen im selben Gerät", () => {
+  it("[P-3] je Karte ein Befund, auch bei zwei abgelaufenen im selben Gerät", () => {
     const t = withCard("2020-01-01");
     patch(t, "kt", {
       cards: [
@@ -240,15 +240,15 @@ describe("P-3 Karte abgelaufen", () => {
 });
 
 describe("P-4 kein Zugang", () => {
-  it("P-4 positiv: Geräte, aber kein Zugang", () => {
+  it("[P-4] positiv: Geräte, aber kein Zugang", () => {
     const f = run(topo([node("pvs", "pvs")])).filter((x) => x.id === "P-4");
     expect(f).toHaveLength(1);
     expect(f[0]).toMatchObject({ severity: "Warnung", nodes: [] });
   });
-  it("P-4 negativ: TI-Gateway zählt als Zugang", () => {
+  it("[P-4] negativ: TI-Gateway zählt als Zugang", () => {
     expect(ids(run(topo([node("g", "gateway")])))).not.toContain("P-4");
   });
-  it("P-4 ein ausgefallener Zugang ist trotzdem vorhanden (P-1 meldet ihn)", () => {
+  it("[P-4] ein ausgefallener Zugang ist trotzdem vorhanden (P-1 meldet ihn)", () => {
     const out = ids(run(topo([node("k", "kon", { fault: true })])));
     expect(out).not.toContain("P-4");
     expect(out).toContain("P-1");
@@ -256,46 +256,46 @@ describe("P-4 kein Zugang", () => {
 });
 
 describe("P-5 Kartenterminal erreicht Zugang nicht", () => {
-  it("P-5 positiv: Terminal ohne Kante zum Netz", () => {
+  it("[P-5] positiv: Terminal ohne Kante zum Netz", () => {
     const t = healthy();
     t.edges = t.edges.filter((e) => e.id !== "e2");
     const f = run(t).filter((x) => x.id === "P-5");
     expect(f.map((x) => x.nodes)).toEqual([["kt"]]);
   });
-  it("P-5 positiv: gepairt mit Gerät, das kein Zugang ist", () => {
+  it("[P-5] positiv: gepairt mit Gerät, das kein Zugang ist", () => {
     const t = healthy();
     patch(t, "kt", { config: { pairedWith: "pvs" } });
     expect(ids(run(t))).toContain("P-5");
   });
-  it("P-5 positiv: zwei Zugänge, Terminal ohne Pairing und ohne direkte Kante", () => {
+  it("[P-5] positiv: zwei Zugänge, Terminal ohne Pairing und ohne direkte Kante", () => {
     const t = healthy();
     patch(t, "kt", { config: {} });
     t.nodes.push(node("kon2", "hskon"));
     t.edges.push(edge("e9", "kon2", "rt"));
     expect(ids(run(t))).toContain("P-5");
   });
-  it("P-5 negativ: Weg über Switch zum gepairten Zugang", () => {
+  it("[P-5] negativ: Weg über Switch zum gepairten Zugang", () => {
     expect(ids(run(healthy()))).not.toContain("P-5");
   });
-  it("P-5 negativ: mehrere Zugänge, Terminal erreicht den gepairten", () => {
+  it("[P-5] negativ: mehrere Zugänge, Terminal erreicht den gepairten", () => {
     const t = healthy();
     t.nodes.push(node("kon2", "hskon"));
     t.edges.push(edge("e9", "kon2", "rt"));
     expect(ids(run(t))).not.toContain("P-5");
   });
-  it("P-5 negativ: Ausfall auf dem Weg meldet P-2, nicht P-5", () => {
+  it("[P-5] negativ: Ausfall auf dem Weg meldet P-2, nicht P-5", () => {
     const t = healthy();
     breakEdge(t, "e2");
     const out = ids(run(t));
     expect(out).toContain("P-2");
     expect(out).not.toContain("P-5");
   });
-  it("P-5 negativ: mobiles Terminal arbeitet offline", () => {
+  it("[P-5] negativ: mobiles Terminal arbeitet offline", () => {
     const t = healthy();
     t.nodes.push(node("mkt", "mkt"));
     expect(run(t).filter((x) => x.id === "P-5")).toEqual([]);
   });
-  it("P-5 negativ: ohne jeden Zugang meldet nur P-4", () => {
+  it("[P-5] negativ: ohne jeden Zugang meldet nur P-4", () => {
     const out = ids(run(topo([node("kt", "kt")])));
     expect(out).toContain("P-4");
     expect(out).not.toContain("P-5");
@@ -309,21 +309,21 @@ describe("P-6 WLAN im Segment von Terminal oder Zugang", () => {
     t.edges.push(edge("e8", "ap", "sw"));
     return t;
   };
-  it("P-6 positiv: AP am selben Switch, gleiches (Standard-)VLAN", () => {
+  it("[P-6] positiv: AP am selben Switch, gleiches (Standard-)VLAN", () => {
     const f = run(wlan()).filter((x) => x.id === "P-6");
     expect(f).toHaveLength(1);
     expect(f[0]?.nodes).toEqual(["ap", "kon", "kt"]);
   });
-  it("P-6 negativ: AP in eigenem VLAN", () => {
+  it("[P-6] negativ: AP in eigenem VLAN", () => {
     expect(ids(run(wlan("Gast")))).not.toContain("P-6");
   });
-  it("P-6 negativ: AP hinter dem Router liegt in einem anderen Segment", () => {
+  it("[P-6] negativ: AP hinter dem Router liegt in einem anderen Segment", () => {
     const t = healthy();
     t.nodes.push(node("ap", "ap"));
     t.edges.push(edge("e8", "ap", "rt"));
     expect(ids(run(t))).not.toContain("P-6");
   });
-  it("P-6 negativ: AP ohne Terminal und Zugang im Segment", () => {
+  it("[P-6] negativ: AP ohne Terminal und Zugang im Segment", () => {
     const t = topo(
       [node("ap", "ap"), node("sw", "switch")],
       [edge("e", "ap", "sw")],
@@ -333,22 +333,33 @@ describe("P-6 WLAN im Segment von Terminal oder Zugang", () => {
 });
 
 describe("P-7 Gerät ohne Verbindung", () => {
-  it("P-7 positiv: loses Gerät", () => {
+  it("[P-7] positiv: loses Gerät", () => {
     const t = healthy();
     t.nodes.push(node("lose", "pc"));
     const f = run(t).filter((x) => x.id === "P-7");
     expect(f.map((x) => x.nodes)).toEqual([["lose"]]);
     expect(f[0]?.severity).toBe("Hinweis");
   });
-  it("P-7 negativ: jedes Gerät hat eine Kante", () => {
+  it("[P-7] negativ: jedes Gerät hat eine Kante", () => {
     expect(ids(run(healthy()))).not.toContain("P-7");
   });
-  it("P-7 negativ: unterbrochene Kante zählt als Verbindung (P-2 meldet sie)", () => {
+  it("[P-7] negativ: unterbrochene Kante zählt als Verbindung (P-2 meldet sie)", () => {
     const t = topo(
       [node("a", "kon"), node("b", "pvs")],
       [edge("e", "a", "b", true)],
     );
     expect(ids(run(t))).not.toContain("P-7");
+  });
+});
+
+describe("P-7 Kante ins Leere", () => {
+  it("[P-7] Kante zu unbekanntem Knoten verbindet nicht", () => {
+    const t = topo([node("a", "pc")], [edge("e", "a", "weg", true)]);
+    const out = run(t);
+    expect(out.filter((x) => x.id === "P-7").map((x) => x.nodes)).toEqual([
+      ["a"],
+    ]);
+    expect(out.find((x) => x.id === "P-2")?.nodes).toEqual(["a"]);
   });
 });
 
@@ -362,20 +373,20 @@ describe("P-18 gSMC-K-Zertifikat abgelaufen", () => {
     );
     return t;
   };
-  it("P-18 positiv: Ablauf vor simDate, auch im Modus Einfach", () => {
+  it("[P-18] positiv: Ablauf vor simDate, auch im Modus Einfach", () => {
     for (const mode of ["advanced", "simple"] as const)
       expect(
         run(cert("kon", "2026-10-31"), mode).filter((x) => x.id === "P-18"),
       ).toHaveLength(1);
   });
-  it("P-18 negativ: gültig, am simDate oder ungesetzt (Standard)", () => {
+  it("[P-18] negativ: gültig, am simDate oder ungesetzt (Standard)", () => {
     expect(ids(run(cert("kon", "2026-11-01")))).not.toContain("P-18");
     expect(ids(run(cert("kon")))).not.toContain("P-18");
   });
-  it("P-18 negativ: TI-Gateway hat keine gSMC-K, ein Streuwert zählt nicht", () => {
+  it("[P-18] negativ: TI-Gateway hat keine gSMC-K, ein Streuwert zählt nicht", () => {
     expect(ids(run(cert("gateway", "2020-01-01")))).not.toContain("P-18");
   });
-  it("P-18 negativ: Streuwert an einem Primärsystem zählt nicht", () => {
+  it("[P-18] negativ: Streuwert an einem Primärsystem zählt nicht", () => {
     const t = healthy();
     t.nodes[0] = node("pvs", "pvs", { config: { certExpires: "2020-01-01" } });
     expect(ids(run(t))).not.toContain("P-18");
@@ -396,19 +407,19 @@ describe("P-22 HBA oder SMC-B nicht freigeschaltet", () => {
     });
     return t;
   };
-  it("P-22 positiv: gesperrt, und ungesetzt zählt als gesperrt (wie K-4)", () => {
+  it("[P-22] positiv: gesperrt, und ungesetzt zählt als gesperrt (wie K-4)", () => {
     expect(ids(run(withPin(false)))).toContain("P-22");
     expect(ids(run(withPin(undefined)))).toContain("P-22");
   });
-  it("P-22 negativ: freigeschaltet", () => {
+  it("[P-22] negativ: freigeschaltet", () => {
     expect(ids(run(withPin(true)))).not.toContain("P-22");
   });
-  it("P-22 negativ: abgelaufene Karte meldet nur P-3", () => {
+  it("[P-22] negativ: abgelaufene Karte meldet nur P-3", () => {
     const out = ids(run(withPin(false, "2020-01-01")));
     expect(out).toContain("P-3");
     expect(out).not.toContain("P-22");
   });
-  it("P-22 negativ: eGK hat keine Freischaltung", () => {
+  it("[P-22] negativ: eGK hat keine Freischaltung", () => {
     const t = healthy();
     patch(t, "kt", {
       cards: [{ kind: "egk", expires: "2030-01-01", pinActive: false }],
@@ -424,23 +435,23 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
     t.edges.push(edge("e8", "kt", "kon"), edge("e9", "kt", "kon2"));
     return t;
   };
-  it("P-31 positiv: direkte Kanten zu zwei Zugängen", () => {
+  it("[P-31] positiv: direkte Kanten zu zwei Zugängen", () => {
     const f = run(twoDirect()).filter((x) => x.id === "P-31");
     expect(f).toHaveLength(1);
     expect(f[0]?.nodes).toEqual(["kon", "kon2", "kt"]);
   });
-  it("P-31 positiv: gepairt mit A, direkt verbunden mit B", () => {
+  it("[P-31] positiv: gepairt mit A, direkt verbunden mit B", () => {
     const t = healthy();
     t.nodes.push(node("kon2", "hskon"));
     t.edges.push(edge("e9", "kt", "kon2"));
     expect(ids(run(t))).toContain("P-31");
   });
-  it("P-31 negativ: ein Zugang, direkt und gepairt (derselbe)", () => {
+  it("[P-31] negativ: ein Zugang, direkt und gepairt (derselbe)", () => {
     const t = healthy();
     t.edges.push(edge("e8", "kt", "kon"));
     expect(ids(run(t))).not.toContain("P-31");
   });
-  it("P-31 negativ: zwei Zugänge im Netz, Terminal nur mit einem gepairt", () => {
+  it("[P-31] negativ: zwei Zugänge im Netz, Terminal nur mit einem gepairt", () => {
     const t = healthy();
     t.nodes.push(node("kon2", "hskon"));
     t.edges.push(edge("e9", "kon2", "rt"));
@@ -449,7 +460,7 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
 });
 
 describe("P-32 Konnektor und TI-Gateway", () => {
-  it("P-32 positiv: beide Arten, ein Befund mit allen Zugängen", () => {
+  it("[P-32] positiv: beide Arten, ein Befund mit allen Zugängen", () => {
     for (const k of ["kon", "hskon"]) {
       const t = topo([node("k", k), node("g", "gateway")]);
       const f = run(t).filter((x) => x.id === "P-32");
@@ -457,7 +468,7 @@ describe("P-32 Konnektor und TI-Gateway", () => {
       expect(f[0]?.nodes).toEqual(["g", "k"]);
     }
   });
-  it("P-32 negativ: nur Konnektor oder nur Gateway, auch mehrere gleicher Art", () => {
+  it("[P-32] negativ: nur Konnektor oder nur Gateway, auch mehrere gleicher Art", () => {
     expect(
       ids(run(topo([node("k", "kon"), node("k2", "hskon")]))),
     ).not.toContain("P-32");
@@ -471,11 +482,11 @@ describe("P-33 Zugang ohne Weg ins Internet", () => {
       [node("kon", "kon"), node("sw", "switch"), ...extra],
       edges.map(([a, b], i) => edge(`e${String(i)}`, a, b)),
     );
-  it("P-33 positiv: Zugang ohne Router und VPN", () => {
+  it("[P-33] positiv: Zugang ohne Router und VPN", () => {
     const f = run(zugang([])).filter((x) => x.id === "P-33");
     expect(f.map((x) => x.nodes)).toEqual([["kon"]]);
   });
-  it("P-33 positiv: Router nur hinter einem Primärsystem erreichbar zählt nicht", () => {
+  it("[P-33] positiv: Router nur hinter einem Primärsystem erreichbar zählt nicht", () => {
     const t = zugang(
       [
         ["kon", "pvs"],
@@ -485,15 +496,15 @@ describe("P-33 Zugang ohne Weg ins Internet", () => {
     );
     expect(ids(run(t))).toContain("P-33");
   });
-  it("P-33 negativ: direkt am Router", () => {
+  it("[P-33] negativ: direkt am Router", () => {
     const t = zugang([["kon", "rt"]], [node("rt", "router")]);
     expect(ids(run(t))).not.toContain("P-33");
   });
-  it("P-33 negativ: direkt am VPN-Zugangsdienst (vereinfacht)", () => {
+  it("[P-33] negativ: direkt am VPN-Zugangsdienst (vereinfacht)", () => {
     const t = zugang([["kon", "vpn"]], [node("vpn", "vpn")]);
     expect(ids(run(t))).not.toContain("P-33");
   });
-  it("P-33 negativ: Router über Switch erreichbar", () => {
+  it("[P-33] negativ: Router über Switch erreichbar", () => {
     const t = zugang(
       [
         ["kon", "sw"],
@@ -503,7 +514,7 @@ describe("P-33 Zugang ohne Weg ins Internet", () => {
     );
     expect(ids(run(t))).not.toContain("P-33");
   });
-  it("P-33 je Zugang einzeln: zweiter Zugang ohne Weg wird genannt", () => {
+  it("[P-33] je Zugang einzeln: zweiter Zugang ohne Weg wird genannt", () => {
     const t = zugang(
       [["kon", "rt"]],
       [node("rt", "router"), node("k2", "hskon")],
@@ -514,7 +525,7 @@ describe("P-33 Zugang ohne Weg ins Internet", () => {
         .map((x) => x.nodes),
     ).toEqual([["k2"]]);
   });
-  it("P-33 ein Ausfall ändert nichts (P-1/P-2 melden ihn)", () => {
+  it("[P-33] ein Ausfall ändert nichts (P-1/P-2 melden ihn)", () => {
     const t = zugang([["kon", "rt"]], [node("rt", "router", { fault: true })]);
     expect(ids(run(t))).not.toContain("P-33");
   });

@@ -71,6 +71,16 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await preset(page);
     await expect(page.locator(".react-flow__node").first()).toBeVisible();
     expect(await keinSeitenScroll(page)).toBe(true);
+    // Datei öffnen ist bedienbar: Dialog erreichbar, Datei wird geladen
+    await page.getByRole("button", { name: "Öffnen", exact: true }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
+    await page.locator("input[type=file]").setInputFiles({
+      name: "leer.tiv.json",
+      mimeType: "application/json",
+      buffer: Buffer.from("{}"),
+    });
+    await expect(page.getByRole("dialog")).toBeVisible();
+    expect(await keinSeitenScroll(page)).toBe(true);
   });
 
   test("Breite 1280 px: feste Spalten, kein Hinweis", async ({ page }) => {
@@ -84,5 +94,17 @@ test.describe("responsive", { tag: "@responsive" }, () => {
       page.getByRole("complementary", { name: "Detailpanel" }),
     ).toBeVisible();
     await expect(hinweis(page)).toBeHidden();
+    // Die Arbeitsfläche füllt die Resthöhe zwischen Kopfleiste und Fußzeile
+    const [kopf, fläche, fuß] = await Promise.all([
+      page.locator(".tiv-header").boundingBox(),
+      page.locator(".tiv-main").boundingBox(),
+      page.locator(".tiv-footer").boundingBox(),
+    ]);
+    expect(fläche?.y).toBeCloseTo((kopf?.y ?? 0) + (kopf?.height ?? 0), 0);
+    expect((fläche?.y ?? 0) + (fläche?.height ?? 0)).toBeCloseTo(
+      fuß?.y ?? 0,
+      0,
+    );
+    expect(fläche?.height).toBeGreaterThan(500);
   });
 });

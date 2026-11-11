@@ -21,7 +21,6 @@ export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
   const toast = useToast();
 
   const add = (type: string) => {
-    onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
     if (simLocked(useSim.getState().sim)) {
       toast.show("Während der Simulation ist die Topologie gesperrt.");
       return;
@@ -38,7 +37,10 @@ export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
       y: Math.round(center.y - NODE_SIZE.height / 2 + shift),
     });
     if (!result.ok) toast.show(result.reason);
-    else if (result.id) select({ kind: "node", id: result.id });
+    else if (result.id) {
+      select({ kind: "node", id: result.id });
+      onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
+    }
   };
 
   return (

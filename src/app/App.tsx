@@ -34,7 +34,14 @@ export function App() {
   useEffect(() => {
     if (!overlay) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
+      // Nur aus der Überlagerung selbst; Dialoge, Verbinden und Menüs behalten ihr Escape
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if (
+        !(e.target as Element).closest(
+          ".tiv-palette, .tiv-detail, .tiv-overlaybar",
+        )
+      )
+        return;
       document
         .querySelector<HTMLElement>('.tiv-overlaybar [aria-expanded="true"]')
         ?.focus();

@@ -77,4 +77,60 @@ describe("App-Shell", () => {
     await user.click(screen.getByRole("button", { name: "System" }));
     expect(root).not.toHaveAttribute("data-theme");
   });
+
+  it("T-703 Überlagerungen: Knöpfe öffnen, Fokus, Escape schließt nur aus der Überlagerung", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
+    const palette = screen.getByLabelText("Palette");
+    const knopf = screen.getByRole("button", { name: "Palette" });
+    expect(palette).toHaveAttribute("data-open", "false");
+    await user.click(knopf);
+    expect(knopf).toHaveAttribute("aria-expanded", "true");
+    expect(palette).toHaveAttribute("data-open", "true");
+    expect(palette).toHaveFocus();
+    // Escape von außerhalb (z. B. Canvas, Dialog) lässt sie offen
+    screen
+      .getByLabelText("Canvas")
+      .dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    expect(palette).toHaveAttribute("data-open", "true");
+    await user.keyboard("{Escape}");
+    expect(palette).toHaveAttribute("data-open", "false");
+    expect(knopf).toHaveFocus();
+    // Details und Umschalten
+    const details = screen.getByRole("button", { name: "Details" });
+    await user.click(details);
+    expect(screen.getByLabelText("Detailpanel")).toHaveAttribute(
+      "data-open",
+      "true",
+    );
+    await user.click(details);
+    expect(screen.getByLabelText("Detailpanel")).toHaveAttribute(
+      "data-open",
+      "false",
+    );
+  });
+
+  it("T-703 Hinzufügen aus der Palette schließt die Überlagerung", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
+    await user.click(screen.getByRole("button", { name: "Palette" }));
+    await user.click(
+      screen.getAllByRole("button", { name: / hinzufügen$/ })[0] as HTMLElement,
+    );
+    expect(screen.getByLabelText("Palette")).toHaveAttribute(
+      "data-open",
+      "false",
+    );
+  });
+
+  it("T-703 Hinweis für kleine Bildschirme ist als Notiz vorhanden", () => {
+    render(<App />);
+    expect(screen.getByRole("note")).toHaveTextContent(
+      "für größere Bildschirme gedacht",
+    );
+  });
 });

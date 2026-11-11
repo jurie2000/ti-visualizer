@@ -3,6 +3,19 @@
   grid-template-rows: minmax(62px, auto) auto minmax(0, 1fr) auto;
   height: 100dvh;
 }
+/* Feste Zeilen: der versteckte Hinweis belegt sonst keine Zelle und verschiebt main */
+.tiv-header {
+  grid-row: 1;
+}
+.tiv-smallhint {
+  grid-row: 2;
+}
+.tiv-main {
+  grid-row: 3;
+}
+.tiv-footer {
+  grid-row: 4;
+}
 .tiv-header,
 .tiv-footer {
   display: flex;

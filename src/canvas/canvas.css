@@ -583,6 +583,9 @@
   border-radius: 999px;
 }
 .tiv-zoom__fit {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
   height: 32px;
   border-radius: 999px;
 }

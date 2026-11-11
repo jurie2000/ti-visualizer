@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog, type Topology } from "../schema";
 import { useFile, useSettings, useSim, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
-import { App } from "./App";
 import { TopologyList } from "./TopologyList";
 
 const topology: Topology = {
@@ -146,18 +145,5 @@ describe("Listenansicht (FR-22)", () => {
       screen.getByRole("button", { name: "Sicherheitsprüfung" }),
     );
     expect(useUi.getState().dialog).toBe("security");
-  });
-
-  it("Umschalter in der Kopfleiste wechselt zwischen Fläche und Liste", async () => {
-    const user = userEvent.setup();
-    render(<App />);
-    await user.click(screen.getByRole("button", { name: /Leerer Start/ }));
-    const toggle = screen.getByRole("button", { name: "Listenansicht" });
-    expect(toggle).toHaveAttribute("aria-pressed", "false");
-    await user.click(toggle);
-    expect(toggle).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/noch keine Geräte/)).toBeInTheDocument();
-    await user.click(toggle);
-    expect(screen.queryByText(/noch keine Geräte/)).toBeNull();
   });
 });

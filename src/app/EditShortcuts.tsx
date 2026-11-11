@@ -1,7 +1,5 @@
-import { LayoutGrid, Redo2, Copy, Undo2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
-  arrange,
   copyNodes,
   pasteClip,
   simLocked,
@@ -11,17 +9,12 @@ import {
   useUi,
   type Clip,
 } from "../store";
-import { Button } from "../ui/Button";
 import { useToast } from "../ui/Toast";
-import { keyshortcuts, label, OWN_KEYS } from "./keys";
+import { OWN_KEYS } from "./keys";
 
-/** Rückgängig, Wiederholen, Duplizieren, Anordnen in der Kopfleiste, dazu die Kürzel (FR-16, D10). */
-export function EditControls() {
+/** Kürzel für Rückgängig, Wiederholen, Duplizieren, Kopieren, Einfügen und Löschen (FR-16, D10). */
+export function EditShortcuts() {
   const toast = useToast();
-  const past = useTopology((s) => s.past.length);
-  const future = useTopology((s) => s.future.length);
-  const selection = useUi((s) => s.selection);
-  const locked = simLocked(useSim((s) => s.sim));
   const clip = useRef<{ clip: Clip; pastes: number }>(undefined);
 
   const run = (action: () => void) => {
@@ -99,12 +92,6 @@ export function EditControls() {
       useUi.getState().select(undefined);
     });
   };
-  const doArrange = () => {
-    run(() => {
-      useTopology.getState().replace(arrange(useTopology.getState().topology));
-    });
-  };
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target instanceof Element ? e.target : undefined;
@@ -133,39 +120,5 @@ export function EditControls() {
     };
   });
 
-  return (
-    <div role="group" aria-label="Bearbeiten" className="tiv-edit">
-      <Button
-        onClick={undo}
-        disabled={locked || past === 0}
-        title={label("Z")}
-        aria-keyshortcuts={keyshortcuts("Z")}
-      >
-        <Undo2 size={18} aria-hidden="true" className="tiv-edit__icon" />
-        <span className="tiv-edit__text">Rückgängig</span>
-      </Button>
-      <Button
-        onClick={redo}
-        disabled={locked || future === 0}
-        title={label("Y")}
-        aria-keyshortcuts={keyshortcuts("Y")}
-      >
-        <Redo2 size={18} aria-hidden="true" className="tiv-edit__icon" />
-        <span className="tiv-edit__text">Wiederholen</span>
-      </Button>
-      <Button
-        onClick={duplicate}
-        disabled={locked || selection?.kind !== "node"}
-        title={label("D")}
-        aria-keyshortcuts={keyshortcuts("D")}
-      >
-        <Copy size={18} aria-hidden="true" className="tiv-edit__icon" />
-        <span className="tiv-edit__text">Duplizieren</span>
-      </Button>
-      <Button onClick={doArrange} disabled={locked} title="Anordnen">
-        <LayoutGrid size={18} aria-hidden="true" className="tiv-edit__icon" />
-        <span className="tiv-edit__text">Anordnen</span>
-      </Button>
-    </div>
-  );
+  return null;
 }

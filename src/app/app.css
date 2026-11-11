@@ -64,8 +64,7 @@
   border-left: 1px solid var(--color-neutral-300);
 }
 .tiv-overlaybar,
-.tiv-smallhint,
-.tiv-edit__icon {
+.tiv-smallhint {
   display: none;
 }
 .tiv-palette:focus,
@@ -114,26 +113,6 @@
     flex-wrap: wrap;
     gap: 8px;
   }
-  /* Bearbeiten-Knöpfe als Symbole; der Text bleibt für Screenreader (D10, #93) */
-  .tiv-edit__icon {
-    display: block;
-  }
-  .tiv-edit__text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .tiv-edit .tiv-btn {
-    display: flex;
-    min-width: 36px;
-    min-height: 36px;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-  }
 }
 @media (max-width: 700px) {
   .tiv-smallhint {
@@ -159,9 +138,58 @@
   color: var(--color-bg);
   border-color: transparent;
 }
+/* Umschalter wie im Mockup: Pille mit gleichwertigen Optionen, die gewählte steht erhaben */
 .tiv-theme {
   display: flex;
-  gap: 4px;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-neutral-200);
+}
+.tiv-theme .tiv-btn {
+  height: 30px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--color-neutral-800);
+}
+.tiv-theme .tiv-btn[aria-pressed="true"] {
+  background: var(--color-neutral-100);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.tiv-home {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: -4px;
+  padding: 4px 10px 4px 4px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
+}
+.tiv-home:hover {
+  background: var(--color-neutral-200);
+}
+.tiv-home:active {
+  background: var(--color-accent-200);
+}
+.tiv-home__logo {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  background: var(--color-accent);
+  color: var(--color-neutral-100);
 }
 .tiv-dialog {
   max-width: 640px;
@@ -208,12 +236,17 @@ a {
 }
 .tiv-header__actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
-.tiv-edit {
-  display: flex;
-  gap: 4px;
+/* Kopfleiste (Mockup): jeder Knopf ein eigener Ovalkasten */
+.tiv-header__actions > .tiv-btn,
+.tiv-save > .tiv-btn {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+  white-space: nowrap;
 }
 .tiv-main--start {
   display: block;

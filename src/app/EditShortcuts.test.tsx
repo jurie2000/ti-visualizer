@@ -3,13 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { IDLE } from "../engine/simulation";
 import { emptyTopology, useSim, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
-import { EditControls } from "./EditControls";
+import { EditShortcuts } from "./EditShortcuts";
 
 const t = () => useTopology.getState();
 const ui = () =>
   render(
     <ToastProvider>
-      <EditControls />
+      <EditShortcuts />
       <input aria-label="Feld" />
       <section className="tiv-canvas">
         <button>Fläche</button>
@@ -48,31 +48,6 @@ describe("Editor-Hilfen: Kürzel (FR-16, D10, T-508)", () => {
     add("pc");
     await user.keyboard("{Meta>}z{/Meta}");
     expect(t().topology.nodes).toHaveLength(0);
-  });
-
-  it("T-703 Symbole sind für Screenreader verborgen, der Name bleibt", () => {
-    ui();
-    for (const name of [
-      "Rückgängig",
-      "Wiederholen",
-      "Duplizieren",
-      "Anordnen",
-    ]) {
-      const knopf = screen.getByRole("button", { name });
-      expect(knopf.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    }
-  });
-
-  it("FR-16 Kopfleisten-Knöpfe sind je nach Verlauf bedienbar", async () => {
-    const user = userEvent.setup();
-    ui();
-    expect(screen.getByRole("button", { name: "Rückgängig" })).toBeDisabled();
-    act(() => {
-      add("pc");
-    });
-    await user.click(screen.getByRole("button", { name: "Rückgängig" }));
-    expect(t().topology.nodes).toHaveLength(0);
-    expect(screen.getByRole("button", { name: "Wiederholen" })).toBeEnabled();
   });
 
   it("FR-16 Entf löscht das gewählte Gerät samt Kanten, Rückgängig stellt es her", async () => {
@@ -133,20 +108,19 @@ describe("Editor-Hilfen: Kürzel (FR-16, D10, T-508)", () => {
     await user.keyboard("{Control>}v{/Control}");
     expect(t().topology.nodes.map((n) => n.id)).toEqual(["pc-1", "pc-2"]);
     expect(useUi.getState().selection).toEqual({ kind: "node", id: "pc-2" });
-    await user.click(screen.getByRole("button", { name: "Duplizieren" }));
+    await user.keyboard("{Control>}d{/Control}");
     expect(t().topology.nodes).toHaveLength(3);
     await user.keyboard("{Control>}z{/Control}");
     expect(t().topology.nodes).toHaveLength(2);
   });
 
-  it("FR-16 während der Simulation sind die Knöpfe gesperrt, Kürzel melden es", async () => {
+  it("FR-16 während der Simulation melden die Kürzel die Sperre", async () => {
     const user = userEvent.setup();
     ui();
     add("pc");
     act(() => {
       useSim.setState({ sim: { ...IDLE, status: "running" } });
     });
-    expect(screen.getByRole("button", { name: "Anordnen" })).toBeDisabled();
     await user.keyboard("{Control>}z{/Control}");
     expect(t().topology.nodes).toHaveLength(1);
     expect(

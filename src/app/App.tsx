@@ -1,4 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
+import { Network } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
@@ -16,7 +17,7 @@ import { TopologyList } from "./TopologyList";
 import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
-import { EditControls } from "./EditControls";
+import { EditShortcuts } from "./EditShortcuts";
 import { ModeSwitch } from "./ModeSwitch";
 import { SaveControls } from "./SaveControls";
 import { StartScreen } from "./StartScreen";
@@ -90,26 +91,26 @@ export function App() {
     <ToastProvider>
       <div className="tiv-shell">
         <header className="tiv-header">
-          <h1>TI Visualizer</h1>
+          <h1>
+            <button
+              type="button"
+              className="tiv-home"
+              aria-label="TI Visualizer, zur Startansicht"
+              title="Zur Startansicht"
+              onClick={() => {
+                setStarted(false);
+              }}
+            >
+              <span className="tiv-home__logo" aria-hidden="true">
+                <Network size={19} />
+              </span>
+              TI Visualizer
+            </button>
+          </h1>
           <div className="tiv-header__actions">
             {started && (
               <>
-                <EditControls />
-                <Button
-                  onClick={() => {
-                    setStarted(false);
-                  }}
-                >
-                  Startansicht
-                </Button>
-                <Button
-                  aria-pressed={listView}
-                  onClick={() => {
-                    useUi.getState().setListView(!listView);
-                  }}
-                >
-                  Listenansicht
-                </Button>
+                <EditShortcuts />
                 <Button
                   onClick={() => {
                     useUi.getState().openDialog("security");

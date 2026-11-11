@@ -589,9 +589,8 @@ Sicherheitsprüfung.
     ist, plus ein Test, dass P-27 die Aktion „eRezept ausstellen“
     ausgraut.
   - Dabei die Ausnahme `TEILWEISE` in `scripts/check-regelwerk-katalog.ts`
-    entfernen (T-503 hat sie für die Familie P eingeführt). T-504 läuft
-    parallel: T-505 verengt sie auf P-8 bis P-15 (`NOCH_OFFEN`), T-504
-    streicht den Rest.
+    entfernen (T-503 hat sie für die Familie P eingeführt). Erledigt,
+    die Ausnahme ist ganz gestrichen, der Katalog führt P vollständig.
   - Auslegung (2026-11-11): Pfadwirkung in `availableActions(…, mode)`,
     nur im Modus Erweitert: P-16, P-17, P-17a (erst ab 50 Tagen, die
     Warnung sperrt nichts) und P-21 sperren Aktionen mit „TI-Pfad“; P-25

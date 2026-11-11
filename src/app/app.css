@@ -1,7 +1,20 @@
 .tiv-shell {
   display: grid;
-  grid-template-rows: 62px minmax(0, 1fr) auto;
+  grid-template-rows: minmax(62px, auto) auto minmax(0, 1fr) auto;
   height: 100dvh;
+}
+/* Feste Zeilen: der versteckte Hinweis belegt sonst keine Zelle und verschiebt main */
+.tiv-header {
+  grid-row: 1;
+}
+.tiv-smallhint {
+  grid-row: 2;
+}
+.tiv-main {
+  grid-row: 3;
+}
+.tiv-footer {
+  grid-row: 4;
 }
 .tiv-header,
 .tiv-footer {
@@ -50,13 +63,85 @@
 .tiv-detail {
   border-left: 1px solid var(--color-neutral-300);
 }
+.tiv-overlaybar,
+.tiv-smallhint,
+.tiv-edit__icon {
+  display: none;
+}
+.tiv-palette:focus,
+.tiv-detail:focus {
+  outline: none;
+}
 @media (max-width: 1100px) {
   .tiv-main {
     grid-template-columns: 1fr;
+    position: relative;
   }
+  /* Überlagerungen statt Spalten (T-703); geschlossen aus dem Baum genommen */
   .tiv-palette,
   .tiv-detail {
     display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 5;
+    width: min(320px, 100%);
+    box-sizing: border-box;
+    background: var(--color-surface);
+  }
+  .tiv-palette[data-open="true"],
+  .tiv-detail[data-open="true"] {
+    display: block;
+  }
+  .tiv-palette {
+    left: 0;
+  }
+  .tiv-detail {
+    right: 0;
+  }
+  .tiv-overlaybar {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 16px;
+  }
+  .tiv-header {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding: 8px 16px;
+  }
+  .tiv-header__actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  /* Bearbeiten-Knöpfe als Symbole; der Text bleibt für Screenreader (D10, #93) */
+  .tiv-edit__icon {
+    display: block;
+  }
+  .tiv-edit__text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .tiv-edit .tiv-btn {
+    display: flex;
+    min-width: 36px;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+  }
+}
+@media (max-width: 700px) {
+  .tiv-smallhint {
+    display: block;
+    margin: 0;
+    padding: 8px 16px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-divider);
   }
 }
 .tiv-btn {

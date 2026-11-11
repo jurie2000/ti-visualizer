@@ -165,5 +165,7 @@ export function useContextMenu() {
     onNodeContextMenu: onMouse("node"),
     onEdgeContextMenu: onMouse("edge"),
     onKeyDown,
+    /** Menü an einem Knopf der Listenansicht (T-701). */
+    openAt,
   };
 }

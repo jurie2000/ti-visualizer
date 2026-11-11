@@ -682,7 +682,7 @@ Sicherheitsprüfung.
 
 ## P7: Barrierefreiheit, Tablet, Release
 
-- [ ] **T-701 Listenansicht** · FR: FR-22 · Regeln: – · nach: T-404, T-506
+- [x] **T-701 Listenansicht** · FR: FR-22 · Regeln: – · nach: T-404, T-506
   - Umfang: `TopologyList` als Textalternative: Geräte mit Kategorie,
     Karten und Verbindungen, bedienbar wie eine Tabelle. Aktionen und
     Sicherheitsprüfung von dort erreichbar.

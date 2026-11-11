@@ -23,8 +23,9 @@ describe("Tutorial-Inhalte (FR-20, T-601)", () => {
     const parts = steps.map((s) => s.part);
     expect(parts).toEqual([...parts].sort().reverse());
     expect(new Set(parts)).toEqual(new Set(["praxis", "apotheke"]));
+    // Erzähl-Schritte am Ende eines Teils tragen keine Aktion
     const last = (part: string) =>
-      steps.filter((s) => s.part === part).at(-1)?.action;
+      steps.filter((s) => s.part === part && s.action).at(-1)?.action;
     expect(last("praxis")).toBe("erezept-ausstellen");
     expect(last("apotheke")).toBe("erezept-einloesen-egk");
   });

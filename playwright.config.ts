@@ -41,6 +41,12 @@ export default defineConfig({
       testMatch: "edit.spec.ts",
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      // Nur Chromium: Kartenart ist ein natives <select>, das in WebKit die CSP meldet.
+      name: "tutorial",
+      testMatch: "tutorial.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Suite `datei` als einzige in drei Browsern (Safari-Annäherung: WebKit).
     {
       name: "datei",

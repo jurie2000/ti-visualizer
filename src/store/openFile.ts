@@ -16,7 +16,7 @@ import {
   type FileSystemFileHandleLike,
 } from "./fileStore";
 import { useSettings } from "./settingsStore";
-import { useTopology } from "./topologyStore";
+import { emptyTopology, useTopology } from "./topologyStore";
 import { useUi } from "./uiStore";
 
 export type { Finding };
@@ -85,6 +85,8 @@ function install(
   useTopology.getState().replace(topology);
   // Eine Auswahl der alten Topologie darf kein Gerät der neuen treffen
   useUi.getState().select(undefined);
+  // Eine andere Topologie beendet das Tutorial (der Fortschritt bleibt gespeichert)
+  useUi.getState().setTutorial(false);
   // Dasselbe Objekt übergeben: der Vergleich „ungespeichert“ läuft per Referenz
   useFile
     .getState()
@@ -96,6 +98,18 @@ function install(
 export function openTopology(topology: Topology) {
   guardReplace(() => {
     install(topology, null, null);
+  });
+}
+
+/**
+ * Tutorial von vorn (FR-20): leere Fläche im Modus Erweitert (Switch und
+ * Konnektor stehen nur dort in der Palette), Fortschritt auf Schritt 1.
+ */
+export function startTutorial() {
+  guardReplace(() => {
+    install(emptyTopology(), null, null);
+    useSettings.getState().set({ mode: "advanced", tutorialProgress: 0 });
+    useUi.getState().setTutorial(true);
   });
 }
 

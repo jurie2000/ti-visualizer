@@ -146,7 +146,6 @@
       "story": "Das war’s schon? Kein Zettel, kein Stempel, kein „Wo hab ich das Rezept bloß hingelegt?“. Meine Karte ist jetzt der Schlüssel — und die verliere ich hoffentlich seltener als Rezepte.",
       "persona": "marta",
       "devices": ["pvs", "erp"],
-      "action": "erezept-ausstellen",
       "source": ["gemILF_PS_eRp"],
       "status": "Vereinfachung"
     },
@@ -154,10 +153,10 @@
       "id": "apotheke-nebenan",
       "part": "apotheke",
       "title": "Eine Apotheke nebenan",
-      "text": "Praxis und Apotheke sind getrennte Einrichtungen: eigene Räume, eigenes Netz, eigener Konnektor. Das Apothekenverwaltungssystem (AVS) ist ihr Primärsystem.",
+      "text": "Praxis und Apotheke sind getrennte Einrichtungen: eigene Räume, eigenes Netz, eigener Konnektor. Das Apothekenverwaltungssystem (AVS) ist ihr Primärsystem. Der Bereich „Apotheke am Markt“ ist vorbereitet, neue Geräte landen darin.",
       "story": "Zwei Straßen weiter: die Apotheke am Markt. Die haben mit der Praxis nichts am Hut — und trotzdem sollen sie mein Rezept kennen. Da bin ich ja mal gespannt.",
       "persona": "marta",
-      "task": "Setze ein AVS (Apothekenverwaltungssystem) für die Apotheke auf die Canvas.",
+      "task": "Setze ein AVS (Apothekenverwaltungssystem) in den Bereich „Apotheke am Markt“.",
       "devices": ["avs"],
       "source": ["gematik_eRp_Apotheken"],
       "status": "Vereinfachung"
@@ -169,7 +168,7 @@
       "text": "Auch die Apotheke hat ein eigenes Kartenterminal mit eigener SMC-B. Die eGK bringt die Kundin mit.",
       "story": "Guten Abend! Karte bitte einmal hier drauf. Keine Angst, das Terminal beißt nicht — es liest nur.",
       "persona": "aydin",
-      "task": "Setze ein Kartenterminal für die Apotheke und stecke SMC-B und eGK.",
+      "task": "Setze ein Kartenterminal in den Bereich „Apotheke am Markt“ und stecke SMC-B und eGK.",
       "devices": ["kt", "smcb", "egk"],
       "source": ["gemSpec_KT"],
       "status": "Vereinfachung"
@@ -181,7 +180,7 @@
       "text": "Das Apothekennetz bleibt vom Praxisnetz vollständig getrennt — zwischen beiden liegt kein Kabel.",
       "story": "Unser Netz ist unser Netz. Mit der Praxis sind wir befreundet, aber nicht verkabelt. Gute Nachbarschaft braucht keine gemeinsamen Leitungen.",
       "persona": "aydin",
-      "task": "Setze einen Switch für die Apotheke und verbinde AVS und Kartenterminal damit.",
+      "task": "Setze einen Switch in den Bereich „Apotheke am Markt“ und verbinde AVS und Kartenterminal damit.",
       "devices": ["avs", "kt", "switch"],
       "source": ["DVO"],
       "status": "Vereinfachung"
@@ -190,12 +189,12 @@
       "id": "apotheken-konnektor",
       "part": "apotheke",
       "title": "Eigener Konnektor",
-      "text": "Die Apotheke bekommt einen eigenen Konnektor. Sein Tunnel führt zum selben VPN-Zugangsdienst — dort treffen sich beide Einrichtungen, aber nur innerhalb der TI.",
+      "text": "Die Apotheke bekommt einen eigenen Konnektor. Sein Tunnel führt zum selben VPN-Zugangsdienst — dort treffen sich beide Einrichtungen, aber nur innerhalb der TI. Mit zwei Konnektoren im Netz muss jedes Kartenterminal wissen, zu welchem es gehört: Das nennt man Pairing. Im Reihenbetrieb schickt das AVS alles an seinen Konnektor: Dessen IP-Adresse ist sein Gateway.",
       "story": "Auch wir haben einen Türsteher im Hinterzimmer. Sein Tunnel führt zur selben TI wie der der Praxis — man trifft sich also, aber nur auf neutralem Boden.",
       "persona": "aydin",
-      "task": "Setze einen Konnektor für die Apotheke. Verbinde ihn mit dem Apotheken-Switch und mit dem vorhandenen VPN-Zugang.",
-      "devices": ["kon", "vpn"],
-      "source": ["gemSpec_Kon", "gemSpec_VPN_ZugD"],
+      "task": "Setze einen Konnektor in den Bereich „Apotheke am Markt“. Verbinde ihn mit dem Apotheken-Switch und mit dem vorhandenen VPN-Zugang. Wähle dann beim Apotheken-Terminal im Detailpanel unter „Pairing mit“ diesen Konnektor und trage beim AVS dessen IP-Adresse als Gateway ein.",
+      "devices": ["kon", "vpn", "kt", "avs"],
+      "source": ["gemSpec_Kon", "gemSpec_VPN_ZugD", "gemSpec_KT"],
       "status": "Vereinfachung"
     },
     {
@@ -219,7 +218,6 @@
       "story": "Tabletten in der Tasche, Kopf schon etwas leichter. Praxis und Apotheke haben kein Wort direkt miteinander gewechselt — alles lief über die TI. Nennen wir es: gut vernetzt, trotzdem getrennt.",
       "persona": "marta",
       "devices": ["avs", "erp"],
-      "action": "erezept-einloesen-egk",
       "source": ["gemF_eRp_Autorisierung_Apo"],
       "status": "Vereinfachung"
     }

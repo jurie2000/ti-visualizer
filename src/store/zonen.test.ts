@@ -23,6 +23,13 @@ beforeEach(() => {
 });
 
 describe("FR-15 Zonen im Store", () => {
+  it("legt eine benannte Zone in einem Rückgängig-Schritt an", () => {
+    s().addZone(area, "Apotheke am Markt");
+    expect(zones()[0]?.label).toBe("Apotheke am Markt");
+    s().undo();
+    expect(zones()).toHaveLength(0);
+  });
+
   it("legt Zonen mit eindeutiger ID an und macht es rückgängig", () => {
     expect(zone()).toBe("zone-1");
     expect(zone()).toBe("zone-2");

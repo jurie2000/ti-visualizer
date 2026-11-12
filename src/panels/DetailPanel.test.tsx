@@ -235,4 +235,75 @@ describe("T-406 Detailpanel (FR-11)", () => {
     await user.click(screen.getByRole("button", { name: /^WAN: / }));
     expect(useUi.getState().connectPort).toEqual({ node: "kon1", port: "wan" });
   });
+
+  it("T-712c [K-2]: Karten stehen in beiden Modi im Panel, Stecken öffnet den Dialog, Ziehen entfernt die Karte", async () => {
+    const user = userEvent.setup();
+    for (const mode of ["simple", "advanced"] as const) {
+      useSettings.getState().set({ mode });
+      useTopology.getState().reset(topo);
+      useUi.setState({ dialog: undefined });
+      const { unmount } = render(<DetailPanel />);
+      select("node", "kt1");
+      const box = within(
+        screen.getByRole("region", { name: "Gesteckte Karten" }),
+      );
+      expect(box.getByText("Noch keine Karte gesteckt.")).toBeInTheDocument();
+      await user.click(box.getByRole("button", { name: "Karte stecken" }));
+      expect(useUi.getState().dialog).toBe("plugCard:kt1");
+      act(() => {
+        useTopology.getState().plugCard("kt1", {
+          kind: "smcb",
+          expires: "2030-01-01",
+          unlocked: true,
+        });
+      });
+      await user.click(
+        screen.getByRole("button", { name: /^SMC-B aus .+ ziehen$/ }),
+      );
+      expect(useTopology.getState().topology.nodes[0]?.cards).toEqual([]);
+      unmount();
+    }
+  });
+
+  it("T-712c [K-3]: abgelaufene Karte steht genau einmal im Kasten (beide Modi), Geräte ohne Steckplatz zeigen keine Karten", () => {
+    for (const mode of ["simple", "advanced"] as const) {
+      useSettings.getState().set({ mode });
+      useTopology.getState().reset(topo);
+      const { unmount } = render(<DetailPanel />);
+      act(() => {
+        useTopology.getState().plugCard("kt1", {
+          kind: "egk",
+          expires: "2020-01-01",
+          pinActive: true,
+        });
+      });
+      select("node", "kt1");
+      const box = screen.getByRole("group", { name: "Regelverstoß" });
+      expect(box.textContent.match(/abgelaufen/g)).toHaveLength(1);
+      select("node", "pvs1");
+      expect(
+        screen.queryByRole("region", { name: "Gesteckte Karten" }),
+      ).toBeNull();
+      unmount();
+    }
+  });
+
+  it("T-712c [K-2]: Karte stecken ist weg, solange kein Steckplatz frei ist, und kommt nach dem Ziehen zurück", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    for (const kind of ["egk", "hba", "smcb"] as const)
+      act(() => {
+        useTopology
+          .getState()
+          .plugCard("kt1", { kind, expires: "2030-01-01", unlocked: true });
+      });
+    select("node", "kt1");
+    expect(screen.queryByRole("button", { name: "Karte stecken" })).toBeNull();
+    await user.click(
+      screen.getByRole("button", { name: /^HBA aus .+ ziehen$/ }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Karte stecken" }),
+    ).toBeInTheDocument();
+  });
 });

@@ -719,3 +719,42 @@ a {
   background: var(--tiv-ok-bg);
   color: var(--tiv-ok-fg);
 }
+/* Gesteckte Karten im Detailpanel (T-712c, Mockup `showCardSlots`) */
+.tiv-cards {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-divider);
+}
+.tiv-cards h4 {
+  margin: 0 0 9px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.tiv-cards__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 11px;
+  color: var(--color-neutral-800);
+}
+.tiv-cards .tiv-chip {
+  gap: 7px;
+  padding: 5px 7px 5px 12px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--tiv-cat-card) 15%, transparent);
+  border-color: var(--tiv-cat-card);
+}
+.tiv-cards .tiv-chip--expired,
+.tiv-cards .tiv-chip--locked {
+  border-color: var(--tiv-error-fg);
+}
+.tiv-cards .tiv-btn {
+  border-radius: 999px;
+  border-color: var(--color-divider);
+  background: var(--color-bg);
+}

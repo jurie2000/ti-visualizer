@@ -1,7 +1,7 @@
 import { useState, type SyntheticEvent } from "react";
 import { CARD_NAMES } from "../canvas/CardChip";
 import type { CardKind } from "../engine/cards";
-import type { AnyCard } from "../schema";
+import type { AnyCard, Catalog, Node } from "../schema";
 import { useCatalog, useTopology, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { Dialog } from "../ui/Dialog";
@@ -10,7 +10,23 @@ import { useToast } from "../ui/Toast";
 /** Name des Dialogs in `useUi.dialog`; so öffnet ihn der Knopf am Terminal. */
 export const plugCardDialog = (nodeId: string) => `plugCard:${nodeId}`;
 
+type DeviceType = Catalog["deviceTypes"][number];
+
 const ALL: CardKind[] = ["egk", "hba", "smcb"];
+
+/** Kartenarten, die ein Gerät noch aufnimmt (K-2). K-6: NFC-Geräte lesen nur die eGK. */
+export function missingKinds(
+  node: Node | undefined,
+  device: DeviceType | undefined,
+) {
+  const nfcOnly = !device?.capabilities.includes("cardSlots");
+  const candidates = nfcOnly ? ALL.slice(0, 1) : ALL;
+  return {
+    nfcOnly,
+    candidates,
+    free: candidates.filter((k) => !node?.cards?.some((c) => c.kind === k)),
+  };
+}
 
 /** Karte stecken (K-2): Kartenart, Ablaufdatum (K-3), PIN-Status (K-4, K-7). */
 export function PlugCardDialog() {
@@ -36,13 +52,9 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   const device = useCatalog((s) =>
     s.catalog.deviceTypes.find((d) => d.id === node?.type),
   );
-  // K-6: NFC-Geräte lesen nur die eGK. K-2: nur Arten anbieten, die noch fehlen;
-  // steckt alles, bleibt die Auswahl voll und die Engine meldet die Belegung.
-  const nfcOnly = !device?.capabilities.includes("cardSlots");
-  const candidates = nfcOnly ? ALL.slice(0, 1) : ALL;
-  const free = candidates.filter(
-    (k) => !node?.cards?.some((c) => c.kind === k),
-  );
+  // K-2: nur Arten anbieten, die noch fehlen; steckt alles, bleibt die Auswahl
+  // voll und die Engine meldet die Belegung.
+  const { nfcOnly, candidates, free } = missingKinds(node, device);
   const kinds = free.length ? free : candidates;
   const [kind, setKind] = useState<CardKind>(kinds[0] ?? "egk");
   // Zieldatum: simDate + 3 Jahre, 29.02. wird zum 28.02.

@@ -13,6 +13,7 @@ import {
   useUi,
   type Selection,
 } from "../store";
+import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
 import { PortList } from "./PortList";
 import { ZoneForm } from "./ZoneForm";
@@ -153,6 +154,7 @@ function DeviceDetail({
       {advanced && (
         <PortList node={node} topology={topology} catalog={catalog} />
       )}
+      <CardSlots node={node} catalog={catalog} />
       {advanced && <ConfigForm node={node} />}
       {type && <Sources ids={type.source} catalog={catalog} />}
     </>

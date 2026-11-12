@@ -223,4 +223,17 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     expect(screen.getByLabelText("IP-Adresse")).toBeDisabled();
     expect(screen.getByText(/Simulation gesperrt/)).toBeInTheDocument();
   });
+
+  it("T-712d: Betriebsart ist ein Segment aus Radioknöpfen mit Gruppenname und Hinweis, Wahl wird übernommen", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    open("kon-1");
+    const group = screen.getByRole("group", { name: /Betriebsart|mode/i });
+    expect(group.querySelector(".tiv-seg")).not.toBeNull();
+    expect(
+      container.querySelectorAll(".tiv-seg input[type=radio]").length,
+    ).toBeGreaterThanOrEqual(2);
+    await user.click(screen.getByRole("radio", { name: "Parallel" }));
+    expect(nodeOf("kon-1")?.config?.mode).toBe("parallel");
+  });
 });

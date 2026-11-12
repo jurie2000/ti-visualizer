@@ -183,19 +183,21 @@ function RadioField({
   return (
     <fieldset className="tiv-config__field" aria-describedby={`${id}-hint`}>
       <legend>{entry.name}</legend>
-      {options.map((o) => (
-        <label key={o.value}>
-          <input
-            type="radio"
-            name={id}
-            checked={(current ?? "") === o.value}
-            onChange={() => {
-              setConfig(node.id, { [entry.field]: o.value || undefined });
-            }}
-          />{" "}
-          {o.label}
-        </label>
-      ))}
+      <div className="tiv-seg">
+        {options.map((o) => (
+          <label key={o.value}>
+            <input
+              type="radio"
+              name={id}
+              checked={(current ?? "") === o.value}
+              onChange={() => {
+                setConfig(node.id, { [entry.field]: o.value || undefined });
+              }}
+            />{" "}
+            {o.label}
+          </label>
+        ))}
+      </div>
       <p id={`${id}-hint`} className="tiv-config__hint">
         {hintOf(entry)}
       </p>

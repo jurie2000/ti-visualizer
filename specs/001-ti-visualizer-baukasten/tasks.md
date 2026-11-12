@@ -811,11 +811,27 @@ Sicherheitsprüfung.
   - Fertig, wenn: Tests prüfen Anzeige, Stecken und Ziehen in beiden Modi,
     abgelaufene Karte im Kasten, kein Abschnitt ohne Steckplatz.
 
-- [ ] **T-712d Detailpanel: Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712c · Mockup: `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 662 und 716 bis 723
-  - Umfang: Konfiguration (`ConfigForm`), Zone-Bearbeitung (`ZoneForm`) und
-    Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des Mockups.
-  - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
-    Abschnitt ein Test, Abnahme durch Justin.
+- [x] **T-712d Detailpanel: Konfiguration im Mockup-Look** · FR: FR-22, FR-17 · Regeln: Regelwerk 8 · nach: T-712c · Mockup: `showCfg`, Zeilen 624 bis 661
+  - Umfang: `ConfigForm` im Stil des Mockups: Abschnittstitel, Beschriftung
+    über dem Feld, Pillenfelder (38 px), Ankreuzfelder als Zeile mit Rahmen,
+    Auswahl als Segment (`.tiv-seg`, weiter Radioknöpfe mit Gruppennamen),
+    Hinweistexte, Fehlerrahmen bei ungültigem Wert. Die Felder und Texte
+    bleiben (Regelwerk 8). Die gleichen Klassen färben `ZoneForm` mit.
+    Auslegung (2026-11-12): Überschrift bleibt „Geräteeinstellungen“ (Tests,
+    Spec), nicht „Konfiguration“. Die Gruppenköpfe des Mockups („Netzwerk“,
+    „TI-Zugriff“ …), der Knopf „IP-Adressen neu vergeben“ und die Rotfärbung
+    nach Prüfregel sind Funktionen, nicht Look; sie bleiben außerhalb.
+  - Fertig, wenn: bestehende `ConfigForm`-Tests grün, Segment getestet, hell
+    und dunkel geprüft.
+
+- [ ] **T-712e Detailpanel: Zone-Bearbeitung und Aktionsknöpfe** · FR: FR-22, FR-15 · Regeln: – · nach: T-712d · Mockup: `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 613 und 716 bis 723
+  - Umfang: `ZoneForm` mit Farbfeldern statt Radioknöpfen und Aktionsknöpfe
+    im Panel (Ausfall simulieren, Gerät/Zone/Verbindung entfernen,
+    Verbindung trennen) mit vorhandenen Store-Aktionen. Die Form
+    „Rechteck/Ellipse“ des Mockups gibt es im Datenmodell nicht und bleibt
+    außerhalb, bis es eine Spec dafür gibt.
+  - Fertig, wenn: bestehende `ZoneForm`-Tests grün, je Aktion ein Test,
+    Abnahme durch Justin.
 
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder

@@ -74,6 +74,8 @@ const pairs: [string, string, number][] = [
   ["--color-accent-800", "--color-accent-100", 4.5],
   ["--color-accent-2-800", "--color-accent-2-100", 4.5],
   ["--color-neutral-800", "--color-neutral-100", 4.5],
+  ["--tiv-card-fg", "--color-neutral-100", 4.5], // Kartenmarke (T-718)
+  ["--tiv-card-fg", "--color-bg", 4.5],
   ["--tiv-error-fg", "--tiv-error-bg", 4.5],
   ["--tiv-ok-fg", "--tiv-ok-bg", 4.5],
   ["--tiv-warn-fg", "--tiv-warn-bg", 4.5],

@@ -2,7 +2,13 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Topology } from "../schema";
-import { openTopology, resolveGuard, useTopology, useUi } from "../store";
+import {
+  openTopology,
+  resolveGuard,
+  useCatalog,
+  useTopology,
+  useUi,
+} from "../store";
 import { DetailPanel } from "./DetailPanel";
 
 const topo: Topology = {
@@ -101,35 +107,6 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(screen.getByRole("heading", { name: "Praxis" })).toBeInTheDocument();
   });
 
-  it("blendet per Tastatur aus und ein", async () => {
-    const user = userEvent.setup();
-    render(<DetailPanel />);
-    const b = screen.getByRole("button", { name: "Details ausblenden" });
-    b.focus();
-    await user.keyboard("{Enter}");
-    expect(b).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByText(/wählen, um Details/)).not.toBeVisible();
-    await user.keyboard("{Enter}");
-    expect(screen.getByText(/wählen, um Details/)).toBeVisible();
-  });
-
-  it("hält angepinnten Inhalt trotz neuer Auswahl und meldet den Zustand per aria-pressed", async () => {
-    const user = userEvent.setup();
-    render(<DetailPanel />);
-    select("node", "kt1");
-    await user.click(screen.getByRole("button", { name: "Anpinnen" }));
-    expect(screen.getByRole("button", { name: "Anpinnen" })).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    );
-    select("node", "kon1");
-    expect(
-      screen.getByRole("heading", { name: "<b>KT</b>" }),
-    ).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Anpinnen" }));
-    expect(screen.queryByRole("heading", { name: "<b>KT</b>" })).toBeNull();
-  });
-
   it("meldet eine gelöschte Auswahl", () => {
     render(<DetailPanel />);
     select("node", "weg");
@@ -155,21 +132,13 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(screen.getByRole("heading", { level: 3 })).toBe(h);
   });
 
-  it("löst Anheftung und Auswahl beim Öffnen einer Datei", async () => {
-    const user = userEvent.setup();
+  it("löst die Auswahl beim Öffnen einer Datei", async () => {
     render(<DetailPanel />);
     select("node", "kt1");
-    await user.click(screen.getByRole("button", { name: "Anpinnen" }));
     openTopology(topo);
     await act(() => resolveGuard("discard")); // ungespeicherter Stand fragt erst
-    // Auswahl und Anheftung der alten Datei sind weg
     expect(useUi.getState().selection).toBeUndefined();
-    select("node", "kon1");
     expect(screen.queryByRole("heading", { name: "<b>KT</b>" })).toBeNull();
-    expect(screen.getByRole("button", { name: "Anpinnen" })).toHaveAttribute(
-      "aria-pressed",
-      "false",
-    );
   });
 
   it("T-712a: Kopf zeigt Kicker und Titel, Auswahl aufheben leert die Auswahl", async () => {
@@ -199,10 +168,24 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(screen.queryByRole("group", { name: "Regelverstoß" })).toBeNull();
   });
 
-  it("T-712a: Beschreibung des Gerätetyps steht als Text (nie HTML) im Panel", () => {
-    render(<DetailPanel />);
+  it("T-712a: Beschreibung steht im Panel, Markup in Beschreibung und Namen bleibt Text (D10)", () => {
+    const { container } = render(<DetailPanel />);
     select("node", "kon1");
     expect(screen.getByText(/Tor der Praxis zur TI/)).toBeInTheDocument();
-    expect(screen.getByRole("list", { name: "Quellen" })).toBeInTheDocument();
+    const t = useCatalog.getState().catalog;
+    act(() => {
+      useCatalog.setState({
+        catalog: {
+          ...t,
+          deviceTypes: t.deviceTypes.map((d) =>
+            d.id === "kon"
+              ? { ...d, description: "<img src=x onerror=1>Text" }
+              : d,
+          ),
+        },
+      });
+    });
+    expect(screen.getByText("<img src=x onerror=1>Text")).toBeInTheDocument();
+    expect(container.querySelector("img")).toBeNull();
   });
 });

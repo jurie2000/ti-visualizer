@@ -261,7 +261,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await expect(spieler(page)).toContainText(abgebrochen);
   });
 
-  test("Detailpanel: nur die Überschrift ist live, Anheftung fällt beim Öffnen (FR-11, T-406)", async ({
+  test("Detailpanel: nur die Überschrift ist live (FR-11, T-406)", async ({
     page,
   }) => {
     await menüAn(page, "pvs1");
@@ -274,19 +274,5 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
       "aria-live",
       /.*/,
     );
-
-    const pin = panel.getByRole("button", { name: "Anpinnen" });
-    await pin.click();
-    await expect(pin).toHaveAttribute("aria-pressed", "true");
-    await gerät(page, "kon1").click();
-    await expect(titel).toContainText("Praxisverwaltungssystem");
-
-    await page
-      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
-      .click();
-    await öffne(page, /Öffnen.*Apotheke/);
-    await gerät(page, "kon1").click();
-    await expect(titel).toContainText("Konnektor");
-    await expect(pin).toHaveAttribute("aria-pressed", "false");
   });
 });

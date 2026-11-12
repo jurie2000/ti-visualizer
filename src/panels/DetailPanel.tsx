@@ -1,13 +1,5 @@
-import {
-  Cable,
-  Layers,
-  Pin,
-  PinOff,
-  TriangleAlert,
-  X,
-  type LucideIcon,
-} from "lucide-react";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { Cable, Layers, TriangleAlert, X, type LucideIcon } from "lucide-react";
+import type { CSSProperties, ReactNode } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
 import { TONE_NAME } from "../canvas/toFlow";
@@ -16,13 +8,11 @@ import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
 import {
   useCatalog,
-  useOpen,
   useSettings,
   useTopology,
   useUi,
   type Selection,
 } from "../store";
-import { Button } from "../ui/Button";
 import { ConfigForm } from "./ConfigForm";
 import { ZoneForm } from "./ZoneForm";
 
@@ -314,46 +304,12 @@ function Body({ sel }: { sel: Selection }) {
   );
 }
 
-/** Detailpanel (FR-11): einblendbar; angepinnt bleibt der Inhalt trotz neuer Auswahl. */
+/** Detailpanel (FR-11): zeigt die Auswahl; Einblenden und Anheften übernimmt `SidePanel` (T-711). */
 export function DetailPanel() {
   const selection = useUi((s) => s.selection);
-  const [open, setOpen] = useState(true);
-  const opened = useOpen((s) => s.opened);
-  const [pin, setPin] = useState<{ sel: Selection; opened: number }>();
-  // Beim Öffnen einer Datei oder eines Presets verfällt die Anheftung.
-  const pinned = pin?.opened === opened ? pin.sel : undefined;
-  const shown = pinned ?? selection;
   return (
-    <>
-      <div className="tiv-detail__bar">
-        <Button
-          aria-expanded={open}
-          aria-controls="tiv-detail-body"
-          onClick={() => {
-            setOpen(!open);
-          }}
-        >
-          {open ? "Details ausblenden" : "Details einblenden"}
-        </Button>
-        {open && shown && (
-          <Button
-            aria-pressed={pinned !== undefined}
-            onClick={() => {
-              setPin(pinned ? undefined : { sel: selection, opened });
-            }}
-          >
-            {pinned ? (
-              <PinOff aria-hidden="true" />
-            ) : (
-              <Pin aria-hidden="true" />
-            )}
-            Anpinnen
-          </Button>
-        )}
-      </div>
-      <div id="tiv-detail-body" hidden={!open}>
-        <Body sel={shown} />
-      </div>
-    </>
+    <div id="tiv-detail-body">
+      <Body sel={selection} />
+    </div>
   );
 }

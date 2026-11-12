@@ -467,12 +467,6 @@ a {
   align-items: center;
   min-height: 24px;
 }
-.tiv-detail__bar {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
 .tiv-detail__facts {
   display: grid;
   grid-template-columns: 110px 1fr;

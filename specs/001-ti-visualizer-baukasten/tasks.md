@@ -775,16 +775,25 @@ Sicherheitsprüfung.
     bleiben mit Link (https, nie als HTML).
     Auslegung (2026-11-12): Quellen sind die einzige Abweichung, Justin will
     sie behalten. „Zone“ bleibt statt „Bereich“ (Wortwahl der App). Die
-    Leiste „Details ausblenden/Anpinnen“ bleibt, bis Justin sie streicht.
+    Leiste „Details ausblenden/Anpinnen“ samt Inhalts-Pin entfällt (Justin),
+    Einblenden und Anheften übernimmt die Schiene aus T-711.
     Beschreibung nur für Typen, die der Mockup beschreibt.
   - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Kopf und Hinweis
     getestet, Quellen sichtbar, hell und dunkel im Browser geprüft.
 
-- [ ] **T-712b Detailpanel: Zone, Konfiguration, Anschlüsse, Karten, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: Zeilen 590 bis 723
-  - Umfang: Zone-Bearbeitung, Konfiguration (`ConfigForm`), Anschlussliste
-    mit Status, gesteckte Karten mit Ziehen und Stecken, Aktionsknöpfe
-    (Ausfall, Entfernen, Trennen) im Aufbau und Stil des Mockups. Vergleich
-    mit den Mockup-Screenshots von Justin.
+- [ ] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
+  - Umfang: Abschnitt „Anschlüsse“ mit Zusammenfassung („n von m frei“) und je
+    Anschluss Kachel, Name, Art, Status-Pille (frei oder Gegenstelle),
+    Klick auf einen belegten Anschluss wählt die Kante. Dazu der
+    Regelverstoß-Kasten für Zonen (Befund aus T-712a, Niedrig).
+  - Fertig, wenn: je Abschnitt ein Test, Vergleich mit den
+    Mockup-Screenshots von Justin abgenommen.
+
+- [ ] **T-712c Detailpanel: Karten, Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: `showCardSlots`, `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 723
+  - Umfang: Gesteckte Karten (Chips mit „Karte ziehen“), „Karte stecken“ und
+    Schnellknöpfe je freier Karte, Konfiguration (`ConfigForm`), Zone-Bearbeitung
+    (`ZoneForm`) und Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des
+    Mockups. Abgelaufene Karte im Regelverstoß-Kasten.
   - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
     Abschnitt ein Test, Abnahme durch Justin.
 

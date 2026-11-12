@@ -9,7 +9,6 @@ const TOGGLES: [Switch, string][] = [
   ["minimap", "Minimap anzeigen"],
 ];
 
-/** Detailpanel ohne Auswahl (Mockup `noSelection`): Hinweis, Legende der Verbindungsarten, Ansicht-Schalter. */
 const ROUTES: [ViewSettings["route"], string][] = [
   ["curve", "Kurven"],
   ["ortho", "Gebündelt"],
@@ -55,6 +54,7 @@ function Segmented<K extends "route" | "labels">({
   );
 }
 
+/** Detailpanel ohne Auswahl (Mockup `noSelection`): Hinweis, Legende der Verbindungsarten, Ansicht-Schalter. */
 export function ViewPanel() {
   const kinds = useCatalog((s) => s.catalog.protocols.connectionKinds);
   const simple = useSettings((s) => s.mode) === "simple";

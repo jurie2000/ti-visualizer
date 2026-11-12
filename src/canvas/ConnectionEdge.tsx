@@ -21,23 +21,11 @@ export const boxOf = (n: InternalNode): Box => {
   };
 };
 
-/** Schnittpunkt der Mittellinie von `a` nach `b` mit dem Rand von `a`. */
-export function onBorder(a: Box, b: Box) {
-  const dx = b.cx - a.cx;
-  const dy = b.cy - a.cy;
-  if (dx === 0 && dy === 0) return { x: a.cx, y: a.cy };
-  const t = Math.min(
-    dx === 0 ? Infinity : a.hw / Math.abs(dx),
-    dy === 0 ? Infinity : a.hh / Math.abs(dy),
-  );
-  return { x: a.cx + dx * t, y: a.cy + dy * t };
-}
-
 /**
  * Kante je Verbindungsart (Farbe, Stärke, Strichmuster aus `--tiv-edge-<art>`),
  * schwebend zwischen den Rändern der Knoten, mit Label in der Mitte.
  *
- * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf` und `onBorder`.
+ * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf`.
  */
 export function ConnectionEdge({
   id,

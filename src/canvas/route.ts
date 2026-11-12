@@ -36,14 +36,14 @@ const BUS = 40;
  * Weg einer Kante zwischen den Seitenmitten zweier Geräte (Mockup `edgePath`):
  * `curve` als Kurve, `ortho` rechtwinklig. Bei `ortho` laufen alle Kanten eines
  * Geräts über dieselbe Schiene vor dessen Seite (`hub`, „Gebündelt“).
- * `mid` ist der Punkt für das Label, `from` und `to` die Anschlusspunkte.
+ * `mid` ist der Punkt für das Label.
  */
 export function routePath(
   a: Box,
   b: Box,
   route: Route,
   hub: "a" | "b" = "a",
-): { d: string; mid: Point; from: Point; to: Point } {
+): { d: string; mid: Point } {
   const sa = sideOf(a, b);
   const p1 = attach(a, sa);
   const p2 = attach(b, OPP[sa]);
@@ -60,16 +60,12 @@ export function routePath(
       return {
         d: `M ${pt(p1)} L ${pt({ x: mx, y: p1.y })} L ${pt({ x: mx, y: p2.y })} L ${pt(p2)}`,
         mid,
-        from: p1,
-        to: p2,
       };
     }
     const my = bus(h.cy + (hs === "t" ? -h.hh : h.hh), hs);
     return {
       d: `M ${pt(p1)} L ${pt({ x: p1.x, y: my })} L ${pt({ x: p2.x, y: my })} L ${pt(p2)}`,
       mid: { x: (p1.x + p2.x) / 2, y: my },
-      from: p1,
-      to: p2,
     };
   }
   const off = horiz
@@ -85,7 +81,5 @@ export function routePath(
       x: (p1.x + 3 * c1.x + 3 * c2.x + p2.x) / 8,
       y: (p1.y + 3 * c1.y + 3 * c2.y + p2.y) / 8,
     },
-    from: p1,
-    to: p2,
   };
 }

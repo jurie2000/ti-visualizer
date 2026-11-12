@@ -963,7 +963,8 @@ Sicherheitsprüfung.
   - Auslegung (2026-11-12): „Kurven“ und „Gebündelt“ wie Mockup `edgePath`
     (Seitenmitten, Kubische Kurve bzw. rechtwinklig mit Schiene 40 px vor dem
     Gerät mit den meisten Kanten); Sammelkanten und das Paket der Simulation
-    folgen demselben Weg. Mockup-Versatz mehrerer Kanten je Seite und
+    folgen demselben Weg, ihre Schiene liegt aber immer vor dem Start (kein
+    Gerät mit den meisten Kanten, bewusst einfach). Mockup-Versatz mehrerer Kanten je Seite und
     Label-Ausweichen entfallen. „Wichtige“ blendet die Labels der Arten
     Kabel (phys) und WLAN aus, außer bei Störung oder Auswahl; „Keine“ zeigt
     nur Störungen.

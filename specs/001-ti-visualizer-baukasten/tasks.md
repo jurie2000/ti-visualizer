@@ -809,6 +809,17 @@ Sicherheitsprüfung.
   - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
     Abschnitt ein Test, Abnahme durch Justin.
 
+- [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
+  - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
+    Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen
+    eine Linie von der Quelle zum Mauszeiger, am Gerät unter dem Zeiger
+    einrastend, grün bei möglicher, rot bei unmöglicher Verbindung (Text und
+    Toast tragen die Begründung, Farbe allein nichts). Esc, Klick ins Leere
+    und Abschluss entfernen sie. Umsetzung: `ViewportPortal` mit SVG und
+    `pointermove`, Quelle aus `connectionClickStartHandle`.
+  - Fertig, wenn: Tests prüfen Linie nach Quellwahl, Einrasten am Ziel und
+    Entfernen bei Esc und Abschluss.
+
 - [ ] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der
     Verbindungsarten und die Schalter „Verbindungen“, „Bereiche“,

@@ -48,15 +48,6 @@ export function PortList({
     const d = catalog.deviceTypes.find((x) => x.id === type);
     return `${d?.abbr ?? "?"} · ${d?.ports.find((q) => q.id === o?.port)?.name ?? "?"}`;
   };
-  const connectFrom = (port: string) => {
-    useUi.getState().setConnectPort({ node: node.id, port });
-    // Der Punkt am Gerät startet den Klick-Modus der Fläche samt Hinweis und Begründungen.
-    const handle = document.querySelector<HTMLElement>(
-      `.react-flow__node[data-id="${CSS.escape(node.id)}"] .react-flow__handle.source`,
-    );
-    if (handle) handle.click();
-    else useUi.getState().setConnectPort(undefined);
-  };
   return (
     <section className="tiv-ports-list" aria-label="Anschlüsse">
       <div className="tiv-ports-list__head">
@@ -96,7 +87,10 @@ export function PortList({
                 onClick={() => {
                   if (only)
                     useUi.getState().select({ kind: "edge", id: only.id });
-                  else connectFrom(p.id);
+                  else
+                    useUi
+                      .getState()
+                      .setConnectPort({ node: node.id, port: p.id });
                 }}
               >
                 <span className="tiv-port__icon" data-kind={p.kind}>

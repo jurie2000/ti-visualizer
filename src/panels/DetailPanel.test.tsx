@@ -1,6 +1,6 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { Topology } from "../schema";
 import {
   openTopology,
@@ -226,19 +226,13 @@ describe("T-406 Detailpanel (FR-11)", () => {
     ).toBeInTheDocument();
   });
 
-  it("T-712b: Klick auf einen freien Anschluss startet das Verbinden von dort", async () => {
+  it("T-712b: Klick auf einen freien Anschluss merkt den Anschluss und startet das Verbinden", async () => {
     const user = userEvent.setup();
     useSettings.getState().set({ mode: "advanced" });
-    const handle = document.body.appendChild(document.createElement("div"));
-    handle.innerHTML =
-      '<div class="react-flow__node" data-id="kon1"><span class="react-flow__handle source"></span></div>';
-    const clicked = vi.fn();
-    handle.querySelector(".source")?.addEventListener("click", clicked);
+    useUi.setState({ connectPort: undefined });
     render(<DetailPanel />);
     select("node", "kon1");
     await user.click(screen.getByRole("button", { name: /^WAN: / }));
-    expect(clicked).toHaveBeenCalledOnce();
     expect(useUi.getState().connectPort).toEqual({ node: "kon1", port: "wan" });
-    handle.remove();
   });
 });

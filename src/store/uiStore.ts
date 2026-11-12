@@ -21,18 +21,22 @@ export const useUi = create<{
   tutorial: boolean;
   /** Aktionen, die im Tutorial bis zum Ende durchliefen (Prüfung der Aktions-Schritte). */
   played: string[];
+  /** Anschluss, von dem ein Klick im Detailpanel das Verbinden gestartet hat (A-3: der PortPicker wählt ihn vor). */
+  connectPort: { node: string; port: string } | undefined;
   select: (selection: Selection) => void;
   startAction: (action: PendingAction | undefined) => void;
   openDialog: (dialog: string | undefined) => void;
   /** Ein- und Ausschalten setzt die gespielten Aktionen zurück. */
   setTutorial: (on: boolean) => void;
   markPlayed: (actionId: string) => void;
+  setConnectPort: (p: { node: string; port: string } | undefined) => void;
 }>((set) => ({
   selection: undefined,
   dialog: undefined,
   pendingAction: undefined,
   tutorial: false,
   played: [],
+  connectPort: undefined,
   select: (selection) => {
     set({ selection });
   },
@@ -44,6 +48,9 @@ export const useUi = create<{
   },
   setTutorial: (tutorial) => {
     set({ tutorial, played: [] });
+  },
+  setConnectPort: (connectPort) => {
+    set({ connectPort });
   },
   markPlayed: (actionId) => {
     set((s) => ({ played: [...new Set([...s.played, actionId])] }));

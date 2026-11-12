@@ -784,7 +784,11 @@ Sicherheitsprüfung.
 - [x] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
   - Umfang: Abschnitt „Anschlüsse“ mit Zusammenfassung („n von m frei“) und je
     Anschluss Kachel, Name, Art, Status-Pille (frei oder Gegenstelle),
-    Klick auf einen belegten Anschluss wählt die Kante.
+    Einfachanschluss mit Verbindung wählt per Klick die Kante; jeder andere
+    Anschluss (frei oder mehrfach) startet per Klick das Verbinden von dort
+    (Klick-Modus der Fläche, im PortPicker ist der Anschluss vorgewählt;
+    der Mockup hat das nicht, Wunsch von Justin). Die Gegenstellen eines
+    Mehrfachanschlusses stehen im Namen des Knopfs (D10).
     Auslegung (2026-11-12): Die Liste steht nur im Modus Erweitert
     (spec.md: Erweitert zeigt die Anschlüsse), im Modus Einfach bleibt die
     Zeile „Anschlüsse“. Mehrfachanschlüsse zählen als frei. Der
@@ -795,6 +799,9 @@ Sicherheitsprüfung.
     Mockup-Screenshots von Justin abgenommen.
 
 - [ ] **T-712c Detailpanel: Karten, Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: `showCardSlots`, `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 723
+  - Auslegung (2026-11-12): Kartenanzeige und Karten stecken/ziehen aus dem
+    Panel gelten in beiden Modi (Einfach und Erweitert), anders als die
+    Anschlussliste aus T-712b (Mockup `showCardSlots`, `canAddCards`).
   - Umfang: Gesteckte Karten (Chips mit „Karte ziehen“), „Karte stecken“ und
     Schnellknöpfe je freier Karte, Konfiguration (`ConfigForm`), Zone-Bearbeitung
     (`ZoneForm`) und Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des

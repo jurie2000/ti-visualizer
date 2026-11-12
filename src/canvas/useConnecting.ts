@@ -6,7 +6,7 @@ import {
 } from "@xyflow/react";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { validateConnection } from "../engine/rules";
-import { useCatalog, useSettings, useTopology } from "../store";
+import { useCatalog, useSettings, useTopology, useUi } from "../store";
 import type { PickPair } from "../dialogs/PortPicker";
 import { useToast } from "../ui/Toast";
 
@@ -33,6 +33,7 @@ export function useConnecting() {
 
   /** Bricht einen Klick-Zug ab (Punkt angeklickt, Ziel noch offen). */
   const cancelClick = () => {
+    useUi.getState().setConnectPort(undefined);
     if (flow.getState().connectionClickStartHandle === null) return false;
     flow.setState({ connectionClickStartHandle: null });
     toast.show("Verbinden abgebrochen.");
@@ -66,7 +67,9 @@ export function useConnecting() {
     // A-3: im Modus Erweitert wählt der Nutzer die Anschlüsse; die Paarprüfung läuft vorher
     if (useSettings.getState().mode === "advanced") {
       const r = check(a, b);
-      if (r.ok) setPicking({ a, b });
+      const from = useUi.getState().connectPort;
+      if (r.ok)
+        setPicking({ a, b, ...(from?.node === a && { portA: from.port }) });
       else reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
       return;
     }
@@ -112,6 +115,7 @@ export function useConnecting() {
     onClickConnectEnd: ((event) => {
       const from = clickFrom.current;
       clickFrom.current = undefined;
+      useUi.getState().setConnectPort(undefined);
       if (clickConnected.current) {
         clickConnected.current = false;
         return;

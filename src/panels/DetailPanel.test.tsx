@@ -1,6 +1,6 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Topology } from "../schema";
 import {
   openTopology,
@@ -199,9 +199,10 @@ describe("T-406 Detailpanel (FR-11)", () => {
       useSettings.getState().set({ mode: "advanced" });
     });
     const list = within(screen.getByRole("region", { name: "Anschlüsse" }));
-    expect(list.getByText(/^\d+ von \d+ frei$/)).toBeInTheDocument();
+    // LAN (mehrfach, eine Verbindung) zählt frei, WAN und VPN sind frei
+    expect(list.getByText("3 von 3 frei")).toBeInTheDocument();
     expect(list.getByText("1 Verbindung")).toBeInTheDocument();
-    expect(list.getAllByText("frei").length).toBeGreaterThan(0);
+    expect(list.getAllByText("frei")).toHaveLength(2);
   });
 
   it("T-712b: Klick auf einen belegten Anschluss wählt die Kante", async () => {
@@ -212,5 +213,32 @@ describe("T-406 Detailpanel (FR-11)", () => {
     select("node", "kt1");
     await user.click(screen.getByRole("button", { name: /Konnektor · / }));
     expect(useUi.getState().selection).toEqual({ kind: "edge", id: "e1" });
+  });
+
+  it("T-712b: Gegenstellen eines Mehrfachanschlusses stehen im Namen des Knopfs", () => {
+    useSettings.getState().set({ mode: "advanced" });
+    render(<DetailPanel />);
+    select("node", "kon1");
+    expect(
+      screen.getByRole("button", {
+        name: /^LAN: .*verbunden mit eHealth-KT · /,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("T-712b: Klick auf einen freien Anschluss startet das Verbinden von dort", async () => {
+    const user = userEvent.setup();
+    useSettings.getState().set({ mode: "advanced" });
+    const handle = document.body.appendChild(document.createElement("div"));
+    handle.innerHTML =
+      '<div class="react-flow__node" data-id="kon1"><span class="react-flow__handle source"></span></div>';
+    const clicked = vi.fn();
+    handle.querySelector(".source")?.addEventListener("click", clicked);
+    render(<DetailPanel />);
+    select("node", "kon1");
+    await user.click(screen.getByRole("button", { name: /^WAN: / }));
+    expect(clicked).toHaveBeenCalledOnce();
+    expect(useUi.getState().connectPort).toEqual({ node: "kon1", port: "wan" });
+    handle.remove();
   });
 });

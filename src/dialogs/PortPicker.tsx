@@ -8,6 +8,8 @@ import { useToast } from "../ui/Toast";
 export interface PickPair {
   a: string;
   b: string;
+  /** Vorgewählter Anschluss an Gerät A (Klick im Detailpanel). */
+  portA?: string;
 }
 
 type Props = { pair: PickPair | undefined; onClose: () => void };
@@ -31,7 +33,10 @@ function Form({ pair, onClose }: { pair: PickPair; onClose: () => void }) {
   const catalog = useCatalog((s) => s.catalog);
   const toast = useToast();
   const pairs = portPairs(topology, pair.a, pair.b, catalog);
-  const start = autoPorts(topology, pair.a, pair.b, catalog) ?? pairs[0];
+  const start =
+    pairs.find((p) => p.a === pair.portA) ??
+    autoPorts(topology, pair.a, pair.b, catalog) ??
+    pairs[0];
   const [pa, setPa] = useState(start?.a);
   const [pbRaw, setPb] = useState(start?.b);
   const [error, setError] = useState<string>();

@@ -661,7 +661,7 @@ a {
   font: inherit;
   text-align: left;
 }
-button.tiv-port {
+.tiv-port:not(:disabled) {
   cursor: pointer;
 }
 .tiv-port__icon {

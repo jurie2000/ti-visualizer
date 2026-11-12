@@ -741,6 +741,52 @@ Sicherheitsprüfung.
     prüfen.
   - Fertig, wenn: kein Aufrufer mehr existiert und die Suiten grün sind.
 
+- [ ] **T-710 Bedienelemente hell wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-708
+  - Umfang: Bedienelemente außerhalb der Fläche (Kopfleiste, Seitenleisten,
+    Zoomleiste, Player, Menüs) nutzen die Panel-Farbe des Mockups
+    (`--color-neutral-100`, Rand `--color-divider`, Schatten `--shadow-sm`),
+    hell und dunkel. Nur Farben und Rand, kein Layout.
+    Auslegung (2026-11-12): Justin wünscht im Chat das Farbschema des Mockups.
+  - Fertig, wenn: Kontrast-Test (D10) für Text auf diesen Flächen grün ist
+    und Justin die Screenshots gegen `design/mockup/screenshots/` abnimmt.
+
+- [ ] **T-711 Seitenleisten klappen ein** · FR: FR-22 · Regeln: – · nach: T-710 · Mockup: `hoverPanel`, `leftWrapStyle`, `rightWrapStyle`
+  - Umfang: Palette und Detailpanel sind eine 56-px-Schiene mit Symbolen
+    (Palette: eine je Kategorie; rechts: Details/Legende, Ansicht,
+    Sicherheit). Mauszeiger darüber öffnet das Panel als Überlagerung nach
+    150 ms, Verlassen schließt nach 280 ms; kein Öffnen während Ziehen und
+    Verbinden. Knopf „Anheften“ je Panel hält es offen, gespeichert in
+    `pinnedPanels`. Tastatur: Fokus auf die Schiene oder ein Schienen-Symbol
+    öffnet, Escape schließt (D10). Das Detailpanel öffnet zusätzlich bei
+    Auswahl. Ersetzt die Überlagerung unter 1100 px (T-703) nicht.
+  - Fertig, wenn: Tests prüfen Öffnen/Schließen per Hover und Tastatur,
+    Anheften bleibt offen und kommt aus den Einstellungen zurück.
+
+- [ ] **T-712 Detailpanel wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `<aside>` rechts, Zeilen 551 bis 723
+  - Umfang: Aufbau 1:1 wie Mockup (Kopf mit Symbol, Kicker, Titel,
+    Auswahl-aufheben-Knopf, Regelverstoß-Hinweis, Beschreibung, Konfiguration,
+    Anschlüsse, Karten, Aktionen). Zusätzlich bleiben die Quellen mit Link
+    (https, nie als HTML).
+    Auslegung (2026-11-12): Quellen sind die einzige Abweichung, Justin will sie behalten.
+  - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Quellen sichtbar,
+    Vergleich mit den Mockup-Screenshots von Justin abgenommen.
+  - Hinweis: Sprengt der Umbau 300 Zeilen, teilen in T-712a (Kopf, Hinweis,
+    Beschreibung) und T-712b (Konfiguration, Anschlüsse, Karten, Aktionen).
+
+- [ ] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
+  - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der
+    Verbindungsarten und die Schalter „Verbindungen“, „Bereiche“,
+    „Anschlusspunkte“, „Minimap anzeigen“. Zustand flüchtig im `uiStore`,
+    nicht in der Datei. „Automatisch anordnen“ bleibt Issue #88.
+  - Fertig, wenn: je Schalter ein Test, dass die Fläche reagiert.
+
+- [ ] **T-713b Ebene, Kantenführung, Protokoll-Labels** · FR: FR-22 · Regeln: – · nach: T-713a · Mockup: `layerModes`, `routeModes`, `labelModes`
+  - Umfang: Drei Umschalter im Ansicht-Panel: Ebene (Logisch, Physisch,
+    Vertrauen), Kantenführung (Kurven, Gebündelt), Protokoll-Labels (Alle,
+    Wichtige, Keine) samt Hinweistexten des Mockups. Fachliche Bedeutung der
+    Ebenen nach `quellen.md` und Mockup, als „Auslegung (Datum)“ festhalten.
+  - Fertig, wenn: je Umschalter ein Test, dass sich die Darstellung ändert.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

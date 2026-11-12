@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { validateConnection } from "../engine/rules";
 import { LIMITS, type Topology } from "../schema";
 import { useCatalog } from "./catalogStore";
-import { arrange, copyNodes, pasteClip } from "./edit";
+import { arrange } from "../engine/layout";
+import { copyNodes, pasteClip } from "./edit";
 import { emptyTopology, useTopology } from "./topologyStore";
 
 const s = () => useTopology.getState();
@@ -104,49 +105,38 @@ describe("Editor-Hilfen: Einfügen (FR-16, T-508)", () => {
   });
 });
 
-describe("Editor-Hilfen: Anordnen (FR-16, T-508)", () => {
-  it("FR-16 anordnen ist ein Rückgängig-Schritt", () => {
+describe("Editor-Hilfen: Sortieren (FR-16, T-508, T-720a)", () => {
+  const size = { width: 148, height: 64 };
+
+  it("T-720a Sortieren ist ein Rückgängig-Schritt für Geräte und Zonen", () => {
     const pc = add("pc", 500, 500);
     const sw = add("switch", -300, 70);
     connect(pc, sw);
+    s().addZone({ x: 450, y: 450, w: 300, h: 200 });
     const before = s().topology;
-    s().replace(arrange(before));
+    s().replace(arrange(before, catalog(), size));
     expect(s().past.at(-1)).toEqual(before);
     expect(s().topology.nodes.map((n) => n.position)).not.toEqual(
       before.nodes.map((n) => n.position),
     );
+    expect(s().topology.zones[0]?.area).not.toEqual(before.zones[0]?.area);
     s().undo();
     expect(s().topology).toEqual(before);
   });
 
-  it("FR-16 anordnen: Verbundene in Spalten, Getrennte untereinander, stabil", () => {
-    const pc = add("pc");
-    const sw = add("switch");
-    const einzel = add("ris");
-    const pc2 = add("pc");
-    connect(pc, sw);
-    connect(pc2, sw);
-    const t = arrange(s().topology);
-    const pos = (id: string) => t.nodes.find((n) => n.id === id)?.position;
-    expect(pos(sw)).toEqual({ x: 0, y: 0 });
-    expect(pos(pc)).toEqual({ x: 240, y: 0 });
-    expect(pos(pc2)).toEqual({ x: 240, y: 120 });
-    expect(pos(einzel)?.y).toBeGreaterThan(0);
-    expect(arrange(t)).toEqual(t);
+  it("T-720a Sortieren ohne Geräte legt keinen Schritt an", () => {
+    s().replace(arrange(s().topology, catalog(), size));
+    expect(s().past).toHaveLength(0);
   });
 
-  it("[FR-16] anordnen: bleibt bei sehr vielen getrennten Geräten im Koordinatenlimit", () => {
+  it("[FR-16] T-720a Sortieren bleibt bei sehr vielen getrennten Geräten im Koordinatenlimit", () => {
     const nodes = Array.from({ length: 600 }, (_, i) => ({
       id: `n${String(i)}`,
       fault: false,
       type: "pvs",
       position: { x: 0, y: 0 },
     }));
-    const t = arrange({ ...emptyTopology(), nodes });
+    const t = arrange({ ...emptyTopology(), nodes }, catalog(), size);
     expect(t.nodes.every((n) => n.position.y <= LIMITS.coord)).toBe(true);
-  });
-  it("FR-16 anordnen ohne Geräte legt keinen Schritt an", () => {
-    s().replace(arrange(s().topology));
-    expect(s().past).toHaveLength(0);
   });
 });

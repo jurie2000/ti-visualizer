@@ -16,7 +16,6 @@ export interface Clip {
 
 /** So weit rückt jede Kopie gegenüber dem Original (und der vorigen Kopie) ab. */
 const OFFSET = 40;
-const GAP = { x: 240, y: 120 };
 
 export const copyNodes = (t: Topology, ids: string[]): Clip => ({
   nodes: t.nodes.filter((n) => ids.includes(n.id)),
@@ -109,61 +108,4 @@ export function pasteClip(
     };
   }
   return { ok: true, topology: next, ids: [...ids.values()], skippedEdges };
-}
-
-// Viele getrennte Teile würden sonst über das Schema-Limit hinauslaufen.
-const clamp = (p: { x: number; y: number }) => ({
-  x: Math.min(p.x, LIMITS.coord),
-  y: Math.min(p.y, LIMITS.coord),
-});
-
-/**
- * Ordnet alle Geräte in Spalten nach Abstand (Kanten) vom am stärksten
- * vernetzten Gerät; getrennte Teile stehen untereinander. Zonen bleiben stehen.
- */
-export function arrange(t: Topology): Topology {
-  const links = new Map<string, string[]>(t.nodes.map((n) => [n.id, []]));
-  for (const e of t.edges) {
-    links.get(e.ends[0].node)?.push(e.ends[1].node);
-    links.get(e.ends[1].node)?.push(e.ends[0].node);
-  }
-  const degree = (id: string) => links.get(id)?.length ?? 0;
-  const roots = t.nodes
-    .map((n) => n.id)
-    .sort((a, b) => degree(b) - degree(a) || a.localeCompare(b));
-  const position = new Map<string, { x: number; y: number }>();
-  let top = 0;
-  for (const root of roots) {
-    if (position.has(root)) continue;
-    let level = [root];
-    const seen = new Set(level);
-    let col = 0;
-    let rows = 0;
-    while (level.length > 0) {
-      const x = col * GAP.x;
-      level.forEach((id, row) => {
-        position.set(id, { x, y: top + row * GAP.y });
-      });
-      rows = Math.max(rows, level.length);
-      level = [
-        ...new Set(
-          level
-            .flatMap((id) =>
-              [...(links.get(id) ?? [])].sort((a, b) => a.localeCompare(b)),
-            )
-            .filter((id) => !seen.has(id)),
-        ),
-      ];
-      level.forEach((id) => seen.add(id));
-      col++;
-    }
-    top += (rows + 1) * GAP.y;
-  }
-  return {
-    ...t,
-    nodes: t.nodes.map((n) => ({
-      ...n,
-      position: clamp(position.get(n.id) ?? n.position),
-    })),
-  };
 }

@@ -263,7 +263,7 @@ Ziel: Nutzer baut Topologien im Mockup-Stil, nur gültig verbunden.
 - [x] **T-202 Canvas, Knoten und Kanten** · FR: FR-1, FR-3, FR-16 · Regeln: – · nach: T-002, T-201
   - Umfang: React Flow auf der Canvas. `DeviceNode` mit Kategorie-Leiste,
     Form, Icon, Kurzname und Name. `ConnectionEdge` je Verbindungsart mit
-    Label. Zoom, Minimap, „alles einpassen“. Knoten per Pfeiltasten
+    Label. Zoom, Minimap, „Übersicht“. Knoten per Pfeiltasten
     verschiebbar, Rollen und Labels für Screenreader.
   - Fertig, wenn: das Preset Arztpraxis (aus T-108) im Erweitert-Modus
     vollständig angezeigt wird und RTL-Tests Rolle und Label der Knoten
@@ -948,7 +948,7 @@ Sicherheitsprüfung.
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der
     Verbindungsarten und die Schalter „Verbindungen“, „Bereiche“,
     „Anschlusspunkte“, „Minimap anzeigen“. Zustand flüchtig im `uiStore`,
-    nicht in der Datei. „Automatisch anordnen“ bleibt Issue #88.
+    nicht in der Datei. „Automatisch anordnen“ gehört zu Issue #88 (T-720a/b).
   - Fertig, wenn: je Schalter ein Test, dass die Fläche reagiert.
 
 - [ ] **T-713b Ebene, Kantenführung, Protokoll-Labels** · FR: FR-22 · Regeln: – · nach: T-713a · Mockup: `layerModes`, `routeModes`, `labelModes`
@@ -957,6 +957,54 @@ Sicherheitsprüfung.
     Wichtige, Keine) samt Hinweistexten des Mockups. Fachliche Bedeutung der
     Ebenen nach `quellen.md` und Mockup, als „Auslegung (Datum)“ festhalten.
   - Fertig, wenn: je Umschalter ein Test, dass sich die Darstellung ändert.
+
+- [x] **T-720a Sortieren: kreuzungsarmes Layout, Übersicht** · FR: FR-16 · Regeln: – · nach: T-508, T-715 · Issue #88 · Mockup: `autoLayout`, `undoLayout`, `fit`
+  - Umfang: `arrange` (T-508) wird durch das Mockup-Verfahren ersetzt
+    (`src/engine/layout.ts`): Wurzel VPN, sonst Gateway, sonst Konnektor, sonst
+    Gerät mit höchstem Grad; Breitensuche für Tiefe und Eltern; Spalten von
+    rechts nach links, Blätter untereinander, Eltern mittig; Lücke zwischen
+    Zonen; Fachdienste in zwei Spalten rechts; Geräte ohne Weg unten. Zonen
+    werden um ihre Mitglieder neu aufgezogen (Rand 22/34/22/22), Zonen ohne
+    Mitglieder bleiben. Ein Rückgängig-Schritt. Zoomleiste: „Einpassen“ heißt
+    „Übersicht“, „Anordnen“ heißt „Sortieren“; nach „Sortieren“ passt die
+    Ansicht auf alles an (Mockup: `fit()` nach 30 ms).
+  - Fertig, wenn: Tests (Name mit T-720a) prüfen: keine Kreuzungen in
+    Arztpraxis, Apotheke, Krankenhaus (sonst Zahl vorher/nachher, Klinikum nicht
+    mehr als vorher), Spalten und mittige Eltern, Zonen ziehen mit, ein
+    Rückgängig-Schritt stellt Geräte und Zonen wieder her, Gerät ohne
+    Verbindung bleibt, leere Topologie unverändert, „Übersicht“ zeigt alle
+    Geräte und Zonen (auch nach „Sortieren“, leere Fläche bricht nicht ab).
+    Keine zwei Kacheln überlappen: Unit-Test in allen vier Presets mit den
+    Größen je Modus (Zeilenabstand mindestens Höhe + 30, Spaltenabstand
+    mindestens Breite + 80, Zonenrahmen überdecken kein fremdes Gerät) und
+    E2E-Test (echter Browser, je Preset in Einfach und Erweitert, gemessene
+    Rechtecke mindestens 16 px auseinander).
+  - Auslegung (2026-11-12): Teilung L in T-720a (Algorithmus, Umbenennung,
+    Übersicht passen zusammen unter 300 Zeilen Produktivcode, deshalb kein
+    T-720c) und T-720b (Knöpfe im Ansicht-Panel, braucht T-713a). Das Löschen
+    überlappender kleinerer Zonen aus dem Mockup entfällt: Zonen bleiben
+    erhalten (Daten gehen nicht verloren). Echte orthogonale Kantenführung ist
+    T-713b, passende Anschlusspunkte Issue #106, nicht Teil von T-720a. Maße:
+    Kachelgröße aus der Messung von React Flow (`node.measured`, beim Klick
+    in `ZoomBar` an `arrange` übergeben), mindestens aber eine Schätzung aus
+    Namenszeilen, Kartenmarken und Anschlusszeilen (Obergrenze Erweitert,
+    ohne Browser nutzbar). Abstände wie im Mockup, das mit `h(n)` rechnet
+    (Spalte = Breite + 118, Zeile = größte Kachelhöhe + 30, Zonenlücke 56),
+    Fachdienst-Spalten mit 80 px Abstand (Mockup 38). Hat ein Gerät keinen
+    Weg zur Wurzel, steht es unten in der ersten Spalte.
+  - Auslegung (2026-11-12, Rückmeldung Justin: Überlappung): Das Mockup
+    ordnet in beiden Modi alle Geräte an und blendet in Einfach nichts aus; die
+    App blendet in Einfach Geräte aus (D36, Sammelkante). `arrange` ordnet
+    trotzdem alle Geräte an und rechnet mit der Obergrenze, weil die Positionen
+    in beiden Modi gelten: Ein Wechsel auf Erweitert darf nichts überlappen.
+    In Einfach bleiben dadurch Lücken, wo ausgeblendete Geräte stehen. Das
+    Mockup-Preset „Krankenhaus“ unterscheidet sich vom Preset der App; die
+    Reihenfolge folgt dem Verfahren, nicht dem Bild.
+
+- [ ] **T-720b Sortieren und Anordnung zurücksetzen im Ansicht-Panel** · FR: FR-16, FR-22 · Regeln: – · nach: T-713a, T-720a · Mockup: Knöpfe „Automatisch anordnen“ und „Anordnung zurücksetzen“, Zeilen 770 ff.
+  - Umfang: Beide Knöpfe unten im Ansicht-Panel (ohne Auswahl). „Anordnung
+    zurücksetzen“ ist der Rückgängig-Schritt von „Sortieren“.
+  - Fertig, wenn: je Knopf ein Test.
 
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
@@ -1062,7 +1110,7 @@ Sie blockieren die genannten Tasks.
 | FR-13 | T-103, T-110, T-207 |
 | FR-14 | T-103, T-105, T-501 |
 | FR-15 | T-507 |
-| FR-16 | T-201, T-202, T-508 |
+| FR-16 | T-201, T-202, T-508, T-720a, T-720b |
 | FR-17 | T-502a, T-502b, T-504, T-505 |
 | FR-18 | T-101, T-106, T-205, T-404 |
 | FR-19 | T-503 bis T-506 |

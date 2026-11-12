@@ -46,7 +46,7 @@ Log-Import und Replay gehören nicht dazu.
 4. Benutzer fasst Geräte in **Zonen** zusammen (z. B. „Praxisnetz“,
    „Telematikinfrastruktur“), benennt und färbt sie.
 5. Benutzer nutzt die Editor-Hilfen: Kopieren/Einfügen, automatisch
-   anordnen, Zoom, Minimap, „alles einpassen“.
+   sortieren, Zoom, Minimap, „Übersicht“.
 6. Benutzer speichert seine Topologie als Datei, auf Wunsch zusammen mit
    seinen Einstellungen, und öffnet sie später wieder, auch in einem
    anderen Browser oder auf einem anderen Gerät. Beim Öffnen wird die
@@ -136,9 +136,13 @@ Log-Import und Replay gehören nicht dazu.
   viele Verbindungen ein Anschluss trägt, legt das Regelwerk fest.
 - **FR-15**: **Zonen**: Geräte gruppieren, Zone benennen, einfärben,
   verschieben und entfernen.
-- **FR-16**: **Editor-Hilfen**: Kopieren/Einfügen, automatisch anordnen,
-  Zoom, Minimap, alles einpassen. Rückgängig/Wiederholen und Duplizieren
-  entfallen (Entscheidung Justin 2026-11-11, T-708).
+- **FR-16**: **Editor-Hilfen**: Kopieren/Einfügen, „Sortieren“ (automatisch
+  anordnen), Zoom, Minimap, „Übersicht“ (alles im Bild). „Sortieren“ ordnet
+  die Geräte kreuzungsarm in Spalten nach Abstand zur Wurzel (VPN, sonst
+  Gateway, sonst Konnektor), Zonen ziehen mit, Kacheln überlappen nicht
+  (Abstand nach tatsächlicher Größe), es ist ein Rückgängig-Schritt
+  und danach passt die Ansicht auf alles an. Rückgängig/Wiederholen und
+  Duplizieren entfallen (Entscheidung Justin 2026-11-11, T-708).
 - **FR-17**: **Geräteeinstellungen** im Modus Erweitert, soweit für das
   Verständnis der TI nötig: IP-Adresse, Netzmaske, Gateway, DNS, VLAN,
   DHCP, Betriebsart des Konnektors (Reihe/Parallel), Secure Internet

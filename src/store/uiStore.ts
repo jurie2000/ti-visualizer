@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { ZoneShape } from "../schema";
 
 export type Selection =
   { kind: "node" | "edge" | "zone"; id: string } | undefined;
@@ -23,7 +24,16 @@ export const useUi = create<{
   played: string[];
   /** Anschluss, von dem ein Klick im Detailpanel das Verbinden gestartet hat (A-3: der PortPicker wählt ihn vor). */
   connectPort: { node: string; port: string } | undefined;
+  /** Gewähltes Zonen-Werkzeug (T-715): Form der Zone, die als Nächstes aufgezogen wird. */
+  zoneTool: ZoneShape | undefined;
+  /** Zone, deren Anfasser gerade gezogen wird (T-716), samt vorläufiger Lage und Größe bis zum Loslassen. */
+  zoneResize:
+    { id: string; x: number; y: number; w: number; h: number } | undefined;
+  setZoneResize: (
+    r: { id: string; x: number; y: number; w: number; h: number } | undefined,
+  ) => void;
   select: (selection: Selection) => void;
+  setZoneTool: (tool: ZoneShape | undefined) => void;
   startAction: (action: PendingAction | undefined) => void;
   openDialog: (dialog: string | undefined) => void;
   /** Ein- und Ausschalten setzt die gespielten Aktionen zurück. */
@@ -37,6 +47,8 @@ export const useUi = create<{
   tutorial: false,
   played: [],
   connectPort: undefined,
+  zoneTool: undefined,
+  zoneResize: undefined,
   select: (selection) => {
     set({ selection });
   },
@@ -48,6 +60,12 @@ export const useUi = create<{
   },
   setTutorial: (tutorial) => {
     set({ tutorial, played: [] });
+  },
+  setZoneTool: (zoneTool) => {
+    set({ zoneTool });
+  },
+  setZoneResize: (zoneResize) => {
+    set({ zoneResize });
   },
   setConnectPort: (connectPort) => {
     set({ connectPort });

@@ -651,6 +651,34 @@ describe("Unicode-Tricks in Topologie-Texten (T-305)", () => {
     expect(r.findings.filter((f) => f.code === "zeichen")).toHaveLength(1);
   });
 
+  it("T-717: Zonenbeschreibung überlebt Speichern und Öffnen, alte Zonen ohne Beschreibung laden unverändert, Steuerzeichen fallen weg", () => {
+    const zone = {
+      id: "z",
+      tone: "sage" as const,
+      area: { x: 0, y: 0, w: 10, h: 10 },
+    };
+    const text = serialize(
+      {
+        ...base(),
+        zones: [
+          { ...zone, description: "Zeile 1\n<b>2</b>" },
+          { ...zone, id: "y" },
+        ],
+      },
+      catalog,
+    );
+    const r = ok(JSON.parse(text));
+    expect(r.topology.zones[0]?.description).toBe("Zeile 1\n<b>2</b>");
+    expect(r.topology.zones[1]).not.toHaveProperty("description");
+    const dirty = ok(
+      file({
+        ...base(),
+        zones: [{ ...zone, description: "A\u202EB\nC" }],
+      }),
+    );
+    expect(dirty.topology.zones[0]?.description).toBe("AB\nC");
+  });
+
   it("saubere Texte erzeugen keinen Befund", () => {
     expect(ok(file(base())).findings).toEqual([]);
   });

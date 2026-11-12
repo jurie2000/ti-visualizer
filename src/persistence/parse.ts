@@ -225,7 +225,12 @@ export function parseData(data: unknown, catalog: Catalog): ParseResult {
           };
     }),
     edges: t.edges.map(label),
-    zones: t.zones.map(label),
+    zones: t.zones.map((z) => {
+      const l = label(z);
+      return l.description === undefined
+        ? l
+        : { ...l, description: clean(l.description, true) };
+    }),
   };
   if (stripped)
     add({

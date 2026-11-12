@@ -625,7 +625,11 @@ Sicherheitsprüfung.
     kennt nur eine Einzelauswahl, Mehrfachauswahl ist Folgearbeit
     (Issue #92). Ein Gerät gehört zur Zone, wenn die Mitte seiner Kachel
     darin liegt. Größe nur über Zahlenfelder; Form-Presets, Ziehen und
-    Darstellungsmenü sind Features (Issues #85 bis #87). Die automatische
+    Darstellungsmenü sind Features (Issues #85 bis #87).
+    **Überholt (2026-11-12, T-715/T-716):** Zonen legt jetzt die Zeichenleiste
+    an (Aufziehen mit der Maus, Rechteck oder Ellipse), die Größe ändern
+    Anfasser an Ecken und Kanten, Zahlenfelder und „Zone anlegen“ entfallen.
+    Verschieben nimmt die Geräte nur mit, wenn die Zone es so eingestellt hat. Die automatische
     Anordnung ohne Kreuzungen ist ein eigenes Ticket (Issue #88).
 
 - [x] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
@@ -839,6 +843,73 @@ Sicherheitsprüfung.
     Pille. Die Farbe bleibt Auswahl der drei festen Töne (D10, FR-15).
   - Fertig, wenn: bestehende `ZoneForm`-Tests grün, je Aktion ein Test,
     Abnahme durch Justin.
+
+- [x] **T-715 Zonen-Werkzeug (aufziehen)** · FR: FR-15 · Regeln: – · nach: T-712e · Mockup: `tool`, `zdraw`, `drawTools`, `showZoneEdit`, Zeilen 232, 311 bis 328, 2459 bis 2499, 3032 bis 3040, 3307
+  - Umfang: Zeichenleiste links oben auf der Fläche (Pille, Knöpfe
+    „Rechteck“ und „Ellipse“ mit `aria-pressed`, Titel „Zone zeichnen“,
+    Hinweis
+    „Auf der Fläche aufziehen · Esc bricht ab“). Mit gewähltem Werkzeug
+    zieht die Maus die Zone auf (Vorschau gestrichelt); unter 40 × 30
+    Flusseinheiten entsteht nichts und das Werkzeug bleibt, sonst ist die
+    Zone gewählt und das Werkzeug aus. Datenmodell: `shape` (`rect` oder
+    `ellipse`) an der Zone. Detailpanel der Zone wie Mockup: Name, Form
+    (Segment), Farbe, „Zone entfernen“; die Zahlenfelder Breite und Höhe
+    entfallen. Auftrag Justin im Chat 2026-11-12, Issues #85 und #86.
+    Auslegung (2026-11-12): Titel und Knopftexte stehen immer da; das
+    Ausklappen bei Zeiger (`drawExpanded`) verschob die Knöpfe unter dem
+    Zeiger und verschluckte Klicks (im Browser gesehen), außerdem tragen
+    sichtbare Namen (D10). Schema bleibt `schemaVersion` 1: `shape` ist
+    optional, ohne Angabe gilt Rechteck, alte Dateien laden unverändert,
+    ältere App-Stände ignorieren das Feld (Zonen-Objekt nicht strikt).
+    „Zone“ statt „Bereich“ und „Rechteck/Ellipse“ statt „Kasten/Kreis“ (App-
+    Begriff, Auftrag). „Zone anlegen“ (rechts oben) entfällt auf Wunsch von
+    Justin, die Zeichenleiste ist der einzige Weg. Geräte in einer Ellipse zählen
+    nach ihrem Rechteck (`containedNodes`), wie im Mockup. Abweichung von
+    D10 (Entscheidung Justin): kein Tastaturweg zum Anlegen und zur Größe,
+    keine Zahlenfelder; siehe plan.md, Risiko dort.
+    Auslegung (2026-11-12): Verschieben bewegt standardmäßig nur die Zone;
+    je Zone wählbar „Nur Zone“ oder „Zone mit Elementen“ (optionales Feld
+    `withContents`, ohne Angabe nur Zone, Mockup `zdrag` mit `mem`). Das
+    Detailpanel listet die Geräte in der Zone (Klick wählt das Gerät, in
+    einer Ellipse zählt das Rechteck). Eine gewählte Zone liegt hinter den
+    Geräten (zIndex -2000 gegen die Anhebung von React Flow um 1000), sonst
+    fing sie deren Ziehen ab. Beim Start der Simulation fällt das Werkzeug
+    zurück. Das aktive Werkzeug trägt Häkchen, Rahmen und Hinweistext mit
+    der Form. Größe: PR über 300 Zeilen auf ausdrücklichen Wunsch von
+    Justin, weil T-716 und die Rückmeldungen in einen PR sollten.
+  - Fertig, wenn: Tests für Aufziehen (beide Formen, rückwärts, zu klein,
+    Esc, Sperre in der Simulation), Schema (ohne `shape` gültig), Store und
+    Panel; Leiste hell und dunkel im Browser geprüft.
+
+- [x] **T-716 Zone an Ecken und Kanten vergrößern** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: `onResizeDown`, `zdrag` mode `resize`, Zeilen 3028, 2460
+  - Umfang: Die gewählte Zone lässt sich an den Ecken und Kanten mit der Maus
+    in der Größe ändern, die Form bleibt; ein Rückgängig-Schritt je Ziehen;
+    Mindestgröße wie T-715. Keine Zahlenfelder und kein Tastaturweg (Entscheidung
+    Justin 2026-11-12, siehe T-715).
+    Umsetzung (2026-11-12, im PR von T-715): `NodeResizer` an der Zone, nur
+    bei gewählter, nicht gesperrter Zone; vorläufige Lage und Größe im
+    `uiStore` bis zum Loslassen, dann ein `setZone`-Schritt mit x, y, w, h;
+    Mindestgröße 40 × 30, Form und Geräte bleiben.
+  - Fertig, wenn: Tests für Ziehen an der Ecke, Mindestgröße, ein
+    Rückgängig-Schritt, Sperre in der Simulation.
+
+- [x] **T-717 Beschreibung der Zone** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: Beschreibung im Zonen-Detail (`detailBody`)
+  - Umfang: Das Detailpanel einer Zone bekommt das mehrzeilige Feld
+    „Beschreibung“ (beide Modi). Leer zeigt das Panel die Standardbeschreibung,
+    ein Text ersetzt sie in der Anzeige. Optionales Feld `description` an der
+    Zone (höchstens 2000 Zeichen wie `LIMITS.description`, Steuerzeichen
+    fallen beim Eintippen und Öffnen weg, Zeilenumbruch bleibt), nie als HTML.
+    Auftrag Justin im Chat 2026-11-12.
+    Auslegung (2026-11-12): Nur für Zonen, nicht für Gerät oder Verbindung.
+    Leeres Feld heißt Standard, einen Knopf „Standard wiederherstellen“ gibt
+    es nicht. Übernommen wird beim Verlassen des Feldes (Enter macht einen
+    Umbruch), ein Rückgängig-Schritt je Änderung. Das Feld ist Teil der
+    Topologie: Datei, Autosave und die Erkennung ungespeicherter Änderungen
+    (Vergleich der Topologie) greifen ohne weitere Arbeit. `schemaVersion`
+    bleibt 1, alte Dateien laden unverändert.
+  - Fertig, wenn: Tests für Standard bei leerem Feld, Ersetzen, Wiederherstellen
+    durch Leeren, Markup bleibt Text, Überlänge als Fehler, Datei-Roundtrip,
+    Schema, nur bei Zonen.
 
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder

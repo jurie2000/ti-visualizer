@@ -1,8 +1,13 @@
 import { Cable, Layers, TriangleAlert, X, type LucideIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
-import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
+import {
+  FALLBACK_ICON,
+  ICONS,
+  NODE_SIZE,
+  categoryColor,
+} from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
-import { TONE_NAME } from "../canvas/toFlow";
+import { containedNodes } from "../engine/zones";
 import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
@@ -220,11 +225,51 @@ function EdgeDetail({
   );
 }
 
+const ZONE_TEXT =
+  "Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind nur Beschriftung und ändern nichts an den Verbindungen.";
+
 const ZONE_COLOR: Record<Zone["tone"], string> = {
   sage: "var(--color-accent-2)",
   accent: "var(--color-accent)",
   neutral: "var(--color-neutral-600)",
 };
+
+/** Geräte in der Zone (Mockup „Geräte darin“): Klick wählt das Gerät. In einer Ellipse zählt das Rechteck. */
+function ZoneMembers({
+  zone,
+  topology,
+  catalog,
+}: {
+  zone: Zone;
+  topology: Topology;
+  catalog: Catalog;
+}) {
+  const inside = containedNodes(zone, topology.nodes, NODE_SIZE);
+  return (
+    <section className="tiv-members" aria-label="Geräte in der Zone">
+      <h4>Geräte in der Zone</h4>
+      {inside.length === 0 ? (
+        <p>keine</p>
+      ) : (
+        <ul>
+          {inside.map((n) => (
+            <li key={n.id}>
+              <button
+                type="button"
+                className="tiv-members__item"
+                onClick={() => {
+                  useUi.getState().select({ kind: "node", id: n.id });
+                }}
+              >
+                {nameOf(n, catalog)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 function Body({ sel }: { sel: Selection }) {
   const topology = useTopology((s) => s.topology);
@@ -289,14 +334,12 @@ function Body({ sel }: { sel: Selection }) {
       head = { Icon: Layers, color: ZONE_COLOR[zone.tone], kicker: "Zone" };
       content = (
         <>
-          <p className="tiv-dbody">
-            Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind
-            nur Beschriftung und ändern nichts an den Verbindungen.
+          <p className="tiv-dbody tiv-dbody--text">
+            {zone.description ?? ZONE_TEXT}
           </p>
-          <dl className="tiv-detail__facts">
-            <Row name="Farbe">{TONE_NAME[zone.tone]}</Row>
-          </dl>
-          <ZoneForm zone={zone} />
+          {/* key: eine andere Zone startet wieder eingeklappt */}
+          <ZoneForm key={zone.id} zone={zone} />
+          <ZoneMembers zone={zone} topology={topology} catalog={catalog} />
         </>
       );
     }

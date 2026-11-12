@@ -15,6 +15,7 @@ import {
   type Rect,
   type Tone,
   type Topology,
+  type ZoneShape,
 } from "../schema";
 import { useCatalog } from "./catalogStore";
 
@@ -60,13 +61,26 @@ interface TopologyState {
   setConfig: (nodeId: string, patch: Record<string, unknown>) => ActionResult;
   /** Legt eine Zone an (FR-15); die Geräte darin ergeben sich aus der Lage. */
   /** `label` nur für feste Namen aus dem Code (Tutorial), ein Rückgängig-Schritt. */
-  addZone: (area: Rect, label?: string) => ActionResult;
+  addZone: (area: Rect, label?: string, shape?: ZoneShape) => ActionResult;
   /** Name (leer löscht ihn), Farbe aus festen Tönen, Größe. */
   setZone: (
     id: string,
-    patch: { label?: string; tone?: Tone; w?: number; h?: number },
+    patch: {
+      label?: string;
+      tone?: Tone;
+      shape?: ZoneShape;
+      /** Eigener Beschreibungstext (leer löscht ihn, dann gilt die Standardbeschreibung). */
+      description?: string;
+      /** Verschieben mit den Geräten in der Zone. */
+      withContents?: boolean;
+      /** Größe und Lage (Ziehen an den Ecken und Kanten, T-716). */
+      x?: number;
+      y?: number;
+      w?: number;
+      h?: number;
+    },
   ) => ActionResult;
-  /** Setzt die obere linke Ecke; die Geräte in der Zone ziehen als ein Schritt mit. */
+  /** Setzt die obere linke Ecke; mit `withContents` ziehen die Geräte in der Zone als ein Schritt mit. */
   moveZone: (id: string, to: Point) => void;
   /** Entfernt nur die Zone, die Geräte bleiben. */
   removeZone: (id: string) => void;
@@ -205,7 +219,7 @@ export const useTopology = create<TopologyState>((set, get) => {
       commit(unplugCard(get().topology, nodeId, kind));
     },
 
-    addZone: (area, label) => {
+    addZone: (area, label, shape) => {
       const t = get().topology;
       if (t.zones.length >= LIMITS.zones)
         return fail(
@@ -219,6 +233,7 @@ export const useTopology = create<TopologyState>((set, get) => {
           {
             id,
             ...(label && { label }),
+            ...(shape && { shape }),
             tone: "sage",
             area: {
               x: clamp(area.x),
@@ -236,18 +251,31 @@ export const useTopology = create<TopologyState>((set, get) => {
       const t = get().topology;
       const zone = t.zones.find((z) => z.id === id);
       if (!zone) return fail("Diese Zone gibt es nicht.");
-      const { label, w, h, tone } = patch;
+      const { label, w, h, x, y, tone, shape, withContents, description } =
+        patch;
       const name = label === undefined ? undefined : strip(label).trim();
       if (name !== undefined && name.length > LIMITS.name)
         return fail(
           `Der Name darf höchstens ${String(LIMITS.name)} Zeichen haben.`,
+        );
+      const text =
+        description === undefined ? undefined : strip(description, true).trim();
+      if (text !== undefined && text.length > LIMITS.description)
+        return fail(
+          `Die Beschreibung darf höchstens ${String(LIMITS.description)} Zeichen haben.`,
         );
       for (const side of [w, h])
         if (side !== undefined && !(side > 0 && side <= MAX_SIDE))
           return fail(
             `Die Größe muss zwischen 1 und ${String(MAX_SIDE)} liegen.`,
           );
-      const { label: oldLabel, ...rest } = zone;
+      const {
+        label: oldLabel,
+        withContents: oldWith,
+        description: oldText,
+        ...rest
+      } = zone;
+      const keptText = text === undefined ? oldText : text;
       const kept = name === undefined ? oldLabel : name;
       commit({
         ...t,
@@ -256,9 +284,15 @@ export const useTopology = create<TopologyState>((set, get) => {
             ? {
                 ...rest,
                 ...(kept && { label: kept }),
+                ...(keptText && { description: keptText }),
                 tone: tone ?? zone.tone,
+                ...(shape && { shape }),
+                ...((withContents ?? oldWith) !== undefined && {
+                  withContents: withContents ?? oldWith,
+                }),
                 area: {
-                  ...zone.area,
+                  x: x === undefined ? zone.area.x : clamp(x),
+                  y: y === undefined ? zone.area.y : clamp(y),
                   w: w ?? zone.area.w,
                   h: h ?? zone.area.h,
                 },
@@ -275,8 +309,11 @@ export const useTopology = create<TopologyState>((set, get) => {
       if (!zone) return;
       const dx = clamp(to.x) - zone.area.x;
       const dy = clamp(to.y) - zone.area.y;
+      // Ohne `withContents` bewegt sich nur die Zone (T-715)
       const inside = new Set(
-        containedNodes(zone, t.nodes, NODE_SIZE).map((n) => n.id),
+        zone.withContents
+          ? containedNodes(zone, t.nodes, NODE_SIZE).map((n) => n.id)
+          : [],
       );
       commit({
         ...t,

@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { IDLE } from "../engine/simulation";
@@ -17,6 +17,22 @@ beforeEach(() => {
 });
 
 describe("FR-15 Zone bearbeiten im Detailpanel", () => {
+  it("T-715: „Zone bearbeiten“ ist standardmäßig eingeklappt, Klick öffnet, eine andere Zone startet wieder zu", async () => {
+    const user = userEvent.setup();
+    useTopology.getState().addZone({ x: 400, y: 0, w: 100, h: 100 });
+    const { container } = render(<DetailPanel />);
+    const fold = () => container.querySelector("details.tiv-fold");
+    expect(fold()).not.toHaveAttribute("open");
+    await user.click(
+      screen.getByText("Zone bearbeiten", { selector: "summary" }),
+    );
+    expect(fold()).toHaveAttribute("open");
+    act(() => {
+      useUi.getState().select({ kind: "zone", id: "zone-2" });
+    });
+    expect(fold()).not.toHaveAttribute("open");
+  });
+
   it("benennt eine Zone, Text bleibt Text und Steuerzeichen fallen weg", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
@@ -41,7 +57,7 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
   it("färbt per Auswahl der festen Töne", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    expect(screen.getAllByRole("radio")).toHaveLength(3);
+    expect(screen.getAllByRole("radio")).toHaveLength(7);
     await user.click(screen.getByRole("radio", { name: "Akzent" }));
     expect(zones()[0]?.tone).toBe("accent");
   });
@@ -57,17 +73,101 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
     expect(container.querySelectorAll(".tiv-seg .tiv-dot")).toHaveLength(3);
   });
 
-  it("ändert die Größe und lehnt Unsinn ab", async () => {
+  it("T-715: Form als Segment Rechteck/Ellipse, Standard Rechteck, keine Zahlenfelder", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    const w = screen.getByLabelText("Breite");
-    await user.clear(w);
-    await user.type(w, "500{Enter}");
-    expect(zones()[0]?.area.w).toBe(500);
-    await user.clear(w);
-    await user.type(w, "abc{Enter}");
-    expect(await screen.findByRole("alert")).toHaveTextContent("ganze Zahl");
-    expect(zones()[0]?.area.w).toBe(500);
+    expect(screen.getByRole("radio", { name: "Rechteck" })).toBeChecked();
+    expect(screen.queryByLabelText("Breite")).toBeNull();
+    expect(screen.queryByLabelText("Höhe")).toBeNull();
+    await user.click(screen.getByRole("radio", { name: "Ellipse" }));
+    expect(zones()[0]?.shape).toBe("ellipse");
+    expect(screen.getByRole("radio", { name: "Ellipse" })).toBeChecked();
+  });
+
+  it("T-715: Beim Verschieben ist ein Segment, Standard nur Zone, wählbar je Zone", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    const group = screen.getByRole("group", { name: "Beim Verschieben" });
+    expect(screen.getByRole("radio", { name: "Nur Zone" })).toBeChecked();
+    expect(group.querySelector(".tiv-seg")).not.toBeNull();
+    await user.click(screen.getByRole("radio", { name: "Zone mit Elementen" }));
+    expect(zones()[0]?.withContents).toBe(true);
+    expect(
+      screen.getByRole("radio", { name: "Zone mit Elementen" }),
+    ).toBeChecked();
+  });
+
+  it("T-715: listet die Geräte in der Zone (Ellipse zählt das Rechteck), Klick wählt das Gerät", async () => {
+    const user = userEvent.setup();
+    useTopology.getState().setZone(zones()[0]?.id ?? "", { shape: "ellipse" });
+    useTopology.getState().addNode("pc", { x: 20, y: 20 });
+    useTopology.getState().addNode("pc", { x: 900, y: 20 });
+    render(<DetailPanel />);
+    const box = within(
+      screen.getByRole("region", { name: "Geräte in der Zone" }),
+    );
+    expect(box.getAllByRole("button")).toHaveLength(1);
+    await user.click(box.getByRole("button"));
+    expect(useUi.getState().selection).toMatchObject({ kind: "node" });
+  });
+
+  it("T-715: eine leere Zone zeigt „keine“", () => {
+    render(<DetailPanel />);
+    expect(
+      within(
+        screen.getByRole("region", { name: "Geräte in der Zone" }),
+      ).getByText("keine"),
+    ).toBeInTheDocument();
+  });
+
+  it("T-717: leere Beschreibung zeigt den Standardtext, eigener Text ersetzt ihn, leeren stellt ihn wieder her", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    const anzeige = () =>
+      container.querySelector(".tiv-dbody--text")?.textContent;
+    expect(anzeige()).toMatch(/^Zonen gliedern die Fläche/);
+    const feld = screen.getByLabelText("Beschreibung");
+    await user.click(feld);
+    await user.paste("Labor im ersten Stock\nnur Mitarbeitende");
+    await user.tab();
+    expect(zones()[0]?.description).toBe(
+      "Labor im ersten Stock\nnur Mitarbeitende",
+    );
+    expect(anzeige()).toBe("Labor im ersten Stock\nnur Mitarbeitende");
+    await user.clear(feld);
+    await user.tab();
+    expect(zones()[0]).not.toHaveProperty("description");
+    expect(anzeige()).toMatch(/^Zonen gliedern die Fläche/);
+  });
+
+  it("T-717: Markup in der Beschreibung bleibt Text, zu lange Beschreibung ist ein Fehler", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    const feld = screen.getByLabelText("Beschreibung");
+    await user.click(feld);
+    await user.paste("<img src=x onerror=1><b>fett</b>");
+    await user.tab();
+    expect(container.querySelector(".tiv-dbody--text")?.textContent).toBe(
+      "<img src=x onerror=1><b>fett</b>",
+    );
+    expect(container.querySelector("img, .tiv-dbody b")).toBeNull();
+    await user.click(feld);
+    await user.paste("x".repeat(2001));
+    await user.tab();
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "höchstens 2000",
+    );
+    expect(zones()[0]?.description).toBe("<img src=x onerror=1><b>fett</b>");
+  });
+
+  it("T-717: die Beschreibung gibt es nur bei Zonen, nicht bei Geräten", () => {
+    useTopology.getState().addNode("pc", { x: 20, y: 20 });
+    const id = useTopology.getState().topology.nodes[0]?.id ?? "";
+    act(() => {
+      useUi.getState().select({ kind: "node", id });
+    });
+    render(<DetailPanel />);
+    expect(screen.queryByLabelText("Beschreibung")).toBeNull();
   });
 
   it("entfernt die Zone, hebt die Auswahl auf und ist rückgängig machbar", async () => {

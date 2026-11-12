@@ -26,7 +26,7 @@ import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { PortPicker } from "../dialogs/PortPicker";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
-import { ZoneButton } from "./ZoneButton";
+import { ZoneTools } from "./ZoneTools";
 import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
 import { ZoomBar } from "./ZoomBar";
@@ -140,13 +140,23 @@ export function Canvas() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
     [flow.edges, lit, hop],
   );
+  const resize = useUi((s) => s.zoneResize);
   const nodes = useMemo(
     () =>
       flow.nodes.map((n) => {
-        const measured = sizes[n.id];
+        // Zone mit gezogenem Anfasser: vorläufige Lage und Größe bis zum Loslassen (T-716)
+        if (resize?.id === n.id)
+          return {
+            ...n,
+            position: { x: resize.x, y: resize.y },
+            width: resize.w,
+            height: resize.h,
+            measured: { width: resize.w, height: resize.h },
+          };
+        const measured = n.type === "zone" ? undefined : sizes[n.id];
         return measured ? { ...n, measured } : n;
       }),
-    [flow.nodes, sizes],
+    [flow.nodes, sizes, resize],
   );
 
   const onNodesChange = (
@@ -154,6 +164,12 @@ export function Canvas() {
   ) => {
     const dropped: Record<string, Point> = {};
     for (const c of changes) {
+      // Der Anfasser einer Zone meldet Lage und Größe selbst (ZoneNode), nicht als Verschieben
+      if (
+        (c.type === "position" || c.type === "dimensions") &&
+        useUi.getState().zoneResize?.id === c.id
+      )
+        continue;
       if (c.type === "position" && c.position) {
         const position = {
           x: Math.round(c.position.x),
@@ -161,8 +177,10 @@ export function Canvas() {
         };
         const zone = topology.zones.find((z) => z.id === c.id);
         if (zone) {
-          // Geräte in der Zone ziehen mit (FR-15), der Store bucht alles als einen Schritt
-          const inside = containedNodes(zone, topology.nodes, NODE_SIZE);
+          // Mit `withContents` ziehen die Geräte in der Zone mit (FR-15), der Store bucht alles als einen Schritt
+          const inside = zone.withContents
+            ? containedNodes(zone, topology.nodes, NODE_SIZE)
+            : [];
           if (c.dragging) {
             const dx = position.x - zone.area.x;
             const dy = position.y - zone.area.y;
@@ -300,9 +318,7 @@ export function Canvas() {
               : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
           </Panel>
         )}
-        <Panel position="top-right">
-          <ZoneButton />
-        </Panel>
+        <ZoneTools />
         <ZoomBar />
         <MiniMap
           pannable

@@ -37,11 +37,11 @@ test.describe("edit", { tag: "@edit" }, () => {
     expect(await kanten(page).count()).toBeLessThan(verbunden);
   });
 
-  test("Anordnen sitzt in der Zoomleiste und behält alle Geräte", async ({
+  test("Sortieren sitzt in der Zoomleiste und behält alle Geräte", async ({
     page,
   }) => {
     const alle = await page.locator(".react-flow__node").count();
-    await page.getByRole("button", { name: "Anordnen" }).click();
+    await page.getByRole("button", { name: "Sortieren" }).click();
     await expect(page.locator(".react-flow__node")).toHaveCount(alle);
   });
 });

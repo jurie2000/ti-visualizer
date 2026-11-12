@@ -811,7 +811,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 | FR-13 | `ModeSwitch`, Sichtbarkeit je Gerätetyp im Katalog, Sammelkanten (`GroupEdge`, `collapseHidden`, D36) |
 | FR-14 | Anschlüsse in `device-types`, `PortPicker`, `autoPorts` |
 | FR-15 | `ZoneNode` |
-| FR-16 | Kopieren/Einfügen, automatisch anordnen, Minimap, Einpassen (Undo/Redo entfällt, D25) |
+| FR-16 | Kopieren/Einfügen, Sortieren, Minimap, Übersicht (Undo/Redo entfällt, D25) |
 | FR-17 | Einstellungen im `DetailPanel`, `config-defaults.json` |
 | FR-18 | `CardChip`, `PlugCardDialog`, Störung an Gerät und Verbindung per Kontextmenü |
 | FR-19 | `runChecks`, `SecurityDialog` |

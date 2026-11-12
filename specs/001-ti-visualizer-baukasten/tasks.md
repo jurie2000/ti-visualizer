@@ -750,7 +750,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: Kontrast-Test (D10) für Text auf diesen Flächen grün ist
     und Justin die Screenshots gegen `design/mockup/screenshots/` abnimmt.
 
-- [ ] **T-711 Seitenleisten klappen ein** · FR: FR-22 · Regeln: – · nach: T-710 · Mockup: `hoverPanel`, `leftWrapStyle`, `rightWrapStyle`
+- [x] **T-711 Seitenleisten klappen ein** · FR: FR-22 · Regeln: – · nach: T-710 · Mockup: `hoverPanel`, `leftWrapStyle`, `rightWrapStyle`
   - Umfang: Palette und Detailpanel sind eine 56-px-Schiene mit Symbolen
     (Palette: eine je Kategorie; rechts: Details/Legende, Ansicht,
     Sicherheit). Mauszeiger darüber öffnet das Panel als Überlagerung nach
@@ -759,6 +759,10 @@ Sicherheitsprüfung.
     `pinnedPanels`. Tastatur: Fokus auf die Schiene oder ein Schienen-Symbol
     öffnet, Escape schließt (D10). Das Detailpanel öffnet zusätzlich bei
     Auswahl. Ersetzt die Überlagerung unter 1100 px (T-703) nicht.
+    Auslegung (2026-11-12): Auf Wunsch von Justin klappt das Detailpanel nach
+    einer Auswahl nach 3 s wieder ein, solange Zeiger und Fokus nicht darauf
+    liegen. „Ziehen/Verbinden“ heißt: Maustaste gedrückt oder Verbindung im
+    Aufbau.
   - Fertig, wenn: Tests prüfen Öffnen/Schließen per Hover und Tastatur,
     Anheften bleibt offen und kommt aus den Einstellungen zurück.
 

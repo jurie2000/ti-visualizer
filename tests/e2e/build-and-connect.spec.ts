@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { schliessePalette, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -23,6 +24,7 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
 
   test("gültig verbinden per Tastatur, Ansage sichtbar", async ({ page }) => {
     // Gerät ergänzen: ein zweiter Switch aus der Palette
+    await öffnePalette(page);
     await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
     await expect(gerät(page, "switch-1")).toBeVisible();
     const vorher = await page.locator(".react-flow__edge").count();
@@ -111,7 +113,9 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     }
 
     test("gültig verbinden per Klick: Punkt, dann Ziel", async ({ page }) => {
+      await öffnePalette(page);
       await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
+      await schliessePalette(page);
       await expect(gerät(page, "switch-1")).toBeVisible();
       const vorher = await page.locator(".react-flow__edge").count();
       await perKlick(page, "switch-1", "sw1");

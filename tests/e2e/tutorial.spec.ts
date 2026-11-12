@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { räumePanelsAuf, schliessePalette, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -6,11 +7,14 @@ const karte = (page: Page) => page.getByRole("region", { name: "Tutorial" });
 const spieler = (page: Page) =>
   page.getByRole("group", { name: /^Simulation/ });
 
-const hinzufügen = (page: Page, name: RegExp) =>
-  page
+const hinzufügen = async (page: Page, name: RegExp) => {
+  await öffnePalette(page);
+  await page
     .getByRole("button", { name })
     .and(page.locator(".tiv-palette__add"))
     .click();
+  await schliessePalette(page);
+};
 
 /** Verbinden per Tastatur (V an der Quelle, V am Ziel), Anschlüsse im Dialog bestätigen. */
 async function verbinde(page: Page, quelle: string, ziel: string) {
@@ -57,6 +61,7 @@ async function spiele(page: Page, gerätId: string, aktion: string) {
 async function weiter(page: Page, titel: string, erledigt: boolean) {
   await expect(karte(page).getByRole("heading", { name: titel })).toBeVisible();
   if (erledigt) await expect(karte(page)).toContainText("Erledigt:");
+  await räumePanelsAuf(page);
   await karte(page).getByRole("button", { name: "Weiter" }).click();
 }
 

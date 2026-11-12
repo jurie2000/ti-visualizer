@@ -37,7 +37,7 @@
 }
 .tiv-main {
   display: grid;
-  grid-template-columns: 240px 1fr 280px;
+  grid-template-columns: auto 1fr auto;
   min-height: 0;
 }
 .tiv-palette,
@@ -72,10 +72,139 @@
 .tiv-detail:focus {
   outline: none;
 }
+/* Seitenleisten (T-711): 56-px-Schiene, das Panel klappt als Überlagerung aus */
+@media (min-width: 1101px) {
+  /* Das ausgeblendete rechte Panel steht außerhalb des Fensters und darf keine Bildlaufleiste erzeugen */
+  .tiv-main {
+    overflow-x: clip;
+  }
+  .tiv-side {
+    position: relative;
+    flex: none;
+    width: 56px;
+    z-index: 5;
+    transition: width 0.18s ease;
+  }
+  .tiv-side--left {
+    --tiv-side-w: 268px;
+  }
+  .tiv-side--right {
+    --tiv-side-w: 344px;
+  }
+  .tiv-side[data-open="true"] {
+    z-index: 20;
+  }
+  .tiv-side[data-pinned="true"] {
+    width: calc(var(--tiv-side-w) + 56px);
+  }
+  .tiv-rail {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 56px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+    background: var(--color-neutral-100);
+    z-index: 1;
+  }
+  .tiv-side--left .tiv-rail {
+    left: 0;
+    border-right: 1px solid var(--color-divider);
+  }
+  .tiv-side--right .tiv-rail {
+    right: 0;
+    border-left: 1px solid var(--color-divider);
+  }
+  .tiv-side > aside {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--tiv-side-w);
+    box-sizing: border-box;
+    box-shadow: var(--shadow-lg);
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      transform 0.2s ease,
+      opacity 0.15s ease,
+      visibility 0s linear 0.2s;
+  }
+  /* Das Panel liegt neben der Schiene, nicht darüber: Symbole bleiben sichtbar und erreichbar (D10) */
+  .tiv-side--left > aside {
+    left: 56px;
+    transform: translateX(-100%);
+  }
+  .tiv-side--right > aside {
+    right: 56px;
+    transform: translateX(100%);
+  }
+  .tiv-side[data-open="true"] > aside {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .tiv-side[data-pinned="true"] > aside {
+    box-shadow: none;
+  }
+}
+.tiv-rail__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--cat, transparent) 13%, transparent);
+  color: var(--cat, var(--color-neutral-800));
+  cursor: pointer;
+}
+.tiv-rail__btn[data-active="true"] {
+  border-color: var(--color-accent);
+}
+.tiv-side__pin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 12px auto;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.85em;
+  color: var(--color-neutral-800);
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tiv-side__pin[aria-pressed="true"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiv-side,
+  .tiv-side > aside {
+    transition: none;
+  }
+}
 @media (max-width: 1100px) {
   .tiv-main {
     grid-template-columns: 1fr;
     position: relative;
+  }
+  /* Unter 1100 px gibt es keine Schiene; die Seiten sind Überlagerungen */
+  .tiv-side {
+    display: contents;
+  }
+  .tiv-rail,
+  .tiv-side__pin {
+    display: none;
   }
   /* Überlagerungen statt Spalten (T-703); geschlossen aus dem Baum genommen */
   .tiv-palette,

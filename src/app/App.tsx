@@ -1,5 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { Network } from "lucide-react";
+import { Eye, Info, Network, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
@@ -11,13 +11,14 @@ import { ShortcutsDialog } from "../dialogs/ShortcutsDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
 import { DetailPanel } from "../panels/DetailPanel";
-import { PalettePanel } from "../panels/PalettePanel";
+import { PalettePanel, usePaletteRail } from "../panels/PalettePanel";
 import { TutorialCard } from "../panels/TutorialCard";
 import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { EditShortcuts } from "./EditShortcuts";
 import { ModeSwitch } from "./ModeSwitch";
+import { SidePanel } from "./SidePanel";
 import { SaveControls } from "./SaveControls";
 import { StartScreen } from "./StartScreen";
 import { ThemeToggle } from "./ThemeToggle";
@@ -27,6 +28,11 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
+  const selection = useUi((s) => s.selection);
+  const [reveal, setReveal] = useState<{ id: string; n: number }>();
+  const paletteRail = usePaletteRail((id) => {
+    setReveal((r) => ({ id, n: (r?.n ?? 0) + 1 }));
+  });
   // Unter 1100 px sind Palette und Detailpanel Überlagerungen (T-703)
   const [overlay, setOverlay] = useState<"palette" | "detail" | null>(null);
   useEffect(() => {
@@ -145,18 +151,20 @@ export function App() {
             </main>
           ) : (
             <main ref={mainRef} tabIndex={-1} className="tiv-main">
-              <aside
-                className="tiv-palette"
-                aria-label="Palette"
-                tabIndex={-1}
-                data-open={overlay === "palette"}
+              <SidePanel
+                side="left"
+                id="palette"
+                label="Palette"
+                overlayOpen={overlay === "palette"}
+                rail={paletteRail}
               >
                 <PalettePanel
+                  reveal={reveal}
                   onAdded={() => {
                     setOverlay(null);
                   }}
                 />
-              </aside>
+              </SidePanel>
               <section className="tiv-canvas" aria-label="Canvas">
                 <div className="tiv-overlaybar">
                   {(["palette", "detail"] as const).map((k) => (
@@ -174,14 +182,38 @@ export function App() {
                 {tutorial && <TutorialCard />}
                 <Canvas />
               </section>
-              <aside
-                className="tiv-detail"
-                aria-label="Detailpanel"
-                tabIndex={-1}
-                data-open={overlay === "detail"}
+              <SidePanel
+                side="right"
+                id="detail"
+                label="Detailpanel"
+                overlayOpen={overlay === "detail"}
+                autoOpen={selection}
+                rail={[
+                  {
+                    label: selection ? "Details" : "Legende",
+                    icon: Info,
+                    active: !!selection,
+                    onClick: () => undefined,
+                  },
+                  {
+                    label: "Ansicht",
+                    icon: Eye,
+                    onClick: () => {
+                      useUi.getState().select(undefined);
+                    },
+                  },
+                  {
+                    label: "Sicherheit prüfen",
+                    icon: ShieldCheck,
+                    keepClosed: true,
+                    onClick: () => {
+                      useUi.getState().openDialog("security");
+                    },
+                  },
+                ]}
               >
                 <DetailPanel />
-              </aside>
+              </SidePanel>
             </main>
           )}
         </ReactFlowProvider>

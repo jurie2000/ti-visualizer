@@ -81,7 +81,9 @@ export function TutorialCard() {
   const close = (finished: boolean) => {
     if (finished) go(0);
     useUi.getState().setTutorial(false);
-    document.querySelector<HTMLElement>(".tiv-palette button")?.focus();
+    document
+      .querySelector<HTMLElement>(".tiv-side--left .tiv-rail button")
+      ?.focus();
   };
 
   return (

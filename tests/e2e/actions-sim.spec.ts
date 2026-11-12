@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { schliessePalette, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -109,12 +110,14 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await expect(spieler(page)).toBeHidden();
     await page.keyboard.press("Escape");
 
+    await öffnePalette(page);
     await page
       .getByRole("searchbox", { name: "Geräte suchen" })
       .fill("KIM-Client");
     await page
       .getByRole("button", { name: /KIM-Clientmodul.* hinzufügen$/ })
       .click();
+    await schliessePalette(page);
     await menüAn(page, "pvs1");
     await expect(kim).not.toHaveAttribute("aria-disabled", "true");
     // KIM-Mail senden
@@ -234,6 +237,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     expect(await abstand()).toEqual(vorher);
 
     const kanten = await page.locator(".react-flow__edge").count();
+    await öffnePalette(page);
     await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
     await expect(page.locator(".tiv-toasts")).toContainText(
       "Während der Simulation ist die Topologie gesperrt.",

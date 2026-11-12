@@ -13,6 +13,7 @@ import {
   useUi,
   type Selection,
 } from "../store";
+import { Actions } from "./Actions";
 import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
 import { PortList } from "./PortList";
@@ -232,6 +233,7 @@ function Body({ sel }: { sel: Selection }) {
   let title = "Details";
   let head: Head | undefined;
   let violations: string[] = [];
+  let actions: ReactNode;
   let found = false;
   let content: ReactNode = (
     <p>Gerät oder Verbindung wählen, um Details zu sehen.</p>
@@ -256,6 +258,7 @@ function Body({ sel }: { sel: Selection }) {
           "Gerät",
       };
       violations = violated((f) => f.nodes.includes(node.id));
+      actions = <Actions kind="node" id={node.id} fault={node.fault} />;
       content = (
         <DeviceDetail node={node} catalog={catalog} topology={topology} />
       );
@@ -273,6 +276,7 @@ function Body({ sel }: { sel: Selection }) {
         kicker: "Verbindung",
       };
       violations = violated((f) => f.edges.includes(edge.id));
+      actions = <Actions kind="edge" id={edge.id} fault={edge.fault} />;
       content = (
         <EdgeDetail edge={edge} topology={topology} catalog={catalog} />
       );
@@ -302,6 +306,7 @@ function Body({ sel }: { sel: Selection }) {
     <Titled title={title} head={head}>
       <Violations names={violations} />
       {content}
+      {actions}
     </Titled>
   );
 }

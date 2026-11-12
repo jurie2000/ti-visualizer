@@ -27,6 +27,7 @@ import { PortPicker } from "../dialogs/PortPicker";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { ZoneButton } from "./ZoneButton";
+import { ZoneTools } from "./ZoneTools";
 import { ZoneNode } from "./ZoneNode";
 import { GroupEdge } from "./GroupEdge";
 import { ZoomBar } from "./ZoomBar";
@@ -300,6 +301,7 @@ export function Canvas() {
               : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
           </Panel>
         )}
+        <ZoneTools />
         <Panel position="top-right">
           <ZoneButton />
         </Panel>

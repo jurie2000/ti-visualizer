@@ -94,4 +94,15 @@ describe("FR-15 Zonen im Store", () => {
     s().undo();
     expect(zones()).toHaveLength(1);
   });
+
+  it("T-715: Form bei Anlegen und Ändern, ohne Angabe bleibt sie leer (= Rechteck)", () => {
+    const plain = zone();
+    expect(zones().find((z) => z.id === plain)).not.toHaveProperty("shape");
+    s().addZone(area, undefined, "ellipse");
+    expect(zones().at(-1)?.shape).toBe("ellipse");
+    s().setZone(plain, { shape: "ellipse" });
+    expect(zones().find((z) => z.id === plain)?.shape).toBe("ellipse");
+    s().undo();
+    expect(zones().find((z) => z.id === plain)).not.toHaveProperty("shape");
+  });
 });

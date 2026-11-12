@@ -15,6 +15,7 @@ import {
   type Rect,
   type Tone,
   type Topology,
+  type ZoneShape,
 } from "../schema";
 import { useCatalog } from "./catalogStore";
 
@@ -60,11 +61,17 @@ interface TopologyState {
   setConfig: (nodeId: string, patch: Record<string, unknown>) => ActionResult;
   /** Legt eine Zone an (FR-15); die Geräte darin ergeben sich aus der Lage. */
   /** `label` nur für feste Namen aus dem Code (Tutorial), ein Rückgängig-Schritt. */
-  addZone: (area: Rect, label?: string) => ActionResult;
+  addZone: (area: Rect, label?: string, shape?: ZoneShape) => ActionResult;
   /** Name (leer löscht ihn), Farbe aus festen Tönen, Größe. */
   setZone: (
     id: string,
-    patch: { label?: string; tone?: Tone; w?: number; h?: number },
+    patch: {
+      label?: string;
+      tone?: Tone;
+      shape?: ZoneShape;
+      w?: number;
+      h?: number;
+    },
   ) => ActionResult;
   /** Setzt die obere linke Ecke; die Geräte in der Zone ziehen als ein Schritt mit. */
   moveZone: (id: string, to: Point) => void;
@@ -205,7 +212,7 @@ export const useTopology = create<TopologyState>((set, get) => {
       commit(unplugCard(get().topology, nodeId, kind));
     },
 
-    addZone: (area, label) => {
+    addZone: (area, label, shape) => {
       const t = get().topology;
       if (t.zones.length >= LIMITS.zones)
         return fail(
@@ -219,6 +226,7 @@ export const useTopology = create<TopologyState>((set, get) => {
           {
             id,
             ...(label && { label }),
+            ...(shape && { shape }),
             tone: "sage",
             area: {
               x: clamp(area.x),
@@ -236,7 +244,7 @@ export const useTopology = create<TopologyState>((set, get) => {
       const t = get().topology;
       const zone = t.zones.find((z) => z.id === id);
       if (!zone) return fail("Diese Zone gibt es nicht.");
-      const { label, w, h, tone } = patch;
+      const { label, w, h, tone, shape } = patch;
       const name = label === undefined ? undefined : strip(label).trim();
       if (name !== undefined && name.length > LIMITS.name)
         return fail(
@@ -257,6 +265,7 @@ export const useTopology = create<TopologyState>((set, get) => {
                 ...rest,
                 ...(kept && { label: kept }),
                 tone: tone ?? zone.tone,
+                ...(shape && { shape }),
                 area: {
                   ...zone.area,
                   w: w ?? zone.area.w,

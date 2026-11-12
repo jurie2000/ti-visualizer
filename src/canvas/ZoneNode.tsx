@@ -8,7 +8,7 @@ export function ZoneNode({ data, selected }: NodeProps<ZoneFlowNode>) {
   const { zone } = data;
   return (
     <div
-      className={`tiv-zone tiv-zone--${zone.tone}${selected ? " is-selected" : ""}`}
+      className={`tiv-zone tiv-zone--${zone.tone}${zone.shape === "ellipse" ? " is-ellipse" : ""}${selected ? " is-selected" : ""}`}
     >
       <span className="tiv-zone__name">
         {zone.label ?? "Zone"}

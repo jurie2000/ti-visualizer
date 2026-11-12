@@ -148,6 +148,13 @@ describe("Topology", () => {
     ).toBe(false);
   });
 
+  it("T-715: Zone ohne shape bleibt gültig (ältere Dateien), rect und ellipse gelten, anderes nicht", () => {
+    expect(topoOk({ zones: [zone] })).toBe(true);
+    expect(topoOk({ zones: [{ ...zone, shape: "rect" }] })).toBe(true);
+    expect(topoOk({ zones: [{ ...zone, shape: "ellipse" }] })).toBe(true);
+    expect(topoOk({ zones: [{ ...zone, shape: "<b>kreis</b>" }] })).toBe(false);
+  });
+
   it("lehnt unbekannten tone ab", () => {
     expect(topoOk({ zones: [{ ...zone, tone: "<script>" }] })).toBe(false);
     expect(topoOk({ zones: [{ ...zone, tone: "accent-2" }] })).toBe(false);

@@ -2,7 +2,6 @@ import { Cable, Layers, TriangleAlert, X, type LucideIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
-import { TONE_NAME } from "../canvas/toFlow";
 import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
@@ -293,9 +292,6 @@ function Body({ sel }: { sel: Selection }) {
             Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind
             nur Beschriftung und ändern nichts an den Verbindungen.
           </p>
-          <dl className="tiv-detail__facts">
-            <Row name="Farbe">{TONE_NAME[zone.tone]}</Row>
-          </dl>
           <ZoneForm zone={zone} />
         </>
       );

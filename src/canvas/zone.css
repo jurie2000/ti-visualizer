@@ -36,3 +36,77 @@
   outline: var(--tiv-focus-width) solid var(--tiv-focus);
   outline-offset: 2px;
 }
+.tiv-zone.is-ellipse {
+  border-radius: 50%;
+}
+.tiv-zone.is-ellipse .tiv-zone__name {
+  justify-content: center;
+  padding-top: 8%;
+}
+/* Zonen-Werkzeug (T-715, Mockup `drawBar`): Leiste oben links, Fläche zum Aufziehen */
+.tiv-drawbar__bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+  box-shadow: var(--shadow-sm);
+}
+.tiv-drawbar__title,
+.tiv-drawbar__hint {
+  padding: 0 8px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.tiv-drawbar__title {
+  font-weight: 700;
+}
+.tiv-drawbar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tiv-drawbar__btn[aria-pressed="true"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+.tiv-drawbar__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (forced-colors: active) {
+  .tiv-drawbar__btn[aria-pressed="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+.tiv-zonedraw {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  cursor: crosshair;
+  touch-action: none;
+}
+.tiv-zonedraw__box {
+  position: absolute;
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  pointer-events: none;
+}
+.tiv-zonedraw__box.is-ellipse {
+  border-radius: 50%;
+}

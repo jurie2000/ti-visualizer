@@ -840,6 +840,42 @@ Sicherheitsprüfung.
   - Fertig, wenn: bestehende `ZoneForm`-Tests grün, je Aktion ein Test,
     Abnahme durch Justin.
 
+- [x] **T-715 Zonen-Werkzeug (aufziehen)** · FR: FR-15 · Regeln: – · nach: T-712e · Mockup: `tool`, `zdraw`, `drawTools`, `showZoneEdit`, Zeilen 232, 311 bis 328, 2459 bis 2499, 3032 bis 3040, 3307
+  - Umfang: Zeichenleiste links oben auf der Fläche (Pille, Knöpfe
+    „Rechteck“ und „Ellipse“ mit `aria-pressed`, Titel „Zone zeichnen“,
+    Hinweis
+    „Auf der Fläche aufziehen · Esc bricht ab“). Mit gewähltem Werkzeug
+    zieht die Maus die Zone auf (Vorschau gestrichelt); unter 40 × 30
+    Flusseinheiten entsteht nichts und das Werkzeug bleibt, sonst ist die
+    Zone gewählt und das Werkzeug aus. Datenmodell: `shape` (`rect` oder
+    `ellipse`) an der Zone. Detailpanel der Zone wie Mockup: Name, Form
+    (Segment), Farbe, „Zone entfernen“; die Zahlenfelder Breite und Höhe
+    entfallen. Auftrag Justin im Chat 2026-11-12, Issues #85 und #86.
+    Auslegung (2026-11-12): Titel und Knopftexte stehen immer da; das
+    Ausklappen bei Zeiger (`drawExpanded`) verschob die Knöpfe unter dem
+    Zeiger und verschluckte Klicks (im Browser gesehen), außerdem tragen
+    sichtbare Namen (D10). Schema bleibt `schemaVersion` 1: `shape` ist
+    optional, ohne Angabe gilt Rechteck, alte Dateien laden unverändert,
+    ältere App-Stände ignorieren das Feld (Zonen-Objekt nicht strikt).
+    „Zone“ statt „Bereich“ und „Rechteck/Ellipse“ statt „Kasten/Kreis“ (App-
+    Begriff, Auftrag). „Zone anlegen“ (rechts oben) bleibt als Tastaturweg:
+    es legt eine Standardzone um die gewählten Geräte an (kein doppelter
+    Weg, sondern der einzige ohne Maus). Geräte in einer Ellipse zählen
+    nach ihrem Rechteck (`containedNodes`), wie im Mockup. Abweichung von
+    D10 (Entscheidung Justin): kein Tastaturweg zum Aufziehen, keine
+    Zahlenfelder; siehe plan.md, Risiko dort.
+  - Fertig, wenn: Tests für Aufziehen (beide Formen, rückwärts, zu klein,
+    Esc, Sperre in der Simulation), Schema (ohne `shape` gültig), Store und
+    Panel; Leiste hell und dunkel im Browser geprüft.
+
+- [ ] **T-716 Zone an Ecken und Kanten vergrößern** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: `onResizeDown`, `zdrag` mode `resize`, Zeilen 3028, 2460
+  - Umfang: Die gewählte Zone lässt sich an den Ecken und Kanten mit der Maus
+    in der Größe ändern, die Form bleibt; ein Rückgängig-Schritt je Ziehen;
+    Mindestgröße wie T-715. Keine Zahlenfelder und kein Tastaturweg (Entscheidung
+    Justin 2026-11-12, siehe T-715).
+  - Fertig, wenn: Tests für Ziehen an Ecke und Kante, Mindestgröße, ein
+    Rückgängig-Schritt, Sperre in der Simulation.
+
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
     Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen

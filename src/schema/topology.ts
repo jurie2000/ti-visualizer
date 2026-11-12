@@ -29,6 +29,8 @@ export const Rect = z.object({
 export const Endpoint = z.object({ node: key, port: key });
 
 export const Tone = z.enum(["sage", "accent", "neutral"]);
+/** Form einer Zone (T-715); ohne Angabe gilt `rect`, so bleiben ältere Dateien gültig. */
+export const ZoneShape = z.enum(["rect", "ellipse"]);
 
 const Element = z.object({ id: key, label: text(LIMITS.name).optional() });
 
@@ -121,7 +123,11 @@ export const Edge = Element.extend({
   ends: z.tuple([Endpoint, Endpoint]),
   fault: z.boolean(),
 });
-export const Zone = Element.extend({ area: Rect, tone: Tone });
+export const Zone = Element.extend({
+  area: Rect,
+  tone: Tone,
+  shape: ZoneShape.optional(),
+});
 
 export const Topology = z
   .object({
@@ -176,6 +182,7 @@ export const Topology = z
 export type Point = z.infer<typeof Point>;
 export type Rect = z.infer<typeof Rect>;
 export type Tone = z.infer<typeof Tone>;
+export type ZoneShape = z.infer<typeof ZoneShape>;
 export type Endpoint = z.infer<typeof Endpoint>;
 export type Card = z.infer<typeof Card>;
 export type PinCard = z.infer<typeof PinCard>;

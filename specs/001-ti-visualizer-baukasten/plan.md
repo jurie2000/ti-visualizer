@@ -777,6 +777,15 @@ im Repo „Private vulnerability reporting“ aktiviert.
 - Simulation: Leertaste Play/Pause, Pfeiltasten Schritt, Esc Abbrechen.
   Erklärtext als `aria-live`.
 - Semantik: Rollen und Labels für Knoten und Kanten.
+- **Ausnahme (Entscheidung Justin 2026-11-12, T-715/T-716):** Das
+  Aufziehen und Größeänderung von Zonen per Maus hat keine eigene
+  Tastaturbedienung und keine Zahlenfelder für Breite, Höhe und Lage im
+  Detailpanel (Mockup `showZoneEdit`: nur Name, Form, Farbe). Das Werkzeug
+  und seine Knöpfe sind per Tastatur erreichbar, Esc bricht ab; „Zone
+  anlegen“ legt per Tastatur eine Zone in Standardgröße an, Verschieben
+  geht weiter mit Pfeiltasten. Eine Zone in anderer Größe per Tastatur
+  gibt es nicht. Risiko: Nutzer ohne Maus können Zonen nicht auf Maß
+  bringen; wird das gebraucht, kommen Zahlenfelder zurück.
 
 **Screenreader**
 - Die Listenansicht (`TopologyList`) als Textalternative zur Fläche

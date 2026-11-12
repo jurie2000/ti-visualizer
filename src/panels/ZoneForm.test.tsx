@@ -41,7 +41,7 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
   it("färbt per Auswahl der festen Töne", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    expect(screen.getAllByRole("radio")).toHaveLength(3);
+    expect(screen.getAllByRole("radio")).toHaveLength(5);
     await user.click(screen.getByRole("radio", { name: "Akzent" }));
     expect(zones()[0]?.tone).toBe("accent");
   });
@@ -57,17 +57,15 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
     expect(container.querySelectorAll(".tiv-seg .tiv-dot")).toHaveLength(3);
   });
 
-  it("ändert die Größe und lehnt Unsinn ab", async () => {
+  it("T-715: Form als Segment Rechteck/Ellipse, Standard Rechteck, keine Zahlenfelder", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    const w = screen.getByLabelText("Breite");
-    await user.clear(w);
-    await user.type(w, "500{Enter}");
-    expect(zones()[0]?.area.w).toBe(500);
-    await user.clear(w);
-    await user.type(w, "abc{Enter}");
-    expect(await screen.findByRole("alert")).toHaveTextContent("ganze Zahl");
-    expect(zones()[0]?.area.w).toBe(500);
+    expect(screen.getByRole("radio", { name: "Rechteck" })).toBeChecked();
+    expect(screen.queryByLabelText("Breite")).toBeNull();
+    expect(screen.queryByLabelText("Höhe")).toBeNull();
+    await user.click(screen.getByRole("radio", { name: "Ellipse" }));
+    expect(zones()[0]?.shape).toBe("ellipse");
+    expect(screen.getByRole("radio", { name: "Ellipse" })).toBeChecked();
   });
 
   it("entfernt die Zone, hebt die Auswahl auf und ist rückgängig machbar", async () => {

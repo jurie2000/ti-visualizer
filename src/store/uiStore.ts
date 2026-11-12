@@ -23,7 +23,10 @@ export const useUi = create<{
   played: string[];
   /** Anschluss, von dem ein Klick im Detailpanel das Verbinden gestartet hat (A-3: der PortPicker wählt ihn vor). */
   connectPort: { node: string; port: string } | undefined;
+  /** Gewähltes Zonen-Werkzeug (T-715): Form der Zone, die als Nächstes aufgezogen wird. */
+  zoneTool: "rect" | "ellipse" | undefined;
   select: (selection: Selection) => void;
+  setZoneTool: (tool: "rect" | "ellipse" | undefined) => void;
   startAction: (action: PendingAction | undefined) => void;
   openDialog: (dialog: string | undefined) => void;
   /** Ein- und Ausschalten setzt die gespielten Aktionen zurück. */
@@ -37,6 +40,7 @@ export const useUi = create<{
   tutorial: false,
   played: [],
   connectPort: undefined,
+  zoneTool: undefined,
   select: (selection) => {
     set({ selection });
   },
@@ -48,6 +52,9 @@ export const useUi = create<{
   },
   setTutorial: (tutorial) => {
     set({ tutorial, played: [] });
+  },
+  setZoneTool: (zoneTool) => {
+    set({ zoneTool });
   },
   setConnectPort: (connectPort) => {
     set({ connectPort });

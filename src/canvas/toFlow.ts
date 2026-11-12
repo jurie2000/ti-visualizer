@@ -93,7 +93,7 @@ export function toFlow(
       zIndex: -1,
       selected,
       domAttributes: { "aria-roledescription": "Zone" },
-      ariaLabel: `Zone: ${zone.label ?? "ohne Namen"}, ${TONE_NAME[zone.tone]}, ${String(count)} Geräte${selected ? ", ausgewählt" : ""}`,
+      ariaLabel: `Zone: ${zone.label ?? "ohne Namen"}, ${TONE_NAME[zone.tone]}, ${zone.shape === "ellipse" ? "Ellipse, " : ""}${String(count)} Geräte${selected ? ", ausgewählt" : ""}`,
       data: { zone },
     });
   }

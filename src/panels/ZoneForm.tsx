@@ -16,14 +16,12 @@ function Field({
   label,
   stored,
   hint,
-  numeric,
   onCommit,
 }: {
   id: string;
   label: string;
   stored: string;
   hint: string;
-  numeric?: boolean;
   onCommit: (raw: string) => ActionResult;
 }) {
   const [draft, setDraft] = useState(stored);
@@ -45,7 +43,6 @@ function Field({
       <input
         id={id}
         type="text"
-        inputMode={numeric ? "numeric" : undefined}
         value={draft}
         aria-invalid={error !== undefined}
         aria-describedby={`${id}-hint${error ? ` ${id}-err` : ""}`}
@@ -69,15 +66,16 @@ function Field({
   );
 }
 
-/** Zone bearbeiten (FR-15): benennen, einfärben (feste Töne), Größe, entfernen. Verschieben geht auf der Canvas (Maus oder Pfeiltasten). */
+const SHAPES = [
+  ["rect", "Rechteck"],
+  ["ellipse", "Ellipse"],
+] as const;
+
+/** Zone bearbeiten (FR-15): benennen, Form, einfärben (feste Töne), entfernen. Größe und Lage gehören der Fläche: Aufziehen und Verschieben mit der Maus, Verschieben auch mit Pfeiltasten (T-715, T-716). */
 export function ZoneForm({ zone }: { zone: Zone }) {
   const setZone = useTopology((s) => s.setZone);
   const removeZone = useTopology((s) => s.removeZone);
   const locked = simLocked(useSim((s) => s.sim));
-  const side = (key: "w" | "h") => (raw: string) =>
-    /^\d+$/.test(raw.trim())
-      ? setZone(zone.id, { [key]: Number(raw) })
-      : ({ ok: false, reason: "Bitte eine ganze Zahl eingeben." } as const);
   return (
     <fieldset className="tiv-config" disabled={locked}>
       <legend>Zone bearbeiten</legend>
@@ -89,6 +87,24 @@ export function ZoneForm({ zone }: { zone: Zone }) {
         hint={`höchstens ${String(LIMITS.name)} Zeichen`}
         onCommit={(raw) => setZone(zone.id, { label: raw })}
       />
+      <fieldset className="tiv-config__field">
+        <legend>Form</legend>
+        <div className="tiv-seg">
+          {SHAPES.map(([shape, name]) => (
+            <label key={shape}>
+              <input
+                type="radio"
+                name={`zone-${zone.id}-shape`}
+                checked={(zone.shape ?? "rect") === shape}
+                onChange={() => {
+                  setZone(zone.id, { shape });
+                }}
+              />{" "}
+              {name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <fieldset className="tiv-config__field">
         <legend>Farbe</legend>
         <div className="tiv-seg">
@@ -107,22 +123,6 @@ export function ZoneForm({ zone }: { zone: Zone }) {
           ))}
         </div>
       </fieldset>
-      <Field
-        id={`zone-${zone.id}-w`}
-        label="Breite"
-        stored={String(zone.area.w)}
-        hint="ganze Zahl; Geräte in der Zone gehören dazu"
-        numeric
-        onCommit={side("w")}
-      />
-      <Field
-        id={`zone-${zone.id}-h`}
-        label="Höhe"
-        stored={String(zone.area.h)}
-        hint="ganze Zahl"
-        numeric
-        onCommit={side("h")}
-      />
       <div className="tiv-dactions">
         <Button
           onClick={() => {

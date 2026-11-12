@@ -95,7 +95,7 @@
     z-index: 20;
   }
   .tiv-side[data-pinned="true"] {
-    width: var(--tiv-side-w);
+    width: calc(var(--tiv-side-w) + 56px);
   }
   .tiv-rail {
     position: absolute;
@@ -109,6 +109,7 @@
     gap: 6px;
     padding: 12px 0;
     background: var(--color-neutral-100);
+    z-index: 1;
   }
   .tiv-side--left .tiv-rail {
     left: 0;
@@ -132,12 +133,13 @@
       opacity 0.15s ease,
       visibility 0s linear 0.2s;
   }
+  /* Das Panel liegt neben der Schiene, nicht darüber: Symbole bleiben sichtbar und erreichbar (D10) */
   .tiv-side--left > aside {
-    left: 0;
+    left: 56px;
     transform: translateX(-100%);
   }
   .tiv-side--right > aside {
-    right: 0;
+    right: 56px;
     transform: translateX(100%);
   }
   .tiv-side[data-open="true"] > aside {

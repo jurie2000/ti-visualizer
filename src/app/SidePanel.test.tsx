@@ -135,4 +135,15 @@ describe("T-711 Seitenleiste (FR-22)", () => {
     wait(5000);
     expect(wrap()).toHaveAttribute("data-open", "true");
   });
+
+  it("Escape ohne vorherigen Schienen-Fokus setzt den Fokus auf das erste Symbol", () => {
+    render(view());
+    const inhalt = screen.getByRole("button", { name: "Inhalt" });
+    act(() => {
+      inhalt.focus();
+    });
+    fireEvent.keyDown(inhalt, { key: "Escape" });
+    expect(wrap()).toHaveAttribute("data-open", "false");
+    expect(screen.getByRole("button", { name: "Details" })).toHaveFocus();
+  });
 });

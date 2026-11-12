@@ -16,7 +16,7 @@ export interface RailItem {
   /** Farbe des Symbols; der Name steht zusätzlich im Knopf, Farbe allein trägt nichts. */
   color?: string | undefined;
   active?: boolean;
-  /** Öffnet das Panel nicht (z. B. Sicherheitsprüfung öffnet einen Dialog). */
+  /** Der Klick öffnet das Panel nicht und holt den Fokus nicht hinein (Sicherheitsprüfung öffnet einen Dialog). */
   keepClosed?: boolean;
   onClick: () => void;
 }
@@ -82,6 +82,7 @@ export function SidePanel({
   const skipFocus = useRef(false);
   const lastRail = useRef<HTMLElement>(null);
   const asideRef = useRef<HTMLElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
   const pressed = usePressed();
   const dragging = useConnection((c) => c.inProgress);
   const clicking = useStore((s) => s.connectionClickStartHandle !== null);
@@ -140,7 +141,7 @@ export function SidePanel({
     window.clearTimeout(autoTimer.current);
     setShown(false);
     skipFocus.current = true;
-    lastRail.current?.focus();
+    (lastRail.current ?? railRef.current?.querySelector("button"))?.focus();
     skipFocus.current = false;
   };
 
@@ -172,7 +173,12 @@ export function SidePanel({
       }}
       onKeyDown={onKeyDown}
     >
-      <div className="tiv-rail" role="group" aria-label={`${label}, Schiene`}>
+      <div
+        ref={railRef}
+        className="tiv-rail"
+        role="group"
+        aria-label={`${label}, Schiene`}
+      >
         {rail.map((r) => (
           <button
             key={r.label}
@@ -189,10 +195,9 @@ export function SidePanel({
             }}
             onClick={() => {
               r.onClick();
-              if (!r.keepClosed) {
-                setShown(true);
-                asideRef.current?.focus();
-              }
+              if (r.keepClosed) return;
+              setShown(true);
+              asideRef.current?.focus();
             }}
           >
             <r.icon size={20} aria-hidden="true" />

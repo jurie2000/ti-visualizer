@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { schliessePalette, öffnePalette } from "./leisten";
+import { räumePanelsAuf, schliessePalette, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -61,6 +61,7 @@ async function spiele(page: Page, gerätId: string, aktion: string) {
 async function weiter(page: Page, titel: string, erledigt: boolean) {
   await expect(karte(page).getByRole("heading", { name: titel })).toBeVisible();
   if (erledigt) await expect(karte(page)).toContainText("Erledigt:");
+  await räumePanelsAuf(page);
   await karte(page).getByRole("button", { name: "Weiter" }).click();
 }
 
@@ -156,8 +157,6 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
       await page.keyboard.press("Enter");
       await page.getByLabel(/^Gateway/).fill(ip);
       await page.keyboard.press("Tab");
-      // Der Fokus hält das Detailpanel offen; es läge über der Tutorial-Karte (T-711)
-      await page.keyboard.press("Escape");
     });
     await prüfe("Rezept einlösen", () =>
       spiele(page, "avs-1", "E-Rezept einlösen \\(eGK einlesen\\)"),

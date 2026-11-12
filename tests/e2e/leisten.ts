@@ -25,3 +25,18 @@ export async function schliessePalette(page: Page) {
   );
   await expect(palette(page)).toBeHidden();
 }
+
+/**
+ * Vor einem Klick auf die Tutorial-Karte: Zeiger von den Panels weg und ein vom Fokus
+ * offen gehaltenes Detailpanel mit Escape schließen (sonst liegt es über der Karte).
+ */
+export async function räumePanelsAuf(page: Page) {
+  const fläche = await page.locator(".tiv-canvas").boundingBox();
+  if (!fläche) throw new Error("Fläche fehlt");
+  await page.mouse.move(
+    fläche.x + fläche.width / 2,
+    fläche.y + fläche.height - 10,
+  );
+  if ((await page.locator(".tiv-detail:focus-within").count()) > 0)
+    await page.keyboard.press("Escape");
+}

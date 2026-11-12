@@ -16,12 +16,15 @@ function Field({
   label,
   stored,
   hint,
+  multiline,
   onCommit,
 }: {
   id: string;
   label: string;
   stored: string;
   hint: string;
+  /** Mehrzeiliges Feld: Enter macht einen Umbruch, übernommen wird beim Verlassen. */
+  multiline?: boolean;
   onCommit: (raw: string) => ActionResult;
 }) {
   const [draft, setDraft] = useState(stored);
@@ -37,23 +40,38 @@ function Field({
     const r = draft === stored ? undefined : onCommit(draft);
     setError(r && !r.ok ? r.reason : undefined);
   };
+  const describedBy = `${id}-hint${error ? ` ${id}-err` : ""}`;
   return (
     <div className="tiv-config__field">
       <label htmlFor={id}>{label}</label>
-      <input
-        id={id}
-        type="text"
-        value={draft}
-        aria-invalid={error !== undefined}
-        aria-describedby={`${id}-hint${error ? ` ${id}-err` : ""}`}
-        onChange={(e) => {
-          setDraft(e.target.value);
-        }}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") commit();
-        }}
-      />
+      {multiline ? (
+        <textarea
+          id={id}
+          rows={4}
+          value={draft}
+          aria-invalid={error !== undefined}
+          aria-describedby={describedBy}
+          onChange={(e) => {
+            setDraft(e.target.value);
+          }}
+          onBlur={commit}
+        />
+      ) : (
+        <input
+          id={id}
+          type="text"
+          value={draft}
+          aria-invalid={error !== undefined}
+          aria-describedby={describedBy}
+          onChange={(e) => {
+            setDraft(e.target.value);
+          }}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commit();
+          }}
+        />
+      )}
       <p id={`${id}-hint`} className="tiv-config__hint">
         {hint}
       </p>
@@ -91,6 +109,14 @@ export function ZoneForm({ zone }: { zone: Zone }) {
         stored={zone.label ?? ""}
         hint={`höchstens ${String(LIMITS.name)} Zeichen`}
         onCommit={(raw) => setZone(zone.id, { label: raw })}
+      />
+      <Field
+        id={`zone-${zone.id}-description`}
+        label="Beschreibung"
+        stored={zone.description ?? ""}
+        hint={`Leer: Standardbeschreibung. Höchstens ${String(LIMITS.description)} Zeichen`}
+        multiline
+        onCommit={(raw) => setZone(zone.id, { description: raw })}
       />
       <fieldset className="tiv-config__field">
         <legend>Form</legend>

@@ -129,6 +129,8 @@ export const Zone = Element.extend({
   shape: ZoneShape.optional(),
   /** Verschieben nimmt die Geräte in der Zone mit (T-715); ohne Angabe bewegt es nur die Zone. */
   withContents: z.boolean().optional(),
+  /** Eigener Text im Detailpanel; leer gilt die Standardbeschreibung (T-717). */
+  description: text(LIMITS.description).optional(),
 });
 
 export const Topology = z

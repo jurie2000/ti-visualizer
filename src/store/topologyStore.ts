@@ -69,6 +69,8 @@ interface TopologyState {
       label?: string;
       tone?: Tone;
       shape?: ZoneShape;
+      /** Eigener Beschreibungstext (leer löscht ihn, dann gilt die Standardbeschreibung). */
+      description?: string;
       /** Verschieben mit den Geräten in der Zone. */
       withContents?: boolean;
       /** Größe und Lage (Ziehen an den Ecken und Kanten, T-716). */
@@ -249,18 +251,31 @@ export const useTopology = create<TopologyState>((set, get) => {
       const t = get().topology;
       const zone = t.zones.find((z) => z.id === id);
       if (!zone) return fail("Diese Zone gibt es nicht.");
-      const { label, w, h, x, y, tone, shape, withContents } = patch;
+      const { label, w, h, x, y, tone, shape, withContents, description } =
+        patch;
       const name = label === undefined ? undefined : strip(label).trim();
       if (name !== undefined && name.length > LIMITS.name)
         return fail(
           `Der Name darf höchstens ${String(LIMITS.name)} Zeichen haben.`,
+        );
+      const text =
+        description === undefined ? undefined : strip(description, true).trim();
+      if (text !== undefined && text.length > LIMITS.description)
+        return fail(
+          `Die Beschreibung darf höchstens ${String(LIMITS.description)} Zeichen haben.`,
         );
       for (const side of [w, h])
         if (side !== undefined && !(side > 0 && side <= MAX_SIDE))
           return fail(
             `Die Größe muss zwischen 1 und ${String(MAX_SIDE)} liegen.`,
           );
-      const { label: oldLabel, withContents: oldWith, ...rest } = zone;
+      const {
+        label: oldLabel,
+        withContents: oldWith,
+        description: oldText,
+        ...rest
+      } = zone;
+      const keptText = text === undefined ? oldText : text;
       const kept = name === undefined ? oldLabel : name;
       commit({
         ...t,
@@ -269,6 +284,7 @@ export const useTopology = create<TopologyState>((set, get) => {
             ? {
                 ...rest,
                 ...(kept && { label: kept }),
+                ...(keptText && { description: keptText }),
                 tone: tone ?? zone.tone,
                 ...(shape && { shape }),
                 ...((withContents ?? oldWith) !== undefined && {

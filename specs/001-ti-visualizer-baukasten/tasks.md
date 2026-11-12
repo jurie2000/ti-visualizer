@@ -893,6 +893,24 @@ Sicherheitsprüfung.
   - Fertig, wenn: Tests für Ziehen an der Ecke, Mindestgröße, ein
     Rückgängig-Schritt, Sperre in der Simulation.
 
+- [x] **T-717 Beschreibung der Zone** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: Beschreibung im Zonen-Detail (`detailBody`)
+  - Umfang: Das Detailpanel einer Zone bekommt das mehrzeilige Feld
+    „Beschreibung“ (beide Modi). Leer zeigt das Panel die Standardbeschreibung,
+    ein Text ersetzt sie in der Anzeige. Optionales Feld `description` an der
+    Zone (höchstens 2000 Zeichen wie `LIMITS.description`, Steuerzeichen
+    fallen beim Eintippen und Öffnen weg, Zeilenumbruch bleibt), nie als HTML.
+    Auftrag Justin im Chat 2026-11-12.
+    Auslegung (2026-11-12): Nur für Zonen, nicht für Gerät oder Verbindung.
+    Leeres Feld heißt Standard, einen Knopf „Standard wiederherstellen“ gibt
+    es nicht. Übernommen wird beim Verlassen des Feldes (Enter macht einen
+    Umbruch), ein Rückgängig-Schritt je Änderung. Das Feld ist Teil der
+    Topologie: Datei, Autosave und die Erkennung ungespeicherter Änderungen
+    (Vergleich der Topologie) greifen ohne weitere Arbeit. `schemaVersion`
+    bleibt 1, alte Dateien laden unverändert.
+  - Fertig, wenn: Tests für Standard bei leerem Feld, Ersetzen, Wiederherstellen
+    durch Leeren, Markup bleibt Text, Überlänge als Fehler, Datei-Roundtrip,
+    Schema, nur bei Zonen.
+
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
     Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen

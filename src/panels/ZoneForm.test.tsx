@@ -104,6 +104,56 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("T-717: leere Beschreibung zeigt den Standardtext, eigener Text ersetzt ihn, leeren stellt ihn wieder her", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    const anzeige = () =>
+      container.querySelector(".tiv-dbody--text")?.textContent;
+    expect(anzeige()).toMatch(/^Zonen gliedern die Fläche/);
+    const feld = screen.getByLabelText("Beschreibung");
+    await user.click(feld);
+    await user.paste("Labor im ersten Stock\nnur Mitarbeitende");
+    await user.tab();
+    expect(zones()[0]?.description).toBe(
+      "Labor im ersten Stock\nnur Mitarbeitende",
+    );
+    expect(anzeige()).toBe("Labor im ersten Stock\nnur Mitarbeitende");
+    await user.clear(feld);
+    await user.tab();
+    expect(zones()[0]).not.toHaveProperty("description");
+    expect(anzeige()).toMatch(/^Zonen gliedern die Fläche/);
+  });
+
+  it("T-717: Markup in der Beschreibung bleibt Text, zu lange Beschreibung ist ein Fehler", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    const feld = screen.getByLabelText("Beschreibung");
+    await user.click(feld);
+    await user.paste("<img src=x onerror=1><b>fett</b>");
+    await user.tab();
+    expect(container.querySelector(".tiv-dbody--text")?.textContent).toBe(
+      "<img src=x onerror=1><b>fett</b>",
+    );
+    expect(container.querySelector("img, .tiv-dbody b")).toBeNull();
+    await user.click(feld);
+    await user.paste("x".repeat(2001));
+    await user.tab();
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "höchstens 2000",
+    );
+    expect(zones()[0]?.description).toBe("<img src=x onerror=1><b>fett</b>");
+  });
+
+  it("T-717: die Beschreibung gibt es nur bei Zonen, nicht bei Geräten", () => {
+    useTopology.getState().addNode("pc", { x: 20, y: 20 });
+    const id = useTopology.getState().topology.nodes[0]?.id ?? "";
+    act(() => {
+      useUi.getState().select({ kind: "node", id });
+    });
+    render(<DetailPanel />);
+    expect(screen.queryByLabelText("Beschreibung")).toBeNull();
+  });
+
   it("entfernt die Zone, hebt die Auswahl auf und ist rückgängig machbar", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);

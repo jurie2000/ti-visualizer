@@ -225,6 +225,9 @@ function EdgeDetail({
   );
 }
 
+const ZONE_TEXT =
+  "Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind nur Beschriftung und ändern nichts an den Verbindungen.";
+
 const ZONE_COLOR: Record<Zone["tone"], string> = {
   sage: "var(--color-accent-2)",
   accent: "var(--color-accent)",
@@ -331,9 +334,8 @@ function Body({ sel }: { sel: Selection }) {
       head = { Icon: Layers, color: ZONE_COLOR[zone.tone], kicker: "Zone" };
       content = (
         <>
-          <p className="tiv-dbody">
-            Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind
-            nur Beschriftung und ändern nichts an den Verbindungen.
+          <p className="tiv-dbody tiv-dbody--text">
+            {zone.description ?? ZONE_TEXT}
           </p>
           <ZoneForm zone={zone} />
           <ZoneMembers zone={zone} topology={topology} catalog={catalog} />

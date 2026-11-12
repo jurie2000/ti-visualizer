@@ -626,6 +626,19 @@ a {
   border: 1px solid var(--color-divider);
   border-radius: 999px;
 }
+.tiv-config__field textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 14px;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: 16px;
+  resize: vertical;
+}
+.tiv-config__field textarea[aria-invalid="true"],
 .tiv-config__field input[aria-invalid="true"] {
   border-color: var(--tiv-error-bd);
   box-shadow: 0 0 0 1px var(--tiv-error-bd);
@@ -696,6 +709,7 @@ a {
 }
 /* Gesperrt (Simulation): gedämpft, nicht bedienbar */
 .tiv-config__field input:disabled,
+.tiv-config__field textarea:disabled,
 .tiv-seg:has(input:disabled),
 .tiv-config__field > label:has(> input:disabled) {
   opacity: 0.55;
@@ -929,4 +943,8 @@ a {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
+}
+.tiv-dbody--text {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }

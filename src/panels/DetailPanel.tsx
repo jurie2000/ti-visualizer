@@ -22,6 +22,7 @@ import { Actions } from "./Actions";
 import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
 import { PortList } from "./PortList";
+import { ViewPanel } from "./ViewPanel";
 import { ZoneForm } from "./ZoneForm";
 
 /** Quellen mit Link (nur https laut Schema), Texte nie als HTML (D10). */
@@ -280,9 +281,7 @@ function Body({ sel }: { sel: Selection }) {
   let violations: string[] = [];
   let actions: ReactNode;
   let found = false;
-  let content: ReactNode = (
-    <p>Gerät oder Verbindung wählen, um Details zu sehen.</p>
-  );
+  let content: ReactNode = <ViewPanel />;
   const violated = (
     pick: (f: { nodes: string[]; edges: string[] }) => boolean,
   ) =>

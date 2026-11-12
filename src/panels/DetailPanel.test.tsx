@@ -65,13 +65,40 @@ const select = (kind: "node" | "edge" | "zone", id: string) => {
 
 beforeEach(() => {
   useTopology.getState().reset(topo);
-  useUi.setState({ selection: undefined });
+  useUi.setState({
+    selection: undefined,
+    view: { edges: true, zones: true, handles: true, minimap: true },
+  });
 });
 
 describe("T-406 Detailpanel (FR-11)", () => {
-  it("zeigt ohne Auswahl einen Hinweis", () => {
+  it("T-713a: zeigt ohne Auswahl Hinweis, Legende und Ansicht-Schalter", async () => {
+    useSettings.setState({ mode: "advanced" });
+    const user = userEvent.setup();
     render(<DetailPanel />);
-    expect(screen.getByText(/wählen, um Details/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Details" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Wähle ein Gerät oder eine Verbindung/),
+    ).toBeInTheDocument();
+    const legend = screen.getByRole("region", { name: "Verbindungsarten" });
+    expect(within(legend).getByText("VPN")).toBeInTheDocument();
+    // Sammelkante gibt es nur im Modus Einfach
+    expect(within(legend).queryByText("Sammelkante")).toBeNull();
+    for (const key of ["edges", "zones", "handles", "minimap"] as const) {
+      const label = {
+        edges: "Verbindungen anzeigen",
+        zones: "Bereiche anzeigen",
+        handles: "Anschlusspunkte anzeigen",
+        minimap: "Minimap anzeigen",
+      }[key];
+      const toggle = screen.getByRole("button", { name: label });
+      expect(toggle).toHaveAttribute("aria-pressed", "true");
+      await user.click(toggle);
+      expect(toggle).toHaveAttribute("aria-pressed", "false");
+      expect(useUi.getState().view[key]).toBe(false);
+    }
   });
 
   it("zeigt für eine Kante Protokoll, Netzport, TLS und die Quelle mit Link", () => {

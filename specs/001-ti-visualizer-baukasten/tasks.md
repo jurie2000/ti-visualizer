@@ -944,7 +944,7 @@ Sicherheitsprüfung.
   - Fertig, wenn: Tests prüfen Linie nach Quellwahl, Einrasten am Ziel und
     Entfernen bei Esc und Abschluss.
 
-- [ ] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
+- [x] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der
     Verbindungsarten und die Schalter „Verbindungen“, „Bereiche“,
     „Anschlusspunkte“, „Minimap anzeigen“. Zustand flüchtig im `uiStore`,

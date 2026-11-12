@@ -946,7 +946,7 @@ Sicherheitsprüfung.
 
 - [x] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der
-    Verbindungsarten und die Schalter „Verbindungen“, „Bereiche“,
+    Verbindungsarten und die Schalter „Verbindungen“, „Zonen“,
     „Anschlusspunkte“, „Minimap anzeigen“. Zustand flüchtig im `uiStore`,
     nicht in der Datei. „Automatisch anordnen“ gehört zu Issue #88 (T-720a/b).
   - Fertig, wenn: je Schalter ein Test, dass die Fläche reagiert.
@@ -957,6 +957,16 @@ Sicherheitsprüfung.
     Wichtige, Keine) samt Hinweistexten des Mockups. Fachliche Bedeutung der
     Ebenen nach `quellen.md` und Mockup, als „Auslegung (Datum)“ festhalten.
   - Fertig, wenn: je Umschalter ein Test, dass sich die Darstellung ändert.
+  - Stand (2026-11-12): Kantenführung und Protokoll-Labels stehen mit T-713a im
+    Ansicht-Panel; **Ebene bleibt offen** (Rückmeldung Justin: erst einmal
+    draußen), der Task bleibt deshalb unabgehakt.
+  - Auslegung (2026-11-12): „Kurven“ und „Gebündelt“ wie Mockup `edgePath`
+    (Seitenmitten, Kubische Kurve bzw. rechtwinklig mit Schiene 40 px vor dem
+    Gerät mit den meisten Kanten); Sammelkanten und das Paket der Simulation
+    folgen demselben Weg. Mockup-Versatz mehrerer Kanten je Seite und
+    Label-Ausweichen entfallen. „Wichtige“ blendet die Labels der Arten
+    Kabel (phys) und WLAN aus, außer bei Störung oder Auswahl; „Keine“ zeigt
+    nur Störungen.
 
 - [x] **T-720a Sortieren: kreuzungsarmes Layout, Übersicht** · FR: FR-16 · Regeln: – · nach: T-508, T-715 · Issue #88 · Mockup: `autoLayout`, `undoLayout`, `fit`
   - Umfang: `arrange` (T-508) wird durch das Mockup-Verfahren ersetzt

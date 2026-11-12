@@ -1,13 +1,60 @@
-import { useCatalog, useSettings, useUi, type ViewToggles } from "../store";
+import { useCatalog, useSettings, useUi, type ViewSettings } from "../store";
 
-const TOGGLES: [keyof ViewToggles, string][] = [
+type Switch = "edges" | "zones" | "handles" | "minimap";
+
+const TOGGLES: [Switch, string][] = [
   ["edges", "Verbindungen anzeigen"],
-  ["zones", "Bereiche anzeigen"],
+  ["zones", "Zonen anzeigen"],
   ["handles", "Anschlusspunkte anzeigen"],
   ["minimap", "Minimap anzeigen"],
 ];
 
 /** Detailpanel ohne Auswahl (Mockup `noSelection`): Hinweis, Legende der Verbindungsarten, Ansicht-Schalter. */
+const ROUTES: [ViewSettings["route"], string][] = [
+  ["curve", "Kurven"],
+  ["ortho", "Gebündelt"],
+];
+const LABELS: [ViewSettings["labels"], string][] = [
+  ["all", "Alle"],
+  ["key", "Wichtige"],
+  ["none", "Keine"],
+];
+
+/** Umschalter mit einer gewählten Stufe (Mockup `routeModes`, `labelModes`). */
+function Segmented<K extends "route" | "labels">({
+  name,
+  field,
+  options,
+  hint,
+}: {
+  name: string;
+  field: K;
+  options: [ViewSettings[K], string][];
+  hint?: string;
+}) {
+  const value = useUi((s) => s.view[field]);
+  return (
+    <div role="group" aria-label={name} className="tiv-segmented-wrap">
+      <div className="tiv-segmented__name">{name}</div>
+      <div className="tiv-segmented">
+        {options.map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={value === id}
+            onClick={() => {
+              useUi.getState().setView({ [field]: id });
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {hint && <p className="tiv-segmented__hint">{hint}</p>}
+    </div>
+  );
+}
+
 export function ViewPanel() {
   const kinds = useCatalog((s) => s.catalog.protocols.connectionKinds);
   const simple = useSettings((s) => s.mode) === "simple";
@@ -62,6 +109,13 @@ export function ViewPanel() {
             </span>
           </button>
         ))}
+        <Segmented name="Kantenführung" field="route" options={ROUTES} />
+        <Segmented
+          name="Protokoll-Labels"
+          field="labels"
+          options={LABELS}
+          hint="„Wichtige“ blendet einfache Ethernet- und WLAN-Beschriftungen aus."
+        />
       </section>
     </div>
   );

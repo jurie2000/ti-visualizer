@@ -11,6 +11,7 @@ import {
   useSettings,
   useTopology,
   useUi,
+  DEFAULT_VIEW,
 } from "../store";
 import { DetailPanel } from "./DetailPanel";
 
@@ -67,11 +68,30 @@ beforeEach(() => {
   useTopology.getState().reset(topo);
   useUi.setState({
     selection: undefined,
-    view: { edges: true, zones: true, handles: true, minimap: true },
+    view: DEFAULT_VIEW,
   });
 });
 
 describe("T-406 Detailpanel (FR-11)", () => {
+  it("T-713b: Kantenführung und Protokoll-Labels stellen die Ansicht um", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    const route = screen.getByRole("group", { name: "Kantenführung" });
+    expect(
+      within(route).getByRole("button", { name: "Kurven" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await user.click(within(route).getByRole("button", { name: "Gebündelt" }));
+    expect(useUi.getState().view.route).toBe("ortho");
+    const labels = screen.getByRole("group", { name: "Protokoll-Labels" });
+    expect(
+      within(labels).getByRole("button", { name: "Alle" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await user.click(within(labels).getByRole("button", { name: "Wichtige" }));
+    expect(useUi.getState().view.labels).toBe("key");
+    await user.click(within(labels).getByRole("button", { name: "Keine" }));
+    expect(useUi.getState().view.labels).toBe("none");
+  });
+
   it("T-713a: zeigt ohne Auswahl Hinweis, Legende und Ansicht-Schalter", async () => {
     useSettings.setState({ mode: "advanced" });
     const user = userEvent.setup();
@@ -89,7 +109,7 @@ describe("T-406 Detailpanel (FR-11)", () => {
     for (const key of ["edges", "zones", "handles", "minimap"] as const) {
       const label = {
         edges: "Verbindungen anzeigen",
-        zones: "Bereiche anzeigen",
+        zones: "Zonen anzeigen",
         handles: "Anschlusspunkte anzeigen",
         minimap: "Minimap anzeigen",
       }[key];

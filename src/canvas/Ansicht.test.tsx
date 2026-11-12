@@ -3,7 +3,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
-import { useSettings, useTopology, useUi } from "../store";
+import { DEFAULT_VIEW, useSettings, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
@@ -30,7 +30,7 @@ beforeEach(() => {
   useSettings.setState({ mode: "advanced" });
   useUi.setState({
     selection: undefined,
-    view: { edges: true, zones: true, handles: true, minimap: true },
+    view: DEFAULT_VIEW,
   });
   useTopology.getState().reset(praxis);
 });
@@ -49,7 +49,7 @@ describe("T-713a Ansicht-Schalter wirken auf die Fläche", () => {
     });
   });
 
-  it("Bereiche: aus blendet die Zonen aus", async () => {
+  it("Zonen: aus blendet die Zonen aus", async () => {
     useTopology.getState().addZone({ x: 0, y: 0, w: 300, h: 200 });
     render(<Canvas />, { wrapper });
     expect(
@@ -79,5 +79,41 @@ describe("T-713a Ansicht-Schalter wirken auf die Fläche", () => {
     expect(screen.getByLabelText("Übersichtskarte")).toBeInTheDocument();
     setView({ minimap: false });
     expect(screen.queryByLabelText("Übersichtskarte")).toBeNull();
+  });
+
+  it("T-713b Kantenführung: Kurven zeichnen Bézier, Gebündelt rechtwinklige Wege", async () => {
+    render(<Canvas />, { wrapper });
+    const ds = () =>
+      [...document.querySelectorAll(".react-flow__edge-path")].map(
+        (p) => p.getAttribute("d") ?? "",
+      );
+    await waitFor(() => {
+      expect(ds().length).toBeGreaterThan(0);
+    });
+    expect(ds().every((d) => d.includes(" C "))).toBe(true);
+    setView({ route: "ortho" });
+    await waitFor(() => {
+      expect(
+        ds().every((d) => !d.includes(" C ") && d.split(" L ").length === 4),
+      ).toBe(true);
+    });
+  });
+
+  it("T-713b Protokoll-Labels: Alle, Wichtige (ohne einfache Kabel und WLAN), Keine", async () => {
+    render(<Canvas />, { wrapper });
+    const count = () => document.querySelectorAll(".tiv-edge-label").length;
+    await waitFor(() => {
+      expect(count()).toBeGreaterThan(0);
+    });
+    const all = count();
+    setView({ labels: "key" });
+    await waitFor(() => {
+      expect(count()).toBeLessThan(all);
+    });
+    expect(count()).toBeGreaterThan(0);
+    setView({ labels: "none" });
+    await waitFor(() => {
+      expect(count()).toBe(0);
+    });
   });
 });

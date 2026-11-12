@@ -13,12 +13,25 @@ export interface PendingAction {
 }
 
 /** Ansicht-Schalter (T-713a): flüchtig, nicht in der Datei. */
-export interface ViewToggles {
+export interface ViewSettings {
   edges: boolean;
   zones: boolean;
   handles: boolean;
   minimap: boolean;
+  /** Kantenführung (T-713b). */
+  route: "curve" | "ortho";
+  /** Protokoll-Labels an den Kanten (T-713b). */
+  labels: "all" | "key" | "none";
 }
+
+export const DEFAULT_VIEW: ViewSettings = {
+  edges: true,
+  zones: true,
+  handles: true,
+  minimap: true,
+  route: "curve",
+  labels: "all",
+};
 
 /** Flüchtiger Oberflächenzustand: nicht gespeichert, nicht Teil des Verlaufs. */
 export const useUi = create<{
@@ -40,8 +53,8 @@ export const useUi = create<{
   setZoneResize: (
     r: { id: string; x: number; y: number; w: number; h: number } | undefined,
   ) => void;
-  view: ViewToggles;
-  setView: (patch: Partial<ViewToggles>) => void;
+  view: ViewSettings;
+  setView: (patch: Partial<ViewSettings>) => void;
   select: (selection: Selection) => void;
   setZoneTool: (tool: ZoneShape | undefined) => void;
   startAction: (action: PendingAction | undefined) => void;
@@ -59,7 +72,7 @@ export const useUi = create<{
   connectPort: undefined,
   zoneTool: undefined,
   zoneResize: undefined,
-  view: { edges: true, zones: true, handles: true, minimap: true },
+  view: DEFAULT_VIEW,
   setView: (patch) => {
     set((s) => ({ view: { ...s.view, ...patch } }));
   },

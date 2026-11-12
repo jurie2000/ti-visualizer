@@ -828,8 +828,10 @@ Sicherheitsprüfung.
   - Umfang: `ZoneForm` mit Farbfeldern (Punkt im Ton plus Name, gewählt mit
     Häkchen und Rahmen wie das Segment aus T-712d) und Aktionsknöpfe im
     Panel mit vorhandenen Store-Aktionen: Gerät „Ausfall simulieren“ und
-    „Gerät entfernen“, Verbindung „trennen“ und „löschen“. Gesperrt, solange
-    die Simulation läuft (Regelwerk 7).
+    „Gerät entfernen“, Verbindung „trennen“ und „löschen“. Wie Kontextmenü
+    und Entf (Regelwerk 7): Ausfall und Trennen sind auch während der
+    Simulation möglich und brechen sie ab, Entfernen und Löschen sind dann
+    gesperrt.
     Auslegung (2026-11-12): Die Form „Rechteck/Ellipse“, „Einklappen“ und
     „Bereich duplizieren“ des Mockups gibt es in Datenmodell und Spec nicht
     und bleiben außerhalb. „Karte stecken“ steht schon im Abschnitt Karten

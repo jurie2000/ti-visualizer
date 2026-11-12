@@ -3,7 +3,8 @@ import { Button } from "../ui/Button";
 
 /**
  * Aktionsknöpfe unter dem Detail (Mockup `hasDetailActions`): Ausfall und Entfernen eines
- * Geräts, Trennen und Löschen einer Verbindung. Wie überall gesperrt, solange die Simulation läuft (Regelwerk 7).
+ * Geräts, Trennen und Löschen einer Verbindung. Wie im Kontextmenü und bei Entf (Regelwerk 7):
+ * Störungen sind auch während der Simulation möglich und brechen sie ab, Entfernen ist gesperrt.
  */
 export function Actions({
   kind,
@@ -20,7 +21,6 @@ export function Actions({
   return (
     <div className="tiv-dactions">
       <Button
-        disabled={locked}
         onClick={() => {
           toggleFault(id);
         }}

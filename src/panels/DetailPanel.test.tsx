@@ -355,16 +355,26 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(useUi.getState().selection).toBeUndefined();
   });
 
-  it("T-712e: Aktionsknöpfe sind während der Simulation gesperrt", () => {
+  it("T-712e: Während der Simulation bleibt der Ausfall möglich (Regelwerk 7, wie im Kontextmenü), Entfernen und Löschen sind gesperrt", async () => {
+    const user = userEvent.setup();
     useSim.setState({ sim: { ...IDLE, status: "running" } });
     render(<DetailPanel />);
     select("node", "kt1");
     expect(
       screen.getByRole("button", { name: "Gerät entfernen" }),
     ).toBeDisabled();
-    expect(
+    await user.click(
       screen.getByRole("button", { name: "Ausfall simulieren" }),
+    );
+    expect(useTopology.getState().topology.nodes[0]?.fault).toBe(true);
+    select("edge", "e1");
+    expect(
+      screen.getByRole("button", { name: "Verbindung löschen" }),
     ).toBeDisabled();
+    await user.click(
+      screen.getByRole("button", { name: "Verbindung trennen" }),
+    );
+    expect(useTopology.getState().topology.edges[0]?.fault).toBe(true);
     useSim.setState({ sim: IDLE });
   });
 });

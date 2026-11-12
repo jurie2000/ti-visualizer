@@ -3,6 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
 import { TONE_NAME } from "../canvas/toFlow";
+import { cardState } from "../engine/cards";
 import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
@@ -13,6 +14,7 @@ import {
   useUi,
   type Selection,
 } from "../store";
+import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
 import { PortList } from "./PortList";
 import { ZoneForm } from "./ZoneForm";
@@ -153,6 +155,7 @@ function DeviceDetail({
       {advanced && (
         <PortList node={node} topology={topology} catalog={catalog} />
       )}
+      <CardSlots node={node} catalog={catalog} />
       {advanced && <ConfigForm node={node} />}
       {type && <Sources ids={type.source} catalog={catalog} />}
     </>
@@ -253,7 +256,12 @@ function Body({ sel }: { sel: Selection }) {
           catalog.categories.find((c) => c.id === type?.category)?.name ??
           "Gerät",
       };
-      violations = violated((f) => f.nodes.includes(node.id));
+      // Abgelaufene Karte (K-3) steht im Kasten wie im Mockup
+      const expired = (node.cards ?? []).flatMap((c) => {
+        const st = cardState(topology, node.id, c.kind);
+        return st.state === "expired" && st.message ? [st.message] : [];
+      });
+      violations = [...violated((f) => f.nodes.includes(node.id)), ...expired];
       content = (
         <DeviceDetail node={node} catalog={catalog} topology={topology} />
       );

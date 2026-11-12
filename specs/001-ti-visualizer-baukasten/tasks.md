@@ -798,14 +798,22 @@ Sicherheitsprüfung.
   - Fertig, wenn: je Abschnitt ein Test, Vergleich mit den
     Mockup-Screenshots von Justin abgenommen.
 
-- [ ] **T-712c Detailpanel: Karten, Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: `showCardSlots`, `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 723
+- [x] **T-712c Detailpanel: Karten** · FR: FR-22 · Regeln: K-2, K-3 · nach: T-712b · Mockup: `showCardSlots`, `noDetailCards`, Zeilen 687 bis 714
   - Auslegung (2026-11-12): Kartenanzeige und Karten stecken/ziehen aus dem
     Panel gelten in beiden Modi (Einfach und Erweitert), anders als die
-    Anschlussliste aus T-712b (Mockup `showCardSlots`, `canAddCards`).
-  - Umfang: Gesteckte Karten (Chips mit „Karte ziehen“), „Karte stecken“ und
-    Schnellknöpfe je freier Karte, Konfiguration (`ConfigForm`), Zone-Bearbeitung
-    (`ZoneForm`) und Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des
-    Mockups. Abgelaufene Karte im Regelverstoß-Kasten.
+    Anschlussliste aus T-712b.
+  - Umfang: Abschnitt „Gesteckte Karten“ für Geräte mit Kartenschacht oder
+    NFC: vorhandene Chips (`CardChip`, mit „aus … ziehen“), Text „Noch keine
+    Karte gesteckt.“, Knopf „Karte stecken“ öffnet den vorhandenen Dialog
+    (Ablaufdatum, PIN). Eine abgelaufene Karte steht im Kasten „Regelverstoß“.
+    Auslegung (2026-11-12): Die Schnellknöpfe „+ eGK“ des Mockups entfallen,
+    weil Stecken immer Ablaufdatum und PIN-Status braucht (K-3, K-4).
+  - Fertig, wenn: Tests prüfen Anzeige, Stecken und Ziehen in beiden Modi,
+    abgelaufene Karte im Kasten, kein Abschnitt ohne Steckplatz.
+
+- [ ] **T-712d Detailpanel: Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712c · Mockup: `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 662 und 716 bis 723
+  - Umfang: Konfiguration (`ConfigForm`), Zone-Bearbeitung (`ZoneForm`) und
+    Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des Mockups.
   - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
     Abschnitt ein Test, Abnahme durch Justin.
 

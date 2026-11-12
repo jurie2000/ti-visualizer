@@ -235,4 +235,52 @@ describe("T-406 Detailpanel (FR-11)", () => {
     await user.click(screen.getByRole("button", { name: /^WAN: / }));
     expect(useUi.getState().connectPort).toEqual({ node: "kon1", port: "wan" });
   });
+
+  it("T-712c [K-2]: Karten stehen in beiden Modi im Panel, Stecken öffnet den Dialog, Ziehen entfernt die Karte", async () => {
+    const user = userEvent.setup();
+    for (const mode of ["simple", "advanced"] as const) {
+      useSettings.getState().set({ mode });
+      useTopology.getState().reset(topo);
+      useUi.setState({ dialog: undefined });
+      const { unmount } = render(<DetailPanel />);
+      select("node", "kt1");
+      const box = within(
+        screen.getByRole("region", { name: "Gesteckte Karten" }),
+      );
+      expect(box.getByText("Noch keine Karte gesteckt.")).toBeInTheDocument();
+      await user.click(box.getByRole("button", { name: "Karte stecken" }));
+      expect(useUi.getState().dialog).toBe("plugCard:kt1");
+      act(() => {
+        useTopology.getState().plugCard("kt1", {
+          kind: "smcb",
+          expires: "2030-01-01",
+          unlocked: true,
+        });
+      });
+      await user.click(
+        screen.getByRole("button", { name: /^SMC-B aus .+ ziehen$/ }),
+      );
+      expect(useTopology.getState().topology.nodes[0]?.cards).toEqual([]);
+      unmount();
+    }
+  });
+
+  it("T-712c [K-3]: abgelaufene Karte steht im Kasten Regelverstoß, Geräte ohne Steckplatz zeigen keine Karten", () => {
+    render(<DetailPanel />);
+    act(() => {
+      useTopology.getState().plugCard("kt1", {
+        kind: "egk",
+        expires: "2020-01-01",
+        pinActive: true,
+      });
+    });
+    select("node", "kt1");
+    expect(
+      screen.getByRole("group", { name: "Regelverstoß" }),
+    ).toHaveTextContent("eGK ist seit 01.01.2020 abgelaufen.");
+    select("node", "pvs1");
+    expect(
+      screen.queryByRole("region", { name: "Gesteckte Karten" }),
+    ).toBeNull();
+  });
 });

@@ -84,7 +84,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
       fehler.push(e.message);
     });
     await page.goto("./");
-    await page.getByRole("button", { name: "Tutorial starten" }).click();
+    await page.getByRole("button", { name: /Tutorial · Einsteiger/ }).click();
     await expect(karte(page)).toContainText("Schritt 1 von 16");
   });
 

@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { Topology } from "../schema";
 
 const W = 160;
@@ -45,16 +46,20 @@ function Sketch({ topology }: { topology: Topology }) {
 
 export function PresetCard({
   topology,
-  title = topology.name,
   onOpen,
 }: {
   topology: Topology;
-  title?: string;
   onOpen: () => void;
 }) {
+  const descId = useId();
   return (
     <li>
-      <button type="button" className="tiv-preset" onClick={onOpen}>
+      <button
+        type="button"
+        className="tiv-preset"
+        aria-describedby={descId}
+        onClick={onOpen}
+      >
         <span className="tiv-preset__preview">
           {topology.nodes.length > 0 ? (
             <Sketch topology={topology} />
@@ -72,8 +77,8 @@ export function PresetCard({
             </svg>
           )}
         </span>
-        <span className="tiv-preset__title">{title}</span>
-        <span>{topology.description}</span>
+        <span className="tiv-preset__title">{topology.name}</span>
+        <span id={descId}>{topology.description}</span>
       </button>
     </li>
   );

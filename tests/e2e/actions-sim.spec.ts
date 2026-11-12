@@ -151,7 +151,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await page
       .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
       .click();
-    await öffne(page, /Öffnen.*Apotheke/);
+    await öffne(page, /^Apotheke am/);
     await starte(page, "avs1", "E-Rezept einlösen \\(eGK einlesen\\)");
     await bisZumEnde(page);
   });

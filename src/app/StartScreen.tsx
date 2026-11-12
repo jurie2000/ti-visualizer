@@ -83,10 +83,11 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
         <PresetCard
           topology={{
             ...emptyTopology(),
+            name: "Leer starten",
             description:
               "Nur die Canvas — alle Geräte ziehst du selbst aus der Palette.",
           }}
-          title="Leer starten"
+
           onOpen={() => {
             open(emptyTopology());
           }}

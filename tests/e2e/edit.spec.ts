@@ -49,9 +49,9 @@ test.describe("edit", { tag: "@edit" }, () => {
 test.describe("edit Sortieren", { tag: "@edit" }, () => {
   for (const [preset, name] of [
     ["Arztpraxis", /^Arztpraxis Dr/],
-    ["Apotheke", /Öffnen.*Apotheke/],
-    ["Krankenhaus", /Öffnen.*Kreiskrankenhaus/],
-    ["Klinikum", /Öffnen.*Klinikum/],
+    ["Apotheke", /^Apotheke am/],
+    ["Krankenhaus", /^Kreiskrankenhaus/],
+    ["Klinikum", /^Klinikum/],
   ] as const) {
     for (const modus of ["Einfach", "Erweitert"]) {
       test(`T-720a Sortieren ohne Überlappung, mindestens 16 px Abstand: ${preset}, ${modus}`, async ({

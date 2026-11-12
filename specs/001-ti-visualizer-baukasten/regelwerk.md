@@ -797,11 +797,12 @@ auf der Canvas („nur im Modus Erweitert sichtbar“). So bleibt jedes
 ausgeblendete Gerät auffindbar. Status: Vereinfachung.
 
 Auslegung (2026-11-12, Issue 124): Eine Sammelkante entsteht nur, wenn
-mindestens ein Ende kein Endgerät am LAN ist. Endgeräte sind die Geräte der
+mindestens ein Ende kein Endgerät am LAN ist oder wenn eine Verbindungsregel
+die beiden Endgeräte verbindet (z. B. mobiles Kartenterminal und PVS, `erl-mkt-ps`). Endgeräte sind die Geräte der
 Kategorie `primary` (Primärsysteme) und `terminal` (Kartenterminals); die
 Abgrenzung kommt aus den Katalogdaten, ein neues Feld gibt es nicht. Ziele
 sind alle übrigen sichtbaren Geräte (Konnektor, Gateway, Dienste). Zwei
-Endgeräte am selben Switch haben keine Sammelkante, sonst sähe es nach einer
+Endgeräte am selben Switch ohne solche Regel haben keine Sammelkante, sonst sähe es nach einer
 Direktverbindung zwischen Kartenterminals aus, die es in den Daten und im
 Modus Erweitert nicht gibt. Der Switch bleibt über die Sammelkanten zum
 Konnektor auffindbar. Status: Vereinfachung.

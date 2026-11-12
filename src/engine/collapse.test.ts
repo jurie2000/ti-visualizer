@@ -124,6 +124,23 @@ describe("collapseHidden (Regelwerk 11)", () => {
     }
   });
 
+  it("Mobiles KT und PVS behalten ihre Sammelkante, weil eine Verbindungsregel sie erlaubt (Issue 124)", () => {
+    const t = topo(
+      [
+        ["mkt", "mkt"],
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+      ],
+      [
+        ["mkt", "sw"],
+        ["pvs", "sw"],
+      ],
+    );
+    expect(collapseHidden(t, catalog).groups.map((g) => g.id)).toEqual([
+      "sammel:mkt:pvs",
+    ]);
+  });
+
   it("behält Verbindungen zwischen sichtbaren Geräten", () => {
     const t = topo(
       [

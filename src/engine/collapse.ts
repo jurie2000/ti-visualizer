@@ -1,4 +1,5 @@
 import type { Catalog, Edge, Node, Topology } from "../schema";
+import { matches } from "./rules";
 
 /** Sammelkante (Regelwerk 3 und 11): ein Weg zwischen zwei sichtbaren Geräten über ausgeblendete. */
 export interface Sammelkante {
@@ -50,16 +51,25 @@ export function collapseHidden(
     topology.nodes.filter((n) => hiddenType.has(n.type)).map((n) => n.id),
   );
 
-  // Endgeräte am LAN (Regelwerk 11, Auslegung 2026-11-12): Primärsysteme und Kartenterminals
+  // Zwei Endgeräte am LAN (Primärsysteme, Kartenterminals) bekommen nur dann eine
+  // Sammelkante, wenn eine Verbindungsregel sie verbindet, z. B. PC - KIS
+  // (Regelwerk 11, Auslegung 2026-11-12)
+  const typeOf = new Map(topology.nodes.map((n) => [n.id, n.type]));
   const endCategory = new Map(
     catalog.deviceTypes.map((d) => [d.id, d.category]),
   );
   const isEndDevice = (id: string) => {
-    const c = endCategory.get(
-      topology.nodes.find((n) => n.id === id)?.type ?? "",
-    );
+    const c = endCategory.get(typeOf.get(id) ?? "");
     return c === "primary" || c === "terminal";
   };
+  const ruleConnects = (x: string, y: string) =>
+    catalog.connectionRules.some((r) => {
+      const [tx, ty] = [typeOf.get(x) ?? "", typeOf.get(y) ?? ""];
+      return (
+        (matches(r.a, tx, catalog) && matches(r.b, ty, catalog)) ||
+        (matches(r.a, ty, catalog) && matches(r.b, tx, catalog))
+      );
+    });
 
   // Nachbarschaft unter den ausgeblendeten Geräten und Anschlussstellen der sichtbaren
   const adj = new Map<string, string[]>();
@@ -88,14 +98,14 @@ export function collapseHidden(
   };
 
   // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt
-  // (nicht zwischen zwei Endgeräten);
+  // (nicht zwischen zwei Endgeräten ohne Verbindungsregel);
   // aufgeführt sind nur die Geräte auf den kürzesten Wegen, nicht Abzweige daneben
   const groups: Sammelkante[] = [];
   const visibleEnds = [...attach.keys()].sort((p, q) => p.localeCompare(q));
   for (const [i, x] of visibleEnds.entries()) {
     const dx = distances(attach.get(x) ?? new Set());
     for (const y of visibleEnds.slice(i + 1)) {
-      if (isEndDevice(x) && isEndDevice(y)) continue;
+      if (isEndDevice(x) && isEndDevice(y) && !ruleConnects(x, y)) continue;
       const dy = distances(attach.get(y) ?? new Set());
       const total = new Map<string, number>();
       for (const [h, d] of dx) {

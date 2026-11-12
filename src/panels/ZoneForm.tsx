@@ -91,19 +91,21 @@ export function ZoneForm({ zone }: { zone: Zone }) {
       />
       <fieldset className="tiv-config__field">
         <legend>Farbe</legend>
-        {Tone.options.map((tone) => (
-          <label key={tone}>
-            <input
-              type="radio"
-              name={`zone-${zone.id}-tone`}
-              checked={zone.tone === tone}
-              onChange={() => {
-                setZone(zone.id, { tone });
-              }}
-            />{" "}
-            {TONE_NAME[tone]}
-          </label>
-        ))}
+        <div className="tiv-seg">
+          {Tone.options.map((tone) => (
+            <label key={tone}>
+              <input
+                type="radio"
+                name={`zone-${zone.id}-tone`}
+                checked={zone.tone === tone}
+                onChange={() => {
+                  setZone(zone.id, { tone });
+                }}
+              />{" "}
+              {TONE_NAME[tone]}
+            </label>
+          ))}
+        </div>
       </fieldset>
       <Field
         id={`zone-${zone.id}-w`}

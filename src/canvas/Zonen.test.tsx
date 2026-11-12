@@ -13,6 +13,7 @@ import {
 } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
+import { MIN_ZONE } from "./ZoneTools";
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <ToastProvider>
@@ -28,7 +29,7 @@ beforeEach(() => {
   s().reset(emptyTopology());
   s().addNode("pc", { x: 40, y: 60 });
   s().addZone({ x: 0, y: 0, w: 300, h: 200 });
-  s().setZone("zone-1", { label: "<i>Empfang</i>" });
+  s().setZone("zone-1", { label: "<i>Empfang</i>", withContents: true });
 });
 
 describe("FR-15 Zonen auf der Canvas", () => {
@@ -57,33 +58,12 @@ describe("FR-15 Zonen auf der Canvas", () => {
     expect(nodes[0]?.position.x).toBe(40 + (zones[0]?.area.x ?? 0));
   });
 
-  it("legt per Knopf eine Zone an und wählt sie", async () => {
-    const user = userEvent.setup();
-    s().reset(emptyTopology());
+  it("T-715: es gibt keinen zweiten Weg „Zone anlegen“, nur die Zeichenleiste", () => {
     render(<Canvas />, { wrapper });
-    await user.click(screen.getByRole("button", { name: "Zone anlegen" }));
-    expect(s().topology.zones).toHaveLength(1);
-    expect(useUi.getState().selection).toEqual({ kind: "zone", id: "zone-1" });
-  });
-
-  it("legt die Zone um das gewählte Gerät", async () => {
-    const user = userEvent.setup();
-    s().reset(emptyTopology());
-    s().addNode("pc", { x: 100, y: 100 });
-    render(<Canvas />, { wrapper });
-    screen.getByRole("group", { name: /^PC/ }).focus();
-    await user.keyboard("{Enter}");
-    await user.click(screen.getByRole("button", { name: "Zone anlegen" }));
-    const area = s().topology.zones[0]?.area;
-    expect(area?.x).toBeLessThan(100);
-    expect(area?.y).toBeLessThan(100);
-    expect((area?.x ?? 0) + (area?.w ?? 0)).toBeGreaterThan(100 + 148);
-  });
-
-  it("sperrt den Knopf während der Simulation", () => {
-    useSim.setState({ sim: { ...IDLE, status: "running" } });
-    render(<Canvas />, { wrapper });
-    expect(screen.getByRole("button", { name: "Zone anlegen" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Zone anlegen" })).toBeNull();
+    expect(
+      screen.getByRole("group", { name: "Zone zeichnen" }),
+    ).toBeInTheDocument();
   });
 
   describe("T-715 Zonen-Werkzeug", () => {
@@ -158,6 +138,28 @@ describe("FR-15 Zonen auf der Canvas", () => {
       expect(useUi.getState().zoneTool).toBeUndefined();
     });
 
+    it("setzt ein gewähltes Werkzeug zurück, sobald die Simulation startet", () => {
+      useUi.setState({ zoneTool: "ellipse" });
+      render(<Canvas />, { wrapper });
+      expect(screen.getByRole("button", { name: /^Ellipse/ })).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      );
+      act(() => {
+        useSim.setState({ sim: { ...IDLE, status: "running" } });
+      });
+      expect(useUi.getState().zoneTool).toBeUndefined();
+      expect(document.querySelector(".tiv-zonedraw")).toBeNull();
+    });
+
+    it("nennt die gewählte Form im Hinweis (nicht nur Farbe)", () => {
+      useUi.setState({ zoneTool: "ellipse" });
+      render(<Canvas />, { wrapper });
+      expect(
+        screen.getByText("Ellipse auf der Fläche aufziehen · Esc bricht ab"),
+      ).toBeInTheDocument();
+    });
+
     it("sperrt die Werkzeuge während der Simulation", () => {
       useSim.setState({ sim: { ...IDLE, status: "running" } });
       render(<Canvas />, { wrapper });
@@ -171,6 +173,88 @@ describe("FR-15 Zonen auf der Canvas", () => {
       expect(
         screen.getByRole("group", { name: /Ellipse, 0 Geräte/ }),
       ).toBeInTheDocument();
+    });
+  });
+
+  it("Regression: eine gewählte Zone liegt hinter ihren Geräten, sonst fängt sie deren Mausereignisse ab", () => {
+    act(() => {
+      useUi.getState().select({ kind: "zone", id: "zone-1" });
+    });
+    render(<Canvas />, { wrapper });
+    const z = (el: Element | null) =>
+      Number((el as HTMLElement).style.zIndex || 0);
+    const zone = document.querySelector(".react-flow__node-zone");
+    const device = document.querySelector(".react-flow__node-device");
+    expect(z(zone)).toBeLessThan(z(device));
+  });
+
+  describe("T-716 Zone in der Größe ziehen", () => {
+    const eckeRechtsUnten = () => {
+      const el = document.querySelector<HTMLElement>(
+        ".react-flow__resize-control.handle.bottom.right",
+      );
+      if (!el) throw new Error("Anfasser fehlt");
+      return el;
+    };
+    // d3-drag liest `event.view`; jsdom lässt es im Konstruktor nicht zu
+    const maus = (type: string, target: EventTarget, x: number, y: number) => {
+      const e = new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y,
+        button: 0,
+      });
+      Object.defineProperty(e, "view", { value: window });
+      act(() => {
+        target.dispatchEvent(e);
+      });
+    };
+    const ziehe = (dx: number, dy: number) => {
+      maus("mousedown", eckeRechtsUnten(), 300, 200);
+      maus("mousemove", window, 300 + dx, 200 + dy);
+      maus("mouseup", window, 300 + dx, 200 + dy);
+    };
+    beforeEach(() => {
+      s().reset(emptyTopology());
+      s().addZone({ x: 0, y: 0, w: 300, h: 200 }, undefined, "ellipse");
+      act(() => {
+        useUi.getState().select({ kind: "zone", id: "zone-1" });
+      });
+    });
+
+    it("Anfasser nur bei gewählter, nicht gesperrter Zone", () => {
+      render(<Canvas />, { wrapper });
+      expect(eckeRechtsUnten()).toBeInTheDocument();
+      act(() => {
+        useUi.getState().select(undefined);
+      });
+      expect(document.querySelector(".react-flow__resize-control")).toBeNull();
+      act(() => {
+        useUi.getState().select({ kind: "zone", id: "zone-1" });
+        useSim.setState({ sim: { ...IDLE, status: "running" } });
+      });
+      expect(document.querySelector(".react-flow__resize-control")).toBeNull();
+    });
+
+    it("zieht an der Ecke: neue Größe in einem Schritt, Form bleibt, Geräte bleiben", () => {
+      s().addNode("pc", { x: 20, y: 20 });
+      render(<Canvas />, { wrapper });
+      const vorher = s().past.length;
+      ziehe(80, 50);
+      const z = s().topology.zones[0];
+      expect(z?.area).toEqual({ x: 0, y: 0, w: 380, h: 250 });
+      expect(z?.shape).toBe("ellipse");
+      expect(s().topology.nodes[0]?.position).toEqual({ x: 20, y: 20 });
+      expect(s().past.length).toBe(vorher + 1);
+    });
+
+    it("unterschreitet nie die Mindestgröße", () => {
+      render(<Canvas />, { wrapper });
+      ziehe(-1000, -1000);
+      const a = s().topology.zones[0]?.area;
+      expect(a?.w).toBe(MIN_ZONE.w);
+      expect(a?.h).toBe(MIN_ZONE.h);
     });
   });
 });

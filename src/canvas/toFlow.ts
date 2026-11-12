@@ -80,7 +80,7 @@ export function toFlow(
     return n?.label ?? d?.name ?? id;
   };
   const nodes: (ZoneFlowNode | DeviceFlowNode)[] = [];
-  // Zonen zuerst und mit negativem zIndex: sie liegen hinter Geräten und Kanten
+  // Zonen zuerst und mit stark negativem zIndex: sie liegen hinter Geräten und Kanten
   for (const zone of topology.zones) {
     const selected = selection?.kind === "zone" && selection.id === zone.id;
     const count = containedNodes(zone, topology.nodes, NODE_SIZE).length;
@@ -90,7 +90,10 @@ export function toFlow(
       position: drag[zone.id] ?? { x: zone.area.x, y: zone.area.y },
       width: zone.area.w,
       height: zone.area.h,
-      zIndex: -1,
+      // Die Größe steht fest; der Anfasser rechnet damit (T-716)
+      measured: { width: zone.area.w, height: zone.area.h },
+      // React Flow hebt gewählte Knoten um 1000: so bleibt auch eine gewählte Zone hinter den Geräten
+      zIndex: -2000,
       selected,
       domAttributes: { "aria-roledescription": "Zone" },
       ariaLabel: `Zone: ${zone.label ?? "ohne Namen"}, ${TONE_NAME[zone.tone]}, ${zone.shape === "ellipse" ? "Ellipse, " : ""}${String(count)} Geräte${selected ? ", ausgewählt" : ""}`,

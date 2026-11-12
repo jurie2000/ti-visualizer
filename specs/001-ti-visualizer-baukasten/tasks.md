@@ -625,7 +625,11 @@ Sicherheitsprüfung.
     kennt nur eine Einzelauswahl, Mehrfachauswahl ist Folgearbeit
     (Issue #92). Ein Gerät gehört zur Zone, wenn die Mitte seiner Kachel
     darin liegt. Größe nur über Zahlenfelder; Form-Presets, Ziehen und
-    Darstellungsmenü sind Features (Issues #85 bis #87). Die automatische
+    Darstellungsmenü sind Features (Issues #85 bis #87).
+    **Überholt (2026-11-12, T-715/T-716):** Zonen legt jetzt die Zeichenleiste
+    an (Aufziehen mit der Maus, Rechteck oder Ellipse), die Größe ändern
+    Anfasser an Ecken und Kanten, Zahlenfelder und „Zone anlegen“ entfallen.
+    Verschieben nimmt die Geräte nur mit, wenn die Zone es so eingestellt hat. Die automatische
     Anordnung ohne Kreuzungen ist ein eigenes Ticket (Issue #88).
 
 - [x] **T-508 Editor-Hilfen** [P] · FR: FR-16 · Regeln: – · nach: T-201, T-202
@@ -858,22 +862,35 @@ Sicherheitsprüfung.
     optional, ohne Angabe gilt Rechteck, alte Dateien laden unverändert,
     ältere App-Stände ignorieren das Feld (Zonen-Objekt nicht strikt).
     „Zone“ statt „Bereich“ und „Rechteck/Ellipse“ statt „Kasten/Kreis“ (App-
-    Begriff, Auftrag). „Zone anlegen“ (rechts oben) bleibt als Tastaturweg:
-    es legt eine Standardzone um die gewählten Geräte an (kein doppelter
-    Weg, sondern der einzige ohne Maus). Geräte in einer Ellipse zählen
+    Begriff, Auftrag). „Zone anlegen“ (rechts oben) entfällt auf Wunsch von
+    Justin, die Zeichenleiste ist der einzige Weg. Geräte in einer Ellipse zählen
     nach ihrem Rechteck (`containedNodes`), wie im Mockup. Abweichung von
-    D10 (Entscheidung Justin): kein Tastaturweg zum Aufziehen, keine
-    Zahlenfelder; siehe plan.md, Risiko dort.
+    D10 (Entscheidung Justin): kein Tastaturweg zum Anlegen und zur Größe,
+    keine Zahlenfelder; siehe plan.md, Risiko dort.
+    Auslegung (2026-11-12): Verschieben bewegt standardmäßig nur die Zone;
+    je Zone wählbar „Nur Zone“ oder „Zone mit Elementen“ (optionales Feld
+    `withContents`, ohne Angabe nur Zone, Mockup `zdrag` mit `mem`). Das
+    Detailpanel listet die Geräte in der Zone (Klick wählt das Gerät, in
+    einer Ellipse zählt das Rechteck). Eine gewählte Zone liegt hinter den
+    Geräten (zIndex -2000 gegen die Anhebung von React Flow um 1000), sonst
+    fing sie deren Ziehen ab. Beim Start der Simulation fällt das Werkzeug
+    zurück. Das aktive Werkzeug trägt Häkchen, Rahmen und Hinweistext mit
+    der Form. Größe: PR über 300 Zeilen auf ausdrücklichen Wunsch von
+    Justin, weil T-716 und die Rückmeldungen in einen PR sollten.
   - Fertig, wenn: Tests für Aufziehen (beide Formen, rückwärts, zu klein,
     Esc, Sperre in der Simulation), Schema (ohne `shape` gültig), Store und
     Panel; Leiste hell und dunkel im Browser geprüft.
 
-- [ ] **T-716 Zone an Ecken und Kanten vergrößern** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: `onResizeDown`, `zdrag` mode `resize`, Zeilen 3028, 2460
+- [x] **T-716 Zone an Ecken und Kanten vergrößern** · FR: FR-15 · Regeln: – · nach: T-715 · Mockup: `onResizeDown`, `zdrag` mode `resize`, Zeilen 3028, 2460
   - Umfang: Die gewählte Zone lässt sich an den Ecken und Kanten mit der Maus
     in der Größe ändern, die Form bleibt; ein Rückgängig-Schritt je Ziehen;
     Mindestgröße wie T-715. Keine Zahlenfelder und kein Tastaturweg (Entscheidung
     Justin 2026-11-12, siehe T-715).
-  - Fertig, wenn: Tests für Ziehen an Ecke und Kante, Mindestgröße, ein
+    Umsetzung (2026-11-12, im PR von T-715): `NodeResizer` an der Zone, nur
+    bei gewählter, nicht gesperrter Zone; vorläufige Lage und Größe im
+    `uiStore` bis zum Loslassen, dann ein `setZone`-Schritt mit x, y, w, h;
+    Mindestgröße 40 × 30, Form und Geräte bleiben.
+  - Fertig, wenn: Tests für Ziehen an der Ecke, Mindestgröße, ein
     Rückgängig-Schritt, Sperre in der Simulation.
 
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`

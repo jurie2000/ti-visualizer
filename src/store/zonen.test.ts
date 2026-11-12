@@ -70,8 +70,17 @@ describe("FR-15 Zonen im Store", () => {
     expect(zones()[0]?.tone).toBe("sage");
   });
 
-  it("verschiebt die Zone samt Geräten darin als ein Schritt, Geräte außerhalb bleiben", () => {
+  it("T-715: ohne Einstellung bewegt Verschieben nur die Zone, die Geräte darin bleiben", () => {
     const id = zone();
+    const inside = device(50, 50);
+    s().moveZone(id, { x: 100, y: 20 });
+    expect(zones()[0]?.area).toMatchObject({ x: 100, y: 20 });
+    expect(pos(inside)).toEqual({ x: 50, y: 50 });
+  });
+
+  it("T-715: Einstellung Zone mit Elementen: Verschieben nimmt die Geräte darin mit, als ein Schritt, Geräte außerhalb bleiben", () => {
+    const id = zone();
+    s().setZone(id, { withContents: true });
     const inside = device(50, 50);
     const outside = device(900, 50);
     const before = s().past.length;
@@ -83,6 +92,7 @@ describe("FR-15 Zonen im Store", () => {
     s().undo();
     expect(pos(inside)).toEqual({ x: 50, y: 50 });
     expect(zones()[0]?.area.x).toBe(0);
+    expect(zones()[0]?.withContents).toBe(true);
   });
 
   it("entfernt nur die Zone, Geräte bleiben, rückgängig bringt sie zurück", () => {
@@ -93,6 +103,18 @@ describe("FR-15 Zonen im Store", () => {
     expect(s().topology.nodes).toHaveLength(1);
     s().undo();
     expect(zones()).toHaveLength(1);
+  });
+
+  it("T-716: setZone setzt Lage und Größe in einem Schritt, Form bleibt", () => {
+    const id = zone();
+    s().setZone(id, { shape: "ellipse" });
+    const before = s().past.length;
+    s().setZone(id, { x: -20, y: 5, w: 120, h: 90 });
+    expect(zones()[0]).toMatchObject({
+      shape: "ellipse",
+      area: { x: -20, y: 5, w: 120, h: 90 },
+    });
+    expect(s().past.length).toBe(before + 1);
   });
 
   it("T-715: Form bei Anlegen und Ändern, ohne Angabe bleibt sie leer (= Rechteck)", () => {

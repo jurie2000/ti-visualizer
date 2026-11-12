@@ -127,6 +127,8 @@ export const Zone = Element.extend({
   area: Rect,
   tone: Tone,
   shape: ZoneShape.optional(),
+  /** Verschieben nimmt die Geräte in der Zone mit (T-715); ohne Angabe bewegt es nur die Zone. */
+  withContents: z.boolean().optional(),
 });
 
 export const Topology = z

@@ -22,7 +22,7 @@ interface Drag {
 /**
  * Zonen-Werkzeug (T-715, FR-15, Mockup `drawTools`/`zdraw`): Form wählen, dann die Zone auf der
  * Fläche aufziehen. Esc oder derselbe Knopf bricht ab, danach ist die Zone gewählt. Das Aufziehen
- * ist Mausbedienung; mit der Tastatur legt „Zone anlegen“ eine Zone an (D10, Auslegung 2026-11-12).
+ * ist Mausbedienung, einen Tastaturweg gibt es nicht (D10-Ausnahme, Entscheidung Justin 2026-11-12, plan.md).
  */
 export function ZoneTools() {
   const tool = useUi((s) => s.zoneTool);
@@ -32,6 +32,11 @@ export function ZoneTools() {
   const addZone = useTopology((s) => s.addZone);
   const toast = useToast();
   const [drag, setDrag] = useState<Drag>();
+
+  // Startet die Simulation, ist die Fläche gesperrt: das Werkzeug fällt zurück
+  useEffect(() => {
+    if (locked && tool) useUi.getState().setZoneTool(undefined);
+  }, [locked, tool]);
 
   useEffect(() => {
     if (!tool) return;
@@ -105,7 +110,7 @@ export function ZoneTools() {
           ))}
           {active && (
             <span className="tiv-drawbar__hint">
-              Auf der Fläche aufziehen · Esc bricht ab
+              {`${TOOLS.find((t) => t.shape === tool)?.label ?? ""} auf der Fläche aufziehen · Esc bricht ab`}
             </span>
           )}
         </div>

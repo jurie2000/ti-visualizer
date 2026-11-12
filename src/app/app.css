@@ -895,3 +895,38 @@ a {
 .tiv-seg label[data-tone="accent"] .tiv-dot {
   background: var(--color-accent);
 }
+/* Geräte in der Zone (T-715, Mockup „Geräte darin“) */
+.tiv-members {
+  margin-top: 16px;
+}
+.tiv-members h4 {
+  margin: 0 0 9px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.tiv-members ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-members p {
+  margin: 0;
+}
+.tiv-members__item {
+  padding: 5px 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}

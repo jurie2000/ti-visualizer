@@ -71,6 +71,11 @@ const SHAPES = [
   ["ellipse", "Ellipse"],
 ] as const;
 
+const MOVES = [
+  [false, "Nur Zone"],
+  [true, "Zone mit Elementen"],
+] as const;
+
 /** Zone bearbeiten (FR-15): benennen, Form, einfärben (feste Töne), entfernen. Größe und Lage gehören der Fläche: Aufziehen und Verschieben mit der Maus, Verschieben auch mit Pfeiltasten (T-715, T-716). */
 export function ZoneForm({ zone }: { zone: Zone }) {
   const setZone = useTopology((s) => s.setZone);
@@ -98,6 +103,24 @@ export function ZoneForm({ zone }: { zone: Zone }) {
                 checked={(zone.shape ?? "rect") === shape}
                 onChange={() => {
                   setZone(zone.id, { shape });
+                }}
+              />{" "}
+              {name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset className="tiv-config__field">
+        <legend>Beim Verschieben</legend>
+        <div className="tiv-seg">
+          {MOVES.map(([value, name]) => (
+            <label key={name}>
+              <input
+                type="radio"
+                name={`zone-${zone.id}-move`}
+                checked={(zone.withContents ?? false) === value}
+                onChange={() => {
+                  setZone(zone.id, { withContents: value });
                 }}
               />{" "}
               {name}

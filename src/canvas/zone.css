@@ -87,6 +87,14 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+/* Aktives Werkzeug: Häkchen und Rahmen, nie nur Farbe (D10, Muster wie das Segment) */
+.tiv-drawbar__btn[aria-pressed="true"] {
+  outline: 2px solid var(--color-text);
+  outline-offset: 1px;
+}
+.tiv-drawbar__btn[aria-pressed="true"]::before {
+  content: "✓" / "";
+}
 @media (forced-colors: active) {
   .tiv-drawbar__btn[aria-pressed="true"] {
     background: Highlight;
@@ -109,4 +117,15 @@
 }
 .tiv-zonedraw__box.is-ellipse {
   border-radius: 50%;
+}
+/* Anfasser einer gewählten Zone (T-716): Quadrate mit Rahmen an Ecken, Linie an den Kanten */
+.react-flow__resize-control.handle.tiv-zone__handle {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-accent);
+  border-radius: 3px;
+  background: var(--color-neutral-100);
+}
+.react-flow__resize-control.line.tiv-zone__line {
+  border-color: var(--color-accent);
 }

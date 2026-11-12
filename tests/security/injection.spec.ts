@@ -284,7 +284,14 @@ test.describe("injection", { tag: "@security" }, () => {
     const w = await wache(page);
     await page.goto("./");
     await page.getByRole("button", { name: /Leerer Start/ }).click();
-    await page.getByRole("button", { name: "Zone anlegen" }).click();
+    // Zone mit der Maus aufziehen (Zeichenleiste links oben)
+    await page.getByRole("button", { name: /^Rechteck/ }).click();
+    const fl = await page.locator(".react-flow").boundingBox();
+    if (!fl) throw new Error("Fläche fehlt");
+    await page.mouse.move(fl.x + 200, fl.y + 200);
+    await page.mouse.down();
+    await page.mouse.move(fl.x + 500, fl.y + 360, { steps: 5 });
+    await page.mouse.up();
     for (const p of PAYLOADS) {
       const feld = page.getByLabel("Name", { exact: true });
       await feld.fill(`\u202E${p.slice(0, 100)}`);

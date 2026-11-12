@@ -69,11 +69,16 @@ interface TopologyState {
       label?: string;
       tone?: Tone;
       shape?: ZoneShape;
+      /** Verschieben mit den Geräten in der Zone. */
+      withContents?: boolean;
+      /** Größe und Lage (Ziehen an den Ecken und Kanten, T-716). */
+      x?: number;
+      y?: number;
       w?: number;
       h?: number;
     },
   ) => ActionResult;
-  /** Setzt die obere linke Ecke; die Geräte in der Zone ziehen als ein Schritt mit. */
+  /** Setzt die obere linke Ecke; mit `withContents` ziehen die Geräte in der Zone als ein Schritt mit. */
   moveZone: (id: string, to: Point) => void;
   /** Entfernt nur die Zone, die Geräte bleiben. */
   removeZone: (id: string) => void;
@@ -244,7 +249,7 @@ export const useTopology = create<TopologyState>((set, get) => {
       const t = get().topology;
       const zone = t.zones.find((z) => z.id === id);
       if (!zone) return fail("Diese Zone gibt es nicht.");
-      const { label, w, h, tone, shape } = patch;
+      const { label, w, h, x, y, tone, shape, withContents } = patch;
       const name = label === undefined ? undefined : strip(label).trim();
       if (name !== undefined && name.length > LIMITS.name)
         return fail(
@@ -255,7 +260,7 @@ export const useTopology = create<TopologyState>((set, get) => {
           return fail(
             `Die Größe muss zwischen 1 und ${String(MAX_SIDE)} liegen.`,
           );
-      const { label: oldLabel, ...rest } = zone;
+      const { label: oldLabel, withContents: oldWith, ...rest } = zone;
       const kept = name === undefined ? oldLabel : name;
       commit({
         ...t,
@@ -266,8 +271,12 @@ export const useTopology = create<TopologyState>((set, get) => {
                 ...(kept && { label: kept }),
                 tone: tone ?? zone.tone,
                 ...(shape && { shape }),
+                ...((withContents ?? oldWith) !== undefined && {
+                  withContents: withContents ?? oldWith,
+                }),
                 area: {
-                  ...zone.area,
+                  x: x === undefined ? zone.area.x : clamp(x),
+                  y: y === undefined ? zone.area.y : clamp(y),
                   w: w ?? zone.area.w,
                   h: h ?? zone.area.h,
                 },
@@ -284,8 +293,11 @@ export const useTopology = create<TopologyState>((set, get) => {
       if (!zone) return;
       const dx = clamp(to.x) - zone.area.x;
       const dy = clamp(to.y) - zone.area.y;
+      // Ohne `withContents` bewegt sich nur die Zone (T-715)
       const inside = new Set(
-        containedNodes(zone, t.nodes, NODE_SIZE).map((n) => n.id),
+        zone.withContents
+          ? containedNodes(zone, t.nodes, NODE_SIZE).map((n) => n.id)
+          : [],
       );
       commit({
         ...t,

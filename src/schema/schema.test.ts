@@ -155,6 +155,11 @@ describe("Topology", () => {
     expect(topoOk({ zones: [{ ...zone, shape: "<b>kreis</b>" }] })).toBe(false);
   });
 
+  it("T-715: withContents ist optional und muss ein Wahrheitswert sein", () => {
+    expect(topoOk({ zones: [{ ...zone, withContents: true }] })).toBe(true);
+    expect(topoOk({ zones: [{ ...zone, withContents: "ja" }] })).toBe(false);
+  });
+
   it("lehnt unbekannten tone ab", () => {
     expect(topoOk({ zones: [{ ...zone, tone: "<script>" }] })).toBe(false);
     expect(topoOk({ zones: [{ ...zone, tone: "accent-2" }] })).toBe(false);

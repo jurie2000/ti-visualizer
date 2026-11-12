@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { IDLE } from "../engine/simulation";
@@ -41,7 +41,7 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
   it("färbt per Auswahl der festen Töne", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    expect(screen.getAllByRole("radio")).toHaveLength(5);
+    expect(screen.getAllByRole("radio")).toHaveLength(7);
     await user.click(screen.getByRole("radio", { name: "Akzent" }));
     expect(zones()[0]?.tone).toBe("accent");
   });
@@ -66,6 +66,42 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
     await user.click(screen.getByRole("radio", { name: "Ellipse" }));
     expect(zones()[0]?.shape).toBe("ellipse");
     expect(screen.getByRole("radio", { name: "Ellipse" })).toBeChecked();
+  });
+
+  it("T-715: Beim Verschieben ist ein Segment, Standard nur Zone, wählbar je Zone", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    const group = screen.getByRole("group", { name: "Beim Verschieben" });
+    expect(screen.getByRole("radio", { name: "Nur Zone" })).toBeChecked();
+    expect(group.querySelector(".tiv-seg")).not.toBeNull();
+    await user.click(screen.getByRole("radio", { name: "Zone mit Elementen" }));
+    expect(zones()[0]?.withContents).toBe(true);
+    expect(
+      screen.getByRole("radio", { name: "Zone mit Elementen" }),
+    ).toBeChecked();
+  });
+
+  it("T-715: listet die Geräte in der Zone (Ellipse zählt das Rechteck), Klick wählt das Gerät", async () => {
+    const user = userEvent.setup();
+    useTopology.getState().setZone(zones()[0]?.id ?? "", { shape: "ellipse" });
+    useTopology.getState().addNode("pc", { x: 20, y: 20 });
+    useTopology.getState().addNode("pc", { x: 900, y: 20 });
+    render(<DetailPanel />);
+    const box = within(
+      screen.getByRole("region", { name: "Geräte in der Zone" }),
+    );
+    expect(box.getAllByRole("button")).toHaveLength(1);
+    await user.click(box.getByRole("button"));
+    expect(useUi.getState().selection).toMatchObject({ kind: "node" });
+  });
+
+  it("T-715: eine leere Zone zeigt „keine“", () => {
+    render(<DetailPanel />);
+    expect(
+      within(
+        screen.getByRole("region", { name: "Geräte in der Zone" }),
+      ).getByText("keine"),
+    ).toBeInTheDocument();
   });
 
   it("entfernt die Zone, hebt die Auswahl auf und ist rückgängig machbar", async () => {

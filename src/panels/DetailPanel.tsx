@@ -1,7 +1,13 @@
 import { Cable, Layers, TriangleAlert, X, type LucideIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
-import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
+import {
+  FALLBACK_ICON,
+  ICONS,
+  NODE_SIZE,
+  categoryColor,
+} from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
+import { containedNodes } from "../engine/zones";
 import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
@@ -225,6 +231,43 @@ const ZONE_COLOR: Record<Zone["tone"], string> = {
   neutral: "var(--color-neutral-600)",
 };
 
+/** Geräte in der Zone (Mockup „Geräte darin“): Klick wählt das Gerät. In einer Ellipse zählt das Rechteck. */
+function ZoneMembers({
+  zone,
+  topology,
+  catalog,
+}: {
+  zone: Zone;
+  topology: Topology;
+  catalog: Catalog;
+}) {
+  const inside = containedNodes(zone, topology.nodes, NODE_SIZE);
+  return (
+    <section className="tiv-members" aria-label="Geräte in der Zone">
+      <h4>Geräte in der Zone</h4>
+      {inside.length === 0 ? (
+        <p>keine</p>
+      ) : (
+        <ul>
+          {inside.map((n) => (
+            <li key={n.id}>
+              <button
+                type="button"
+                className="tiv-members__item"
+                onClick={() => {
+                  useUi.getState().select({ kind: "node", id: n.id });
+                }}
+              >
+                {nameOf(n, catalog)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 function Body({ sel }: { sel: Selection }) {
   const topology = useTopology((s) => s.topology);
   const catalog = useCatalog((s) => s.catalog);
@@ -293,6 +336,7 @@ function Body({ sel }: { sel: Selection }) {
             nur Beschriftung und ändern nichts an den Verbindungen.
           </p>
           <ZoneForm zone={zone} />
+          <ZoneMembers zone={zone} topology={topology} catalog={catalog} />
         </>
       );
     }

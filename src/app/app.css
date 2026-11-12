@@ -45,6 +45,7 @@
   padding: 16px;
   min-height: 0;
   overflow-y: auto;
+  background: var(--color-neutral-100);
 }
 .tiv-canvas {
   position: relative;

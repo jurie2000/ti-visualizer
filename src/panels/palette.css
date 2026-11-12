@@ -15,7 +15,7 @@
   color: inherit;
   padding: 6px 10px;
   background: var(--color-bg);
-  border: 1px solid var(--color-neutral-300);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-sm);
 }
 .tiv-palette__group h3 {
@@ -62,10 +62,10 @@
 .tiv-palette__item {
   display: flex;
   align-items: stretch;
-  border: 1px solid var(--color-neutral-300);
+  border: 1px solid var(--color-divider);
   border-left: 4px solid var(--cat);
   border-radius: var(--radius-sm);
-  background: var(--color-surface);
+  background: var(--color-bg);
 }
 .tiv-palette__add,
 .tiv-palette__pin {

@@ -298,10 +298,11 @@
   margin: 0;
   padding: 4px;
   list-style: none;
-  background: var(--color-surface);
+  background: var(--color-neutral-100);
   color: var(--color-text);
-  border: 1px solid var(--color-neutral-300);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
 }
 .tiv-menu__item {
   display: flex;
@@ -569,9 +570,9 @@
   align-items: center;
   gap: 4px;
   padding: 5px;
-  border: 1px solid var(--tiv-btn-bd);
+  border: 1px solid var(--color-divider);
   border-radius: 999px;
-  background: var(--tiv-btn-bg);
+  background: var(--color-neutral-100);
   box-shadow: var(--shadow-sm);
 }
 .tiv-zoom__round {

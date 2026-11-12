@@ -42,6 +42,8 @@ function contrast(a: string, b: string): number {
 }
 
 const BG = ["--color-bg", "--color-surface"];
+// Bedienelemente außerhalb der Fläche (T-710)
+const PANEL = "--color-neutral-100";
 const cats = [
   "primary",
   "card",
@@ -64,6 +66,10 @@ const pairs: [string, string, number][] = [
     ["--color-text-muted", bg, 4.5],
     ["--color-accent", bg, 4.5],
   ]),
+  ["--color-text", PANEL, 4.5],
+  ["--color-text-muted", PANEL, 4.5],
+  ["--color-accent", PANEL, 4.5],
+  ["--tiv-focus", PANEL, 3],
   ["--color-bg", "--color-accent", 4.5], // Primärknopf
   ["--color-accent-800", "--color-accent-100", 4.5],
   ["--color-accent-2-800", "--color-accent-2-100", 4.5],

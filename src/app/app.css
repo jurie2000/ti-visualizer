@@ -22,13 +22,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  background: var(--color-surface);
+  background: var(--color-neutral-100);
 }
 .tiv-header {
-  border-bottom: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-divider);
 }
 .tiv-footer {
-  border-top: 1px solid var(--color-neutral-300);
+  border-top: 1px solid var(--color-divider);
   min-height: 40px;
 }
 .tiv-header h1 {
@@ -58,10 +58,10 @@
   min-height: 0;
 }
 .tiv-palette {
-  border-right: 1px solid var(--color-neutral-300);
+  border-right: 1px solid var(--color-divider);
 }
 .tiv-detail {
-  border-left: 1px solid var(--color-neutral-300);
+  border-left: 1px solid var(--color-divider);
 }
 .tiv-overlaybar,
 .tiv-smallhint {
@@ -86,7 +86,8 @@
     z-index: 5;
     width: min(320px, 100%);
     box-sizing: border-box;
-    background: var(--color-surface);
+    background: var(--color-neutral-100);
+    box-shadow: var(--shadow-lg);
   }
   .tiv-palette[data-open="true"],
   .tiv-detail[data-open="true"] {
@@ -119,7 +120,7 @@
     display: block;
     margin: 0;
     padding: 8px 16px;
-    background: var(--color-surface);
+    background: var(--color-neutral-100);
     border-bottom: 1px solid var(--color-divider);
   }
 }
@@ -367,7 +368,7 @@ a {
 .tiv-config {
   margin: 12px 0;
   padding: 8px;
-  border: 1px solid var(--color-neutral-300);
+  border: 1px solid var(--color-divider);
 }
 .tiv-config__field {
   margin: 0 0 10px;

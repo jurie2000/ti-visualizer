@@ -741,7 +741,7 @@ Sicherheitsprüfung.
     prüfen.
   - Fertig, wenn: kein Aufrufer mehr existiert und die Suiten grün sind.
 
-- [ ] **T-710 Bedienelemente hell wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-708
+- [x] **T-710 Bedienelemente hell wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-708
   - Umfang: Bedienelemente außerhalb der Fläche (Kopfleiste, Seitenleisten,
     Zoomleiste, Player, Menüs) nutzen die Panel-Farbe des Mockups
     (`--color-neutral-100`, Rand `--color-divider`, Schatten `--shadow-sm`),

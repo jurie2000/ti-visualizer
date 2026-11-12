@@ -38,10 +38,13 @@ export function arrange(
       (d) => d.id === t.nodes.find((n) => n.id === id)?.type,
     )?.category;
 
+  // Mitglieder je Zone (auch bei Überlappung); für die Sortierung zählt die erste Zone.
+  const members = t.zones.map((z) =>
+    containedNodes(z, t.nodes, size).map((n) => n.id),
+  );
   const zoneOf = new Map<string, number>();
-  t.zones.forEach((z, zi) => {
-    for (const n of containedNodes(z, t.nodes, size))
-      if (!zoneOf.has(n.id)) zoneOf.set(n.id, zi);
+  members.forEach((ids, zi) => {
+    for (const id of ids) if (!zoneOf.has(id)) zoneOf.set(id, zi);
   });
   const zk = (id: string) => zoneOf.get(id) ?? 99;
 
@@ -157,9 +160,9 @@ export function arrange(
   });
 
   const zones = t.zones.map((z, zi) => {
-    const m = t.nodes.filter((n) => zoneOf.get(n.id) === zi);
-    if (m.length === 0) return z;
-    const at = m.map((n) => pos.get(n.id) ?? n.position);
+    const ids = members[zi] ?? [];
+    if (ids.length === 0) return z;
+    const at = ids.map((id) => pos.get(id) ?? { x: 0, y: 0 });
     const x0 = Math.min(...at.map((p) => p.x)) - PAD.l;
     const y0 = Math.min(...at.map((p) => p.y)) - PAD.t;
     const x1 = Math.max(...at.map((p) => p.x + size.width)) + PAD.r;

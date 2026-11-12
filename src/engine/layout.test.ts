@@ -132,6 +132,29 @@ describe("T-720a Sortieren (FR-16)", () => {
     });
   });
 
+  it("T-720a überlappende Zonen: jede umschließt danach ihre Mitglieder", () => {
+    const t = preset("praxis");
+    const ids = t.nodes.slice(0, 4).map((n) => n.id);
+    const nodes = t.nodes.map((n) => ({
+      ...n,
+      position: ids.includes(n.id) ? { x: 100, y: 100 } : { x: 3000, y: 3000 },
+    }));
+    const zone = (id: string) => ({
+      id,
+      area: { x: 0, y: 0, w: 400, h: 400 },
+      tone: "sage" as const,
+    });
+    const r = sorted({ ...t, nodes, zones: [zone("a"), zone("b")] });
+    for (const z of r.zones)
+      for (const id of ids) {
+        const c = center(r, id);
+        expect(c.x).toBeGreaterThanOrEqual(z.area.x);
+        expect(c.x).toBeLessThanOrEqual(z.area.x + z.area.w);
+        expect(c.y).toBeGreaterThanOrEqual(z.area.y);
+        expect(c.y).toBeLessThanOrEqual(z.area.y + z.area.h);
+      }
+  });
+
   it("T-720a Zone ohne Mitglieder bleibt unverändert", () => {
     const zone = {
       id: "z",

@@ -140,8 +140,7 @@ Log-Import und Replay gehören nicht dazu.
   anordnen), Zoom, Minimap, „Übersicht“ (alles im Bild). „Sortieren“ ordnet
   die Geräte kreuzungsarm in Spalten nach Abstand zur Wurzel (VPN, sonst
   Gateway, sonst Konnektor), Zonen ziehen mit, es ist ein Rückgängig-Schritt
-  und danach passt die Ansicht auf alles an. Verbindungen laufen dabei gerade;
-  echte rechtwinklige Führung folgt mit T-713b. Rückgängig/Wiederholen und
+  und danach passt die Ansicht auf alles an. Rückgängig/Wiederholen und
   Duplizieren entfallen (Entscheidung Justin 2026-11-11, T-708).
 - **FR-17**: **Geräteeinstellungen** im Modus Erweitert, soweit für das
   Verständnis der TI nötig: IP-Adresse, Netzmaske, Gateway, DNS, VLAN,

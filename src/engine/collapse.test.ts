@@ -74,6 +74,73 @@ describe("collapseHidden (Regelwerk 11)", () => {
     ]);
   });
 
+  it("Arztpraxis: zwei Endgeräte am selben Switch bekommen keine Sammelkante, nur die Wege zum Konnektor (Issue 124)", () => {
+    const t = topo(
+      [
+        ["pvs1", "pvs"],
+        ["kt1", "kt"],
+        ["kt2", "kt"],
+        ["sw", "switch"],
+        ["kon", "kon"],
+      ],
+      [
+        ["pvs1", "sw"],
+        ["kt1", "sw"],
+        ["kt2", "sw"],
+        ["sw", "kon"],
+      ],
+    );
+    expect(collapseHidden(t, catalog).groups.map((g) => g.id)).toEqual([
+      "sammel:kon:kt1",
+      "sammel:kon:kt2",
+      "sammel:kon:pvs1",
+    ]);
+  });
+
+  it("alle Presets: jedes sichtbare Endgerät hat in Einfach weiter eine Verbindung zu einem Gerät des Netzes (Issue 124)", () => {
+    const category = new Map(
+      catalog.deviceTypes.map((d) => [d.id, d.category]),
+    );
+    for (const { id, topology } of catalog.presets) {
+      const c = collapseHidden(topology, catalog);
+      const cat = (n: string) =>
+        category.get(topology.nodes.find((x) => x.id === n)?.type ?? "");
+      const links: [string, string][] = [
+        ...c.edges.map((e): [string, string] => [
+          e.ends[0].node,
+          e.ends[1].node,
+        ]),
+        ...c.groups.map((g) => g.ends),
+      ];
+      for (const n of c.nodes) {
+        if (cat(n.id) !== "primary" && cat(n.id) !== "terminal") continue;
+        const reached = links.some(
+          ([a, b]) =>
+            (a === n.id && cat(b) !== "primary" && cat(b) !== "terminal") ||
+            (b === n.id && cat(a) !== "primary" && cat(a) !== "terminal"),
+        );
+        expect(reached, `${id}: ${n.id}`).toBe(true);
+      }
+    }
+  });
+
+  it("Mobiles KT und PVS behalten ihre Sammelkante, weil eine Verbindungsregel sie erlaubt (Issue 124)", () => {
+    const t = topo(
+      [
+        ["mkt", "mkt"],
+        ["pvs", "pvs"],
+        ["sw", "switch"],
+      ],
+      [
+        ["mkt", "sw"],
+        ["pvs", "sw"],
+      ],
+    );
+    expect(collapseHidden(t, catalog).groups.map((g) => g.id)).toEqual([
+      "sammel:mkt:pvs",
+    ]);
+  });
+
   it("behält Verbindungen zwischen sichtbaren Geräten", () => {
     const t = topo(
       [

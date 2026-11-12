@@ -911,6 +911,14 @@ Sicherheitsprüfung.
     durch Leeren, Markup bleibt Text, Überlänge als Fehler, Datei-Roundtrip,
     Schema, nur bei Zonen.
 
+- [x] **T-719 Sammelkante nur zum Ziel** · FR: – · Regeln: 11 · nach: T-717 · Issue 124
+  - Umfang: `collapseHidden` bildet keine Sammelkante mehr zwischen zwei
+    Endgeräten (Kategorie `primary` oder `terminal`) am selben ausgeblendeten
+    Gerät. Auslegung 2026-11-12 in Regelwerk 11.
+  - Fertig, wenn: Arztpraxis zeigt in Einfach nur Sammelkanten zum Konnektor
+    (kein kt1-kt2, kein kt-pvs); jedes Endgerät der vier Presets hat in Einfach
+    weiter einen Weg zu einem Gerät des Netzes.
+
 - [x] **T-718 Kartenmarken am Gerät wie im Mockup** · FR: FR-18, FR-22 · Regeln: K-2, K-3, K-4 · nach: T-712c · Mockup: `badges`, `design/mockup/screenshots/cards.png` · Issue #102
   - Auslegung (2026-11-12): Stecken und Ziehen nur noch im Detailpanel
     (T-712c), weil das Mockup am Gerät keine Knöpfe hat. Justin: Karten am

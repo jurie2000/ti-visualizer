@@ -6,6 +6,7 @@ interface Props {
   count: number;
   /** Farbe der Kategorie; zusätzlich steht der Name da, Farbe allein trägt nichts. */
   color?: string | undefined;
+  id: string;
   open: boolean;
   onToggle: () => void;
   children: ReactNode;
@@ -16,6 +17,7 @@ export function PaletteGroup({
   title,
   count,
   color,
+  id: groupId,
   open,
   onToggle,
   children,
@@ -25,6 +27,7 @@ export function PaletteGroup({
   return (
     <section
       className="tiv-palette__group"
+      data-group={groupId}
       style={color ? ({ "--cat": color } as CSSProperties) : undefined}
     >
       <h3>

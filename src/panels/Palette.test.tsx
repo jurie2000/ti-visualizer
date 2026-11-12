@@ -154,4 +154,20 @@ describe("Palette", () => {
     });
     expect(count()).toBe(0);
   });
+
+  it("T-711 Schienen-Symbol klappt die gewählte Gruppe wieder auf", async () => {
+    Element.prototype.scrollIntoView = vi.fn(); // fehlt in jsdom
+    const user = userEvent.setup();
+    const { rerender } = render(<Palette onAdd={() => undefined} />);
+    const head = screen.getByRole("button", { name: /Primärsysteme/ });
+    await user.click(head);
+    expect(head).toHaveAttribute("aria-expanded", "false");
+    const id = useCatalog
+      .getState()
+      .catalog.categories.find((c) => c.name === "Primärsysteme")?.id;
+    rerender(
+      <Palette onAdd={() => undefined} reveal={{ id: id ?? "", n: 1 }} />,
+    );
+    expect(head).toHaveAttribute("aria-expanded", "true");
+  });
 });

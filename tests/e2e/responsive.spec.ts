@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { öffnePalette } from "./leisten";
 
 const preset = (page: Page) =>
   page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
@@ -87,12 +88,15 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("./");
     await preset(page);
+    // Schienen mit 56 px, Panels klappen erst bei Hover auf (T-711)
+    for (const seite of ["left", "right"]) {
+      const schiene = await page.locator(`.tiv-side--${seite}`).boundingBox();
+      expect(schiene?.width).toBe(56);
+    }
     await expect(
       page.getByRole("complementary", { name: "Palette" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("complementary", { name: "Detailpanel" }),
-    ).toBeVisible();
+    ).toBeHidden();
+    await öffnePalette(page);
     await expect(hinweis(page)).toBeHidden();
     // Die Arbeitsfläche füllt die Resthöhe zwischen Kopfleiste und Fußzeile
     const [kopf, fläche, fuß] = await Promise.all([

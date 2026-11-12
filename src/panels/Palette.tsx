@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { categoryColor } from "../canvas/deviceStyle";
 import { useCatalog } from "../store";
 import { PaletteGroup } from "./PaletteGroup";
@@ -13,6 +13,8 @@ interface Props {
    * Ohne Angabe erscheinen alle platzierbaren Typen.
    */
   filter?: ((device: DeviceType) => boolean) | undefined;
+  /** Schienen-Symbol (T-711): klappt diese Gruppe auf und scrollt sie ins Bild; `n` zählt die Klicks. */
+  reveal?: { id: string; n: number } | undefined;
 }
 
 const PINNED = "__pinned";
@@ -24,12 +26,26 @@ const toggled = (set: Set<string>, id: string) => {
 };
 
 /** Gerätepalette: nach Kategorie gruppiert, einklappbar, anpinnbar, mit Suche. */
-export function Palette({ onAdd, filter }: Props) {
+export function Palette({ onAdd, filter, reveal }: Props) {
   const catalog = useCatalog((s) => s.catalog);
   const [query, setQuery] = useState("");
   const [closed, setClosed] = useState<Set<string>>(new Set());
   const [pinned, setPinned] = useState<Set<string>>(new Set());
   const searching = query.trim() !== "";
+
+  // Neuer Klick auf ein Schienen-Symbol: Gruppe aufklappen (Zustand beim Rendern angleichen)
+  const [seen, setSeen] = useState(reveal);
+  if (reveal !== seen) {
+    setSeen(reveal);
+    if (reveal)
+      setClosed((c) => new Set([...c].filter((x) => x !== reveal.id)));
+  }
+  useEffect(() => {
+    if (reveal)
+      document
+        .querySelector(`[data-group="${reveal.id}"]`)
+        ?.scrollIntoView({ block: "start" });
+  }, [reveal]);
 
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -80,6 +96,7 @@ export function Palette({ onAdd, filter }: Props) {
           title={g.title}
           count={g.devices.length}
           color={g.color}
+          id={g.id}
           // Bei einer Suche sind alle Treffer sichtbar
           open={searching || !closed.has(g.id)}
           onToggle={() => {

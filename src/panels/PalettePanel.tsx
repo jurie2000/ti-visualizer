@@ -1,6 +1,19 @@
 import { useReactFlow } from "@xyflow/react";
-import { NODE_SIZE } from "../canvas/deviceStyle";
-import { simLocked, useSettings, useSim, useTopology, useUi } from "../store";
+import {
+  FALLBACK_ICON,
+  ICONS,
+  NODE_SIZE,
+  categoryColor,
+} from "../canvas/deviceStyle";
+import {
+  simLocked,
+  useCatalog,
+  useSettings,
+  useSim,
+  useTopology,
+  useUi,
+} from "../store";
+import type { RailItem } from "../app/SidePanel";
 import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
 import type { DeviceType } from "./PaletteItem";
@@ -13,7 +26,13 @@ const visibleSimple = (d: DeviceType) => d.visibleSimple;
  * übereinander landen). Läuft innerhalb des `ReactFlowProvider`.
  * Im Modus Einfach zeigt sie nur Typen mit `visibleSimple` (Regelwerk 11).
  */
-export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
+export function PalettePanel({
+  onAdded,
+  reveal,
+}: {
+  onAdded?: () => void;
+  reveal?: { id: string; n: number } | undefined;
+}) {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
@@ -47,6 +66,35 @@ export function PalettePanel({ onAdded }: { onAdded?: () => void }) {
     <Palette
       onAdd={add}
       filter={mode === "simple" ? visibleSimple : undefined}
+      reveal={reveal}
     />
   );
+}
+
+/** Schienen-Symbole der Palette (T-711): je Kategorie mit passenden Geräten das Symbol ihres ersten Geräts. */
+export function usePaletteRail(onReveal: (id: string) => void): RailItem[] {
+  const catalog = useCatalog((s) => s.catalog);
+  const mode = useSettings((s) => s.mode);
+  return [...catalog.categories]
+    .sort((a, b) => a.order - b.order)
+    .flatMap((c) => {
+      const first = catalog.deviceTypes.find(
+        (d) =>
+          d.placeable &&
+          d.category === c.id &&
+          (mode !== "simple" || visibleSimple(d)),
+      );
+      return first
+        ? [
+            {
+              label: c.name,
+              icon: ICONS[first.icon] ?? FALLBACK_ICON,
+              color: categoryColor(c.id),
+              onClick: () => {
+                onReveal(c.id);
+              },
+            },
+          ]
+        : [];
+    });
 }

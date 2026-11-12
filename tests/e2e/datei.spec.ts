@@ -2,6 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import { parse } from "../../src/persistence";
 import { catalogSchema } from "../../src/schema/catalog";
+import { öffnePalette } from "./leisten";
 
 /** Aktiver Katalog aus den Dateien (loadCatalog nutzt Vite-glob, das gibt es in Node nicht). */
 async function katalog() {
@@ -59,6 +60,7 @@ async function speichern(page: Page, mitEinstellungen: boolean) {
   await page.goto("./");
   await praxis(page).click();
   await page.getByRole("button", { name: "Erweitert" }).click();
+  await öffnePalette(page);
   await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
   await expect(page.getByText(NICHT_GESPEICHERT)).toBeVisible();
   if (mitEinstellungen)
@@ -172,6 +174,7 @@ test.describe("datei", { tag: "@datei" }, () => {
     await page.getByRole("button", { name: "Erweitert" }).click();
     const switches = page.getByRole("group", { name: /^Switch/ });
     const vorher = await switches.count();
+    await öffnePalette(page);
     await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
     await expect(switches).toHaveCount(vorher + 1);
     // Autosave sichert entprellt (500 ms)

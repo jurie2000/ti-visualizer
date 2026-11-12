@@ -25,8 +25,73 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
   return (
     <section className="tiv-start" aria-labelledby="tiv-start-h">
       <AutosaveHint />
-      <h2 id="tiv-start-h">Womit möchten Sie beginnen?</h2>
+      <p className="tiv-start__kicker">Telematikinfrastruktur verstehen</p>
+      <h2 id="tiv-start-h">Womit möchtest du beginnen?</h2>
+      <p className="tiv-start__lead">
+        Lade eine fertige Einrichtung und sieh dir an, wie die Geräte
+        zusammenhängen — oder baue die Topologie selbst aus der Palette auf.
+      </p>
+      <div className="tiv-start__modes">
+        <button type="button" className="tiv-mode" onClick={startTutorial}>
+          <PlayIcon />
+          <span>
+            <span className="tiv-mode__kicker">Tutorial · Einsteiger</span>
+            <span className="tiv-mode__title">
+              Grundlagen: Frau Hoffmanns E-Rezept
+            </span>
+            <span className="tiv-mode__text">
+              Begleite Marta Hoffmann vom Arztbesuch bis in die Apotheke. Du
+              baust die Praxis von Dr. Behrens auf, schickst ihr E-Rezept durch
+              die TI und bindest die Apotheke am Markt an.
+            </span>
+          </span>
+        </button>
+        <button type="button" className="tiv-mode" disabled>
+          <PlayIcon />
+          <span>
+            <span className="tiv-mode__kicker">Tutorial · Fortgeschritten</span>
+            <span className="tiv-mode__title">
+              Netzwerk-Check in der Praxis
+            </span>
+            <span className="tiv-mode__text">
+              Nach dem Umzug der Praxis geht nichts mehr. Mit IT-Dienstleister
+              Kai findest du falsche Subnetze, doppelte Adressen und ein
+              verirrtes Gateway.
+            </span>
+            <span className="tiv-mode__soon">Kommt bald</span>
+          </span>
+        </button>
+        <button type="button" className="tiv-mode" disabled>
+          <TargetIcon />
+          <span>
+            <span className="tiv-mode__kicker">Herausforderungen</span>
+            <span className="tiv-mode__title">Fünf Störfälle, keine Hilfe</span>
+            <span className="tiv-mode__text">
+              Du erfährst nur, was in der Praxis nicht funktioniert. Die Ursache
+              findest du selbst.
+            </span>
+            <span className="tiv-mode__soon">Kommt bald</span>
+          </span>
+        </button>
+      </div>
+      {progress > 0 && progress < steps && (
+        <Button onClick={onResume}>
+          Tutorial fortsetzen (Schritt {progress + 1} von {steps})
+        </Button>
+      )}
       <ul className="tiv-start__list">
+        <PresetCard
+          topology={{
+            ...emptyTopology(),
+            name: "Leer starten",
+            description:
+              "Nur die Canvas — alle Geräte ziehst du selbst aus der Palette.",
+          }}
+
+          onOpen={() => {
+            open(emptyTopology());
+          }}
+        />
         {presets.map((p) => (
           <PresetCard
             key={p.id}
@@ -36,29 +101,31 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
             }}
           />
         ))}
-        <PresetCard
-          topology={{
-            ...emptyTopology(),
-            name: "Leerer Start",
-            description: "Eine leere Fläche, auf der Sie selbst aufbauen.",
-          }}
-          onOpen={() => {
-            open(emptyTopology());
-          }}
-        />
       </ul>
-      <h2>Tutorial</h2>
-      <p>Baue Schritt für Schritt eine Arztpraxis und eine Apotheke auf.</p>
-      <div className="tiv-start__tutorial">
-        <Button variant="primary" onClick={startTutorial}>
-          Tutorial starten
-        </Button>
-        {progress > 0 && progress < steps && (
-          <Button onClick={onResume}>
-            Tutorial fortsetzen (Schritt {progress + 1} von {steps})
-          </Button>
-        )}
-      </div>
     </section>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg className="tiv-mode__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m9 6 10 6-10 6z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function TargetIcon() {
+  return (
+    <svg
+      className="tiv-mode__icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="3.5" />
+    </svg>
   );
 }

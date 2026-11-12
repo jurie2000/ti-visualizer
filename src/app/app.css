@@ -406,37 +406,59 @@ a {
 }
 .tiv-start__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 16px;
-  margin: 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
+}
+.tiv-start__list > li {
+  display: flex;
 }
 .tiv-preset {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-neutral-300);
+  justify-content: flex-start;
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.tiv-preset:hover {
+  box-shadow: 0 2px 8px color-mix(in srgb, #201e1d 18%, transparent);
+}
+.tiv-preset__preview {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  margin-bottom: 11px;
+  overflow: hidden;
+  color: var(--color-neutral-600);
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-sm);
 }
-.tiv-preset h3,
-.tiv-preset p {
-  margin: 0;
+.tiv-preset__plus {
+  width: 26px;
+  height: 26px;
 }
-.tiv-preset__facts {
-  color: var(--color-text-muted);
-}
-.tiv-preset .tiv-btn {
-  margin-top: auto;
-  align-self: flex-start;
+.tiv-preset__title {
+  display: block;
+  margin-bottom: 3px;
+  font-weight: 700;
+  font-size: 1rem;
 }
 .tiv-preset__sketch {
   width: 100%;
-  height: auto;
-  background: var(--color-bg);
-  border-radius: var(--radius-sm);
+  height: 100%;
 }
 .tiv-preset__sketch line {
   stroke: var(--color-neutral-600);
@@ -732,10 +754,89 @@ a {
   background: var(--tiv-error-bg);
   border-left: 4px solid var(--tiv-error-bd);
 }
-.tiv-start__tutorial {
+.tiv-start h2 {
+  margin: 0 0 10px;
+  font-size: 2.5rem;
+  line-height: 1.08;
+}
+.tiv-start__kicker {
+  margin: 0 0 8px;
+  color: var(--color-accent-700);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tiv-start__lead {
+  max-width: 62ch;
+  margin: 0 0 24px;
+}
+.tiv-start__modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 0 0 16px;
+}
+.tiv-mode {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--color-neutral-100);
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.tiv-mode:hover:not(:disabled) {
+  box-shadow: 0 2px 8px color-mix(in srgb, #201e1d 18%, transparent);
+}
+.tiv-mode:disabled {
+  color: var(--color-text-muted);
+  background: var(--color-neutral-200);
+  border-color: var(--color-neutral-300);
+  cursor: not-allowed;
+}
+.tiv-mode__icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  padding: 11px;
+  color: var(--color-neutral-100);
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+.tiv-mode:disabled .tiv-mode__icon {
+  background: var(--color-neutral-500);
+}
+.tiv-mode__kicker,
+.tiv-mode__title,
+.tiv-mode__text,
+.tiv-mode__soon {
+  display: block;
+}
+.tiv-mode__kicker {
+  margin-bottom: 3px;
+  color: var(--color-accent-700);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tiv-mode:disabled .tiv-mode__kicker {
+  color: inherit;
+}
+.tiv-mode__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+.tiv-mode__text {
+  margin-top: 4px;
+}
+.tiv-mode__soon {
+  margin-top: 6px;
+  font-weight: 700;
 }
 /* Anschlussliste im Detailpanel (T-712b, Mockup `showPorts`) */
 .tiv-ports-list {

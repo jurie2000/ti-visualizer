@@ -180,7 +180,7 @@ export async function einspielen(
       buffer: Buffer.from(text),
     });
   } else if (weg === "drop") {
-    await page.getByRole("button", { name: /Leerer Start/ }).click();
+    await page.getByRole("button", { name: /Leer starten/ }).click();
     const dt = await page.evaluateHandle((t) => {
       const d = new DataTransfer();
       d.items.add(new File([t], "x.tiv.json", { type: "application/json" }));

@@ -15,7 +15,7 @@ async function perTastatur(page: Page, quelle: string, ziel: string) {
 test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
-    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
     // Die Tests bauen mit Anschlüssen und Netzgeräten: Modus Erweitert
     await page.getByRole("button", { name: "Erweitert" }).click();
     await expect(gerät(page, "sw1")).toBeVisible();

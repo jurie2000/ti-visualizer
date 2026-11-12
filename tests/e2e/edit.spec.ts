@@ -7,7 +7,7 @@ const kanten = (page: Page) => page.locator(".react-flow__edge");
 test.describe("edit", { tag: "@edit" }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("./");
-    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
     await page.getByRole("button", { name: "Erweitert" }).click();
     await expect(gerät(page, "sw1")).toBeVisible();
     await expect(kanten(page).first()).toBeVisible();
@@ -48,10 +48,10 @@ test.describe("edit", { tag: "@edit" }, () => {
 
 test.describe("edit Sortieren", { tag: "@edit" }, () => {
   for (const [preset, name] of [
-    ["Arztpraxis", /Öffnen.*Arztpraxis/],
-    ["Apotheke", /Öffnen.*Apotheke/],
-    ["Krankenhaus", /Öffnen.*Kreiskrankenhaus/],
-    ["Klinikum", /Öffnen.*Klinikum/],
+    ["Arztpraxis", /^Arztpraxis Dr/],
+    ["Apotheke", /^Apotheke am/],
+    ["Krankenhaus", /^Kreiskrankenhaus/],
+    ["Klinikum", /^Klinikum/],
   ] as const) {
     for (const modus of ["Einfach", "Erweitert"]) {
       test(`T-720a Sortieren ohne Überlappung, mindestens 16 px Abstand: ${preset}, ${modus}`, async ({

@@ -1,5 +1,5 @@
+import { useId } from "react";
 import type { Topology } from "../schema";
-import { Button } from "../ui/Button";
 
 const W = 160;
 const H = 100;
@@ -51,18 +51,35 @@ export function PresetCard({
   topology: Topology;
   onOpen: () => void;
 }) {
+  const descId = useId();
   return (
-    <li className="tiv-preset">
-      {topology.nodes.length > 0 && <Sketch topology={topology} />}
-      <h3>{topology.name}</h3>
-      <p>{topology.description}</p>
-      <p className="tiv-preset__facts">
-        {topology.nodes.length} Geräte, {topology.edges.length} Verbindungen
-      </p>
-      <Button variant="primary" onClick={onOpen}>
-        Öffnen
-        <span className="tiv-sr-only">: {topology.name}</span>
-      </Button>
+    <li>
+      <button
+        type="button"
+        className="tiv-preset"
+        aria-describedby={descId}
+        onClick={onOpen}
+      >
+        <span className="tiv-preset__preview">
+          {topology.nodes.length > 0 ? (
+            <Sketch topology={topology} />
+          ) : (
+            <svg
+              className="tiv-preset__plus"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.75"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          )}
+        </span>
+        <span className="tiv-preset__title">{topology.name}</span>
+        <span id={descId}>{topology.description}</span>
+      </button>
     </li>
   );
 }

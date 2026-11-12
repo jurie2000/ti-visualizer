@@ -70,7 +70,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     });
     await page.goto("./");
     // Die Palette (KIM-Clientmodul) und die Sperre der Topologie brauchen Erweitert
-    await öffne(page, /Öffnen.*Arztpraxis/);
+    await öffne(page, /^Arztpraxis Dr/);
     await page.getByRole("button", { name: "Erweitert" }).click();
   });
 
@@ -151,7 +151,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await page
       .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
       .click();
-    await öffne(page, /Öffnen.*Apotheke/);
+    await öffne(page, /^Apotheke am/);
     await starte(page, "avs1", "E-Rezept einlösen \\(eGK einlesen\\)");
     await bisZumEnde(page);
   });

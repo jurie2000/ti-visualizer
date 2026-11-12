@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import regelwerk from "../../specs/001-ti-visualizer-baukasten/regelwerk.md?raw";
@@ -224,16 +224,17 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     expect(screen.getByText(/Simulation gesperrt/)).toBeInTheDocument();
   });
 
-  it("T-712d: Betriebsart ist ein Segment aus Radioknöpfen mit Gruppenname und Hinweis, Wahl wird übernommen", async () => {
+  it("T-712d: Betriebsart ist eine Gruppe aus zwei Radioknöpfen im Segment, die Wahl ist markiert und wird übernommen", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DetailPanel />);
+    render(<DetailPanel />);
     open("kon-1");
-    const group = screen.getByRole("group", { name: /Betriebsart|mode/i });
-    expect(group.querySelector(".tiv-seg")).not.toBeNull();
-    expect(
-      container.querySelectorAll(".tiv-seg input[type=radio]").length,
-    ).toBeGreaterThanOrEqual(2);
-    await user.click(screen.getByRole("radio", { name: "Parallel" }));
+    const group = screen.getByRole("group", { name: "Betriebsart" });
+    const seg = group.querySelector(".tiv-seg");
+    expect(seg?.querySelectorAll("input[type=radio]")).toHaveLength(2);
+    const parallel = within(group).getByRole("radio", { name: "Parallel" });
+    expect(parallel).not.toBeChecked();
+    await user.click(parallel);
+    expect(parallel).toBeChecked();
     expect(nodeOf("kon-1")?.config?.mode).toBe("parallel");
   });
 });

@@ -911,6 +911,14 @@ Sicherheitsprüfung.
     durch Leeren, Markup bleibt Text, Überlänge als Fehler, Datei-Roundtrip,
     Schema, nur bei Zonen.
 
+- [x] **T-719 Sammelkante nur zum Ziel** · FR: – · Regeln: 11 · nach: T-717 · Issue 124
+  - Umfang: `collapseHidden` bildet keine Sammelkante mehr zwischen zwei
+    Endgeräten (Kategorie `primary` oder `terminal`) am selben ausgeblendeten
+    Gerät. Auslegung 2026-11-12 in Regelwerk 11.
+  - Fertig, wenn: Arztpraxis zeigt in Einfach nur Sammelkanten zum Konnektor
+    (kein kt1-kt2, kein kt-pvs); jedes Endgerät der vier Presets hat in Einfach
+    weiter einen Weg zu einem Gerät des Netzes.
+
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
     Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen

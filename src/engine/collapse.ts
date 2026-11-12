@@ -50,6 +50,17 @@ export function collapseHidden(
     topology.nodes.filter((n) => hiddenType.has(n.type)).map((n) => n.id),
   );
 
+  // Endgeräte am LAN (Regelwerk 11, Auslegung 2026-11-12): Primärsysteme und Kartenterminals
+  const endCategory = new Map(
+    catalog.deviceTypes.map((d) => [d.id, d.category]),
+  );
+  const isEndDevice = (id: string) => {
+    const c = endCategory.get(
+      topology.nodes.find((n) => n.id === id)?.type ?? "",
+    );
+    return c === "primary" || c === "terminal";
+  };
+
   // Nachbarschaft unter den ausgeblendeten Geräten und Anschlussstellen der sichtbaren
   const adj = new Map<string, string[]>();
   const attach = new Map<string, Set<string>>();
@@ -76,13 +87,15 @@ export function collapseHidden(
     return dist;
   };
 
-  // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt;
+  // Sammelkante je Paar sichtbarer Geräte, zwischen denen ein Weg über ausgeblendete führt
+  // (nicht zwischen zwei Endgeräten);
   // aufgeführt sind nur die Geräte auf den kürzesten Wegen, nicht Abzweige daneben
   const groups: Sammelkante[] = [];
   const visibleEnds = [...attach.keys()].sort((p, q) => p.localeCompare(q));
   for (const [i, x] of visibleEnds.entries()) {
     const dx = distances(attach.get(x) ?? new Set());
     for (const y of visibleEnds.slice(i + 1)) {
+      if (isEndDevice(x) && isEndDevice(y)) continue;
       const dy = distances(attach.get(y) ?? new Set());
       const total = new Map<string, number>();
       for (const [h, d] of dx) {

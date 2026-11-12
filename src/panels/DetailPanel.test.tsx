@@ -265,22 +265,45 @@ describe("T-406 Detailpanel (FR-11)", () => {
     }
   });
 
-  it("T-712c [K-3]: abgelaufene Karte steht im Kasten Regelverstoß, Geräte ohne Steckplatz zeigen keine Karten", () => {
-    render(<DetailPanel />);
-    act(() => {
-      useTopology.getState().plugCard("kt1", {
-        kind: "egk",
-        expires: "2020-01-01",
-        pinActive: true,
+  it("T-712c [K-3]: abgelaufene Karte steht genau einmal im Kasten (beide Modi), Geräte ohne Steckplatz zeigen keine Karten", () => {
+    for (const mode of ["simple", "advanced"] as const) {
+      useSettings.getState().set({ mode });
+      useTopology.getState().reset(topo);
+      const { unmount } = render(<DetailPanel />);
+      act(() => {
+        useTopology.getState().plugCard("kt1", {
+          kind: "egk",
+          expires: "2020-01-01",
+          pinActive: true,
+        });
       });
-    });
+      select("node", "kt1");
+      const box = screen.getByRole("group", { name: "Regelverstoß" });
+      expect(box.textContent.match(/abgelaufen/g)).toHaveLength(1);
+      select("node", "pvs1");
+      expect(
+        screen.queryByRole("region", { name: "Gesteckte Karten" }),
+      ).toBeNull();
+      unmount();
+    }
+  });
+
+  it("T-712c [K-2]: Karte stecken ist weg, solange kein Steckplatz frei ist, und kommt nach dem Ziehen zurück", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    for (const kind of ["egk", "hba", "smcb"] as const)
+      act(() => {
+        useTopology
+          .getState()
+          .plugCard("kt1", { kind, expires: "2030-01-01", unlocked: true });
+      });
     select("node", "kt1");
+    expect(screen.queryByRole("button", { name: "Karte stecken" })).toBeNull();
+    await user.click(
+      screen.getByRole("button", { name: /^HBA aus .+ ziehen$/ }),
+    );
     expect(
-      screen.getByRole("group", { name: "Regelverstoß" }),
-    ).toHaveTextContent("eGK ist seit 01.01.2020 abgelaufen.");
-    select("node", "pvs1");
-    expect(
-      screen.queryByRole("region", { name: "Gesteckte Karten" }),
-    ).toBeNull();
+      screen.getByRole("button", { name: "Karte stecken" }),
+    ).toBeInTheDocument();
   });
 });

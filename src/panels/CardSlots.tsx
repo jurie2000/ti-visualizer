@@ -1,5 +1,5 @@
 import { CardChip } from "../canvas/CardChip";
-import { plugCardDialog } from "../dialogs/PlugCardDialog";
+import { missingKinds, plugCardDialog } from "../dialogs/PlugCardDialog";
 import type { Catalog, Node } from "../schema";
 import { useUi } from "../store";
 import { Button } from "../ui/Button";
@@ -29,13 +29,15 @@ export function CardSlots({ node, catalog }: { node: Node; catalog: Catalog }) {
           />
         ))}
       </div>
-      <Button
-        onClick={() => {
-          useUi.getState().openDialog(plugCardDialog(node.id));
-        }}
-      >
-        Karte stecken
-      </Button>
+      {missingKinds(node, device).free.length > 0 && (
+        <Button
+          onClick={() => {
+            useUi.getState().openDialog(plugCardDialog(node.id));
+          }}
+        >
+          Karte stecken
+        </Button>
+      )}
     </section>
   );
 }

@@ -753,3 +753,8 @@ a {
 .tiv-cards .tiv-chip--locked {
   border-color: var(--tiv-error-fg);
 }
+.tiv-cards .tiv-btn {
+  border-radius: 999px;
+  border-color: var(--color-divider);
+  background: var(--color-bg);
+}

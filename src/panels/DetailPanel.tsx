@@ -3,7 +3,6 @@ import type { CSSProperties, ReactNode } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
 import { TONE_NAME } from "../canvas/toFlow";
-import { cardState } from "../engine/cards";
 import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
 import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
@@ -256,12 +255,7 @@ function Body({ sel }: { sel: Selection }) {
           catalog.categories.find((c) => c.id === type?.category)?.name ??
           "Gerät",
       };
-      // Abgelaufene Karte (K-3) steht im Kasten wie im Mockup
-      const expired = (node.cards ?? []).flatMap((c) => {
-        const st = cardState(topology, node.id, c.kind);
-        return st.state === "expired" && st.message ? [st.message] : [];
-      });
-      violations = [...violated((f) => f.nodes.includes(node.id)), ...expired];
+      violations = violated((f) => f.nodes.includes(node.id));
       content = (
         <DeviceDetail node={node} catalog={catalog} topology={topology} />
       );

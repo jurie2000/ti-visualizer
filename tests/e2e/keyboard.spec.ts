@@ -47,7 +47,7 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     });
     await page.goto("./");
 
-    await tabbeZu(page, /Öffnen.*Arztpraxis/);
+    await tabbeZu(page, /^Arztpraxis Dr/);
     await page.keyboard.press("Enter");
     await expect(page.locator(".react-flow__node").first()).toBeVisible();
     await tabbeZu(page, "Erweitert");
@@ -103,7 +103,7 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     page,
   }) => {
     await page.goto("./");
-    await tabbeZu(page, /Öffnen.*Arztpraxis/);
+    await tabbeZu(page, /^Arztpraxis Dr/);
     await page.keyboard.press("Enter");
     await tabbeZuGerät(page, "pvs1");
     const knoten = page.locator('.react-flow__node[data-id="pvs1"]');

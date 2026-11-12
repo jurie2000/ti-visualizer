@@ -70,7 +70,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     });
     await page.goto("./");
     // Die Palette (KIM-Clientmodul) und die Sperre der Topologie brauchen Erweitert
-    await öffne(page, /Öffnen.*Arztpraxis/);
+    await öffne(page, /^Arztpraxis Dr/);
     await page.getByRole("button", { name: "Erweitert" }).click();
   });
 

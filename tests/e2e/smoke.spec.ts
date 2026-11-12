@@ -43,8 +43,8 @@ test.describe("smoke", { tag: "@smoke" }, () => {
     ).toHaveCount(1);
 
     // Preset öffnen: Karte wählen, Canvas zeigt die Geräte, zurück zur Startansicht
-    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(5);
-    await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+    await expect(page.locator(".tiv-preset")).toHaveCount(5);
+    await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
     await expect(
       page.getByRole("group", { name: /^PVS: Praxisverwaltungssystem/ }),
     ).toBeVisible();
@@ -52,7 +52,7 @@ test.describe("smoke", { tag: "@smoke" }, () => {
       .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
       .click();
     await expect(
-      page.getByRole("heading", { name: "Womit möchten Sie beginnen?" }),
+      page.getByRole("heading", { name: "Womit möchtest du beginnen?" }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "Impressum" }).click();

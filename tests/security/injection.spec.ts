@@ -216,7 +216,7 @@ test.describe("injection", { tag: "@security" }, () => {
       await expect(page.getByRole("alert")).toContainText(meldung);
       // bedienbar: Dialog schließen, Preset öffnen
       await page.keyboard.press("Escape");
-      await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+      await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
       await expect(page.locator(".tiv-node__name").first()).toBeVisible();
     };
     await fall(
@@ -254,7 +254,7 @@ test.describe("injection", { tag: "@security" }, () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "TI Visualizer" }),
     ).toBeVisible();
-    await expect(page.getByText("Womit möchten Sie beginnen?")).toBeVisible();
+    await expect(page.getByText("Womit möchtest du beginnen?")).toBeVisible();
     await w.pruefen();
   });
 
@@ -283,7 +283,7 @@ test.describe("injection", { tag: "@security" }, () => {
   }) => {
     const w = await wache(page);
     await page.goto("./");
-    await page.getByRole("button", { name: /Leerer Start/ }).click();
+    await page.getByRole("button", { name: /Leer starten/ }).click();
     // Zone mit der Maus aufziehen (Zeichenleiste links oben)
     await page.getByRole("button", { name: /^Rechteck/ }).click();
     const fl = await page.locator(".react-flow").boundingBox();

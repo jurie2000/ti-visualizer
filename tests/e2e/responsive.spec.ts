@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { öffnePalette } from "./leisten";
 
 const preset = (page: Page) =>
-  page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+  page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
 const hinweis = (page: Page) =>
   page.getByRole("note").filter({ hasText: "größere Bildschirme" });
 const keinSeitenScroll = (page: Page) =>
@@ -66,7 +66,7 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await page.goto("./");
     await expect(hinweis(page)).toBeVisible();
     await expect(
-      page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }),
+      page.getByRole("button", { name: /^Arztpraxis Dr/ }),
     ).toBeVisible();
     expect(await keinSeitenScroll(page)).toBe(true);
     await preset(page);

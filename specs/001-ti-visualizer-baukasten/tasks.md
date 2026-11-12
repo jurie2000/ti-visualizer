@@ -1017,6 +1017,16 @@ Sicherheitsprüfung.
     zurücksetzen“ ist der Rückgängig-Schritt von „Sortieren“.
   - Fertig, wenn: je Knopf ein Test.
 
+- [x] **T-721 Startseite wie im Mockup** · FR: FR-2 · Regeln: – · nach: T-206 · Mockup: `startOn`, Zeilen 876 bis 930
+  - Umfang: Kopf mit Kicker, Überschrift und Einleitung; drei Kacheln
+    (Tutorial Einsteiger aktiv, Tutorial Fortgeschritten und Herausforderungen
+    ausgegraut mit „Kommt bald“); fünf Preset-Karten als ganze Knöpfe, zuerst
+    „Leer starten“. Texte im Mockup-Ton („du“).
+  - Fertig, wenn: bestehende Start-Tests und E2E laufen mit den neuen
+    Namen; die ausgegrauten Kacheln sind nicht bedienbar.
+  - Auslegung (2026-11-12): Kartennamen bleiben aus dem Katalog, nicht aus
+    dem Mockup. Fortgeschritten und Herausforderungen folgen mit T-705-Umfeld.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

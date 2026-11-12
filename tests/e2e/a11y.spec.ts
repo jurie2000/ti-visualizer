@@ -17,7 +17,7 @@ test.describe("a11y", { tag: "@a11y" }, () => {
 
       test("Canvas mit Preset ohne Axe-Verstöße", async ({ page }) => {
         await page.goto("./");
-        await page.getByRole("button", { name: /Öffnen.*Arztpraxis/ }).click();
+        await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();
         await expect(page.getByRole("group").first()).toBeVisible();
         const result = await new AxeBuilder({ page }).withTags(tags).analyze();
         expect(result.violations).toEqual([]);

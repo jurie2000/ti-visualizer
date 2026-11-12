@@ -53,7 +53,7 @@ async function csp(page: Page) {
 
 const NICHT_GESPEICHERT = "Nicht als Datei gespeichert";
 const praxis = (page: Page) =>
-  page.getByRole("button", { name: /Öffnen.*Arztpraxis/ });
+  page.getByRole("button", { name: /^Arztpraxis Dr/ });
 
 /** Preset laden, Switch ergänzen, speichern (Strg+S): liefert Dateiname und -text. */
 async function speichern(page: Page, mitEinstellungen: boolean) {

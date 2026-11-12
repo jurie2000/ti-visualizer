@@ -8,10 +8,9 @@ import {
 import { AlertTriangle, CircleCheck } from "lucide-react";
 import type { CSSProperties } from "react";
 import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
-import { plugCardDialog } from "../dialogs/PlugCardDialog";
 import { isFree } from "../engine/rules";
-import { useSettings, useTopology, useUi } from "../store";
-import { CardChip } from "./CardChip";
+import { useSettings, useTopology } from "../store";
+import { CardMark } from "./CardChip";
 import { HiddenToggle } from "./HiddenToggle";
 import type { DeviceFlowNode } from "./toFlow";
 
@@ -24,12 +23,10 @@ import type { DeviceFlowNode } from "./toFlow";
  *   Handles legen nur fest, wo man verbindet. Quelle: sichtbarer Punkt am
  *   rechten Rand. Ziel: die ganze Kachel, aber nur während ein Zug läuft,
  *   damit das Verschieben des Geräts unberührt bleibt.
- * - Karten-Chips (T-205): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
+ * - Kartenmarken (T-205, T-718): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
  */
 export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
   const { node, device, category, hidden } = data;
-  const nfc = device.capabilities.includes("nfcCard");
-  const hasCards = nfc || device.capabilities.includes("cardSlots");
   const shape = category?.shape ?? "box";
   // Ziel annehmen beim Ziehen und beim Verbinden per Klick (Punkt, dann Ziel)
   const dragging = useConnection().inProgress;
@@ -83,26 +80,8 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
           )}
           <div className="tiv-node__slot">
             {node.cards?.map((c) => (
-              <CardChip
-                key={c.kind}
-                nodeId={node.id}
-                card={c}
-                nfc={nfc}
-                owner={node.label ?? device.name}
-              />
+              <CardMark key={c.kind} nodeId={node.id} card={c} />
             ))}
-            {hasCards && (
-              <button
-                type="button"
-                className="tiv-chip__plug nodrag nopan"
-                aria-label={`Karte stecken: ${node.label ?? device.name}`}
-                onClick={() => {
-                  useUi.getState().openDialog(plugCardDialog(node.id));
-                }}
-              >
-                Karte stecken
-              </button>
-            )}
             {hidden.length > 0 && (
               <HiddenToggle
                 label={`+${String(hidden.length)} ausgeblendet`}

@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 const palette = (page: Page) =>
   page.getByRole("complementary", { name: "Palette" });
@@ -39,4 +39,18 @@ export async function räumePanelsAuf(page: Page) {
   );
   if ((await page.locator(".tiv-detail:focus-within").count()) > 0)
     await page.keyboard.press("Escape");
+}
+
+/** Karte stecken über das Detailpanel (T-718): Gerät wählen, Schiene rechts aufklappen, Knopf drücken. */
+export async function öffneKarteStecken(page: Page, gerät: Locator) {
+  await gerät.click();
+  const schiene = await page
+    .locator(".tiv-side--right .tiv-rail")
+    .boundingBox();
+  if (!schiene) throw new Error("Schiene fehlt");
+  await page.mouse.move(schiene.x + 28, schiene.y + schiene.height / 2);
+  await page
+    .getByRole("region", { name: "Gesteckte Karten" })
+    .getByRole("button", { name: "Karte stecken" })
+    .click();
 }

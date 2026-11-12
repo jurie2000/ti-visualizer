@@ -911,6 +911,20 @@ Sicherheitsprüfung.
     durch Leeren, Markup bleibt Text, Überlänge als Fehler, Datei-Roundtrip,
     Schema, nur bei Zonen.
 
+- [x] **T-718 Kartenmarken am Gerät wie im Mockup** · FR: FR-18, FR-22 · Regeln: K-2, K-3, K-4 · nach: T-712c · Mockup: `badges`, `design/mockup/screenshots/cards.png` · Issue #102
+  - Auslegung (2026-11-12): Stecken und Ziehen nur noch im Detailpanel
+    (T-712c), weil das Mockup am Gerät keine Knöpfe hat. Justin: Karten am
+    Gerät so darstellen wie im Mockup (Chat, 2026-11-12).
+  - Umfang: Am Gerät steht je Karte eine Marke mit dem Kurznamen (eGK,
+    SMC-B, HBA), Kartenfarbe getönt, Schrift 0,8125 rem fett. Zustand nie nur
+    über Farbe (D10): „abgelaufen“ mit Warnsymbol, „nicht freigeschaltet“ mit
+    Schloss, „PIN aus“ als Text. Weg und Knöpfe („×“, „Karte stecken“) am
+    Gerät entfallen; der volle Chip im Panel bleibt. Neues Token
+    `--tiv-card-fg` (hell und dunkel).
+  - Fertig, wenn: Tests: Marke nur Kurzname ohne Knopf, abgelaufen und
+    gesperrt mit Text, Kontrast `--tiv-card-fg` hell und dunkel im Token-Test,
+    E2E stecken über das Panel.
+
 - [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
   - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
     Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen

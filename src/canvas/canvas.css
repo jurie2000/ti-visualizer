@@ -122,18 +122,36 @@
   border-width: 2px;
   border-color: var(--tiv-error-fg);
 }
-.tiv-chip__unplug,
-.tiv-chip__plug {
+.tiv-chip__unplug {
   font: inherit;
   color: inherit;
   background: transparent;
   border: 0;
   cursor: pointer;
   padding: 0 2px;
-  text-decoration: underline;
-}
-.tiv-chip__unplug {
   text-decoration: none;
+}
+/* Kartenmarke am Gerät (T-718): Mockup `badges`, Schrift mindestens 0,75 rem. */
+.tiv-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 1px 9px;
+  color: var(--tiv-card-fg);
+  background: color-mix(in srgb, var(--tiv-cat-card) 18%, transparent);
+  border: 1px solid var(--tiv-cat-card);
+  border-radius: 999px;
+}
+.tiv-mark--expired,
+.tiv-mark--locked {
+  color: var(--tiv-error-fg);
+  background: var(--tiv-error-bg);
+  border-style: dashed;
+  border-width: 2px;
+  border-color: var(--tiv-error-fg);
 }
 .tiv-node__slot:empty {
   display: none;

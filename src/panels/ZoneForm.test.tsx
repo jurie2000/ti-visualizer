@@ -46,6 +46,17 @@ describe("FR-15 Zone bearbeiten im Detailpanel", () => {
     expect(zones()[0]?.tone).toBe("accent");
   });
 
+  it("T-712e: jedes Farbfeld trägt Punkt und Namen (nie nur Farbe) und bleibt Radioknopf im Segment", () => {
+    const { container } = render(<DetailPanel />);
+    const options = container.querySelectorAll(".tiv-seg label[data-tone]");
+    expect([...options].map((o) => o.textContent.trim())).toEqual([
+      "Salbei",
+      "Akzent",
+      "Neutral",
+    ]);
+    expect(container.querySelectorAll(".tiv-seg .tiv-dot")).toHaveLength(3);
+  });
+
   it("ändert die Größe und lehnt Unsinn ab", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);

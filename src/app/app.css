@@ -858,8 +858,40 @@ a {
 .tiv-cards .tiv-chip--locked {
   border-color: var(--tiv-error-fg);
 }
-.tiv-cards .tiv-btn {
+.tiv-cards .tiv-btn,
+.tiv-dactions .tiv-btn {
   border-radius: 999px;
   border-color: var(--color-divider);
   background: var(--color-bg);
+}
+.tiv-dactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 15px;
+}
+.tiv-dactions .tiv-btn {
+  height: 34px;
+  white-space: nowrap;
+}
+.tiv-dactions .tiv-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+/* Farbfeld der Zone: Punkt im Ton, Name bleibt sichtbar (nie nur Farbe) */
+.tiv-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  border: 1px solid var(--color-text);
+  border-radius: 999px;
+  vertical-align: -1px;
+  background: var(--color-neutral-600);
+}
+.tiv-seg label[data-tone="sage"] .tiv-dot {
+  background: var(--color-accent-2);
+}
+.tiv-seg label[data-tone="accent"] .tiv-dot {
+  background: var(--color-accent);
 }

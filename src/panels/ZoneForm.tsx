@@ -93,7 +93,7 @@ export function ZoneForm({ zone }: { zone: Zone }) {
         <legend>Farbe</legend>
         <div className="tiv-seg">
           {Tone.options.map((tone) => (
-            <label key={tone}>
+            <label key={tone} data-tone={tone}>
               <input
                 type="radio"
                 name={`zone-${zone.id}-tone`}
@@ -101,8 +101,8 @@ export function ZoneForm({ zone }: { zone: Zone }) {
                 onChange={() => {
                   setZone(zone.id, { tone });
                 }}
-              />{" "}
-              {TONE_NAME[tone]}
+              />
+              <span className="tiv-dot" aria-hidden="true" /> {TONE_NAME[tone]}
             </label>
           ))}
         </div>
@@ -123,14 +123,16 @@ export function ZoneForm({ zone }: { zone: Zone }) {
         numeric
         onCommit={side("h")}
       />
-      <Button
-        onClick={() => {
-          removeZone(zone.id);
-          useUi.getState().select(undefined);
-        }}
-      >
-        Zone entfernen
-      </Button>
+      <div className="tiv-dactions">
+        <Button
+          onClick={() => {
+            removeZone(zone.id);
+            useUi.getState().select(undefined);
+          }}
+        >
+          Zone entfernen
+        </Button>
+      </div>
     </fieldset>
   );
 }

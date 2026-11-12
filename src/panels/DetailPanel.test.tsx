@@ -2,8 +2,10 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Topology } from "../schema";
+import { IDLE } from "../engine/simulation";
 import {
   openTopology,
+  useSim,
   resolveGuard,
   useCatalog,
   useSettings,
@@ -305,5 +307,74 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(
       screen.getByRole("button", { name: "Karte stecken" }),
     ).toBeInTheDocument();
+  });
+
+  it("T-712e: Ausfall eines Geräts schalten und zurücknehmen, Beschriftung folgt dem Zustand", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    select("node", "kt1");
+    await user.click(
+      screen.getByRole("button", { name: "Ausfall simulieren" }),
+    );
+    expect(useTopology.getState().topology.nodes[0]?.fault).toBe(true);
+    await user.click(
+      screen.getByRole("button", { name: "Wieder in Betrieb nehmen" }),
+    );
+    expect(useTopology.getState().topology.nodes[0]?.fault).toBe(false);
+  });
+
+  it("T-712e: Gerät entfernen nimmt seine Verbindungen mit und hebt die Auswahl auf", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    select("node", "kt1");
+    await user.click(screen.getByRole("button", { name: "Gerät entfernen" }));
+    const t = useTopology.getState().topology;
+    expect(t.nodes.map((n) => n.id)).toEqual(["kon1", "pvs1"]);
+    expect(t.edges).toEqual([]);
+    expect(useUi.getState().selection).toBeUndefined();
+  });
+
+  it("T-712e: Verbindung trennen, wiederherstellen und löschen", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    select("edge", "e1");
+    await user.click(
+      screen.getByRole("button", { name: "Verbindung trennen" }),
+    );
+    expect(useTopology.getState().topology.edges[0]?.fault).toBe(true);
+    await user.click(
+      screen.getByRole("button", { name: "Verbindung wiederherstellen" }),
+    );
+    expect(useTopology.getState().topology.edges[0]?.fault).toBe(false);
+    await user.click(
+      screen.getByRole("button", { name: "Verbindung löschen" }),
+    );
+    expect(useTopology.getState().topology.edges.map((e) => e.id)).toEqual([
+      "e2",
+    ]);
+    expect(useUi.getState().selection).toBeUndefined();
+  });
+
+  it("T-712e: Während der Simulation bleibt der Ausfall möglich (Regelwerk 7, wie im Kontextmenü), Entfernen und Löschen sind gesperrt", async () => {
+    const user = userEvent.setup();
+    useSim.setState({ sim: { ...IDLE, status: "running" } });
+    render(<DetailPanel />);
+    select("node", "kt1");
+    expect(
+      screen.getByRole("button", { name: "Gerät entfernen" }),
+    ).toBeDisabled();
+    await user.click(
+      screen.getByRole("button", { name: "Ausfall simulieren" }),
+    );
+    expect(useTopology.getState().topology.nodes[0]?.fault).toBe(true);
+    select("edge", "e1");
+    expect(
+      screen.getByRole("button", { name: "Verbindung löschen" }),
+    ).toBeDisabled();
+    await user.click(
+      screen.getByRole("button", { name: "Verbindung trennen" }),
+    );
+    expect(useTopology.getState().topology.edges[0]?.fault).toBe(true);
+    useSim.setState({ sim: IDLE });
   });
 });

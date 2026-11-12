@@ -824,12 +824,19 @@ Sicherheitsprüfung.
   - Fertig, wenn: bestehende `ConfigForm`-Tests grün, Segment getestet, hell
     und dunkel geprüft.
 
-- [ ] **T-712e Detailpanel: Zone-Bearbeitung und Aktionsknöpfe** · FR: FR-22, FR-15 · Regeln: – · nach: T-712d · Mockup: `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 613 und 716 bis 723
-  - Umfang: `ZoneForm` mit Farbfeldern statt Radioknöpfen und Aktionsknöpfe
-    im Panel (Ausfall simulieren, Gerät/Zone/Verbindung entfernen,
-    Verbindung trennen) mit vorhandenen Store-Aktionen. Die Form
-    „Rechteck/Ellipse“ des Mockups gibt es im Datenmodell nicht und bleibt
-    außerhalb, bis es eine Spec dafür gibt.
+- [x] **T-712e Detailpanel: Zone-Bearbeitung und Aktionsknöpfe** · FR: FR-22, FR-15 · Regeln: Regelwerk 7 · nach: T-712d · Mockup: `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 613 und 716 bis 723
+  - Umfang: `ZoneForm` mit Farbfeldern (Punkt im Ton plus Name, gewählt mit
+    Häkchen und Rahmen wie das Segment aus T-712d) und Aktionsknöpfe im
+    Panel mit vorhandenen Store-Aktionen: Gerät „Ausfall simulieren“ und
+    „Gerät entfernen“, Verbindung „trennen“ und „löschen“. Wie Kontextmenü
+    und Entf (Regelwerk 7): Ausfall und Trennen sind auch während der
+    Simulation möglich und brechen sie ab, Entfernen und Löschen sind dann
+    gesperrt.
+    Auslegung (2026-11-12): Die Form „Rechteck/Ellipse“, „Einklappen“ und
+    „Bereich duplizieren“ des Mockups gibt es in Datenmodell und Spec nicht
+    und bleiben außerhalb. „Karte stecken“ steht schon im Abschnitt Karten
+    (T-712c). „Zone entfernen“ bleibt im Formular (Bestandstest), jetzt als
+    Pille. Die Farbe bleibt Auswahl der drei festen Töne (D10, FR-15).
   - Fertig, wenn: bestehende `ZoneForm`-Tests grün, je Aktion ein Test,
     Abnahme durch Justin.
 

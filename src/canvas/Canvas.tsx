@@ -96,6 +96,7 @@ export function Canvas() {
   const reduceMotion = useSettings((s) => s.reduceMotion);
   const locked = simLocked(sim);
   const select = useUi((s) => s.select);
+  const view = useUi((s) => s.view);
   // Positionen während des Ziehens: erst beim Loslassen geht ein Schritt in den Verlauf
   const [drag, setDrag] = useState<Record<string, Point>>({});
   // Gemessene Größen von React Flow. Ohne sie verlieren neu gebaute Knoten ihre
@@ -128,17 +129,22 @@ export function Canvas() {
   const edges = useMemo(
     () =>
       flow.edges.map((e) =>
-        lit?.edges.includes(e.id) ||
-        (e.type === "group" && litNodes.has(e.source) && litNodes.has(e.target))
-          ? {
-              ...e,
-              className: lit?.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
-              ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
-            }
-          : e,
+        !view.edges
+          ? { ...e, hidden: true }
+          : lit?.edges.includes(e.id) ||
+              (e.type === "group" &&
+                litNodes.has(e.source) &&
+                litNodes.has(e.target))
+            ? {
+                ...e,
+                className:
+                  lit?.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
+                ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
+              }
+            : e,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
-    [flow.edges, lit, hop],
+    [flow.edges, lit, hop, view.edges],
   );
   const resize = useUi((s) => s.zoneResize);
   const nodes = useMemo(
@@ -153,10 +159,11 @@ export function Canvas() {
             height: resize.h,
             measured: { width: resize.w, height: resize.h },
           };
+        if (n.type === "zone" && !view.zones) return { ...n, hidden: true };
         const measured = n.type === "zone" ? undefined : sizes[n.id];
         return measured ? { ...n, measured } : n;
       }),
-    [flow.nodes, sizes, resize],
+    [flow.nodes, sizes, resize, view.zones],
   );
 
   const onNodesChange = (
@@ -277,7 +284,14 @@ export function Canvas() {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        className={reduceMotion ? "is-reduced-motion" : undefined}
+        className={
+          [
+            reduceMotion && "is-reduced-motion",
+            !view.handles && "is-no-handles",
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
         nodesDraggable={!locked}
         nodesConnectable={!locked}
         onConnect={connecting.onConnect}
@@ -320,15 +334,17 @@ export function Canvas() {
         )}
         <ZoneTools />
         <ZoomBar />
-        <MiniMap
-          pannable
-          zoomable
-          nodeColor={(n) => {
-            if (n.type === "zone") return "transparent";
-            const device = (n as DeviceFlowNode).data.device;
-            return categoryColor(device.category);
-          }}
-        />
+        {view.minimap && (
+          <MiniMap
+            pannable
+            zoomable
+            nodeColor={(n) => {
+              if (n.type === "zone") return "transparent";
+              const device = (n as DeviceFlowNode).data.device;
+              return categoryColor(device.category);
+            }}
+          />
+        )}
       </ReactFlow>
       <SimPlayer />
       {menu.element}

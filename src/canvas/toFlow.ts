@@ -30,6 +30,8 @@ export interface ConnectionEdgeData extends Record<string, unknown> {
   kind: EdgeKind;
   label: string;
   fault: boolean;
+  /** Ende mit den meisten Kanten: dort läuft die Schiene der Kantenführung „Gebündelt“. */
+  hub: "a" | "b";
 }
 
 export interface GroupEdgeData extends Record<string, unknown> {
@@ -135,6 +137,8 @@ export function toFlow(
         selected,
       );
       const [a, b] = edge.ends;
+      const degree = (id: string) =>
+        view.edges.filter((e) => e.ends.some((x) => x.node === id)).length;
       return {
         id: edge.id,
         type: "connection",
@@ -143,7 +147,12 @@ export function toFlow(
         selected,
         domAttributes: { "aria-roledescription": "Verbindung" },
         ariaLabel: description,
-        data: { kind, label: edge.label ?? label, fault: edge.fault },
+        data: {
+          kind,
+          label: edge.label ?? label,
+          fault: edge.fault,
+          hub: degree(b.node) >= degree(a.node) ? "b" : "a",
+        },
       };
     },
   );

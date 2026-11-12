@@ -241,6 +241,11 @@
 .react-flow__handle.tiv-handle.tiv-handle--target.is-active {
   pointer-events: auto;
 }
+/* „Anschlusspunkte anzeigen“ aus: unsichtbar, aber weiter bedienbar (T-713a) */
+.is-no-handles
+  .tiv-handle--source:not(:hover):not(:focus-visible):not(.clickconnecting) {
+  opacity: 0;
+}
 /* Quelle per Tastatur gewählt */
 .react-flow__node.is-source {
   outline: 3px dashed var(--tiv-focus);

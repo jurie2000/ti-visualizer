@@ -4,8 +4,10 @@ import {
   useInternalNode,
   type EdgeProps,
 } from "@xyflow/react";
-import { boxOf, onBorder } from "./ConnectionEdge";
+import { useUi } from "../store";
+import { boxOf } from "./ConnectionEdge";
 import { HiddenToggle } from "./HiddenToggle";
+import { routePath } from "./route";
 import type { GroupFlowEdge } from "./toFlow";
 
 /**
@@ -20,15 +22,13 @@ export function GroupEdge({
 }: EdgeProps<GroupFlowEdge>) {
   const from = useInternalNode(source);
   const to = useInternalNode(target);
+  const route = useUi((s) => s.view.route);
   if (!from || !to || !data) return null;
 
   const a = boxOf(from);
   const b = boxOf(to);
-  const p1 = onBorder(a, b);
-  const p2 = onBorder(b, a);
-  const path = `M ${String(p1.x)},${String(p1.y)} L ${String(p2.x)},${String(p2.y)}`;
-  const x = (p1.x + p2.x) / 2;
-  const y = (p1.y + p2.y) / 2;
+  const { d: path, mid } = routePath(a, b, route);
+  const { x, y } = mid;
 
   return (
     <>

@@ -5,15 +5,10 @@ import {
   type EdgeProps,
   type InternalNode,
 } from "@xyflow/react";
+import { useUi } from "../store";
 import { NODE_SIZE } from "./deviceStyle";
+import { routePath, type Box } from "./route";
 import type { ConnectionFlowEdge } from "./toFlow";
-
-interface Box {
-  cx: number;
-  cy: number;
-  hw: number;
-  hh: number;
-}
 
 export const boxOf = (n: InternalNode): Box => {
   const w = n.measured.width ?? NODE_SIZE.width;
@@ -26,23 +21,11 @@ export const boxOf = (n: InternalNode): Box => {
   };
 };
 
-/** Schnittpunkt der Mittellinie von `a` nach `b` mit dem Rand von `a`. */
-export function onBorder(a: Box, b: Box) {
-  const dx = b.cx - a.cx;
-  const dy = b.cy - a.cy;
-  if (dx === 0 && dy === 0) return { x: a.cx, y: a.cy };
-  const t = Math.min(
-    dx === 0 ? Infinity : a.hw / Math.abs(dx),
-    dy === 0 ? Infinity : a.hh / Math.abs(dy),
-  );
-  return { x: a.cx + dx * t, y: a.cy + dy * t };
-}
-
 /**
  * Kante je Verbindungsart (Farbe, Stärke, Strichmuster aus `--tiv-edge-<art>`),
  * schwebend zwischen den Rändern der Knoten, mit Label in der Mitte.
  *
- * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf` und `onBorder`.
+ * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf`.
  */
 export function ConnectionEdge({
   id,
@@ -53,15 +36,20 @@ export function ConnectionEdge({
 }: EdgeProps<ConnectionFlowEdge>) {
   const from = useInternalNode(source);
   const to = useInternalNode(target);
+  const route = useUi((s) => s.view.route);
+  const labels = useUi((s) => s.view.labels);
   if (!from || !to || !data) return null;
 
   const a = boxOf(from);
   const b = boxOf(to);
-  const p1 = onBorder(a, b);
-  const p2 = onBorder(b, a);
-  const path = `M ${String(p1.x)},${String(p1.y)} L ${String(p2.x)},${String(p2.y)}`;
-  const x = (p1.x + p2.x) / 2;
-  const y = (p1.y + p2.y) / 2;
+  const { d: path, mid } = routePath(a, b, route, data.hub);
+  const { x, y } = mid;
+  // Beschriftung „Wichtige“: einfache Ethernet- und WLAN-Labels entfallen; Störung und Auswahl bleiben (Mockup `trivial`)
+  const trivial = !data.fault && (data.kind === "phys" || data.kind === "wlan");
+  const showLabel =
+    labels === "all" ||
+    (labels === "key" && (!trivial || selected)) ||
+    (labels === "none" && data.fault);
 
   return (
     <>
@@ -79,15 +67,17 @@ export function ConnectionEdge({
         }}
       />
       <EdgeLabelRenderer>
-        <div
-          className={`tiv-edge-label nodrag nopan${data.fault ? " is-fault" : ""}${selected ? " is-selected" : ""}`}
-          style={{
-            transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(y)}px)`,
-          }}
-        >
-          {data.label}
-          {data.fault && " · gestört"}
-        </div>
+        {showLabel && (
+          <div
+            className={`tiv-edge-label nodrag nopan${data.fault ? " is-fault" : ""}${selected ? " is-selected" : ""}`}
+            style={{
+              transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(y)}px)`,
+            }}
+          >
+            {data.label}
+            {data.fault && " · gestört"}
+          </div>
+        )}
       </EdgeLabelRenderer>
     </>
   );

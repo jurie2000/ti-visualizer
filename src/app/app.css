@@ -989,3 +989,106 @@ a {
 .tiv-fold .tiv-config {
   margin-top: 12px;
 }
+
+/* Ansicht-Panel ohne Auswahl (T-713a, Mockup `noSelection`) */
+.tiv-view {
+  padding-top: 4px;
+}
+.tiv-view h4 {
+  margin: 0 0 10px;
+  font-size: 0.875rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.tiv-view section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-divider);
+}
+.tiv-legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-legend li {
+  display: flex;
+  gap: 11px;
+  margin-bottom: 11px;
+  line-height: 1.45;
+}
+.tiv-legend svg {
+  flex: none;
+  margin-top: 4px;
+}
+.tiv-switch {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tiv-switch span:first-child {
+  flex: 1;
+}
+.tiv-switch__track {
+  width: 34px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--color-neutral-400);
+}
+.tiv-switch[aria-pressed="true"] .tiv-switch__track {
+  background: var(--color-accent);
+}
+.tiv-switch__knob {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-neutral-100);
+  transition: transform 0.15s;
+}
+.tiv-switch[aria-pressed="true"] .tiv-switch__knob {
+  transform: translateX(14px);
+}
+.tiv-segmented__name {
+  margin: 14px 0 7px;
+  font-weight: 600;
+}
+.tiv-segmented {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-neutral-200);
+}
+.tiv-segmented button {
+  flex: 1;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-neutral-800);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tiv-segmented button[aria-pressed="true"] {
+  background: var(--color-neutral-100);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.tiv-segmented__hint {
+  margin: 7px 0 0;
+  line-height: 1.45;
+  color: var(--color-neutral-800);
+}

@@ -2,8 +2,9 @@ import { ViewportPortal, useReactFlow } from "@xyflow/react";
 import { Package, PackageX } from "lucide-react";
 import { useEffect, type CSSProperties } from "react";
 import { stepDelayMs } from "../engine/simulation";
-import { useSim } from "../store";
-import { boxOf, onBorder } from "./ConnectionEdge";
+import { useSim, useUi } from "../store";
+import { boxOf } from "./ConnectionEdge";
+import { routePath } from "./route";
 
 /**
  * Paket der Simulation (FR-9, D6): wandert je Schritt Verbindung für
@@ -22,6 +23,7 @@ export function SimPacket({
 }) {
   const { getInternalNode } = useReactFlow();
   const { sim, steps } = useSim();
+  const route = useUi((s) => s.view.route);
   const step = steps[sim.step];
   const running = sim.status === "running";
 
@@ -43,9 +45,8 @@ export function SimPacket({
   const b = boxes[hop + 1];
   if (sim.status === "cancelled" || !step || !a || !b) return null;
 
-  // Endpunkte am Rand der Geräte, dazwischen die Mitte
-  const from = hop === 0 ? onBorder(a, b) : { x: a.cx, y: a.cy };
-  const to = hop === hops - 1 ? onBorder(b, a) : { x: b.cx, y: b.cy };
+  // Das Paket folgt dem Weg der Kante (Mockup: Schritt auf `edgePath`)
+  const { d } = routePath(a, b, route);
   const failed = step.problem?.kind === "ausgefallen";
   const Icon = failed ? PackageX : Package;
 
@@ -60,7 +61,7 @@ export function SimPacket({
         }}
         style={
           {
-            offsetPath: `path("M ${String(from.x)},${String(from.y)} L ${String(to.x)},${String(to.y)}")`,
+            offsetPath: `path("${d}")`,
             "--tiv-packet-ms": `${String((stepDelayMs(sim.tempo) * 0.75) / hops)}ms`,
           } as CSSProperties
         }

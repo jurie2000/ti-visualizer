@@ -124,6 +124,20 @@ export function SidePanel({
     };
   }, [autoOpen, pressed]);
 
+  // Klick auf die Fläche fährt das Panel sofort ein, auch wenn Fokus oder Zeiger noch darin lagen
+  useEffect(() => {
+    const down = (e: PointerEvent) => {
+      if (!(e.target as Element).closest(".react-flow__pane")) return;
+      window.clearTimeout(timer.current);
+      window.clearTimeout(autoTimer.current);
+      setShown(false);
+    };
+    document.addEventListener("pointerdown", down);
+    return () => {
+      document.removeEventListener("pointerdown", down);
+    };
+  }, []);
+
   const togglePin = () => {
     const set = useSettings.getState().set;
     const cur = useSettings.getState().pinnedPanels;

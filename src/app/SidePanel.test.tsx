@@ -146,4 +146,25 @@ describe("T-711 Seitenleiste (FR-22)", () => {
     expect(wrap()).toHaveAttribute("data-open", "false");
     expect(screen.getByRole("button", { name: "Details" })).toHaveFocus();
   });
+
+  it("Klick auf die Fläche fährt das Panel sofort ein, auch bei Fokus darin; angeheftet bleibt es", () => {
+    render(
+      <>
+        {view()}
+        <div className="react-flow__pane">Fläche</div>
+      </>,
+    );
+    const pane = screen.getByText("Fläche");
+    fireEvent.mouseEnter(wrap());
+    wait(150);
+    act(() => {
+      screen.getByRole("button", { name: "Inhalt" }).focus();
+    });
+    expect(wrap()).toHaveAttribute("data-open", "true");
+    fireEvent.pointerDown(pane);
+    expect(wrap()).toHaveAttribute("data-open", "false");
+    useSettings.setState({ pinnedPanels: ["detail"] });
+    fireEvent.pointerDown(pane);
+    expect(wrap()).toHaveAttribute("data-open", "true");
+  });
 });

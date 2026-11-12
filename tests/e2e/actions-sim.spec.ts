@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { schliessePalette, öffnePalette } from "./leisten";
+import { schliessePalette, öffneKarteStecken, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -166,10 +166,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
       "true",
     );
     await page.keyboard.press("Escape");
-    await page
-      .getByRole("button", { name: /^Karte stecken: / })
-      .first()
-      .click();
+    await öffneKarteStecken(page, gerät(page, "kt1"));
     const dialog = page.getByRole("dialog", { name: "Karte stecken" });
     await dialog.getByLabel("Kartenart").selectOption({ label: "eGK" });
     await dialog.getByLabel("PIN aktiv").check();

@@ -9,6 +9,45 @@ export const CARD_NAMES: Record<CardKind, string> = {
   smcb: "SMC-B",
 };
 
+/** Zustandstext und -symbol einer Karte; gemeinsam für Marke und Chip (K-3, K-4). */
+function useCardView(nodeId: string, card: AnyCard) {
+  const topology = useTopology((s) => s.topology);
+  const { state, empMessage } = cardState(topology, nodeId, card.kind);
+  const status =
+    state === "expired"
+      ? "abgelaufen"
+      : state === "locked"
+        ? "nicht freigeschaltet"
+        : empMessage
+          ? "PIN aus"
+          : "";
+  return { state, name: CARD_NAMES[card.kind], status };
+}
+
+function CardIcon({ state, size }: { state: string; size: number }) {
+  return state === "expired" ? (
+    <AlertTriangle size={size} aria-hidden="true" />
+  ) : state === "locked" ? (
+    <Lock size={size} aria-hidden="true" />
+  ) : (
+    <CreditCard size={size} aria-hidden="true" />
+  );
+}
+
+/**
+ * Kleine Marke am Gerät wie im Mockup (T-718): nur Kurzname, Zustand im Text
+ * und Symbol (D10). Stecken und Ziehen laufen über das Detailpanel.
+ */
+export function CardMark({ nodeId, card }: { nodeId: string; card: AnyCard }) {
+  const { state, name, status } = useCardView(nodeId, card);
+  return (
+    <span className={`tiv-mark tiv-mark--${state}`}>
+      {status && <CardIcon state={state} size={14} />}
+      {status ? `${name} ${status}` : name}
+    </span>
+  );
+}
+
 /**
  * Karte im Terminal (K-2, K-3, K-4). Zustand steht im Text und im Symbol,
  * nie nur in der Farbe. „ziehen“ ist ein eigener Knopf (kein Ziehen mit der Maus).
@@ -25,28 +64,12 @@ export function CardChip({
   /** Name des Geräts, in dem die Karte steckt (für den Namen des Knopfs). */
   owner: string;
 }) {
-  const topology = useTopology((s) => s.topology);
   const unplug = useTopology((s) => s.unplugCard);
-  const { state, empMessage } = cardState(topology, nodeId, card.kind);
-  const name = CARD_NAMES[card.kind];
-  const status =
-    state === "expired"
-      ? "abgelaufen"
-      : state === "locked"
-        ? "nicht freigeschaltet"
-        : empMessage
-          ? "PIN aus"
-          : "";
+  const { state, name, status } = useCardView(nodeId, card);
   const way = nfc ? "NFC · ISO 14443, CAN" : "gesteckt · ISO 7816";
   return (
     <span className={`tiv-chip tiv-chip--${state} nodrag nopan`}>
-      {state === "expired" ? (
-        <AlertTriangle size={12} aria-hidden="true" />
-      ) : state === "locked" ? (
-        <Lock size={12} aria-hidden="true" />
-      ) : (
-        <CreditCard size={12} aria-hidden="true" />
-      )}
+      <CardIcon state={state} size={12} />
       <span>
         {name}
         {status && ` (${status})`} · {way}

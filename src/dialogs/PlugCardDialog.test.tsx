@@ -1,8 +1,9 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { Canvas } from "../canvas/Canvas";
+import { DetailPanel } from "../panels/DetailPanel";
 import { loadCatalog } from "../schema";
 import { useSettings, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
@@ -16,15 +17,23 @@ const praxis = (() => {
 const kt = praxis.nodes.find((n) => n.type === "kt");
 if (!kt) throw new Error("Kartenterminal fehlt im Preset");
 
+// Stecken und Ziehen laufen im Detailpanel (T-718), nicht am Gerät.
 const plugButton = () => {
+  act(() => {
+    useUi.getState().select({ kind: "node", id: kt.id });
+  });
+  return screen.getByRole("button", { name: "Karte stecken" });
+};
+const nodeEl = () => {
   const el = document.querySelector<HTMLElement>(`[data-id="${kt.id}"]`);
   if (!el) throw new Error("Kartenterminal nicht gerendert");
-  return within(el).getByRole("button", { name: /^Karte stecken/ });
+  return within(el);
 };
 const app = (
   <ToastProvider>
     <ReactFlowProvider>
       <Canvas />
+      <DetailPanel />
     </ReactFlowProvider>
     <PlugCardDialog />
   </ToastProvider>
@@ -77,8 +86,8 @@ describe("Karten stecken und ziehen", () => {
     const user = userEvent.setup();
     for (const kind of ["egk", "hba", "smcb"] as const)
       useTopology.getState().plugCard(kt.id, { kind, expires: "2030-01-01" });
+    useUi.getState().openDialog(`plugCard:${kt.id}`);
     render(app);
-    await user.click(plugButton());
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
     expect(screen.getByRole("status")).toHaveTextContent(
@@ -87,22 +96,33 @@ describe("Karten stecken und ziehen", () => {
     expect(cardsOf()).toHaveLength(3);
   });
 
-  it("[K-3] kennzeichnet abgelaufene Karten im Text", () => {
+  it("[K-3] T-718 kennzeichnet abgelaufene Karten im Text", () => {
     useTopology
       .getState()
       .plugCard(kt.id, { kind: "egk", expires: "2026-01-01" });
     render(app);
-    expect(screen.getByText(/eGK \(abgelaufen\)/)).toBeInTheDocument();
+    expect(nodeEl().getByText("eGK abgelaufen")).toBeInTheDocument();
   });
 
-  it("[K-4] kennzeichnet nicht freigeschaltete HBA im Text", () => {
+  it("[K-4] T-718 kennzeichnet nicht freigeschaltete HBA im Text", () => {
     useTopology
       .getState()
       .plugCard(kt.id, { kind: "hba", expires: "2030-01-01", unlocked: false });
     render(app);
+    expect(nodeEl().getByText("HBA nicht freigeschaltet")).toBeInTheDocument();
+  });
+
+  it("T-718: Marke am Gerät zeigt nur den Kurznamen, keinen Weg und keinen Knopf", () => {
+    useTopology
+      .getState()
+      .plugCard(kt.id, { kind: "egk", expires: "2030-01-01" });
+    render(app);
+    const node = nodeEl();
+    expect(node.getByText("eGK")).toBeInTheDocument();
+    expect(node.queryByText(/ISO 7816/)).toBeNull();
     expect(
-      screen.getByText(/HBA \(nicht freigeschaltet\)/),
-    ).toBeInTheDocument();
+      node.queryByRole("button", { name: /Karte stecken|ziehen/ }),
+    ).toBeNull();
   });
 
   it("[K-6] NFC-Gerät: nur eGK, keine PIN-Auswahl, Karte ohne PIN", async () => {

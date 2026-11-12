@@ -76,6 +76,7 @@
   --tiv-cat-primary: #0072b2;
   --tiv-cat-primary-shape: round;
   --tiv-cat-card: #a66a00;
+  --tiv-card-fg: #5c3d00;
   --tiv-cat-card-shape: pill;
   --tiv-cat-terminal: #b0568d;
   --tiv-cat-terminal-shape: notch;
@@ -179,6 +180,7 @@
     --tiv-warn-bg: #3a2e15;
     --tiv-cat-primary: #63bdf2;
     --tiv-cat-card: #f0b84a;
+    --tiv-card-fg: #f0c88a;
     --tiv-cat-terminal: #e79cc4;
     --tiv-cat-lan: #b6c77a;
     --tiv-cat-network: #44d7ac;
@@ -237,6 +239,7 @@
   --tiv-warn-bg: #3a2e15;
   --tiv-cat-primary: #63bdf2;
   --tiv-cat-card: #f0b84a;
+  --tiv-card-fg: #f0c88a;
   --tiv-cat-terminal: #e79cc4;
   --tiv-cat-lan: #b6c77a;
   --tiv-cat-network: #44d7ac;

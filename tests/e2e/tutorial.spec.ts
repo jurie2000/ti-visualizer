@@ -1,5 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { räumePanelsAuf, schliessePalette, öffnePalette } from "./leisten";
+import {
+  räumePanelsAuf,
+  schliessePalette,
+  öffneKarteStecken,
+  öffnePalette,
+} from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -31,10 +36,7 @@ async function verbinde(page: Page, quelle: string, ziel: string) {
 
 async function stecke(page: Page, gerätId: string, arten: string[]) {
   for (const art of arten) {
-    await gerät(page, gerätId)
-      .getByRole("button", { name: /^Karte stecken: / })
-      .first()
-      .click();
+    await öffneKarteStecken(page, gerät(page, gerätId));
     const dialog = page.getByRole("dialog", { name: "Karte stecken" });
     await dialog.getByLabel("Kartenart").selectOption({ label: art });
     await dialog.getByRole("button", { name: "Stecken" }).click();

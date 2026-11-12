@@ -6,6 +6,7 @@ import {
   openTopology,
   resolveGuard,
   useCatalog,
+  useSettings,
   useTopology,
   useUi,
 } from "../store";
@@ -187,5 +188,29 @@ describe("T-406 Detailpanel (FR-11)", () => {
     });
     expect(screen.getByText("<img src=x onerror=1>Text")).toBeInTheDocument();
     expect(container.querySelector("img")).toBeNull();
+  });
+
+  it("T-712b: Anschlüsse nur im Modus Erweitert, mit Zusammenfassung und Gegenstelle", () => {
+    useSettings.getState().set({ mode: "simple" });
+    render(<DetailPanel />);
+    select("node", "kon1");
+    expect(screen.queryByRole("region", { name: "Anschlüsse" })).toBeNull();
+    act(() => {
+      useSettings.getState().set({ mode: "advanced" });
+    });
+    const list = within(screen.getByRole("region", { name: "Anschlüsse" }));
+    expect(list.getByText(/^\d+ von \d+ frei$/)).toBeInTheDocument();
+    expect(list.getByText("1 Verbindung")).toBeInTheDocument();
+    expect(list.getAllByText("frei").length).toBeGreaterThan(0);
+  });
+
+  it("T-712b: Klick auf einen belegten Anschluss wählt die Kante", async () => {
+    const user = userEvent.setup();
+    useSettings.getState().set({ mode: "advanced" });
+    useTopology.getState().reset({ ...topo, edges: topo.edges.slice(0, 1) });
+    render(<DetailPanel />);
+    select("node", "kt1");
+    await user.click(screen.getByRole("button", { name: /Konnektor · / }));
+    expect(useUi.getState().selection).toEqual({ kind: "edge", id: "e1" });
   });
 });

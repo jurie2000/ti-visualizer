@@ -781,11 +781,16 @@ Sicherheitsprüfung.
   - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Kopf und Hinweis
     getestet, Quellen sichtbar, hell und dunkel im Browser geprüft.
 
-- [ ] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
+- [x] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
   - Umfang: Abschnitt „Anschlüsse“ mit Zusammenfassung („n von m frei“) und je
     Anschluss Kachel, Name, Art, Status-Pille (frei oder Gegenstelle),
-    Klick auf einen belegten Anschluss wählt die Kante. Dazu der
-    Regelverstoß-Kasten für Zonen (Befund aus T-712a, Niedrig).
+    Klick auf einen belegten Anschluss wählt die Kante.
+    Auslegung (2026-11-12): Die Liste steht nur im Modus Erweitert
+    (spec.md: Erweitert zeigt die Anschlüsse), im Modus Einfach bleibt die
+    Zeile „Anschlüsse“. Mehrfachanschlüsse zählen als frei. Der
+    Regelverstoß-Kasten für Zonen entfällt: der Mockup zeigt für Zonen nie
+    einen (`warn: false`), und keine Prüfregel meldet Zonen (der Befund aus
+    #117 verwechselte die Zugang-Variable `z` in P-33 mit einer Zone).
   - Fertig, wenn: je Abschnitt ein Test, Vergleich mit den
     Mockup-Screenshots von Justin abgenommen.
 

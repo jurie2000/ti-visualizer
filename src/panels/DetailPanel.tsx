@@ -14,6 +14,7 @@ import {
   type Selection,
 } from "../store";
 import { ConfigForm } from "./ConfigForm";
+import { PortList } from "./PortList";
 import { ZoneForm } from "./ZoneForm";
 
 /** Quellen mit Link (nur https laut Schema), Texte nie als HTML (D10). */
@@ -119,15 +120,18 @@ const nameOf = (n: Node, catalog: Catalog) =>
 function DeviceDetail({
   node,
   catalog,
-  connections,
+  topology,
 }: {
   node: Node;
   catalog: Catalog;
-  connections: number;
+  topology: Topology;
 }) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   const advanced = useSettings((s) => s.mode) === "advanced";
   const category = catalog.categories.find((c) => c.id === type?.category);
+  const connections = topology.edges.filter((e) =>
+    e.ends.some((x) => x.node === node.id),
+  ).length;
   return (
     <>
       {type?.description && <p className="tiv-dbody">{type.description}</p>}
@@ -139,13 +143,16 @@ function DeviceDetail({
           {`x ${String(Math.round(node.position.x))} · y ${String(Math.round(node.position.y))}`}
         </Row>
         <Row name="Betrieb">{node.fault ? "Ausgefallen" : "In Betrieb"}</Row>
-        {type && (
+        {type && !advanced && (
           <Row name="Anschlüsse">
             {type.ports.map((p) => p.name).join(", ") || "keine"}
           </Row>
         )}
         {type && <Row name="Status">{type.status}</Row>}
       </dl>
+      {advanced && (
+        <PortList node={node} topology={topology} catalog={catalog} />
+      )}
       {advanced && <ConfigForm node={node} />}
       {type && <Sources ids={type.source} catalog={catalog} />}
     </>
@@ -248,14 +255,7 @@ function Body({ sel }: { sel: Selection }) {
       };
       violations = violated((f) => f.nodes.includes(node.id));
       content = (
-        <DeviceDetail
-          node={node}
-          catalog={catalog}
-          connections={
-            topology.edges.filter((e) => e.ends.some((x) => x.node === node.id))
-              .length
-          }
-        />
+        <DeviceDetail node={node} catalog={catalog} topology={topology} />
       );
     }
   } else if (sel?.kind === "edge") {

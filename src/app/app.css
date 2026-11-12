@@ -618,3 +618,104 @@ a {
   flex-wrap: wrap;
   gap: 8px;
 }
+/* Anschlussliste im Detailpanel (T-712b, Mockup `showPorts`) */
+.tiv-ports-list {
+  margin-top: 16px;
+}
+.tiv-ports-list__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 9px;
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+.tiv-ports-list__head h4 {
+  flex: 1;
+  font-family: inherit;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tiv-ports-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-port {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  border: 1px solid var(--color-divider);
+  border-radius: 12px;
+  background: var(--color-bg);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+button.tiv-port {
+  cursor: pointer;
+}
+.tiv-port__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-800);
+}
+.tiv-port__icon[data-kind="eth"] {
+  color: var(--tiv-warn-fg);
+}
+.tiv-port__icon[data-kind="wifi"] {
+  color: var(--tiv-cat-lan);
+}
+.tiv-port__icon[data-kind="wan"],
+.tiv-port__icon[data-kind="net"] {
+  color: var(--tiv-cat-network);
+}
+.tiv-port__icon[data-kind="tun"],
+.tiv-port__icon[data-kind="ti"] {
+  color: var(--tiv-cat-service);
+}
+.tiv-port__text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+.tiv-port__text strong,
+.tiv-port__text span {
+  display: block;
+}
+.tiv-port__text span {
+  color: var(--color-neutral-700);
+}
+.tiv-port__pill {
+  flex: none;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 10px;
+  border: 1.5px dashed var(--color-neutral-500);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-neutral-700);
+}
+.tiv-port__pill[data-used="true"] {
+  border: 1px solid var(--tiv-ok-bd);
+  background: var(--tiv-ok-bg);
+  color: var(--tiv-ok-fg);
+}

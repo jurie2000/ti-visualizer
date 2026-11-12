@@ -17,6 +17,22 @@ beforeEach(() => {
 });
 
 describe("FR-15 Zone bearbeiten im Detailpanel", () => {
+  it("T-715: „Zone bearbeiten“ ist standardmäßig eingeklappt, Klick öffnet, eine andere Zone startet wieder zu", async () => {
+    const user = userEvent.setup();
+    useTopology.getState().addZone({ x: 400, y: 0, w: 100, h: 100 });
+    const { container } = render(<DetailPanel />);
+    const fold = () => container.querySelector("details.tiv-fold");
+    expect(fold()).not.toHaveAttribute("open");
+    await user.click(
+      screen.getByText("Zone bearbeiten", { selector: "summary" }),
+    );
+    expect(fold()).toHaveAttribute("open");
+    act(() => {
+      useUi.getState().select({ kind: "zone", id: "zone-2" });
+    });
+    expect(fold()).not.toHaveAttribute("open");
+  });
+
   it("benennt eine Zone, Text bleibt Text und Steuerzeichen fallen weg", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);

@@ -100,88 +100,92 @@ export function ZoneForm({ zone }: { zone: Zone }) {
   const removeZone = useTopology((s) => s.removeZone);
   const locked = simLocked(useSim((s) => s.sim));
   return (
-    <fieldset className="tiv-config" disabled={locked}>
-      <legend>Zone bearbeiten</legend>
-      {locked && <p>Während der Simulation gesperrt.</p>}
-      <Field
-        id={`zone-${zone.id}-name`}
-        label="Name"
-        stored={zone.label ?? ""}
-        hint={`höchstens ${String(LIMITS.name)} Zeichen`}
-        onCommit={(raw) => setZone(zone.id, { label: raw })}
-      />
-      <Field
-        id={`zone-${zone.id}-description`}
-        label="Beschreibung"
-        stored={zone.description ?? ""}
-        hint={`Leer: Standardbeschreibung. Höchstens ${String(LIMITS.description)} Zeichen`}
-        multiline
-        onCommit={(raw) => setZone(zone.id, { description: raw })}
-      />
-      <fieldset className="tiv-config__field">
-        <legend>Form</legend>
-        <div className="tiv-seg">
-          {SHAPES.map(([shape, name]) => (
-            <label key={shape}>
-              <input
-                type="radio"
-                name={`zone-${zone.id}-shape`}
-                checked={(zone.shape ?? "rect") === shape}
-                onChange={() => {
-                  setZone(zone.id, { shape });
-                }}
-              />{" "}
-              {name}
-            </label>
-          ))}
+    <details className="tiv-fold">
+      <summary>Zone bearbeiten</summary>
+      <fieldset className="tiv-config" disabled={locked}>
+        <legend>Zone bearbeiten</legend>
+        {locked && <p>Während der Simulation gesperrt.</p>}
+        <Field
+          id={`zone-${zone.id}-name`}
+          label="Name"
+          stored={zone.label ?? ""}
+          hint={`höchstens ${String(LIMITS.name)} Zeichen`}
+          onCommit={(raw) => setZone(zone.id, { label: raw })}
+        />
+        <Field
+          id={`zone-${zone.id}-description`}
+          label="Beschreibung"
+          stored={zone.description ?? ""}
+          hint={`Leer: Standardbeschreibung. Höchstens ${String(LIMITS.description)} Zeichen`}
+          multiline
+          onCommit={(raw) => setZone(zone.id, { description: raw })}
+        />
+        <fieldset className="tiv-config__field">
+          <legend>Form</legend>
+          <div className="tiv-seg">
+            {SHAPES.map(([shape, name]) => (
+              <label key={shape}>
+                <input
+                  type="radio"
+                  name={`zone-${zone.id}-shape`}
+                  checked={(zone.shape ?? "rect") === shape}
+                  onChange={() => {
+                    setZone(zone.id, { shape });
+                  }}
+                />{" "}
+                {name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset className="tiv-config__field">
+          <legend>Beim Verschieben</legend>
+          <div className="tiv-seg">
+            {MOVES.map(([value, name]) => (
+              <label key={name}>
+                <input
+                  type="radio"
+                  name={`zone-${zone.id}-move`}
+                  checked={(zone.withContents ?? false) === value}
+                  onChange={() => {
+                    setZone(zone.id, { withContents: value });
+                  }}
+                />{" "}
+                {name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset className="tiv-config__field">
+          <legend>Farbe</legend>
+          <div className="tiv-seg">
+            {Tone.options.map((tone) => (
+              <label key={tone} data-tone={tone}>
+                <input
+                  type="radio"
+                  name={`zone-${zone.id}-tone`}
+                  checked={zone.tone === tone}
+                  onChange={() => {
+                    setZone(zone.id, { tone });
+                  }}
+                />
+                <span className="tiv-dot" aria-hidden="true" />{" "}
+                {TONE_NAME[tone]}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="tiv-dactions">
+          <Button
+            onClick={() => {
+              removeZone(zone.id);
+              useUi.getState().select(undefined);
+            }}
+          >
+            Zone entfernen
+          </Button>
         </div>
       </fieldset>
-      <fieldset className="tiv-config__field">
-        <legend>Beim Verschieben</legend>
-        <div className="tiv-seg">
-          {MOVES.map(([value, name]) => (
-            <label key={name}>
-              <input
-                type="radio"
-                name={`zone-${zone.id}-move`}
-                checked={(zone.withContents ?? false) === value}
-                onChange={() => {
-                  setZone(zone.id, { withContents: value });
-                }}
-              />{" "}
-              {name}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <fieldset className="tiv-config__field">
-        <legend>Farbe</legend>
-        <div className="tiv-seg">
-          {Tone.options.map((tone) => (
-            <label key={tone} data-tone={tone}>
-              <input
-                type="radio"
-                name={`zone-${zone.id}-tone`}
-                checked={zone.tone === tone}
-                onChange={() => {
-                  setZone(zone.id, { tone });
-                }}
-              />
-              <span className="tiv-dot" aria-hidden="true" /> {TONE_NAME[tone]}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <div className="tiv-dactions">
-        <Button
-          onClick={() => {
-            removeZone(zone.id);
-            useUi.getState().select(undefined);
-          }}
-        >
-          Zone entfernen
-        </Button>
-      </div>
-    </fieldset>
+    </details>
   );
 }

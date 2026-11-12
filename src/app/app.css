@@ -948,3 +948,44 @@ a {
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
+/* Einklappbarer Bereich „Zone bearbeiten“ (Mockup-Look: 14 px fett, Rand divider, runde Ecken) */
+.tiv-fold {
+  margin-top: 16px;
+}
+.tiv-fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-divider);
+  border-radius: 999px;
+  background: var(--color-bg);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+.tiv-fold > summary::-webkit-details-marker {
+  display: none;
+}
+.tiv-fold > summary::before {
+  content: "▸" / "";
+}
+.tiv-fold[open] > summary::before {
+  content: "▾" / "";
+}
+.tiv-fold > summary:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.tiv-fold .tiv-config > legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.tiv-fold .tiv-config {
+  margin-top: 12px;
+}

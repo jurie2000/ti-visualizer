@@ -292,6 +292,8 @@ test.describe("injection", { tag: "@security" }, () => {
     await page.mouse.down();
     await page.mouse.move(fl.x + 500, fl.y + 360, { steps: 5 });
     await page.mouse.up();
+    // „Zone bearbeiten“ ist standardmäßig eingeklappt
+    await page.locator("summary", { hasText: "Zone bearbeiten" }).click();
     for (const p of PAYLOADS) {
       const feld = page.getByLabel("Name", { exact: true });
       await feld.fill(`\u202E${p.slice(0, 100)}`);

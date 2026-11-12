@@ -337,7 +337,8 @@ function Body({ sel }: { sel: Selection }) {
           <p className="tiv-dbody tiv-dbody--text">
             {zone.description ?? ZONE_TEXT}
           </p>
-          <ZoneForm zone={zone} />
+          {/* key: eine andere Zone startet wieder eingeklappt */}
+          <ZoneForm key={zone.id} zone={zone} />
           <ZoneMembers zone={zone} topology={topology} catalog={catalog} />
         </>
       );

@@ -1,8 +1,9 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { Canvas } from "../canvas/Canvas";
+import { DetailPanel } from "../panels/DetailPanel";
 import { loadCatalog } from "../schema";
 import { useSettings, useTopology, useUi } from "../store";
 import { ToastProvider } from "../ui/Toast";
@@ -24,6 +25,13 @@ const app = (
 const add = (type: string) => {
   const r = useTopology.getState().addNode(type, { x: 0, y: 0 });
   return r.ok ? (r.id ?? "") : "";
+};
+const inNode = (id: string, selector: string) => {
+  const el = document.querySelector<HTMLElement>(
+    `[data-id="${id}"] ${selector}`,
+  );
+  if (!el) throw new Error(`${selector} in ${id} fehlt`);
+  return el;
 };
 const node = (id: string) => {
   const el = document.querySelector<HTMLElement>(`[data-id="${id}"]`);
@@ -61,6 +69,44 @@ describe("PortPicker", () => {
     await user.click(within(dialog).getByRole("button", { name: "Verbinden" }));
     const edge = useTopology.getState().topology.edges.at(-1);
     expect(edge?.ends[0]).toEqual({ node: "sw1", port: "p7" });
+  });
+
+  it("[A-3] Klick auf einen freien Anschluss im Detailpanel startet das Verbinden, der Anschluss ist vorgewählt", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        {app}
+        <ReactFlowProvider>
+          <DetailPanel />
+        </ReactFlowProvider>
+      </>,
+    );
+    act(() => {
+      useUi.getState().select({ kind: "node", id: "sw1" });
+    });
+    await user.click(
+      screen.getByRole("button", { name: /^Port 7: Verbindung/ }),
+    );
+    const target = node(sw2).querySelector(".react-flow__handle.target");
+    if (!target) throw new Error("Zielpunkt fehlt");
+    // jsdom kennt `elementFromPoint` nicht; React Flow sucht damit den Zielpunkt
+    document.elementFromPoint = () => target;
+    await user.click(target);
+    const dialog = screen.getByRole("dialog", { name: "Anschlüsse wählen" });
+    const [p7] = within(dialog).getAllByRole("radio", { name: /^Port 7/ });
+    expect(p7).toBeChecked();
+    Reflect.deleteProperty(document, "elementFromPoint");
+  });
+
+  it("[A-3] Klick-Modus: Klick auf die Kachel des Ziels öffnet den PortPicker", async () => {
+    const user = userEvent.setup();
+    render(app);
+    await user.click(inNode("sw1", ".react-flow__handle.source"));
+    // fireEvent: jsdom kennt bei `mousedown` auf Geräten die Ansicht für d3-drag nicht
+    fireEvent.click(inNode(sw2, ".tiv-node__text"));
+    expect(
+      screen.getByRole("dialog", { name: "Anschlüsse wählen" }),
+    ).toBeInTheDocument();
   });
 
   it("[A-3] Einfach: kein PortPicker, das System wählt das erste freie Paar", async () => {

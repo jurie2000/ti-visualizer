@@ -781,21 +781,44 @@ Sicherheitsprüfung.
   - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Kopf und Hinweis
     getestet, Quellen sichtbar, hell und dunkel im Browser geprüft.
 
-- [ ] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
+- [x] **T-712b Detailpanel: Anschlüsse** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: `showPorts`, Zeilen 663 bis 685
   - Umfang: Abschnitt „Anschlüsse“ mit Zusammenfassung („n von m frei“) und je
     Anschluss Kachel, Name, Art, Status-Pille (frei oder Gegenstelle),
-    Klick auf einen belegten Anschluss wählt die Kante. Dazu der
-    Regelverstoß-Kasten für Zonen (Befund aus T-712a, Niedrig).
+    Einfachanschluss mit Verbindung wählt per Klick die Kante; jeder andere
+    Anschluss (frei oder mehrfach) startet per Klick das Verbinden von dort
+    (Klick-Modus der Fläche, im PortPicker ist der Anschluss vorgewählt;
+    der Mockup hat das nicht, Wunsch von Justin). Die Gegenstellen eines
+    Mehrfachanschlusses stehen im Namen des Knopfs (D10).
+    Auslegung (2026-11-12): Die Liste steht nur im Modus Erweitert
+    (spec.md: Erweitert zeigt die Anschlüsse), im Modus Einfach bleibt die
+    Zeile „Anschlüsse“. Mehrfachanschlüsse zählen als frei. Der
+    Regelverstoß-Kasten für Zonen entfällt: der Mockup zeigt für Zonen nie
+    einen (`warn: false`), und keine Prüfregel meldet Zonen (der Befund aus
+    #117 verwechselte die Zugang-Variable `z` in P-33 mit einer Zone).
   - Fertig, wenn: je Abschnitt ein Test, Vergleich mit den
     Mockup-Screenshots von Justin abgenommen.
 
 - [ ] **T-712c Detailpanel: Karten, Konfiguration, Zone, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: `showCardSlots`, `showCfg`, `showZoneEdit`, `hasDetailActions`, Zeilen 590 bis 723
+  - Auslegung (2026-11-12): Kartenanzeige und Karten stecken/ziehen aus dem
+    Panel gelten in beiden Modi (Einfach und Erweitert), anders als die
+    Anschlussliste aus T-712b (Mockup `showCardSlots`, `canAddCards`).
   - Umfang: Gesteckte Karten (Chips mit „Karte ziehen“), „Karte stecken“ und
     Schnellknöpfe je freier Karte, Konfiguration (`ConfigForm`), Zone-Bearbeitung
     (`ZoneForm`) und Aktionsknöpfe (Ausfall, Entfernen, Trennen) im Stil des
     Mockups. Abgelaufene Karte im Regelverstoß-Kasten.
   - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
     Abschnitt ein Test, Abnahme durch Justin.
+
+- [ ] **T-714 Vorschaulinie im Klick-Modus** · FR: FR-22 · Regeln: – · nach: T-712b · Mockup: Verbinden, Zustand `link`
+  - Umfang: Ist im Klick-Modus eine Quelle gewählt (Quellpunkt angeklickt oder
+    Anschluss im Detailpanel angeklickt), zeichnet die Fläche wie beim Ziehen
+    eine Linie von der Quelle zum Mauszeiger, am Gerät unter dem Zeiger
+    einrastend, grün bei möglicher, rot bei unmöglicher Verbindung (Text und
+    Toast tragen die Begründung, Farbe allein nichts). Esc, Klick ins Leere
+    und Abschluss entfernen sie. Umsetzung: `ViewportPortal` mit SVG und
+    `pointermove`, Quelle aus `connectionClickStartHandle`.
+  - Fertig, wenn: Tests prüfen Linie nach Quellwahl, Einrasten am Ziel und
+    Entfernen bei Esc und Abschluss.
 
 - [ ] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der

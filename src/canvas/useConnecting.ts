@@ -4,9 +4,15 @@ import {
   type OnConnectEnd,
   type OnConnectStart,
 } from "@xyflow/react";
-import { useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from "react";
 import { validateConnection } from "../engine/rules";
-import { useCatalog, useSettings, useTopology } from "../store";
+import { useCatalog, useSettings, useTopology, useUi } from "../store";
 import type { PickPair } from "../dialogs/PortPicker";
 import { useToast } from "../ui/Toast";
 
@@ -30,9 +36,11 @@ export function useConnecting() {
   const clickFrom = useRef<string>(undefined);
   const clickConnected = useRef(false);
   const flow = useStoreApi();
+  const connectPort = useUi((s) => s.connectPort);
 
   /** Bricht einen Klick-Zug ab (Punkt angeklickt, Ziel noch offen). */
   const cancelClick = () => {
+    useUi.getState().setConnectPort(undefined);
     if (flow.getState().connectionClickStartHandle === null) return false;
     flow.setState({ connectionClickStartHandle: null });
     toast.show("Verbinden abgebrochen.");
@@ -66,7 +74,9 @@ export function useConnecting() {
     // A-3: im Modus Erweitert wählt der Nutzer die Anschlüsse; die Paarprüfung läuft vorher
     if (useSettings.getState().mode === "advanced") {
       const r = check(a, b);
-      if (r.ok) setPicking({ a, b });
+      const from = useUi.getState().connectPort;
+      if (r.ok)
+        setPicking({ a, b, ...(from?.node === a && { portA: from.port }) });
       else reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
       return;
     }
@@ -74,6 +84,25 @@ export function useConnecting() {
     if (r.ok) toast.show(`Verbunden: ${nameOf(a)} mit ${nameOf(b)}.`);
     else reject(r.reason, r.ruleId);
   };
+
+  // Start aus dem Detailpanel (Klick auf einen Anschluss): wie ein Klick auf den Quellpunkt
+  useEffect(() => {
+    if (!connectPort) return;
+    clickFrom.current = connectPort.node;
+    clickConnected.current = false;
+    flow.setState({
+      connectionClickStartHandle: {
+        nodeId: connectPort.node,
+        type: "source",
+        id: null,
+      },
+    });
+    toast.show(
+      `Quelle ${nameOf(connectPort.node)} gewählt. Jetzt das Zielgerät anklicken, Esc oder ein Klick auf die freie Fläche bricht ab.`,
+    );
+    // nur der gewählte Anschluss löst aus
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectPort]);
 
   return {
     /** Gerät, das per Tastatur als Quelle gewählt ist. */
@@ -112,6 +141,7 @@ export function useConnecting() {
     onClickConnectEnd: ((event) => {
       const from = clickFrom.current;
       clickFrom.current = undefined;
+      useUi.getState().setConnectPort(undefined);
       if (clickConnected.current) {
         clickConnected.current = false;
         return;
@@ -127,6 +157,18 @@ export function useConnecting() {
       if (!r.ok) reject(r.reason ?? "Verbindung nicht möglich.", r.ruleId);
     }) satisfies OnConnectEnd,
     cancelClick,
+    /** Klick auf ein Gerät im Klick-Modus verbindet, auch wenn er den Zielpunkt knapp verfehlt. */
+    onNodeClick: (event: MouseEvent, node: { id: string }) => {
+      // Treffer auf einen Punkt behandelt React Flow selbst
+      if ((event.target as Element).closest(".react-flow__handle")) return;
+      const from = flow.getState().connectionClickStartHandle?.nodeId;
+      if (!from) return;
+      flow.setState({ connectionClickStartHandle: null });
+      clickFrom.current = undefined;
+      if (from === node.id) toast.show("Verbinden abgebrochen.");
+      else tryConnect(from, node.id);
+      useUi.getState().setConnectPort(undefined);
+    },
     onKeyDown: (e: KeyboardEvent) => {
       // Esc bricht von jeder Stelle der Canvas aus ab
       if (e.key === "Escape" && cancelClick()) return;

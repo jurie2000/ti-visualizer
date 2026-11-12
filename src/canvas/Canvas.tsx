@@ -266,6 +266,7 @@ export function Canvas() {
         onConnectEnd={connecting.onConnectEnd}
         onClickConnectStart={connecting.onClickConnectStart}
         onClickConnectEnd={connecting.onClickConnectEnd}
+        onNodeClick={connecting.onNodeClick}
         isValidConnection={connecting.isValidConnection}
         onKeyDown={(e) => {
           if (!locked) connecting.onKeyDown(e);

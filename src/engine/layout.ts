@@ -1,12 +1,13 @@
-import { LIMITS, type Catalog, type Topology } from "../schema";
+import { LIMITS, type Catalog, type Node, type Topology } from "../schema";
 import { containedNodes } from "./zones";
 
-// Maße und Verfahren nach dem Mockup (`autoLayout`), Abstände auf NODE_SIZE umgerechnet.
+// Verfahren und Abstände nach dem Mockup (`autoLayout`): Spalte = Breite + 118,
+// Zeile = Höhe + 30, Zonenlücke 56. Fachdienste mit mindestens 80 px Abstand (Auslegung 2026-11-12).
 const START = { x: 40, y: 50 };
 const COL_GAP = 118;
-const ROW_PAD = 48;
+const ROW_GAP = 30;
 const ZONE_GAP = 56;
-const SVC_GAP = 38;
+const SVC_GAP = 80;
 /** Rand der neu aufgezogenen Zone: links, oben, rechts, unten. */
 const PAD = { l: 22, t: 34, r: 22, b: 22 } as const;
 const RANK: Record<string, number> = {
@@ -19,18 +20,60 @@ const RANK: Record<string, number> = {
 
 const clamp = (v: number) => Math.min(v, LIMITS.coord);
 
+type Size = { width: number; height: number };
+
+/**
+ * Höhe einer Kachel, geschätzt aus dem Inhalt (Basis, Namenszeilen, Kartenmarken,
+ * Anschlusszeilen). Gilt für den Modus Erweitert und ist damit die Obergrenze:
+ * Positionen bleiben in beiden Modi frei von Überlappung (D36).
+ */
+function estimateHeight(node: Node, catalog: Catalog, base: Size): number {
+  const d = catalog.deviceTypes.find((x) => x.id === node.type);
+  const lines = Math.ceil((node.label ?? d?.name ?? "").length / 18);
+  const cards = node.cards?.length ?? 0;
+  const portRows = Math.ceil((d?.ports.length ?? 0) / 2);
+  return (
+    base.height +
+    18 * Math.max(0, lines - 1) +
+    (cards > 0 ? 25 * cards - 4 : 0) +
+    17 * portRows
+  );
+}
+
+/**
+ * Größe, mit der `arrange` rechnet: die gemessene Kachel (React Flow), mindestens
+ * aber die Schätzung. Ohne Messung (Tests) gilt nur die Schätzung.
+ */
+export function tileSize(
+  node: Node,
+  catalog: Catalog,
+  base: Size,
+  measured?: Size,
+): Size {
+  return {
+    width: Math.max(base.width, measured?.width ?? 0),
+    height: Math.max(
+      estimateHeight(node, catalog, base),
+      measured?.height ?? 0,
+    ),
+  };
+}
+
 /**
  * Sortiert die Topologie kreuzungsarm (FR-16, T-720a): Spalten nach Tiefe ab
  * der Wurzel (VPN, sonst Gateway, sonst Konnektor, sonst höchster Grad),
  * Eltern mittig über ihren Kindern, Fachdienste rechts, Geräte ohne Weg
  * unten. Zonen ziehen mit: Sie werden um ihre bisherigen Mitglieder neu
  * aufgezogen; Zonen ohne Mitglieder bleiben. Anders als im Mockup entfällt
- * keine Zone (Auslegung 2026-11-12).
+ * keine Zone (Auslegung 2026-11-12). Alle Geräte zählen, auch die im Modus
+ * Einfach ausgeblendeten (wie im Mockup, das nie ausblendet). Zeilen und Spalten
+ * richten sich nach der größten Kachel (`tileSize`), damit nichts überlappt.
  */
 export function arrange(
   t: Topology,
   catalog: Catalog,
-  size: { width: number; height: number },
+  size: Size,
+  measured?: ReadonlyMap<string, Size>,
 ): Topology {
   if (t.nodes.length === 0) return t;
   const catOf = (id: string) =>
@@ -120,9 +163,15 @@ export function arrange(
         a.localeCompare(b),
     );
 
+  const dim = new Map(
+    t.nodes.map((n) => [n.id, tileSize(n, catalog, size, measured?.get(n.id))]),
+  );
+  const wOf = (id: string) => dim.get(id)?.width ?? size.width;
+  const hOf = (id: string) => dim.get(id)?.height ?? size.height;
+  const maxW = Math.max(...t.nodes.map((n) => wOf(n.id)));
+  const rowH = Math.max(...t.nodes.map((n) => hOf(n.id))) + ROW_GAP;
   const maxD = Math.max(0, ...depth.values());
-  const colW = size.width + COL_GAP;
-  const rowH = size.height + ROW_PAD;
+  const colW = maxW + COL_GAP;
   const pos = new Map<string, { x: number; y: number }>();
   let y = START.y;
   let lastZone: number | undefined;
@@ -154,7 +203,7 @@ export function arrange(
   );
   svc.forEach((n, i) => {
     pos.set(n.id, {
-      x: sx + (i % 2) * (size.width + SVC_GAP),
+      x: sx + (i % 2) * (maxW + SVC_GAP),
       y: top + Math.floor(i / 2) * rowH,
     });
   });
@@ -165,8 +214,10 @@ export function arrange(
     const at = ids.map((id) => pos.get(id) ?? { x: 0, y: 0 });
     const x0 = Math.min(...at.map((p) => p.x)) - PAD.l;
     const y0 = Math.min(...at.map((p) => p.y)) - PAD.t;
-    const x1 = Math.max(...at.map((p) => p.x + size.width)) + PAD.r;
-    const y1 = Math.max(...at.map((p) => p.y + size.height)) + PAD.b;
+    const x1 =
+      Math.max(...ids.map((id, i) => (at[i]?.x ?? 0) + wOf(id))) + PAD.r;
+    const y1 =
+      Math.max(...ids.map((id, i) => (at[i]?.y ?? 0) + hOf(id))) + PAD.b;
     return { ...z, area: { x: x0, y: y0, w: x1 - x0, h: y1 - y0 } };
   });
   return {

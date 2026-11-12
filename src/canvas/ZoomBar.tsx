@@ -7,7 +7,7 @@ import { NODE_SIZE } from "./deviceStyle";
 
 /** Zoomleiste wie im Mockup: Verkleinern, Prozent, Vergrößern, Übersicht, dazu Sortieren. */
 export function ZoomBar() {
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const { zoomIn, zoomOut, fitView, getNodes } = useReactFlow();
   const catalog = useCatalog((s) => s.catalog);
   const zoom = useStore((s) => s.transform[2]);
   const locked = simLocked(useSim((s) => s.sim));
@@ -39,7 +39,20 @@ export function ZoomBar() {
           disabled={locked}
           onClick={() => {
             const t = useTopology.getState();
-            t.replace(arrange(t.topology, catalog, NODE_SIZE));
+            // gemessene Kachelgrößen (Kartenmarken, Anschlüsse, Namenszeilen)
+            const measured = new Map(
+              getNodes().flatMap((n) =>
+                n.measured?.width && n.measured.height
+                  ? [
+                      [
+                        n.id,
+                        { width: n.measured.width, height: n.measured.height },
+                      ],
+                    ]
+                  : [],
+              ),
+            );
+            t.replace(arrange(t.topology, catalog, NODE_SIZE, measured));
             // erst nach dem Neuzeichnen, sonst passt fitView auf die alten Positionen
             setTimeout(() => void fitView(), 30);
           }}

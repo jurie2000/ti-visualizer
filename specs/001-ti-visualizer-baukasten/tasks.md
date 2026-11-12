@@ -974,15 +974,32 @@ Sicherheitsprüfung.
     Rückgängig-Schritt stellt Geräte und Zonen wieder her, Gerät ohne
     Verbindung bleibt, leere Topologie unverändert, „Übersicht“ zeigt alle
     Geräte und Zonen (auch nach „Sortieren“, leere Fläche bricht nicht ab).
+    Keine zwei Kacheln überlappen: Unit-Test in allen vier Presets mit den
+    Größen je Modus (Zeilenabstand mindestens Höhe + 30, Spaltenabstand
+    mindestens Breite + 80, Zonenrahmen überdecken kein fremdes Gerät) und
+    E2E-Test (echter Browser, je Preset in Einfach und Erweitert, gemessene
+    Rechtecke mindestens 16 px auseinander).
   - Auslegung (2026-11-12): Teilung L in T-720a (Algorithmus, Umbenennung,
     Übersicht passen zusammen unter 300 Zeilen Produktivcode, deshalb kein
     T-720c) und T-720b (Knöpfe im Ansicht-Panel, braucht T-713a). Das Löschen
     überlappender kleinerer Zonen aus dem Mockup entfällt: Zonen bleiben
     erhalten (Daten gehen nicht verloren). Echte orthogonale Kantenführung ist
     T-713b, passende Anschlusspunkte Issue #106, nicht Teil von T-720a. Maße:
-    `NODE_SIZE` aus dem Repo, Abstände aus dem Mockup (Spalte = Breite + 118,
-    Zeile = Höhe + 48, Zonenlücke 56). Hat ein Gerät keinen Weg zur Wurzel, steht
-    es unten in der ersten Spalte.
+    Kachelgröße aus der Messung von React Flow (`node.measured`, beim Klick
+    in `ZoomBar` an `arrange` übergeben), mindestens aber eine Schätzung aus
+    Namenszeilen, Kartenmarken und Anschlusszeilen (Obergrenze Erweitert,
+    ohne Browser nutzbar). Abstände wie im Mockup, das mit `h(n)` rechnet
+    (Spalte = Breite + 118, Zeile = größte Kachelhöhe + 30, Zonenlücke 56),
+    Fachdienst-Spalten mit 80 px Abstand (Mockup 38). Hat ein Gerät keinen
+    Weg zur Wurzel, steht es unten in der ersten Spalte.
+  - Auslegung (2026-11-12, Rückmeldung Justin: Überlappung): Das Mockup
+    ordnet in beiden Modi alle Geräte an und blendet in Einfach nichts aus; die
+    App blendet in Einfach Geräte aus (D36, Sammelkante). `arrange` ordnet
+    trotzdem alle Geräte an und rechnet mit der Obergrenze, weil die Positionen
+    in beiden Modi gelten: Ein Wechsel auf Erweitert darf nichts überlappen.
+    In Einfach bleiben dadurch Lücken, wo ausgeblendete Geräte stehen. Das
+    Mockup-Preset „Krankenhaus“ unterscheidet sich vom Preset der App; die
+    Reihenfolge folgt dem Verfahren, nicht dem Bild.
 
 - [ ] **T-720b Sortieren und Anordnung zurücksetzen im Ansicht-Panel** · FR: FR-16, FR-22 · Regeln: – · nach: T-713a, T-720a · Mockup: Knöpfe „Automatisch anordnen“ und „Anordnung zurücksetzen“, Zeilen 770 ff.
   - Umfang: Beide Knöpfe unten im Ansicht-Panel (ohne Auswahl). „Anordnung

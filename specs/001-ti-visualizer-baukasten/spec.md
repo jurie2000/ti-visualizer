@@ -139,7 +139,8 @@ Log-Import und Replay gehören nicht dazu.
 - **FR-16**: **Editor-Hilfen**: Kopieren/Einfügen, „Sortieren“ (automatisch
   anordnen), Zoom, Minimap, „Übersicht“ (alles im Bild). „Sortieren“ ordnet
   die Geräte kreuzungsarm in Spalten nach Abstand zur Wurzel (VPN, sonst
-  Gateway, sonst Konnektor), Zonen ziehen mit, es ist ein Rückgängig-Schritt
+  Gateway, sonst Konnektor), Zonen ziehen mit, Kacheln überlappen nicht
+  (Abstand nach tatsächlicher Größe), es ist ein Rückgängig-Schritt
   und danach passt die Ansicht auf alles an. Rückgängig/Wiederholen und
   Duplizieren entfallen (Entscheidung Justin 2026-11-11, T-708).
 - **FR-17**: **Geräteeinstellungen** im Modus Erweitert, soweit für das

@@ -171,4 +171,38 @@ describe("T-406 Detailpanel (FR-11)", () => {
       "false",
     );
   });
+
+  it("T-712a: Kopf zeigt Kicker und Titel, Auswahl aufheben leert die Auswahl", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DetailPanel />);
+    const kicker = () =>
+      container.querySelector(".tiv-dhead__kicker")?.textContent;
+    expect(
+      screen.queryByRole("button", { name: "Auswahl aufheben" }),
+    ).toBeNull();
+    select("node", "kt1");
+    expect(kicker()).toBe("Kartenterminals");
+    await user.click(screen.getByRole("button", { name: "Auswahl aufheben" }));
+    expect(useUi.getState().selection).toBeUndefined();
+    select("edge", "e1");
+    expect(kicker()).toBe("Verbindung");
+    select("zone", "z1");
+    expect(kicker()).toBe("Zone");
+  });
+
+  it("T-712a: Regelverstoß erscheint nur bei einem Befund des Geräts", () => {
+    render(<DetailPanel />);
+    select("node", "kon1");
+    const box = screen.getByRole("group", { name: "Regelverstoß" });
+    expect(box).toHaveTextContent("Gerät ist ausgefallen");
+    select("node", "pvs1");
+    expect(screen.queryByRole("group", { name: "Regelverstoß" })).toBeNull();
+  });
+
+  it("T-712a: Beschreibung des Gerätetyps steht als Text (nie HTML) im Panel", () => {
+    render(<DetailPanel />);
+    select("node", "kon1");
+    expect(screen.getByText(/Tor der Praxis zur TI/)).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "Quellen" })).toBeInTheDocument();
+  });
 });

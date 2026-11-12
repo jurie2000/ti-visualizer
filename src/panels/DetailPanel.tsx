@@ -1,9 +1,19 @@
-import { Pin, PinOff } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import {
+  Cable,
+  Layers,
+  Pin,
+  PinOff,
+  TriangleAlert,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import { useState, type CSSProperties, type ReactNode } from "react";
+import { FALLBACK_ICON, ICONS, categoryColor } from "../canvas/deviceStyle";
 import { describeEdge } from "../canvas/edgeKind";
 import { TONE_NAME } from "../canvas/toFlow";
+import { runChecks } from "../engine/checks";
 import { matches } from "../engine/rules";
-import type { Catalog, Edge, Node, Topology } from "../schema";
+import type { Catalog, Edge, Node, Topology, Zone } from "../schema";
 import {
   useCatalog,
   useOpen,
@@ -38,13 +48,69 @@ function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
   );
 }
 
-/** Wird in `Body` immer an derselben Stelle gerendert: ein dauerhaftes Element trägt allein die Live-Ansage (D10). */
-function Titled({ title, children }: { title: string; children: ReactNode }) {
+interface Head {
+  Icon: LucideIcon;
+  color: string;
+  kicker: string;
+}
+
+/**
+ * Kopf des Detailpanels (Mockup: Symbol-Kachel, Kicker, Titel, Schließen).
+ * Die Überschrift steht immer an derselben Stelle: ein dauerhaftes Element trägt allein die Live-Ansage (D10).
+ */
+function Titled({
+  title,
+  head,
+  children,
+}: {
+  title: string;
+  head?: Head | undefined;
+  children: ReactNode;
+}) {
   return (
     <>
-      <h3 aria-live="polite">{title}</h3>
+      <div className="tiv-dhead">
+        {head && (
+          <span
+            className="tiv-dhead__tile"
+            style={{ "--tile": head.color } as CSSProperties}
+          >
+            <head.Icon size={19} aria-hidden="true" />
+          </span>
+        )}
+        <div className="tiv-dhead__text">
+          {head && <span className="tiv-dhead__kicker">{head.kicker}</span>}
+          <h3 aria-live="polite">{title}</h3>
+        </div>
+        {head && (
+          <button
+            type="button"
+            className="tiv-dhead__close"
+            aria-label="Auswahl aufheben"
+            onClick={() => {
+              useUi.getState().select(undefined);
+            }}
+          >
+            <X size={15} aria-hidden="true" />
+          </button>
+        )}
+      </div>
       {children}
     </>
+  );
+}
+
+/** Regelverstoß-Kasten (Mockup `detailWarn`): Fehler und Warnungen der Prüfregeln, Text statt nur Farbe. */
+function Violations({ names }: { names: string[] }) {
+  if (names.length === 0) return null;
+  return (
+    <div className="tiv-dwarn" role="group" aria-label="Regelverstoß">
+      <TriangleAlert size={18} aria-hidden="true" />
+      <span>
+        <strong>Regelverstoß</strong>
+        {names.join(" · ")}
+      </span>
+    </div>
   );
 }
 
@@ -60,13 +126,28 @@ function Row({ name, children }: { name: string; children: ReactNode }) {
 const nameOf = (n: Node, catalog: Catalog) =>
   n.label ?? catalog.deviceTypes.find((d) => d.id === n.type)?.name ?? n.type;
 
-function DeviceDetail({ node, catalog }: { node: Node; catalog: Catalog }) {
+function DeviceDetail({
+  node,
+  catalog,
+  connections,
+}: {
+  node: Node;
+  catalog: Catalog;
+  connections: number;
+}) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   const advanced = useSettings((s) => s.mode) === "advanced";
+  const category = catalog.categories.find((c) => c.id === type?.category);
   return (
     <>
+      {type?.description && <p className="tiv-dbody">{type.description}</p>}
       <dl className="tiv-detail__facts">
         {type && <Row name="Gerätetyp">{`${type.name} (${type.abbr})`}</Row>}
+        {category && <Row name="Kategorie">{category.name}</Row>}
+        <Row name="Verbindungen">{String(connections)}</Row>
+        <Row name="Position">
+          {`x ${String(Math.round(node.position.x))} · y ${String(Math.round(node.position.y))}`}
+        </Row>
         <Row name="Betrieb">{node.fault ? "Ausgefallen" : "In Betrieb"}</Row>
         {type && (
           <Row name="Anschlüsse">
@@ -104,6 +185,10 @@ function EdgeDetail({
   );
   return (
     <>
+      <p className="tiv-dbody">
+        Über diese Kante läuft der Datenverkehr zwischen den beiden Geräten.
+        Verbindungen sind ungerichtet.
+      </p>
       <dl className="tiv-detail__facts">
         <Row name="Verbindungsart">
           {catalog.protocols.connectionKinds.find((k) => k.id === kind)?.name ??
@@ -135,20 +220,53 @@ function EdgeDetail({
   );
 }
 
+const ZONE_COLOR: Record<Zone["tone"], string> = {
+  sage: "var(--color-accent-2)",
+  accent: "var(--color-accent)",
+  neutral: "var(--color-neutral-600)",
+};
+
 function Body({ sel }: { sel: Selection }) {
   const topology = useTopology((s) => s.topology);
   const catalog = useCatalog((s) => s.catalog);
+  const mode = useSettings((s) => s.mode);
   let title = "Details";
+  let head: Head | undefined;
+  let violations: string[] = [];
   let found = false;
   let content: ReactNode = (
     <p>Gerät oder Verbindung wählen, um Details zu sehen.</p>
   );
+  const violated = (
+    pick: (f: { nodes: string[]; edges: string[] }) => boolean,
+  ) =>
+    runChecks(topology, mode, catalog)
+      .filter((f) => f.severity !== "Hinweis" && pick(f))
+      .map((f) => f.name);
   if (sel?.kind === "node") {
     const node = topology.nodes.find((n) => n.id === sel.id);
     if (node) {
       found = true;
+      const type = catalog.deviceTypes.find((d) => d.id === node.type);
       title = nameOf(node, catalog);
-      content = <DeviceDetail node={node} catalog={catalog} />;
+      head = {
+        Icon: ICONS[type?.icon ?? ""] ?? FALLBACK_ICON,
+        color: categoryColor(type?.category ?? ""),
+        kicker:
+          catalog.categories.find((c) => c.id === type?.category)?.name ??
+          "Gerät",
+      };
+      violations = violated((f) => f.nodes.includes(node.id));
+      content = (
+        <DeviceDetail
+          node={node}
+          catalog={catalog}
+          connections={
+            topology.edges.filter((e) => e.ends.some((x) => x.node === node.id))
+              .length
+          }
+        />
+      );
     }
   } else if (sel?.kind === "edge") {
     const edge = topology.edges.find((e) => e.id === sel.id);
@@ -157,6 +275,12 @@ function Body({ sel }: { sel: Selection }) {
       title = endsOf(edge, topology)
         .map((n) => (n ? nameOf(n, catalog) : "?"))
         .join(" ↔ ");
+      head = {
+        Icon: Cable,
+        color: `var(--tiv-edge-${describeEdge(edge, topology, catalog).kind}, var(--color-neutral-600))`,
+        kicker: "Verbindung",
+      };
+      violations = violated((f) => f.edges.includes(edge.id));
       content = (
         <EdgeDetail edge={edge} topology={topology} catalog={catalog} />
       );
@@ -166,8 +290,13 @@ function Body({ sel }: { sel: Selection }) {
     if (zone) {
       found = true;
       title = zone.label ?? zone.id;
+      head = { Icon: Layers, color: ZONE_COLOR[zone.tone], kicker: "Zone" };
       content = (
         <>
+          <p className="tiv-dbody">
+            Zonen gliedern die Fläche, etwa nach Abteilung oder Raum. Sie sind
+            nur Beschriftung und ändern nichts an den Verbindungen.
+          </p>
           <dl className="tiv-detail__facts">
             <Row name="Farbe">{TONE_NAME[zone.tone]}</Row>
           </dl>
@@ -177,7 +306,12 @@ function Body({ sel }: { sel: Selection }) {
     }
   }
   if (sel && !found) content = <p>Die Auswahl gibt es nicht mehr.</p>;
-  return <Titled title={title}>{content}</Titled>;
+  return (
+    <Titled title={title} head={head}>
+      <Violations names={violations} />
+      {content}
+    </Titled>
+  );
 }
 
 /** Detailpanel (FR-11): einblendbar; angepinnt bleibt der Inhalt trotz neuer Auswahl. */

@@ -766,16 +766,27 @@ Sicherheitsprüfung.
   - Fertig, wenn: Tests prüfen Öffnen/Schließen per Hover und Tastatur,
     Anheften bleibt offen und kommt aus den Einstellungen zurück.
 
-- [ ] **T-712 Detailpanel wie im Mockup** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `<aside>` rechts, Zeilen 551 bis 723
-  - Umfang: Aufbau 1:1 wie Mockup (Kopf mit Symbol, Kicker, Titel,
-    Auswahl-aufheben-Knopf, Regelverstoß-Hinweis, Beschreibung, Konfiguration,
-    Anschlüsse, Karten, Aktionen). Zusätzlich bleiben die Quellen mit Link
-    (https, nie als HTML).
-    Auslegung (2026-11-12): Quellen sind die einzige Abweichung, Justin will sie behalten.
-  - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Quellen sichtbar,
-    Vergleich mit den Mockup-Screenshots von Justin abgenommen.
-  - Hinweis: Sprengt der Umbau 300 Zeilen, teilen in T-712a (Kopf, Hinweis,
-    Beschreibung) und T-712b (Konfiguration, Anschlüsse, Karten, Aktionen).
+- [x] **T-712a Detailpanel: Kopf, Hinweis, Beschreibung** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `<aside>` rechts, Zeilen 551 bis 601 und 614 bis 623
+  - Umfang: Kopf wie Mockup (Symbol-Kachel in Kategoriefarbe, Kicker, Titel,
+    Knopf „Auswahl aufheben“), Kasten „Regelverstoß“ aus den Prüfregeln
+    (Fehler und Warnungen des Geräts oder der Verbindung), Beschreibung
+    (neues optionales Katalogfeld `description` je Gerätetyp, Texte aus dem
+    Mockup `describe`), Faktenkasten mit Rahmen und festen Spalten. Quellen
+    bleiben mit Link (https, nie als HTML).
+    Auslegung (2026-11-12): Quellen sind die einzige Abweichung, Justin will
+    sie behalten. „Zone“ bleibt statt „Bereich“ (Wortwahl der App). Die
+    Leiste „Details ausblenden/Anpinnen“ bleibt, bis Justin sie streicht.
+    Beschreibung nur für Typen, die der Mockup beschreibt.
+  - Fertig, wenn: bestehende `DetailPanel`-Tests grün, Kopf und Hinweis
+    getestet, Quellen sichtbar, hell und dunkel im Browser geprüft.
+
+- [ ] **T-712b Detailpanel: Zone, Konfiguration, Anschlüsse, Karten, Aktionen** · FR: FR-22 · Regeln: – · nach: T-712a · Mockup: Zeilen 590 bis 723
+  - Umfang: Zone-Bearbeitung, Konfiguration (`ConfigForm`), Anschlussliste
+    mit Status, gesteckte Karten mit Ziehen und Stecken, Aktionsknöpfe
+    (Ausfall, Entfernen, Trennen) im Aufbau und Stil des Mockups. Vergleich
+    mit den Mockup-Screenshots von Justin.
+  - Fertig, wenn: bestehende `ConfigForm`- und `ZoneForm`-Tests grün, je
+    Abschnitt ein Test, Abnahme durch Justin.
 
 - [ ] **T-713a Ansicht-Panel ohne Auswahl** · FR: FR-22 · Regeln: – · nach: T-711 · Mockup: `noSelection`, Zeilen 725 bis 785
   - Umfang: Ohne Auswahl zeigt das rechte Panel Hinweistext, Legende der

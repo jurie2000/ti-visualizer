@@ -100,6 +100,8 @@ export const deviceTypes = z.array(
     abbr: Text,
     name: Text,
     category: Id,
+    /** Erklärtext im Detailpanel (T-712a); nicht jeder Typ hat einen. */
+    description: Text.optional(),
     // false für Smartcards: Karten sind keine Knoten (D12), nicht in der Palette
     placeable: z.boolean().default(true),
     icon: Id,

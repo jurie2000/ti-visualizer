@@ -1032,8 +1032,12 @@ Sicherheitsprüfung.
     Zoomleiste). Kopf mit Kicker „Teil x · n/16“, Einklappen und Schließen,
     Fortschrittsbalken, Persona im Salbei-Kasten, Aufgabe mit Haken, Zurück
     und Weiter. Eingeklappt bleibt eine Pille „Tutorial · Schritt n von 16“.
+    Ohne Maus oder Fokus schrumpft die Karte (nach 350 ms) auf Titel und
+    offene Aufgabe; Hover oder Fokus zeigen Persona und Erklärung. Klappt die
+    linke Palette über die Fläche aus, rückt die Karte daneben.
   - Fertig, wenn: bestehende Tutorial-Tests laufen mit den neuen Namen; ein
-    Test prüft Einklappen und Aufklappen ohne Änderung des Fortschritts.
+    Test prüft Einklappen und Aufklappen ohne Änderung des Fortschritts, ein
+    weiterer das Schrumpfen ohne Maus und die volle Ansicht bei Hover.
   - Auslegung (2026-11-13): „So geht’s“, Überspringen und Hover-Kurzansicht
     aus dem Mockup folgen erst mit passenden Katalogdaten. Der Schließen-Knopf
     (Kreuz) behält den Fortschritt, „Tutorial beenden“ setzt ihn zurück.

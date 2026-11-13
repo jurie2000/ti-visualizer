@@ -138,6 +138,12 @@
     left: 56px;
     transform: translateX(-100%);
   }
+  /* Das aufgeklappte, nicht angeheftete Panel überdeckt die Fläche: Tutorial-Karte rückt daneben (T-722) */
+  .tiv-side--left[data-open="true"]:not([data-pinned="true"])
+    ~ .tiv-canvas
+    :is(.tiv-tutorial, .tiv-tutorial-mini) {
+    left: 282px;
+  }
   .tiv-side--right > aside {
     right: 56px;
     transform: translateX(100%);

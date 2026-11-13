@@ -29,6 +29,23 @@ export function TutorialCard() {
   const played = useUi((s) => s.played);
   const { setCenter } = useReactFlow();
   const [minimiert, setMinimiert] = useState(false);
+  // Ohne Maus oder Fokus schrumpft die Karte auf die aktuelle Aufgabe (Mockup `tutCompact`).
+  const [offen, setOffen] = useState(true);
+  const zu = useRef<number>(undefined);
+  const zeige = (an: boolean) => {
+    window.clearTimeout(zu.current);
+    if (an) setOffen(true);
+    else
+      zu.current = window.setTimeout(() => {
+        setOffen(false);
+      }, 350);
+  };
+  useEffect(
+    () => () => {
+      window.clearTimeout(zu.current);
+    },
+    [],
+  );
 
   const index = Math.min(progress, steps.length - 1);
   const step = steps[index];
@@ -76,6 +93,7 @@ export function TutorialCard() {
   );
   const done = stepDone(step.id, { topology, apo, played: new Set(played) });
   const last = index === steps.length - 1;
+  const kompakt = !offen && !!step.task && !done;
   const go = (to: number) => {
     useSettings.getState().set({ tutorialProgress: to });
   };
@@ -106,7 +124,23 @@ export function TutorialCard() {
   }
 
   return (
-    <section className="tiv-tutorial" aria-label="Tutorial">
+    <section
+      className="tiv-tutorial"
+      aria-label="Tutorial"
+      data-compact={kompakt}
+      onMouseEnter={() => {
+        zeige(true);
+      }}
+      onMouseLeave={() => {
+        zeige(false);
+      }}
+      onFocus={() => {
+        zeige(true);
+      }}
+      onBlur={() => {
+        zeige(false);
+      }}
+    >
       <div className="tiv-tutorial__head">
         <p className="tiv-tutorial__kicker">{kicker}</p>
         <button
@@ -143,23 +177,25 @@ export function TutorialCard() {
       </div>
       <div className="tiv-tutorial__body" aria-live="polite">
         <h2>{step.title}</h2>
-        <div className="tiv-tutorial__story">
-          {persona && (
-            <img
-              src={portraits[`../assets/${persona.image}`]}
-              alt={persona.alt}
-              width={44}
-              height={44}
-            />
-          )}
-          <p>
-            <strong>
-              {persona?.name}, {persona?.text}
-            </strong>
-            {step.story}
-          </p>
-        </div>
-        <p>{step.text}</p>
+        {!kompakt && (
+          <div className="tiv-tutorial__story">
+            {persona && (
+              <img
+                src={portraits[`../assets/${persona.image}`]}
+                alt={persona.alt}
+                width={44}
+                height={44}
+              />
+            )}
+            <p>
+              <strong>
+                {persona?.name}, {persona?.text}
+              </strong>
+              {step.story}
+            </p>
+          </div>
+        )}
+        {!kompakt && <p>{step.text}</p>}
         {step.task && (
           <p className="tiv-tutorial__task" data-done={done}>
             <span className="tiv-tutorial__check" aria-hidden="true">
@@ -173,6 +209,11 @@ export function TutorialCard() {
               <strong>{done ? "Erledigt: " : "Aufgabe: "}</strong>
               {step.task}
             </span>
+          </p>
+        )}
+        {kompakt && (
+          <p className="tiv-tutorial__hint">
+            Maus hierher bewegen für die Erklärung
           </p>
         )}
       </div>

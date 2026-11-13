@@ -5,6 +5,13 @@
   left: 14px;
   bottom: 62px;
   z-index: 8;
+  transition: left 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiv-tutorial,
+  .tiv-tutorial-mini {
+    transition: none;
+  }
 }
 .tiv-tutorial {
   width: 390px;
@@ -174,4 +181,8 @@
   stroke: var(--color-accent);
   stroke-width: 2;
   stroke-linejoin: round;
+}
+.tiv-tutorial__hint {
+  margin-top: 8px !important;
+  color: var(--color-neutral-700);
 }

@@ -1,5 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { APOTHEKEN_ZONE } from "../engine/tutorialChecks";
@@ -121,6 +121,24 @@ describe("FR-20 Tutorial-Karte", () => {
     await user.click(screen.getByRole("button", { name: /Schritt 3 von/ }));
     expect(screen.getByRole("region", { name: "Tutorial" })).toBeVisible();
     expect(progress()).toBe(2);
+  });
+
+  it("schrumpft ohne Maus auf die Aufgabe und zeigt alles bei Hover", async () => {
+    const user = userEvent.setup();
+    const i = steps.findIndex((s) => s.task && s.text);
+    const step = steps[i];
+    useSettings.setState({ tutorialProgress: i });
+    render(card);
+    const karte = screen.getByRole("region", { name: "Tutorial" });
+    expect(screen.getByText(step?.text ?? "")).toBeVisible();
+    await user.hover(karte);
+    await user.unhover(karte);
+    await waitFor(() => {
+      expect(screen.queryByText(step?.text ?? "")).toBeNull();
+    });
+    expect(screen.getByText(step?.task ?? "")).toBeVisible();
+    await user.hover(karte);
+    expect(screen.getByText(step?.text ?? "")).toBeVisible();
   });
 
   it("Schließen behält den Fortschritt", async () => {

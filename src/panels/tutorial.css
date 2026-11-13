@@ -1,48 +1,229 @@
+/* Schwebende Karte unten links auf der Fläche (Mockup `tutCardStyle`) */
+.tiv-tutorial,
+.tiv-tutorial-mini {
+  position: absolute;
+  left: 14px;
+  bottom: 62px;
+  z-index: 8;
+  transition: left 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiv-tutorial,
+  .tiv-tutorial-mini {
+    transition: none;
+  }
+}
 .tiv-tutorial {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 16px;
-  align-items: flex-start;
-  padding: 12px 16px;
-  max-height: 40%;
+  width: 390px;
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 140px);
   overflow-y: auto;
+  padding: 15px 17px 16px;
   background: var(--color-neutral-100);
-  border-bottom: 1px solid var(--color-divider);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
 }
-.tiv-tutorial__avatar {
+.tiv-tutorial__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.tiv-tutorial__kicker {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-accent-700);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tiv-tutorial__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tiv-tutorial__icon:hover {
+  background: var(--color-neutral-200);
+}
+.tiv-tutorial__icon svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+.tiv-tutorial__bar {
+  height: 6px;
+  margin-bottom: 13px;
+  overflow: hidden;
+  background: var(--color-neutral-300);
+  border-radius: 999px;
+}
+.tiv-tutorial__bar div {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+.tiv-tutorial__body h2,
+.tiv-tutorial__body p {
+  margin: 0;
+}
+.tiv-tutorial__body h2 {
+  margin-bottom: 6px;
+  font-size: 1.3rem;
+  line-height: 1.15;
+}
+.tiv-tutorial__story {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin: 4px 0 11px;
+  padding: 11px 12px;
+  color: var(--color-accent-2-900);
+  background: var(--color-accent-2-100);
+  border: 1px solid var(--color-accent-2-300);
+  border-radius: 14px;
+}
+.tiv-tutorial__story img {
   flex: none;
   border-radius: 50%;
   object-fit: cover;
 }
-.tiv-tutorial__body {
-  flex: 1 1 24rem;
-  min-width: 0;
-}
-.tiv-tutorial__body h2,
-.tiv-tutorial__body p {
-  margin: 0 0 6px;
-}
-.tiv-tutorial__body h2 {
-  font-size: 1.1rem;
-}
-.tiv-tutorial__kicker {
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
-}
-.tiv-tutorial__story {
+.tiv-tutorial__story p {
   font-style: italic;
 }
+.tiv-tutorial__story strong {
+  display: block;
+  font-style: normal;
+  margin-bottom: 2px;
+}
 .tiv-tutorial__task {
-  padding: 8px 12px;
-  border: 1px solid var(--color-neutral-400);
-  border-radius: var(--radius-sm);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 12px !important;
+  padding: 10px 12px;
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider);
+  border-radius: 12px;
 }
 .tiv-tutorial__task[data-done="true"] {
-  border-color: var(--color-accent-2);
+  color: var(--tiv-ok-fg);
+  background: var(--tiv-ok-bg);
+  border-color: var(--tiv-ok-bd);
+}
+.tiv-tutorial__check {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px dashed var(--color-neutral-500);
+  border-radius: 999px;
+}
+.tiv-tutorial__task[data-done="true"] .tiv-tutorial__check {
+  color: var(--color-neutral-100);
+  background: var(--tiv-ok-fg);
+  border: 0;
+}
+.tiv-tutorial__check svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .tiv-tutorial__nav {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+  margin-top: 14px;
+}
+.tiv-tutorial__spacer {
+  flex: 1;
+}
+.tiv-tutorial-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px 0 12px;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  background: var(--color-neutral-100);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+.tiv-tutorial-mini svg {
+  width: 15px;
+  height: 15px;
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+/* Weiches Zuklappen ohne feste Höhe (grid 0fr → 1fr); Eingang der Karte per Keyframes */
+.tiv-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 0.2s ease,
+    opacity 0.15s ease;
+}
+.tiv-collapse[data-open="false"] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.2s ease,
+    opacity 0.15s ease,
+    visibility 0s linear 0.2s;
+}
+.tiv-collapse > div {
+  min-height: 0;
+  overflow: hidden;
+}
+@keyframes tiv-tutorial-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.tiv-tutorial,
+.tiv-tutorial-mini {
+  animation: tiv-tutorial-in 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiv-collapse,
+  .tiv-collapse[data-open="false"],
+  .tiv-tutorial,
+  .tiv-tutorial-mini {
+    transition: none;
+    animation: none;
+  }
+}
+.tiv-tutorial__hint {
+  margin-top: 8px !important;
+  color: var(--color-neutral-700);
 }

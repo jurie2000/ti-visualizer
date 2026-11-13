@@ -1027,6 +1027,24 @@ Sicherheitsprüfung.
   - Auslegung (2026-11-12): Kartennamen bleiben aus dem Katalog, nicht aus
     dem Mockup. Fortgeschritten und Herausforderungen folgen mit T-705-Umfeld.
 
+- [x] **T-722 Tutorial-Karte unten links wie im Mockup** · FR: FR-20 · Regeln: – · nach: T-721 · Mockup: `tutOn`, `tutMinOn`, Zeilen 355 bis 425
+  - Umfang: Die Karte schwebt unten links über der Fläche (über der
+    Zoomleiste). Kopf mit Kicker „Teil x · n/16“, Einklappen und Schließen,
+    Fortschrittsbalken, Persona im Salbei-Kasten, Aufgabe mit Haken, Zurück
+    und Weiter. Eingeklappt bleibt eine Pille „Tutorial · Schritt n von 16“.
+    Ohne Maus oder Fokus schrumpft die Karte (nach 350 ms) auf Titel und
+    offene Aufgabe; Hover oder Fokus zeigen Persona und Erklärung. Klappt die
+    linke Palette über die Fläche aus, rückt die Karte daneben. Zu- und
+    Aufklappen laufen weich per CSS (`grid-template-rows`, 0,2 s, Eingang
+    per Keyframes, nichts unter `prefers-reduced-motion`). Pilotversuch: bei
+    Gefallen später für weitere Aktionen übernehmen.
+  - Fertig, wenn: bestehende Tutorial-Tests laufen mit den neuen Namen; ein
+    Test prüft Einklappen und Aufklappen ohne Änderung des Fortschritts, ein
+    weiterer das Schrumpfen ohne Maus und die volle Ansicht bei Hover.
+  - Auslegung (2026-11-13): „So geht’s“, Überspringen und Hover-Kurzansicht
+    aus dem Mockup folgen erst mit passenden Katalogdaten. Der Schließen-Knopf
+    (Kreuz) behält den Fortschritt, „Tutorial beenden“ setzt ihn zurück.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

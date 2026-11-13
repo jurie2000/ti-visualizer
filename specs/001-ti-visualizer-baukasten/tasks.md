@@ -1144,6 +1144,18 @@ Sicherheitsprüfung.
     Konnektor oder TI-Gateway im Rechenzentrum fehlt (Status Vereinfachung).
     KIM-Clientmodul und TI-Messenger-Client bleiben ohne `host`.
 
+- [x] **T-726 Zwei-Finger-Gesten auf der Fläche** · FR: – · Regeln: – · nach: T-703 · Issue #101
+  - Umfang: `panOnScroll` an `<ReactFlow>`: Zwei-Finger-Scrollen am Trackpad
+    verschiebt die Fläche, Pinch (Strg+Rad) zoomt. Touch-Verschieben mit zwei
+    Fingern und Pinch-Zoom liefert React Flow bereits. Maus-Ziehen auf der
+    Fläche und die Zoomleiste bleiben.
+  - Fertig, wenn: ein Test (Name mit T-726) zeigt, dass Scrollen die Ansicht
+    verschiebt, ohne den Zoom zu ändern, und Strg+Rad zoomt.
+  - Auslegung (2026-11-13): Mit `panOnScroll` verschiebt auch ein
+    klassisches Mausrad statt zu zoomen; Trackpad und Mausrad sind im Browser
+    nicht sicher zu unterscheiden. Zoomen geht per Strg+Rad, Pinch oder
+    Zoomleiste.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für
@@ -1280,16 +1292,3 @@ Sie blockieren die genannten Tasks.
 
 Frei gewordene IDs ohne Task: V-1, V-2, V-3, V-11, V-13, G-5 (im
 Regelwerk als G-1 bis G-3, K-6, K-8, K-9 aufgegangen).
-
-- [x] **T-726 Zwei-Finger-Gesten auf der Fläche** · FR: FR-22 · Regeln: – · nach: T-703 · Issue #101
-  - Umfang: `panOnScroll` an `<ReactFlow>`: Zwei-Finger-Scrollen am Trackpad
-    verschiebt die Fläche, Pinch (Strg+Rad) zoomt. Touch-Verschieben mit zwei
-    Fingern und Pinch-Zoom liefert React Flow bereits. Maus-Ziehen auf der
-    Fläche und die Zoomleiste bleiben.
-  - Fertig, wenn: ein Test (Name mit T-726) zeigt, dass Scrollen die Ansicht
-    verschiebt, ohne den Zoom zu ändern, und Strg+Rad zoomt. Tablet-Prüfung
-    in T-704.
-  - Auslegung (2026-11-13): Mit `panOnScroll` verschiebt auch ein
-    klassisches Mausrad statt zu zoomen; Trackpad und Mausrad sind im Browser
-    nicht sicher zu unterscheiden. Zoomen geht per Strg+Rad, Pinch oder
-    Zoomleiste.

@@ -102,8 +102,8 @@ export function openTopology(topology: Topology) {
 }
 
 /**
- * Tutorial von vorn (FR-20): leere Fläche im Modus Erweitert (Switch und
- * Konnektor stehen nur dort in der Palette), Fortschritt auf Schritt 1.
+ * Tutorial von vorn (FR-20): leere Fläche im Modus Erweitert (die IP-Konfiguration
+ * des Konnektor-Schritts gibt es nur dort), Fortschritt auf Schritt 1.
  */
 export function startTutorial() {
   guardReplace(() => {

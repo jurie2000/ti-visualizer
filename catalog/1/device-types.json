@@ -129,7 +129,7 @@
     "description": "Das Radiologie-Informationssystem steuert Untersuchungen und Befunde der Radiologie. Es ist ein Subsystem und tauscht Aufträge und Befunde per HL7 mit dem KIS aus.",
     "category": "primary",
     "icon": "scan",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -160,7 +160,7 @@
     "description": "Das Labor-Informationssystem verwaltet Proben und Laborwerte. Als Subsystem meldet es Ergebnisse per HL7 an das KIS zurück.",
     "category": "primary",
     "icon": "flask",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -191,7 +191,7 @@
     "description": "Der Arbeitsplatz-PC ist der Rechner, auf dem Software läuft (PVS, AVS, Pflege). Er hängt per Ethernet am Switch. Bei zentraler Software (KIS) ist er nur die Oberfläche.",
     "category": "computer",
     "icon": "screen",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client", "workplace"],
     "ports": [
@@ -238,7 +238,7 @@
     "description": "Auf einem Server läuft zentrale Software, zum Beispiel KIS, RIS und LIS. Der Server hängt per Ethernet am Switch, die Software ist ihm über „läuft auf“ zugeordnet.",
     "category": "computer",
     "icon": "server",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client"],
     "ports": [
@@ -277,7 +277,7 @@
     "description": "Das Visite-Tablet ist ein mobiler KIS-Client. Es verbindet sich per WLAN mit dem Access Point und nutzt die TI über denselben Konnektor wie die festen Arbeitsplätze.",
     "category": "computer",
     "icon": "tablet",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client", "workplace"],
     "ports": [
@@ -307,7 +307,7 @@
     "name": "KIM-Clientmodul",
     "category": "primary",
     "icon": "mail",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client"],
     "ports": [
@@ -460,7 +460,7 @@
     "description": "Der Switch verbindet PVS, Kartenterminals und Konnektor im lokalen Netz der Einrichtung. Er hat acht Ethernet-Ports und leitet Pakete nur weiter.",
     "category": "lan",
     "icon": "sw",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -539,7 +539,7 @@
     "description": "Der Router verbindet das lokale Netz mit dem Internet. Der Konnektor schickt seinen VPN-Tunnel durch ihn hindurch — lesen kann der Router davon nichts. Zusätzlich spannt er ein WLAN auf.",
     "category": "lan",
     "icon": "wrouter",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:router"],
     "ports": [
@@ -602,7 +602,7 @@
     "description": "Der WLAN Access Point bringt mobile Geräte wie Visite-Tablets ins lokale Netz. Er hängt per Kabel (PoE) am Switch.",
     "category": "lan",
     "icon": "wifi",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -632,7 +632,7 @@
     "name": "Firewall",
     "category": "lan",
     "icon": "shield",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -826,7 +826,7 @@
     "name": "Internet (Transportnetz)",
     "category": "network",
     "icon": "globe",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -848,7 +848,7 @@
     "name": "Zentrales Netz der TI",
     "category": "network",
     "icon": "layers",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -870,7 +870,7 @@
     "name": "Namensdienst",
     "category": "zentral",
     "icon": "server",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -892,7 +892,7 @@
     "name": "Zeitdienst",
     "category": "zentral",
     "icon": "server",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -914,7 +914,7 @@
     "name": "Verzeichnisdienst (FHIR-Directory)",
     "category": "zentral",
     "icon": "folder",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -936,7 +936,7 @@
     "name": "TSL-Dienst mit OCSP-Responder",
     "category": "zentral",
     "icon": "shield",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -995,7 +995,7 @@
     "name": "Sektoraler IDP (GesundheitsID)",
     "category": "zentral",
     "icon": "key",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1188,7 +1188,7 @@
     "name": "PoPP-Service",
     "category": "service",
     "icon": "shield",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1268,7 +1268,7 @@
     "name": "ePA-App der Versicherten",
     "category": "versicherte",
     "icon": "tablet",
-    "visibleSimple": false,
+    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["nfcCard"],
     "ports": [

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import { loadCatalog, type Topology } from "../schema";
 import { availableActions } from "./actions";
 import { bindFlow } from "./simulation";
-import { collapseHidden } from "./collapse";
 import { resolvePath } from "./paths";
 import { validateConnection } from "./rules";
 
@@ -19,7 +18,13 @@ const mitPc = (): Topology => structuredClone(praxis);
 const check = (t: Topology, a: [string, string], b: [string, string]) =>
   validateConnection(t, a[0], a[1], b[0], b[1], catalog);
 
-describe("T-724a Software läuft auf einem Rechner", () => {
+const actionsOf = (t: Topology, id: string, mode: "simple" | "advanced") => {
+  const node = t.nodes.find((n) => n.id === id);
+  if (!node) throw new Error(`${id} fehlt`);
+  return availableActions(node, t, catalog, mode).map((a) => a.id);
+};
+
+describe("T-724a/b Software läuft auf einem Rechner", () => {
   it("T-724a: Software läuft auf einem PC, über den Anschluss „Läuft auf“", () => {
     const t = mitPc();
     t.edges = t.edges.filter((e) => e.id !== "e-pvs1-pc1");
@@ -80,22 +85,6 @@ describe("T-724a Software läuft auf einem Rechner", () => {
     expect(names).toContain("E-Rezept ausstellen");
   });
 
-  it("T-724a: Modus Einfach blendet PC und Switch aus, die Software hängt per Sammelkante am Konnektor", () => {
-    const c = collapseHidden(mitPc(), catalog);
-    const g = c.groups.find(
-      (x) => x.ends.includes("pvs1") && x.ends.includes("kon1"),
-    );
-    expect(g?.hidden).toEqual(["pc1", "sw1"]);
-  });
-});
-
-describe("T-724b Software ohne Ethernet, Aktionen am Rechner", () => {
-  const actionsOf = (t: Topology, id: string, mode: "simple" | "advanced") => {
-    const node = t.nodes.find((n) => n.id === id);
-    if (!node) throw new Error(`${id} fehlt`);
-    return availableActions(node, t, catalog, mode).map((a) => a.id);
-  };
-
   it("T-724b: Software hat weder Ethernet noch USB, nur Anwendung und „Läuft auf“", () => {
     for (const id of ["pvs", "kis", "avs", "pflege", "ris", "lis"]) {
       const kinds = catalog.deviceTypes
@@ -120,16 +109,17 @@ describe("T-724b Software ohne Ethernet, Aktionen am Rechner", () => {
         ).toBe(true);
   });
 
-  it("T-724b: Im Modus Erweitert startet die Aktion am Rechner, nicht an der Software", () => {
-    const t = mitPc();
-    expect(actionsOf(t, "pvs1", "advanced")).toEqual([]);
-    expect(actionsOf(t, "pc1", "advanced")).toContain("erezept-ausstellen");
+  it("T-725a: Kein Gerätetyp ist in Einfach ausgeblendet", () => {
+    expect(catalog.deviceTypes.filter((d) => !d.visibleSimple)).toEqual([]);
+    expect(catalog.connectionRules.filter((r) => !r.visibleSimple)).toEqual([]);
   });
 
-  it("T-724b: Im Modus Einfach (Rechner ausgeblendet) startet die Software selbst", () => {
-    expect(actionsOf(mitPc(), "pvs1", "simple")).toContain(
-      "erezept-ausstellen",
-    );
+  it("T-725a: Die Aktion startet am Rechner, nicht an der Software, in beiden Modi", () => {
+    const t = mitPc();
+    for (const mode of ["simple", "advanced"] as const) {
+      expect(actionsOf(t, "pvs1", mode), mode).toEqual([]);
+      expect(actionsOf(t, "pc1", mode), mode).toContain("erezept-ausstellen");
+    }
   });
 
   it("T-724b: Ein Arbeitsplatz erbt die Aktionen der Software auf dem Server (KIS)", () => {

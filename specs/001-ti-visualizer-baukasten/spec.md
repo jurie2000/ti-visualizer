@@ -127,8 +127,9 @@ Log-Import und Replay gehören nicht dazu.
 
 **Neu (aus dem Mockup, 2026-11-03)**
 - **FR-13**: Ansichtsmodus **Einfach/Erweitert**, jederzeit umschaltbar.
-  Der Modus ändert nur die Darstellung, nie die Topologie. Im Modus
-  Einfach werden Netzgeräte ausgeblendet und als Sammelkanten gezeigt.
+  Der Modus ändert nie die Topologie. Beide Modi zeigen alle Geräte und
+  Verbindungen (seit T-725a, 2026-11-13); Erweitert ergänzt die
+  Geräteeinstellungen samt ihren Prüfregeln und die Anschlussauswahl.
 - **FR-14**: **Anschlüsse** je Gerätetyp (z. B. Ethernet, WAN, USB, WLAN,
   logischer VPN-/TI-Zugang). Im Modus Erweitert wählt der Nutzer beim
   Verbinden den Anschluss. Im Modus Einfach wählt das System einen freien

@@ -74,7 +74,6 @@ const lan = [
 // Dritter Wert `true`: Kante „läuft auf“ (Software auf Rechner).
 const links: [string, string, true?][] = [
   ...lan.map((n): [string, string] => ["sw", n]),
-  ["pc", "pvs", true],
   ["sw", "srv"],
   ["srv", "kis", true],
   ["tab", "ap"],
@@ -435,10 +434,10 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     expect(s?.chooseTerminal).toBeUndefined();
   });
 
-  it("Preset praxis: Karten auf kt1 und kt2 verteilt, Aktionen am PVS aktiv", () => {
+  it("Preset praxis: Karten auf kt1 und kt2 verteilt, Aktionen am PC aktiv", () => {
     const t = catalog.presets.find((p) => p.id === "praxis")
       ?.topology as Topology;
-    const pvs = t.nodes.find((n) => n.type === "pvs") as Node;
+    const pvs = t.nodes.find((n) => n.type === "pc") as Node;
     const byId = new Map(
       availableActions(pvs, t, catalog).map((a) => [a.id, a]),
     );
@@ -449,7 +448,7 @@ describe("T-402 Pfad, Karten, Terminal", () => {
   it("6.0 Issue #70: Menü und Player wählen dasselbe Terminal (Preset praxis, E-Rezept ausstellen)", () => {
     const t = catalog.presets.find((p) => p.id === "praxis")
       ?.topology as Topology;
-    const pvs = t.nodes.find((n) => n.type === "pvs") as Node;
+    const pvs = t.nodes.find((n) => n.type === "pc") as Node;
     const a = availableActions(pvs, t, catalog).find(
       (x) => x.id === "erezept-ausstellen",
     );
@@ -463,7 +462,7 @@ describe("T-402 Pfad, Karten, Terminal", () => {
   it("6.0 Issue #70: Karten in verschiedenen Terminals binden kein Terminal vor", () => {
     const base = catalog.presets.find((p) => p.id === "praxis")
       ?.topology as Topology;
-    const pvs = base.nodes.find((n) => n.type === "pvs") as Node;
+    const pvs = base.nodes.find((n) => n.type === "pc") as Node;
     const all = base.nodes.flatMap((n) => n.cards ?? []);
     const hba = all.find((c) => c.kind === "hba") as AnyCard;
     const smcb = all.find((c) => c.kind === "smcb") as AnyCard;
@@ -483,28 +482,31 @@ describe("T-402 Pfad, Karten, Terminal", () => {
       availableActions(t.nodes.find((x) => x.id === n) as Node, t, catalog).map(
         (a) => a.id,
       );
-    expect(ids(full(), "pc")).toContain("erezept-ausstellen");
-    expect(ids(full(), "pc")).not.toContain("erezept-einloesen-code");
+    // Das PVS läuft auf dem PC („läuft auf“), die Software selbst bietet dann nichts an.
+    const mitHost = (t: Topology): Topology => ({
+      ...t,
+      edges: [
+        ...t.edges,
+        {
+          id: "pc-pvs",
+          fault: false,
+          ends: [
+            { node: "pc", port: "soft" },
+            { node: "pvs", port: "host" },
+          ],
+        },
+      ],
+    });
+    expect(ids(mitHost(full()), "pc")).toContain("erezept-ausstellen");
+    expect(ids(mitHost(full()), "pc")).not.toContain("erezept-einloesen-code");
+    expect(ids(mitHost(full()), "pvs")).toEqual([]);
     expect(ids(full(), "tab")).toContain("erezept-ausstellen");
-    // PC und PVS hängen am Switch: ein ausgefallenes PVS nimmt dem PC die Aktionen.
-    const viaSwitch = faulty(
-      {
-        ...without(full(), "kis", "avs"),
-        edges: [
-          ...without(full(), "kis", "avs").edges,
-          {
-            id: "pc-sw",
-            fault: false,
-            ends: [
-              { node: "pc", port: "p" },
-              { node: "sw", port: "p" },
-            ],
-          },
-        ],
-      },
-      "pvs",
+    // Ein ausgefallenes PVS nimmt dem PC die Aktionen.
+    expect(ids(faulty(mitHost(full()), "pvs"), "pc")).not.toContain(
+      "erezept-ausstellen",
     );
-    expect(ids(viaSwitch, "pc")).not.toContain("erezept-ausstellen");
-    expect(ids(without(full(), "pvs", "kis", "avs"), "pc")).toEqual([]);
+    expect(ids(without(mitHost(full()), "pvs", "kis", "avs"), "pc")).toEqual(
+      [],
+    );
   });
 });

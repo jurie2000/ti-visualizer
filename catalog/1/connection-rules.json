@@ -19,7 +19,7 @@
     "b": {
       "types": ["switch", "router"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_KT", "DVO"],
     "status": "bestätigt",
     "kinds": {
@@ -46,7 +46,7 @@
     "b": {
       "types": ["internet"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["FP_eHealth-CardLink"],
     "status": "bestätigt"
   },
@@ -70,7 +70,7 @@
     "b": {
       "types": ["pc"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_MobKT"],
     "status": "bestätigt"
   },
@@ -94,7 +94,7 @@
     "b": {
       "types": ["switch", "router"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["DVO"],
     "status": "plausibel",
     "kinds": {
@@ -109,7 +109,7 @@
     "b": {
       "types": ["ap", "router"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["KH"],
     "status": "plausibel"
   },
@@ -121,7 +121,7 @@
     "b": {
       "types": ["kis"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["KH"],
     "status": "plausibel"
   },
@@ -133,7 +133,7 @@
     "b": {
       "types": ["kimcm"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_CM_KOMLE"],
     "status": "bestätigt"
   },
@@ -145,7 +145,7 @@
     "b": {
       "capability": "zugang"
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_CM_KOMLE"],
     "status": "bestätigt"
   },
@@ -169,7 +169,7 @@
     "b": {
       "types": ["internet"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_TI-M_Basis"],
     "status": "plausibel"
   },
@@ -181,7 +181,7 @@
     "b": {
       "types": ["switch", "router", "ap", "fw"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["DVO"],
     "status": "plausibel",
     "kinds": {
@@ -196,7 +196,7 @@
     "b": {
       "capability": "zugang"
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["DVO"],
     "status": "plausibel"
   },
@@ -208,7 +208,7 @@
     "b": {
       "types": ["internet"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Betriebsarten"],
     "status": "bestätigt"
   },
@@ -220,7 +220,7 @@
     "b": {
       "types": ["router", "switch"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Betriebsarten"],
     "status": "bestätigt",
     "kinds": {
@@ -235,7 +235,7 @@
     "b": {
       "capability": "zugang"
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Betriebsarten"],
     "status": "bestätigt"
   },
@@ -247,7 +247,7 @@
     "b": {
       "types": ["router"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Betriebsarten", "gemSpec_Kon"],
     "status": "bestätigt",
     "kinds": {
@@ -275,7 +275,7 @@
     "b": {
       "types": ["internet"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Arch"],
     "status": "bestätigt"
   },
@@ -287,7 +287,7 @@
     "b": {
       "types": ["zentral"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["Arch"],
     "status": "bestätigt"
   },
@@ -311,7 +311,7 @@
     "b": {
       "types": ["dns", "ntp", "vzd", "tsl", "idp", "vsdm", "erp", "kim", "epa"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_Net", "Arch"],
     "status": "bestätigt"
   },
@@ -335,7 +335,7 @@
     "b": {
       "types": ["internet"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": [
       "gemSpec_eRp_FdV",
       "gemSpec_IDP_Sek",
@@ -364,7 +364,7 @@
     "b": {
       "types": ["epa"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_Aktensystem_ePAfueralle"],
     "status": "Vereinfachung"
   },
@@ -376,7 +376,7 @@
     "b": {
       "types": ["internet", "idpsek"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
   },
@@ -392,7 +392,7 @@
       "a": ["host"],
       "b": ["host"]
     },
-    "visibleSimple": false,
+    "visibleSimple": true,
     "source": ["gemILF_PS"],
     "status": "Vereinfachung"
   }

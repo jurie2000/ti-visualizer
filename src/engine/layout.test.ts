@@ -148,7 +148,7 @@ describe("T-720a Sortieren (FR-16)", () => {
       ...emptyOf(),
       nodes: ["w", "a", "b"].map((id, i) => ({
         id,
-        type: id === "w" ? "vpn" : "pc",
+        type: id === "w" ? "vpn" : "server",
         fault: false,
         position: { x: i * 10, y: 0 },
       })),

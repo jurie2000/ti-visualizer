@@ -45,7 +45,7 @@ alle Geräte in beiden Modi sichtbar („In Einfach sichtbar“ steht überall a
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen in T-724a noch keinen `host`-Anschluss (Klärung in T-724b).
+**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen in T-724a noch keinen `host`-Anschluss. **Auslegung (2026-11-13, T-724c):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS (T-724c):** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). Das Modell vereinfacht: Die TI-Aktionen der Cloud-Software gehen vom PC der Praxis über den Konnektor der Praxis (Weg: Cloud-Server, PC, Switch, Konnektor). Ein Konnektor oder TI-Gateway im Rechenzentrum ist nicht Teil des Modells.
 
 | Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
@@ -57,6 +57,7 @@ alle Geräte in beiden Modi sichtbar („In Einfach sichtbar“ steht überall a
 | `lis` | Labor-Informationssystem | ja | plausibel (Subsystem im Krankenhaus) | KH |
 | `pc` | Arbeitsplatz-PC | ja | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
 | `server` | Server, neu | ja | plausibel | gemILF_PS, DVO |
+| `cloud` | Cloud-Server (SaaS), neu | ja | Vereinfachung | gemILF_PS |
 | `tab` | Visite-Tablet (KIS-Client per WLAN) | ja | plausibel | gemILF_PS, KH |
 | `kimcm` | KIM-Clientmodul, neu | ja | bestätigt | gemSpec_CM_KOMLE |
 | `timc` | TI-Messenger-Client, neu | ja | bestätigt | gemSpec_TI-M_Basis |
@@ -174,6 +175,7 @@ für SICCT), siehe Abschnitt 3.
 | `tun` | VPN-Zugang (logisch) | bestätigt | Arch, gemSpec_VPN_ZugD |
 | `ti` | Anschluss am Zentralen Netz (logisch) | bestätigt | Arch |
 | `host` | Läuft auf (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
+| `web` | Zugriff über das Internet (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
 | `app` | Anwendungsverbindung (logisch: Software mit Konnektor, Software mit Software, mobilem KT) | Vereinfachung | gemILF_PS |
 
 Karten haben keine Anschlüsse. Wie sie in Geräte kommen, regelt
@@ -186,8 +188,9 @@ Abschnitt 5.
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
 | PVS, AVS, Pflege | Anwendung (`app`, mehrfach), Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Vereinfachung (T-724b: Software hat kein Ethernet, das Kabel hängt am Rechner) | gemILF_PS |
-| PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach) | Mockup, plausibel; „Software“ Vereinfachung (T-724a) | gemILF_PS |
+| PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach), Internet-Zugriff (`web`, mehrfach) | Mockup, plausibel; „Software“ und „Internet-Zugriff“ Vereinfachung (T-724a, T-724c) | gemILF_PS |
 | Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
+| Cloud-Server | Internet-Zugriff (`web`, mehrfach), Software (`host`, mehrfach) | Vereinfachung (T-724c) | gemILF_PS |
 | KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH, gemILF_PS |
 | RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
@@ -358,7 +361,8 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 |---|---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | ja | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
 | PC, Server | Switch, Router-LAN | ja | plausibel | DVO |
-| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server (läuft auf) | ja | Vereinfachung (T-724a) | gemILF_PS |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | ja | Vereinfachung (T-724a, T-724c) | gemILF_PS |
+| PC | Cloud-Server (Zugriff über das Internet, SaaS) | ja | Vereinfachung (T-724c) | gemILF_PS |
 | Visite-Tablet | Access Point, Router-WLAN | ja | plausibel | KH |
 | RIS, LIS | KIS (HL7-Schnittstelle) | ja | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | ja | bestätigt | gemSpec_CM_KOMLE |
@@ -406,7 +410,7 @@ und K-6 in Abschnitt 5.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
 | V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
 | V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |

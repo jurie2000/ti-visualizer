@@ -1,5 +1,6 @@
 import {
   Calculator,
+  Cloud,
   CreditCard,
   DoorOpen,
   FlaskConical,
@@ -28,6 +29,7 @@ export const NODE_SIZE = { width: 148, height: 64 } as const;
 /** Katalog-Icon-ID (`deviceTypes[].icon`) auf das Symbol. */
 export const ICONS: Record<string, LucideIcon> = {
   screen: Monitor,
+  cloud: Cloud,
   server: Server,
   scan: ScanLine,
   flask: FlaskConical,

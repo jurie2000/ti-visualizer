@@ -72,19 +72,21 @@ export function describeEdge(
   const [a, b] = ends;
   const kind: EdgeKind = both("host")
     ? "host"
-    : isWlan(edge, topology, catalog)
-      ? "wlan"
-      : both("tun")
-        ? "vpn"
-        : has("net")
-          ? "inet"
-          : both("ti") || both("app")
-            ? "tcp"
-            : has("usb")
-              ? "usb"
-              : a && b && carriesTls([a.type, b.type], catalog)
-                ? "tcp"
-                : "phys";
+    : both("web")
+      ? "inet"
+      : isWlan(edge, topology, catalog)
+        ? "wlan"
+        : both("tun")
+          ? "vpn"
+          : has("net")
+            ? "inet"
+            : both("ti") || both("app")
+              ? "tcp"
+              : has("usb")
+                ? "usb"
+                : a && b && carriesTls([a.type, b.type], catalog)
+                  ? "tcp"
+                  : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

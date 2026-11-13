@@ -226,6 +226,14 @@
         "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
+      },
+      {
+        "id": "web",
+        "name": "Internet-Zugriff",
+        "kind": "web",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS"],
@@ -269,6 +277,37 @@
     ],
     "source": ["gemILF_PS", "DVO"],
     "status": "plausibel"
+  },
+  {
+    "id": "cloud",
+    "abbr": "Cloud",
+    "name": "Cloud-Server (SaaS)",
+    "description": "Hier läuft Software als Dienst im Internet (SaaS). Der PC bekommt sie über das Internet, die Software läuft auf dem Server im Rechenzentrum. Die TI-Aktionen gehen vom PC der Praxis über den Konnektor der Praxis (Vereinfachung).",
+    "category": "computer",
+    "icon": "cloud",
+    "visibleSimple": true,
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "web",
+        "name": "Internet-Zugriff",
+        "kind": "web",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "soft",
+        "name": "Software",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemILF_PS"],
+    "status": "Vereinfachung"
   },
   {
     "id": "tab",

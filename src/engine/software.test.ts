@@ -165,3 +165,70 @@ describe("T-724a/b Software läuft auf einem Rechner", () => {
     expect(first?.nodes.slice(0, 3)).toEqual(["pvs1", "pc1", "sw1"]);
   });
 });
+
+describe("T-724c Software als Dienst (SaaS)", () => {
+  /** Praxis, in der das PVS auf einem Cloud-Server läuft und der PC es über das Internet bekommt. */
+  const saas = (): Topology => {
+    const t = mitPc();
+    t.nodes.push({
+      id: "cloud1",
+      type: "cloud",
+      position: { x: 0, y: 0 },
+      fault: false,
+    });
+    t.edges = t.edges.filter((e) => e.id !== "e-pvs1-pc1");
+    t.edges.push(
+      {
+        id: "e-pvs1-cloud1",
+        fault: false,
+        ends: [
+          { node: "pvs1", port: "host" },
+          { node: "cloud1", port: "soft" },
+        ],
+      },
+      {
+        id: "e-pc1-cloud1",
+        fault: false,
+        ends: [
+          { node: "pc1", port: "web" },
+          { node: "cloud1", port: "web" },
+        ],
+      },
+    );
+    return t;
+  };
+
+  it("T-724c: Software läuft auf dem Cloud-Server, der PC greift über das Internet zu", () => {
+    const t = mitPc();
+    t.nodes.push({
+      id: "cloud1",
+      type: "cloud",
+      position: { x: 0, y: 0 },
+      fault: false,
+    });
+    expect(check(t, ["pvs1", "host"], ["cloud1", "soft"]).ok).toBe(true);
+    expect(check(t, ["pc1", "web"], ["cloud1", "web"]).ok).toBe(true);
+  });
+
+  it("T-724c: Der Cloud-Server hängt nicht am Switch und nicht an Fachdiensten", () => {
+    const t = saas();
+    expect(check(t, ["cloud1", "web"], ["sw1", "p5"]).ok).toBe(false);
+    expect(check(t, ["cloud1", "web"], ["erp1", "ti"]).ok).toBe(false);
+  });
+
+  it("T-724c: Der PC erbt die Aktionen der Software auf dem Cloud-Server", () => {
+    expect(actionsOf(saas(), "pc1", "advanced")).toContain(
+      "erezept-ausstellen",
+    );
+    expect(actionsOf(saas(), "pvs1", "advanced")).toEqual([]);
+  });
+
+  it("T-724c: Im Ablauf läuft das Paket von der Cloud-Software über den PC und den Switch", () => {
+    const t = saas();
+    const pc = t.nodes.find((n) => n.id === "pc1");
+    const flow = catalog.flows.find((f) => f.id === "erezept");
+    if (!pc || !flow) throw new Error("Fixture fehlt");
+    const [first] = bindFlow(flow, pc, t, catalog);
+    expect(first?.nodes.slice(0, 4)).toEqual(["pvs1", "cloud1", "pc1", "sw1"]);
+  });
+});

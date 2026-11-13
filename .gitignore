@@ -10,3 +10,10 @@ playwright-report/
 reports/
 .claude/settings.local.json
 .claude/worktrees/
+
+# Nur lokal: Anforderungen, Planung, Aufgaben und interne Arbeitsweise
+docu/README.md
+docu/*/spec.md
+docu/*/plan.md
+docu/*/tasks.md
+docu/*/ki-workflow.md

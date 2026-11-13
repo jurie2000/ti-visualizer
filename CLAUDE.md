@@ -1,30 +1,34 @@
 # TI Visualizer: Regeln für KI-Agenten
 
 Gilt für jeden Agenten in diesem Repo: lokal beim Planen und Umsetzen,
-im CI beim KI-Review und bei der Issue-Triage.
+im CI beim KI-Review.
 
 ## Quellen
 
-Alles Fachliche steht in `specs/001-ti-visualizer-baukasten/`:
-`spec.md` (FR-IDs), `regelwerk.md` (Regel-IDs), `plan.md` (Entscheidungen
-D1 bis D30), `architektur.md`, `tasks.md` (Task-IDs), `quellen.md`.
+Alles Fachliche steht in `docu/001-ti-visualizer-baukasten/`:
+`regelwerk.md` (Regel-IDs), `architektur.md`, `quellen.md`. Im Repo
+liegen nur diese drei. `spec.md` (FR-IDs), `plan.md` (Entscheidungen
+D1 bis D30), `tasks.md` (Task-IDs) und `ki-workflow.md` stehen im selben
+Ordner, sind aber in `.gitignore` und nur lokal da. In CI und im KI-Review
+fehlen sie.
 
 Die Specs zusammen haben über 3.500 Zeilen. Nicht ganz lesen, sondern
-gezielt: `grep` nach Task-ID, FR-ID oder Regel-ID, dann den Abschnitt.
+gezielt: `grep` nach Regel-ID oder Stichwort, dann den Abschnitt.
 
 ## Ablauf
 
-- Ein Branch je Task (`task/T-xxx-kurzname`), Commit und PR nennen die
-  Task-ID, PR-Vorlage ausfüllen.
-- Nur den Umfang des Tasks umsetzen. Was nebenbei auffällt, kommt in einen
+- Jeder PR kommt aus einem Issue: Branch `issue/<nr>-kurzname`, Commit und
+  PR nennen die Issue-Nummer, im PR steht `Closes #<nr>`, PR-Vorlage
+  ausfüllen.
+- Nur den Umfang des Issues umsetzen. Was nebenbei auffällt, kommt in einen
   eigenen PR oder ein Issue, nicht in diesen Diff.
 - **Größe:** höchstens etwa 300 geänderte Zeilen Produktivcode je PR
-  (ohne Tests und Katalog-JSON). Ist der Task größer, vor dem Programmieren
-  in `tasks.md` teilen (T-xxxa, T-xxxb).
+  (ohne Tests und Katalog-JSON). Ist das Issue größer, vor dem Programmieren
+  in kleinere Issues teilen.
 - Fachliche Auslegungsfragen nach `quellen.md` selbst entscheiden und als
   „Auslegung (Datum)“ im Regelwerk oder PR festhalten.
-- Skills: `task-umsetzen` für Tasks, `fix-issue` für Issues, `triage` zum
-  Einordnen. Umsetzung über den Agenten `umsetzer` (Sonnet).
+- Skill `fix-issue` für Issues. Umsetzung über den Agenten `umsetzer`
+  (Sonnet).
 
 ## Code
 
@@ -60,6 +64,6 @@ Erst das Problem verstehen, dann beim ersten Punkt anhalten, der trägt:
 
 ## Issues
 
-Einordnung nach `.claude/skills/triage/SKILL.md`. Features und
-Spec-Lücken werden erst umgesetzt, wenn das Issue das Label `freigegeben`
-trägt.
+Die Issue-Vorlagen setzen das Label: `bug`, `enhancement` (Funktion) oder
+`chore`. Funktionen werden erst umgesetzt, wenn das Issue das Label
+`freigegeben` trägt. Fehler und Aufgaben brauchen es nicht.

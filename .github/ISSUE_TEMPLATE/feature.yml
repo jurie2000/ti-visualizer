@@ -1,0 +1,25 @@
+name: Funktion
+description: Neues Verhalten, das bisher nicht vorgesehen ist
+labels: [enhancement]
+body:
+  - type: textarea
+    id: wunsch
+    attributes:
+      label: Was soll möglich sein?
+    validations:
+      required: true
+  - type: textarea
+    id: fertig
+    attributes:
+      label: Fertig, wenn
+      description: Prüfbare Kriterien, ein Punkt je Zeile.
+    validations:
+      required: true
+  - type: dropdown
+    id: groesse
+    attributes:
+      label: Geschätzte Größe
+      options:
+        [S (unter 50 Zeilen), M (bis 300 Zeilen), L (mehr, muss geteilt werden)]
+    validations:
+      required: true

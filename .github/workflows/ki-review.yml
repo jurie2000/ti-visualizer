@@ -3,15 +3,14 @@ name: KI-Review
 # KI-Review am Pull Request (plan.md, D29). Eigener Workflow, damit er kein
 # Pflicht-Check wird und der Pfadfilter greift. Ergebnis nur als Kommentar.
 # Nicht bei jedem Push: Ein erneuter Lauf nach Fixes startet über das
-# Label `ki-review`. Reines Abhaken in tasks.md löst keinen Lauf aus.
+# Label `ki-review`.
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, labeled]
     paths:
       - src/**
       - catalog/**
-      - specs/**
-      - "!specs/**/tasks.md"
+      - docu/**
 
 # Ein neuer Auslöser (Öffnen, Label ki-review) ersetzt den laufenden
 # Review. Andere Labels bekommen eine eigene Gruppe und brechen nichts ab.
@@ -83,16 +82,16 @@ jobs:
               Reihenfolge:
               1. `## Überblick` zum schnellen Überfliegen, höchstens
                  6 Stichpunkte:
-                 - **Task:** Task-ID(s) aus Titel, Branch oder Beschreibung.
-                 - **Soll:** was der Task laut
-                   `specs/001-ti-visualizer-baukasten/tasks.md` (Umfang und
-                   „Fertig, wenn“) umsetzen soll, in einem Satz.
+                 - **Issue:** Nummer aus `Closes #n` in der Beschreibung.
+                 - **Soll:** was der Task laut PR-Beschreibung und
+                   verknüpftem Issue umsetzen soll, in einem Satz
+                   (`tasks.md` liegt nur lokal und ist hier nicht lesbar).
                  - **Ist:** was der Diff tatsächlich ändert, in einem bis
                    drei Sätzen. Stütze dich auf den Diff, nicht nur auf die
                    PR-Beschreibung.
                  - **Abweichung:** was vom Soll fehlt oder über den Task
                    hinausgeht. Wenn nichts: „keine“.
-                 Ohne Task-ID entfällt „Soll“, dann nur „Ist“.
+                 Ohne Issue entfällt „Soll“, dann nur „Ist“.
               2. `## Befunde`, nach Schwere sortiert, je Befund Schwere und
                  Blickwinkel. Gibt es keine Befunde, sag das kurz.
 
@@ -102,7 +101,7 @@ jobs:
           claude_args: |
             --model claude-opus-5-5
             --max-turns 50
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Grep,Glob,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Grep,Glob,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh issue view:*)"
 
 # Forks: Der Lauf ist auf PRs aus diesem Repo beschränkt. `pull_request`
 # (nicht `pull_request_target`) gibt Fork-PRs keine Secrets und keinen

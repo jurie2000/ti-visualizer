@@ -1,8 +1,8 @@
-## Task
+## Issue
 
-<!-- Task-ID aus specs/001-ti-visualizer-baukasten/tasks.md, z. B. T-005 -->
+<!-- Closes #123 -->
 
-T-
+Closes #
 
 ## Anforderungen und Regeln
 

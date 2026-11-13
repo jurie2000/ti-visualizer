@@ -2,8 +2,9 @@
 
 > **Historisch (Stand 2026-09):** Mit diesem Prompt ist das Mockup in
 > `design/mockup/` entstanden. Er beschreibt nicht mehr den aktuellen
-> Umfang. Maßgeblich sind [spec.md](../specs/001-ti-visualizer-baukasten/spec.md)
-> und [plan.md](../specs/001-ti-visualizer-baukasten/plan.md).
+> Umfang. Maßgeblich sind das
+> [Regelwerk](../docu/001-ti-visualizer-baukasten/regelwerk.md) und die
+> [Architektur](../docu/001-ti-visualizer-baukasten/architektur.md).
 
 Gestalte ein hochwertiges, klickbares UI-Mockup für den **TI Visualizer**, einen interaktiven Netzwerk-Baukasten zum Lernen der deutschen Telematikinfrastruktur (Gesundheitswesen). Nutzer bauen wie in Cisco Packet Tracer eine vereinfachte Landschaft aus Geräten, verbinden sie und sehen Abläufe Schritt für Schritt. Sprache der Oberfläche: nur Deutsch. Zielgerät: Desktop-Browser (1440 px), ein Tablet-Layout als Zusatz.
 

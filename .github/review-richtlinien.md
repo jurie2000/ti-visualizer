@@ -1,6 +1,6 @@
 # Review-Richtlinien (KI-Review)
 
-Grundlage: `specs/001-ti-visualizer-baukasten/plan.md`, Abschnitt „KI-Review“.
+Grundlage: Abschnitt „KI-Review“ im lokalen `plan.md`.
 Der Review konzentriert sich auf das, was Sonar und Tests nicht sehen. Über
 den Merge entscheidet ein Mensch, der Review ist kein Pflicht-Check.
 
@@ -17,7 +17,7 @@ nicht die ganzen Specs. Den Diff aus drei Blickwinkeln prüfen.
 2. **Tests zu Regeln:** Hat jede neue oder geänderte Regel einen Testfall mit
    der Regel-ID im Namen (D18)?
 3. **Katalog:** Hat jeder neue Katalogeintrag `source` und `status`?
-4. **Task-ID:** Nennt der Pull Request die Task-ID?
+4. **Issue:** Nennt der Pull Request das Issue (`Closes #n`)?
 
 ## Blickwinkel 2: Umfang und Einfachheit
 
@@ -87,5 +87,5 @@ Prettier und Sonar.
 
 - Ein zusammenfassender PR-Kommentar plus Inline-Kommentare, auf Deutsch.
 - Der PR-Kommentar beginnt mit `## Überblick` (höchstens 6 Stichpunkte):
-  Task-ID, Soll laut `tasks.md`, Ist laut Diff, Abweichung.
+  Issue-Nummer, Soll laut Issue, Ist laut Diff, Abweichung.
 - Danach `## Befunde`, nach Schwere sortiert, je Befund der Blickwinkel.

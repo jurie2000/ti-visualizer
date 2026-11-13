@@ -71,7 +71,7 @@ export function katalogRegeln(wurzel = "catalog"): KatalogRegel[] {
 
 if (import.meta.main) {
   const fehler = pruefeRegelwerkKatalog(
-    readFileSync("specs/001-ti-visualizer-baukasten/regelwerk.md", "utf8"),
+    readFileSync("docu/001-ti-visualizer-baukasten/regelwerk.md", "utf8"),
     katalogRegeln(),
   );
   for (const f of fehler) console.error(`FEHLER ${f}`);

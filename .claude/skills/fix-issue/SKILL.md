@@ -1,6 +1,6 @@
 ---
 name: fix-issue
-description: Setzt ein eingeordnetes GitHub-Issue des TI Visualizers als kleinen PR um. Nutzen bei „/fix-issue 123“, „Issue 123 umsetzen“ oder „behebe Issue 123“.
+description: Setzt ein GitHub-Issue des TI Visualizers als kleinen PR um. Nutzen bei „/fix-issue 123“, „Issue 123 umsetzen“ oder „behebe Issue 123“.
 argument-hint: <issue-nummer>
 ---
 
@@ -10,27 +10,30 @@ argument-hint: <issue-nummer>
 
 `gh issue view $ARGUMENTS --comments` lesen.
 
-- Kein Label `bug`, `spec-lücke` oder `enhancement`: erst den Skill
-  `triage` anwenden und dann anhalten.
-- `enhancement` oder `spec-lücke` ohne Label `freigegeben`: anhalten und
-  den Nutzer um Freigabe bitten.
+- Kein Label `bug`, `enhancement` oder `chore`: anhalten und den Nutzer
+  um das Label bitten.
+- `enhancement` ohne Label `freigegeben`: anhalten und den Nutzer um
+  Freigabe bitten. Nie selbst setzen.
 - Größe L: anhalten und eine Teilung vorschlagen.
 
 ## Umsetzen
 
-1. Bei Feature oder Spec-Lücke zuerst Spec und `tasks.md` ergänzen (neue
-   Task-ID, „Umfang“, „Fertig, wenn“; Auslegung mit Quelle festhalten).
-   Bei Bug: Task-ID aus dem Triage-Kommentar, sonst die nächste freie
-   ID in der passenden Phase (T-9xx ist für Begleitaufgaben ohne Code).
-2. Branch `task/T-xxx-kurzname` von `main`.
-3. Bug: zuerst einen Test, der fehlschlägt und den Fehler zeigt. Dann die
+1. Fachliche Grundlage per `grep` in `docu/001-ti-visualizer-baukasten/`
+   suchen (Regel-ID, Stichwort), den Abschnitt ganz lesen, samt
+   Nachbarregeln und Ausnahmen. Dazu den betroffenen Code. Ändert sich das
+   Verhalten, zuerst `regelwerk.md` ergänzen; Auslegung mit Quelle
+   (`quellen.md`) festhalten.
+2. Skizze vor dem Code (drei bis zehn Zeilen, nur im Kopf oder PR-Text):
+   Randfälle, Fehlerfälle, Tastatur und Screenreader bei UI.
+3. Branch `issue/$ARGUMENTS-kurzname` von `main`.
+4. Bug: zuerst einen Test, der fehlschlägt und den Fehler zeigt. Dann die
    Ursache beheben, alle Aufrufer der geänderten Funktion prüfen.
-4. Regeln aus `CLAUDE.md` (Code, Kommentare, Größe) einhalten.
-5. Vor dem PR den eigenen Diff gegen die Checkliste in
+5. Regeln aus `CLAUDE.md` (Code, Kommentare, Größe, Tests) einhalten.
+6. Vor dem PR den eigenen Diff (`git diff main`) gegen die Checkliste in
    `.github/review-richtlinien.md` prüfen und Treffer beheben. Lokale
    Checks laufen lassen, PR mit Vorlage öffnen, im Text
    `Closes #$ARGUMENTS` nennen.
-6. KI-Review abwarten, jeden Befund disponieren (neuer Lauf nur nach Hoch,
-   höchstens einmal)
-   (`.github/review-richtlinien.md`). Mergen nur, wenn der Nutzer das
-   freigegeben hat; sonst den PR zur Abnahme übergeben.
+7. KI-Review abwarten, jeden Befund disponieren (neuer Lauf nur nach Hoch,
+   höchstens einmal, Label `ki-review`; `.github/review-richtlinien.md`).
+   Mergen nur, wenn der Nutzer das freigegeben hat; sonst den PR zur
+   Abnahme übergeben.

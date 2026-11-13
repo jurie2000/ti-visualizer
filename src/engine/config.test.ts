@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import regelwerk from "../../specs/001-ti-visualizer-baukasten/regelwerk.md?raw";
+import regelwerk from "../../docu/001-ti-visualizer-baukasten/regelwerk.md?raw";
 import {
   configVariants,
   loadCatalog,

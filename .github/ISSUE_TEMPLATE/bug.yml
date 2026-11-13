@@ -1,0 +1,26 @@
+name: Fehler
+description: Etwas verhält sich anders als im Regelwerk beschrieben
+labels: [bug]
+body:
+  - type: textarea
+    id: ist
+    attributes:
+      label: Was passiert?
+      description: Schritte bis zum Fehler und was du siehst.
+    validations:
+      required: true
+  - type: textarea
+    id: soll
+    attributes:
+      label: Was sollte passieren?
+      description: Wenn möglich mit Regel-ID aus dem Regelwerk.
+    validations:
+      required: true
+  - type: dropdown
+    id: groesse
+    attributes:
+      label: Geschätzte Größe
+      options:
+        [S (unter 50 Zeilen), M (bis 300 Zeilen), L (mehr, muss geteilt werden)]
+    validations:
+      required: true

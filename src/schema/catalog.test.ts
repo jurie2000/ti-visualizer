@@ -25,7 +25,6 @@ const valid = {
       name: "PVS",
       category: "lokal",
       icon: "monitor",
-      visibleSimple: true,
       capabilities: ["netConfig:client"],
       ports: [
         { id: "eth0", name: "Ethernet0", kind: "eth", multi: false, ...base },
@@ -38,7 +37,6 @@ const valid = {
       name: "Konnektor",
       category: "lokal",
       icon: "box",
-      visibleSimple: true,
       capabilities: ["zugang"],
       ports: [{ id: "lan", name: "LAN", kind: "eth", multi: true, ...base }],
       ...base,
@@ -53,7 +51,6 @@ const valid = {
       id: "R-1",
       a: { types: ["pvs"] },
       b: { capability: "zugang" },
-      visibleSimple: true,
       ...base,
     },
   ],

@@ -45,7 +45,7 @@ GitHub Pages. Fachlich freigegeben durch Justin am 2026-11-05 (T-907).
 | D33 | **Security by Design** nach OWASP: Schema-Prüfung und Injection-Tests für alle Eingabewege, CSP, gitleaks, Dependabot, Sonar. SBOM, Dependency-Track, ZAP, Scorecard und Provenienz optional nach P7 | Die App öffnet Dateien von anderen Benutzern (D24) und ist öffentlich erreichbar. |
 | D34 | **Speichern nur als Datei, Autosave nur als Sicherheitsnetz**: Der Browser hält ausschließlich den aktuellen Arbeitsstand und die Einstellungen. Es gibt keine Bibliothek gespeicherter Topologien im Browser | Vom Nutzer festgelegt (2026-11-04). Folgt aus D3. Schützt vor Datenverlust durch Neuladen oder Absturz, ohne dass Topologien von Browserdaten abhängen. |
 | D35 | **Datenmodell mit Basistypen und Varianten**: gemeinsame Felder in Basistypen (`Element`, `NetConfig`, `Card`), Varianten über ein Unterscheidungsfeld (`kind` bei Karten). Welche Geräte Karten oder Einstellungen haben, legen **Fähigkeiten im Katalog** fest, nicht eine Klasse pro Gerätetyp | Weniger doppelte Felder, ungültige Kombinationen sind schon vom Typ her ausgeschlossen. Fähigkeiten statt Unterklassen halten das Modell datengetrieben (D4). Diagramm: [architektur.md, Abschnitt 3](./architektur.md#3-datenmodell) |
-| D36 | **Der Modus ändert nie die Topologie.** Beide Modi zeigen alle Geräte und Verbindungen; Erweitert ergänzt Geräteeinstellungen, ihre Prüfregeln und die Anschlussauswahl. Der Modus gehört zu den Einstellungen. *Ersetzt am 2026-11-13 (T-725a): Das frühere Ausblenden von Geräten mit Sammelkanten entfällt, der Code folgt mit T-725b* | Vom Nutzer festgelegt (2026-11-04, Prüfbericht Befund 2). So lassen sich alle Presets in beiden Modi zeigen, und der Moduswechsel verliert nichts. Regelwerk Abschnitt 11 |
+| D36 | **Der Modus ändert nie die Topologie.** Beide Modi zeigen alle Geräte und Verbindungen; Erweitert ergänzt Geräteeinstellungen, ihre Prüfregeln und die Anschlussauswahl. Der Modus gehört zu den Einstellungen. *Ersetzt am 2026-11-13 (T-725a, T-725b): Das frühere Ausblenden von Geräten mit Sammelkanten entfällt samt Code* | Vom Nutzer festgelegt (2026-11-04, Prüfbericht Befund 2). So lassen sich alle Presets in beiden Modi zeigen, und der Moduswechsel verliert nichts. Regelwerk Abschnitt 11 |
 
 ## Technologie-Stack
 
@@ -154,7 +154,6 @@ Zusatz.
 | Geräteknoten mit Kategorie-Leiste, Icon, Kurzname, Name | `DeviceNode` (+ Anschluss-Punkte im Modus Erweitert) | FR-1, FR-14 |
 | Karten-Chips im Terminal (z. B. „SMC-B“) | `CardChip` im `DeviceNode`, Dialog `PlugCardDialog` | FR-18 |
 | Kanten mit Label („SOAP/TLS“, „IPsec IKEv2“) | `ConnectionEdge` je Verbindungsart (Regelwerk 3) | FR-3, FR-11 |
-| neu: Sammelkante im Modus Einfach | `GroupEdge` (fasst Wege über ausgeblendete Geräte zusammen, Klick zeigt sie) | FR-13, D36 |
 | Zonen (z. B. „Telematikinfrastruktur“) | `ZoneNode` (Gruppe in React Flow) | FR-15 |
 | Ungültige Verbindung, Meldung | `Toast` mit Icon und Text | FR-4 |
 | Kontextmenü mit ausgegrauten Einträgen | `ContextMenu`, `MenuItem` (Schloss-Icon + Begründung) | FR-6, FR-7 |
@@ -401,9 +400,7 @@ Im Modus Einfach wählt `autoPorts` das erste freie, verträgliche
 Anschlusspaar. Im Modus Erweitert öffnet sich der `PortPicker`.
 
 Karten werden nicht verbunden, sondern gesteckt (`plugCard`, Regelwerk
-Abschnitt 5). Die Darstellung im Modus Einfach berechnet
-`collapseHidden(topology, catalog)`: Wege über ausgeblendete Geräte
-werden zu Sammelkanten (D36).
+Abschnitt 5). Beide Modi zeigen alle Geräte (D36, T-725a).
 
 ## Aktions- und Simulations-Engine (FR-6 bis FR-10, FR-18)
 
@@ -585,7 +582,7 @@ Diagramme und Übersicht: [ki-workflow.md](./ki-workflow.md).
 | Suite | Inhalt | ab Phase |
 |---|---|---|
 | `smoke` | App lädt, Startansicht, Preset öffnen, Impressum erreichbar | P0 |
-| `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar, Moduswechsel mit Sammelkanten | P2 |
+| `build-and-connect` | Gerät ergänzen, gültig und ungültig verbinden, Begründung sichtbar, Moduswechsel zeigt in beiden Modi alle Geräte | P2 |
 | `datei` | Speichern in Kontext A → Öffnen in neuem Kontext B: Topologie kommt an, Einstellungen nur nach Zustimmung. Datei ohne Einstellungen. Autosave und Wiederherstellen | P3 |
 | `edit` | Gerät mit der Maus ziehen, Gerät löschen samt Kanten, Anordnen | P5 (T-508) |
 | `actions-sim` | Kontextmenü, ausgegraute Aktion, Simulation abspielen und abbrechen, Bearbeiten während der Simulation gesperrt | P4 |
@@ -808,7 +805,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 | FR-9, FR-10 | `SimPlayer`, Zustandsautomat |
 | FR-11 | `DetailPanel` aus `protocols` (Protokoll, Netzport, TLS, Datenformat, soweit belegt) und `sources` |
 | FR-12 | Katalog in `catalog/`, `schemaVersion`, Migrationen |
-| FR-13 | `ModeSwitch`, Sichtbarkeit je Gerätetyp im Katalog, Sammelkanten (`GroupEdge`, `collapseHidden`, D36) |
+| FR-13 | `ModeSwitch`, Anschlussauswahl und Geräteeinstellungen nur in Erweitert (D36) |
 | FR-14 | Anschlüsse in `device-types`, `PortPicker`, `autoPorts` |
 | FR-15 | `ZoneNode` |
 | FR-16 | Kopieren/Einfügen, Sortieren, Minimap, Übersicht (Undo/Redo entfällt, D25) |
@@ -923,7 +920,6 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 | IndexedDB | Speicher im Browser, hier nur für den Autosave |
 | Anschluss | Buchse an einem Gerät (`port`). Nicht zu verwechseln mit dem Netzport eines Protokolls |
 | Fähigkeit | Eintrag im Katalog, der festlegt, was ein Gerätetyp darf (z. B. Karten aufnehmen) |
-| Sammelkante | Linie im Modus Einfach, die einen Weg über ausgeblendete Geräte zusammenfasst |
 | Aktion / Ablauf | Aktion = Menüeintrag am Gerät. Ablauf = die Schritte, die die Simulation dazu zeigt |
 | Coverage | Anteil des Codes, den die Tests ausführen |
 | Mutation Score | Anteil absichtlich eingebauter Fehler, den die Tests finden |

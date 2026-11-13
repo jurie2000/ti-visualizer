@@ -1116,7 +1116,7 @@ Sicherheitsprüfung.
   - Auslegung (2026-11-13): Ersetzt D36. Die Anschlussauswahl bleibt in
     Erweitert; die Palette ist in beiden Modi gleich.
 
-- [ ] **T-725b Ausblendefunktion entfernen** · FR: FR-13 · Regeln: – · nach: T-725a
+- [x] **T-725b Ausblendefunktion entfernen** · FR: FR-13 · Regeln: – · nach: T-725a
   - Umfang: Löscht `collapseHidden`, Sammelkante und GroupEdge, den Hinweis
     „+n ausgeblendet“, die Palettenfilterung nach Modus, die Verbindungsart
     `sammel`, das Feld `visibleSimple` in Katalog und Schema sowie

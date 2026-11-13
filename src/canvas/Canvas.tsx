@@ -1,7 +1,6 @@
 import {
   Background,
   MiniMap,
-  Panel,
   ReactFlow,
   useReactFlow,
   type EdgeTypes,
@@ -28,7 +27,6 @@ import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { ZoneTools } from "./ZoneTools";
 import { ZoneNode } from "./ZoneNode";
-import { GroupEdge } from "./GroupEdge";
 import { ZoomBar } from "./ZoomBar";
 import { SimPacket } from "./SimPacket";
 import { SimPlayer } from "./SimPlayer";
@@ -38,7 +36,6 @@ import {
   toFlow,
   type DeviceFlowNode,
   type ConnectionFlowEdge,
-  type GroupFlowEdge,
   type ZoneFlowNode,
 } from "./toFlow";
 import { useConnecting } from "./useConnecting";
@@ -48,7 +45,6 @@ import "./canvas.css";
 const nodeTypes: NodeTypes = { device: DeviceNode, zone: ZoneNode };
 const edgeTypes: EdgeTypes = {
   connection: ConnectionEdge,
-  group: GroupEdge,
 };
 
 const ariaLabelConfig = {
@@ -89,7 +85,6 @@ export function Canvas() {
   const { screenToFlowPosition } = useReactFlow();
   const toast = useToast();
   const catalog = useCatalog((s) => s.catalog);
-  const mode = useSettings((s) => s.mode);
   const selection = useUi((s) => s.selection);
   const sim = useSim((s) => s.sim);
   const simSteps = useSim((s) => s.steps);
@@ -112,10 +107,9 @@ export function Canvas() {
   const menu = useContextMenu();
 
   const flow = useMemo(
-    () => toFlow(topology, catalog, selection, drag, mode),
-    [topology, catalog, selection, drag, mode],
+    () => toFlow(topology, catalog, selection, drag),
+    [topology, catalog, selection, drag],
   );
-  const { isolated } = flow;
   // Aktueller Schritt der Simulation: Kanten, Knoten und das Gerät eines E-Schritts
   const lit =
     sim.status === "idle" || sim.status === "cancelled"
@@ -125,25 +119,19 @@ export function Canvas() {
     ...(lit?.nodes ?? []),
     ...(lit?.anchor ? [lit.anchor] : []),
   ]);
-  // Sammelkante (Modus Einfach): leuchtet, wenn beide Enden auf dem Pfad liegen
   const edges = useMemo(
     () =>
       flow.edges.map((e) =>
         !view.edges
           ? { ...e, hidden: true }
-          : lit?.edges.includes(e.id) ||
-              (e.type === "group" &&
-                litNodes.has(e.source) &&
-                litNodes.has(e.target))
+          : lit?.edges.includes(e.id)
             ? {
                 ...e,
-                className:
-                  lit?.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
+                className: lit.edges[hop] === e.id ? "is-sim is-hop" : "is-sim",
                 ariaLabel: `${e.ariaLabel ?? ""}, aktueller Schritt`,
               }
             : e,
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- litNodes folgt aus lit
     [flow.edges, lit, hop, view.edges],
   );
   const resize = useUi((s) => s.zoneResize);
@@ -228,9 +216,7 @@ export function Canvas() {
     );
   };
 
-  const onEdgesChange = (
-    changes: EdgeChange<ConnectionFlowEdge | GroupFlowEdge>[],
-  ) => {
+  const onEdgesChange = (changes: EdgeChange<ConnectionFlowEdge>[]) => {
     for (const c of changes)
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };
@@ -325,13 +311,6 @@ export function Canvas() {
       >
         <Background />
         {!reduceMotion && <SimPacket hop={hop} onHop={setHop} />}
-        {isolated.length > 0 && (
-          <Panel position="top-left" className="tiv-hint">
-            {isolated.length === 1
-              ? `${isolated[0] ?? ""} ist nur im Modus Erweitert sichtbar`
-              : `${String(isolated.length)} Geräte nur im Modus Erweitert sichtbar: ${isolated.join(", ")}`}
-          </Panel>
-        )}
         <ZoneTools />
         <ZoomBar />
         {view.minimap && (

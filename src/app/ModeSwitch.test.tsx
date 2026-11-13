@@ -4,9 +4,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { PalettePanel } from "../panels/PalettePanel";
-import { loadCatalog } from "../schema";
-import { useCatalog, useSettings } from "../store";
-import { withHiddenTypes } from "../test/hiddenCatalog";
+import { useSettings } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
 
@@ -33,19 +31,15 @@ describe("ModeSwitch", () => {
     expect(einfach).toHaveAttribute("aria-pressed", "false");
   });
 
-  it("Palette zeigt im Modus Einfach nur sichtbare Typen", async () => {
-    useCatalog.setState({ catalog: withHiddenTypes(loadCatalog()) });
+  it("T-725b Palette zeigt in beiden Modi alle Typen", async () => {
     render(<PalettePanel />, { wrapper });
-    // der Switch ist im Modus Einfach ausgeblendet (Regelwerk 1), das PVS nicht
+    const switchBtn = /^Switch .* hinzufügen$/;
     expect(
-      screen.queryByRole("button", { name: /^Switch .* hinzufügen$/ }),
-    ).toBeNull();
-    expect(
-      screen.getByRole("button", { name: /^PVS .* hinzufügen$/ }),
+      await screen.findByRole("button", { name: switchBtn }),
     ).toBeVisible();
     useSettings.setState({ mode: "advanced" });
     expect(
-      await screen.findByRole("button", { name: /^Switch .* hinzufügen$/ }),
+      await screen.findByRole("button", { name: switchBtn }),
     ).toBeVisible();
   });
 });

@@ -24,8 +24,6 @@ export const boxOf = (n: InternalNode): Box => {
 /**
  * Kante je Verbindungsart (Farbe, Stärke, Strichmuster aus `--tiv-edge-<art>`),
  * schwebend zwischen den Rändern der Knoten, mit Label in der Mitte.
- *
- * Sammelkanten (T-207) zeichnet `GroupEdge`, sie nutzt `boxOf`.
  */
 export function ConnectionEdge({
   id,

@@ -5,26 +5,16 @@ import {
   NODE_SIZE,
   categoryColor,
 } from "../canvas/deviceStyle";
-import {
-  simLocked,
-  useCatalog,
-  useSettings,
-  useSim,
-  useTopology,
-  useUi,
-} from "../store";
+import { simLocked, useCatalog, useSim, useTopology, useUi } from "../store";
 import type { RailItem } from "../app/SidePanel";
 import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
-import type { DeviceType } from "./PaletteItem";
-
-const visibleSimple = (d: DeviceType) => d.visibleSimple;
 
 /**
  * Palette in der App-Shell: Enter/Klick setzt das Gerät in die Mitte des
  * sichtbaren Canvas-Bereichs (leicht versetzt, damit Geräte nicht exakt
  * übereinander landen). Läuft innerhalb des `ReactFlowProvider`.
- * Im Modus Einfach zeigt sie nur Typen mit `visibleSimple` (Regelwerk 11).
+ * Beide Modi zeigen alle Typen (Regelwerk 11).
  */
 export function PalettePanel({
   onAdded,
@@ -36,7 +26,6 @@ export function PalettePanel({
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
   const select = useUi((s) => s.select);
-  const mode = useSettings((s) => s.mode);
   const toast = useToast();
 
   const add = (type: string) => {
@@ -62,27 +51,17 @@ export function PalettePanel({
     }
   };
 
-  return (
-    <Palette
-      onAdd={add}
-      filter={mode === "simple" ? visibleSimple : undefined}
-      reveal={reveal}
-    />
-  );
+  return <Palette onAdd={add} reveal={reveal} />;
 }
 
 /** Schienen-Symbole der Palette (T-711): je Kategorie mit passenden Geräten das Symbol ihres ersten Geräts. */
 export function usePaletteRail(onReveal: (id: string) => void): RailItem[] {
   const catalog = useCatalog((s) => s.catalog);
-  const mode = useSettings((s) => s.mode);
   return [...catalog.categories]
     .sort((a, b) => a.order - b.order)
     .flatMap((c) => {
       const first = catalog.deviceTypes.find(
-        (d) =>
-          d.placeable &&
-          d.category === c.id &&
-          (mode !== "simple" || visibleSimple(d)),
+        (d) => d.placeable && d.category === c.id,
       );
       return first
         ? [

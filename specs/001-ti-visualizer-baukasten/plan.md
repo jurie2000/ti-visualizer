@@ -851,7 +851,7 @@ Tests: Axe in Playwright, ein E2E-Durchlauf nur per Tastatur.
 |---|---|---|
 | P0 | Grundgerüst: Vite, React, TS, Lint, Vitest, Tokens, Schriften, App-Shell mit Impressum. **Kern der Pipeline** (Ausbaustufe „Kern ab P0“), lefthook, PR-Vorlage, CSP, `SECURITY.md` | Leere App öffentlich erreichbar, jede Änderung läuft durch die Pipeline |
 | P1 | Zod-Schemas, Katalog aus dem Regelwerk, Regel-Engine, Pfadregel, Tests. Rückverfolgbarkeits-Skripte, `dependency-cruiser`, Property-based Tests | Regeln vollständig und nachweisbar getestet |
-| P2 | Palette, Canvas, Knoten und Kanten im Mockup-Stil, Verbinden mit Begründung, Karten stecken, Startansicht, Presets, Modus Einfach mit Sammelkanten | Topologien bauen |
+| P2 | Palette, Canvas, Knoten und Kanten im Mockup-Stil, Verbinden mit Begründung, Karten stecken, Startansicht, Presets, Modus Einfach (Sammelkanten entfallen seit T-725a/b) | Topologien bauen |
 | P3 | Speichern und Öffnen als Datei (Topologie, optional Einstellungen), Autosave. Injection-Suite und Fuzzing für alle Eingabewege | Austausch mit anderen Browsern, abgesichert |
 | P4 | Kontextmenü, Aktionen, Pfade, Simulation, Detailpanel | Abläufe abspielen |
 | P5 | Modus Erweitert: Anschlüsse, Einstellungen, Zonen, Editor-Hilfen, Sicherheitsprüfung | Erweiterte Ansicht |

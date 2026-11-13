@@ -804,12 +804,13 @@ Entschieden 2026-11-04 (Plan D36).
 | **Verbindungen** | alle einzeln | alle einzeln |
 | **Palette** | alle Gerätetypen | alle Gerätetypen |
 | **Anschlüsse und Einstellungen** | Anschlüsse wählt das System (A-3), keine Geräteeinstellungen | Anschlussauswahl beim Verbinden und Geräteeinstellungen (IP-Konfiguration, Abschnitt 8) |
-| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Betriebsregeln P-8 bis P-35 der IP-Konfiguration |
+| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Prüfregeln „nur Erweitert“ (Adressierung P-8 bis P-15, Betrieb P-16 bis P-30), die die Geräteeinstellungen auswerten |
 | **Vereinfachte Direktverbindungen** | erlaubt | erlaubt, die Sicherheitsprüfung weist mit einem Hinweis auf den realen Weg hin |
 
 Entschieden 2026-11-13 (T-725a, ersetzt D36): Beide Modi zeigen alle Geräte
-und Verbindungen. Erweitert ergänzt nur die IP-Konfiguration samt ihren
-Prüfregeln und die Anschlussauswahl. Das Ausblenden von Geräten und die
+und Verbindungen. Erweitert ergänzt nur die Geräteeinstellungen (IP-Konfiguration, Zeit,
+Zertifikat, Firewall, VLAN, Pairing, Arbeitsplatz) samt ihren Prüfregeln und
+die Anschlussauswahl. Das Ausblenden von Geräten und die
 Sammelkanten entfallen. Der Modus gehört zu den Einstellungen, nicht zur
 Topologie; eine Datei lässt sich in jedem Modus öffnen. Der Code der
 Ausblendefunktion (Sammelkante, „+n ausgeblendet“, `visibleSimple`) wird in

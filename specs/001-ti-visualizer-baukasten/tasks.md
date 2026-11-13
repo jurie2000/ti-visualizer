@@ -1105,7 +1105,9 @@ Sicherheitsprüfung.
 - [x] **T-725a Modus Einfach zeigt alle Geräte** · FR: FR-2, FR-6 · Regeln: – · nach: T-724b · Anmerkung des Nutzers 2026-11-13
   - Umfang: Alle Gerätetypen und Verbindungsregeln haben `visibleSimple: true`.
     Einfach zeigt Geräte und Verbindungen wie Erweitert; Erweitert ergänzt nur
-    die IP-Konfiguration samt Betriebsregeln und die Anschlussauswahl.
+    die Geräteeinstellungen (IP, Zeit, Zertifikat, Firewall, VLAN, Pairing,
+    Arbeitsplatz) samt den Prüfregeln „nur Erweitert“ (P-8 bis P-30) und die
+    Anschlussauswahl.
     Aktionen starten am Rechner in beiden Modi. Regelwerk 1, 3, 4, 6, 11.
   - Fertig, wenn: Tests (Name mit T-725a) prüfen: beide Modi zeigen alle
     Geräte ohne Sammelkante; Software mit Rechner bietet in keinem Modus

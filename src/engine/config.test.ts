@@ -61,9 +61,9 @@ describe("Geräteeinstellungen: Katalog und Standardwerte (T-502a, Regelwerk 8)"
     const ip = (t: T, type: string) => defaultConfig(type, t, catalog)?.ip;
     expect(ip(empty, "router")).toBe("192.168.10.1");
     expect(ip(empty, "kon")).toBe("192.168.10.2");
-    expect(ip(empty, "pvs")).toBe("192.168.10.10");
-    const t = withNodes(node("a", "pvs", { ip: "192.168.10.10" }));
-    expect(ip(t, "pvs")).toBe("192.168.10.11");
+    expect(ip(empty, "pc")).toBe("192.168.10.10");
+    const t = withNodes(node("a", "pc", { ip: "192.168.10.10" }));
+    expect(ip(t, "pc")).toBe("192.168.10.11");
     expect(ip(withNodes(node("k", "kon", { ip: "192.168.10.2" })), "kon")).toBe(
       "192.168.10.10",
     );
@@ -101,7 +101,7 @@ describe("Geräteeinstellungen: Katalog und Standardwerte (T-502a, Regelwerk 8)"
       node("k", "kon", { ip: "192.168.10.2", mode: "parallel" }),
       node("r", "router", { ip: "192.168.10.1" }),
     );
-    expect(defaultConfig("pvs", parallel, catalog)).toMatchObject({
+    expect(defaultConfig("pc", parallel, catalog)).toMatchObject({
       gateway: "192.168.10.1",
       dns: "192.168.10.2",
       routeTI: true,

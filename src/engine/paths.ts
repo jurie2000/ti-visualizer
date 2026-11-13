@@ -242,11 +242,20 @@ export function terminalFor(
       .map((t) => t.id),
   );
   const terminals = topology.nodes.filter((n) => slots.has(n.type));
-  const wp = topology.nodes.find((n) => n.id === trigger)?.config?.workplace;
+  // Software hat keinen eigenen Arbeitsplatz: es zählen die ihrer Rechner („läuft auf“).
+  const hostIds = new Set(
+    topology.edges.flatMap((e) => {
+      const [a, b] = e.ends;
+      return a.node === trigger ? [b.node] : b.node === trigger ? [a.node] : [];
+    }),
+  );
+  const wps = topology.nodes
+    .filter((n) => n.id === trigger || hostIds.has(n.id))
+    .flatMap((n) => (n.config?.workplace ? [n.config.workplace] : []));
   // Ist dem Arbeitsplatz ein Terminal zugeordnet, zählt nur dieses (auch wenn es nicht erreichbar ist).
-  const assigned = wp
-    ? terminals.filter((n) => n.config?.workplace === wp)
-    : [];
+  const assigned = terminals.filter(
+    (n) => n.config?.workplace && wps.includes(n.config.workplace),
+  );
   const pick = (assigned.length > 0 ? assigned : terminals).filter(
     (n) => resolvePath(topology, trigger, n.id, catalog, "local").ok,
   );
@@ -255,4 +264,70 @@ export function terminalFor(
   return pick.length === 1
     ? { status: "one", terminal: first.id }
     : { status: "choose", candidates: pick.map((n) => n.id) };
+}
+
+/** Kante „läuft auf“: beide Enden sind `host`-Anschlüsse. */
+export function isHostEdge(
+  e: Topology["edges"][number],
+  topology: Topology,
+  catalog: Catalogue,
+): boolean {
+  return e.ends.every((end) => {
+    const node = topology.nodes.find((n) => n.id === end.node);
+    return (
+      catalog.deviceTypes
+        .find((d) => d.id === node?.type)
+        ?.ports.find((p) => p.id === end.port)?.kind === "host"
+    );
+  });
+}
+
+/**
+ * Software, die ein Rechner nutzt (T-724b): die auf ihm selbst läuft („läuft
+ * auf“) und, wenn er ein Arbeitsplatz ist (Fähigkeit `workplace`), die auf
+ * Servern läuft, die er über Netzgeräte erreicht. Ausgefallene Geräte und
+ * Kanten trennen die Verbindung (P-1, P-2). Eigene zuerst.
+ */
+export function softwareOn(
+  topology: Topology,
+  machine: string,
+  catalog: Catalogue,
+): Node[] {
+  const byId = new Map(topology.nodes.map((n) => [n.id, n]));
+  const type = (n: Node) => catalog.deviceTypes.find((d) => d.id === n.type);
+  const neighbours = (id: string) =>
+    topology.edges.flatMap((e) => {
+      if (e.fault) return [];
+      const [a, b] = e.ends;
+      const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
+      const n = other === undefined ? undefined : byId.get(other);
+      return n && !n.fault
+        ? [{ n, host: isHostEdge(e, topology, catalog) }]
+        : [];
+    });
+  const found: Node[] = [];
+  const take = (id: string) => {
+    for (const { n, host } of neighbours(id))
+      if (host && !found.includes(n)) found.push(n);
+  };
+  const start = byId.get(machine);
+  if (!start || type(start)?.category !== "computer") return found;
+  take(machine);
+  if (!type(start)?.capabilities.includes("workplace")) return found;
+  const seen = new Set([machine]);
+  const queue = [machine];
+  for (const id of queue)
+    for (const { n, host } of neighbours(id)) {
+      if (host || seen.has(n.id)) continue;
+      seen.add(n.id);
+      const t = type(n);
+      if (t?.category === "lan") queue.push(n.id);
+      // Server: Rechner ohne Arbeitsplatz
+      else if (
+        t?.category === "computer" &&
+        !t.capabilities.includes("workplace")
+      )
+        take(n.id);
+    }
+  return found;
 }

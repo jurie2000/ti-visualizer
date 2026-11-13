@@ -86,7 +86,10 @@ describe("FR-20 Tutorial-Karte", () => {
     render(card);
     expect(screen.getByText("Aufgabe:")).toBeInTheDocument();
     act(() => {
-      useTopology.getState().addNode("pvs", { x: 0, y: 0 });
+      const t = useTopology.getState();
+      const pc = t.addNode("pc", { x: 0, y: 0 });
+      const pvs = t.addNode("pvs", { x: 0, y: 200 });
+      if (pc.ok && pc.id && pvs.ok && pvs.id) t.connect(pvs.id, pc.id);
     });
     expect(screen.getByText("Erledigt:")).toBeInTheDocument();
   });

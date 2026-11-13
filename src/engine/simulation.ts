@@ -1,5 +1,5 @@
 import type { Catalog, Node, Topology } from "../schema";
-import { resolvePath, terminalFor, zugangOf } from "./paths";
+import { resolvePath, softwareOn, terminalFor, zugangOf } from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes">;
 type Flow = Catalog["flows"][number];
@@ -29,7 +29,7 @@ type Path = { nodes: string[]; edges: string[] };
 
 // Spiegelt die Ausnahmen in connection-rules.json (erl-mkt-ps, kim ↔ kk).
 const DIRECT: Record<string, string[]> = {
-  mkt: ["pvs", "kis", "avs", "pflege"],
+  mkt: ["pvs", "kis", "avs", "pflege", "pc"],
   kim: ["kk"],
 };
 
@@ -145,7 +145,12 @@ function roleBinder(
   return (role) => {
     switch (role) {
       case "P":
-        return primary || trigger.id;
+        // Am Rechner ausgelöst: die Software darauf sendet (T-724b)
+        return (
+          primary ||
+          softwareOn(topology, trigger.id, catalog)[0]?.id ||
+          trigger.id
+        );
       case "T":
         return term;
       case "K":

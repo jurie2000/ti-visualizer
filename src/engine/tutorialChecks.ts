@@ -41,14 +41,14 @@ export function stepDone(stepId: string, ctx: TutorialCtx): boolean {
 
   switch (stepId) {
     case "primaersystem":
-      return devices("pvs", praxis).length > 0;
+      return linked(["pc", praxis], ["pvs", praxis]);
     case "kartenterminal":
       return devices("kt", praxis).length > 0;
     case "karten-stecken":
       return withCards(praxis, ["smcb", "hba", "egk"]);
     case "praxisnetz":
       return (
-        linked(["pvs", praxis], ["switch", praxis]) &&
+        linked(["pc", praxis], ["switch", praxis]) &&
         linked(["kt", praxis], ["switch", praxis])
       );
     case "konnektor":
@@ -62,12 +62,12 @@ export function stepDone(stepId: string, ctx: TutorialCtx): boolean {
     case "erstes-erezept":
       return played.has("erezept-ausstellen");
     case "apotheke-nebenan":
-      return devices("avs", inApo).length > 0;
+      return linked(["pc", inApo], ["avs", inApo]);
     case "apotheken-terminal":
       return withCards(inApo, ["smcb", "egk"]);
     case "apotheken-netz":
       return (
-        linked(["avs", inApo], ["switch", inApo]) &&
+        linked(["pc", inApo], ["switch", inApo]) &&
         linked(["kt", inApo], ["switch", inApo])
       );
     case "apotheken-konnektor":
@@ -80,7 +80,7 @@ export function stepDone(stepId: string, ctx: TutorialCtx): boolean {
           return kon !== undefined && typeOf.get(kon) === "kon" && inApo(kon);
         }) &&
         // Reihenbetrieb: Gateway des Clients ist der Zugang (P-25)
-        devices("avs", inApo).some((a) =>
+        devices("pc", inApo).some((a) =>
           devices("kon", inApo).some(
             (k) =>
               a.config?.gateway !== undefined &&

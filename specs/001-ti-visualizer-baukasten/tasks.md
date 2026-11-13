@@ -1076,15 +1076,31 @@ Sicherheitsprüfung.
     Verknüpfung ist ein eigener Knoten-Link (Modell A), keine Eigenschaft
     am Rechner.
 
-- [ ] **T-724b Software ohne Ethernet, Presets und Tutorial umstellen** · FR: FR-2, FR-20 · Regeln: V-6, P-29 · nach: T-724a
-  - Umfang: PVS, KIS, AVS, Pflege, RIS, LIS verlieren Ethernet und USB.
-    Presets bekommen PC und Server, auf denen die Software läuft; IP-
-    Konfiguration und Arbeitsplatz-Zuordnung (P-29) wandern an den Rechner;
-    Mobiles KT hängt am Rechner. Verbindungsregeln „Software direkt am
-    Switch“ und „PC ↔ KIS“ entfallen. Tutorial-Schritte und Texte
-    (PC, dann PVS darauf) werden angepasst. Regelwerk 4, 6, 11, 13 folgen.
-  - Fertig, wenn: alle Presets und das Tutorial laufen mit dem neuen
-    Modell; Tests prüfen, dass Software nicht mehr per Kabel verbunden wird.
+- [x] **T-724b Software ohne Ethernet, Aktionen am Rechner, Presets und Tutorial** · FR: FR-2, FR-6, FR-20 · Regeln: A-6, P-29, V-6 · nach: T-724a
+  - Umfang: PVS, KIS, AVS, Pflege, RIS und LIS verlieren Ethernet und USB und
+    haben nur „Anwendung“ (`app`, logischer Kurzweg im Modus Einfach) und
+    „Läuft auf“. IP, Gateway, Route und VLAN gehören dem Rechner (Fähigkeit
+    `netConfig:client` nur noch an PC, Server, Tablet, KIM-Clientmodul).
+    Neue Fähigkeit `workplace` (PC, Tablet) für P-29 und die Zuordnung zum
+    Kartenterminal. Aktionen starten am Rechner, die Software ist der
+    Absender im Ablauf (Rolle `P`). Presets bekommen PC und Server; das
+    Tutorial baut PC und PVS und verbindet sie über „Läuft auf“.
+  - Fertig, wenn: Tests (Name mit T-724b, A-6, P-29) prüfen: Software ohne
+    Ethernet, jede Software in allen Presets auf einem Rechner, Aktionen am
+    Rechner (Erweitert) und an der Software (Einfach), Arbeitsplatz erbt die
+    Aktionen der Software auf einem Server, Ablauf mit Software als Absender;
+    Tutorial und E2E laufen mit dem neuen Modell.
+  - Auslegung (2026-11-13): (a) Aktionen: Im Modus Erweitert bietet nur der
+    Rechner Aktionen an, die Software nur ohne Rechner. Im Modus Einfach
+    (Rechner ausgeblendet) startet die Software selbst, damit sie dort
+    bedienbar bleibt. (b) Einen Arbeitsplatz-PC erbt die Aktionen der
+    Software auf ihm und auf Servern, die er über Netzgeräte erreicht (KIS);
+    ein Server bietet die Aktionen der eigenen Software an. (c) Hängt eine
+    Software an mehreren Rechnern, gilt der Arbeitsplatz aller Rechner für die
+    Terminalwahl; im Ablauf ist die Software die erste auf dem Auslöser.
+    (d) KIM-Clientmodul und TI-Messenger-Client bleiben unverändert (kein
+    `host`), Klärung folgt mit T-724c. (e) Die Presets sind mit „Sortieren“
+    angeordnet; im Klinikum liegt je ein Server für KIS, RIS und LIS.
 
 - [ ] **T-724c Software als Dienst (SaaS) über das Internet** · FR: FR-2 · Regeln: – · nach: T-724b
   - Umfang: Software kann auf einem Server im Internet laufen und wird dem

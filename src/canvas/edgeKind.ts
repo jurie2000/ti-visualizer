@@ -78,7 +78,7 @@ export function describeEdge(
         ? "vpn"
         : has("net")
           ? "inet"
-          : both("ti")
+          : both("ti") || both("app")
             ? "tcp"
             : has("usb")
               ? "usb"

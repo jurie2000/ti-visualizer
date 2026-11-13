@@ -1,7 +1,14 @@
 import type { Catalog, Expr, Node, Selector, Topology } from "../schema";
 import { CARD_NAMES, cardState, type CardKind } from "./cards";
 import { gatewayGrund, routeGrund, tunnelGrund } from "./checksBetrieb";
-import { resolvePath, terminalFor, zugangOf, type PathResult } from "./paths";
+import {
+  isHostEdge,
+  resolvePath,
+  softwareOn,
+  terminalFor,
+  zugangOf,
+  type PathResult,
+} from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes" | "actions">;
 
@@ -33,7 +40,7 @@ interface Ctx {
   unpaired: Node[];
 }
 
-// Arbeitsplatz-PC und Tablet bieten die Aktionen dieser Primärsysteme an (Regelwerk 6.2, 6.7).
+// Arbeitsplätze (PC, Tablet) bieten die Aktionen dieser Software an (Regelwerk 6.2, 6.7).
 const HOSTS = ["pvs", "kis", "avs"];
 
 const caps = (c: Cat, n: Node) =>
@@ -218,27 +225,6 @@ const offers = (s: Selector, c: Cat, type: string) =>
         s.capability,
       );
 
-/** Primärsysteme, an denen ein PC oder Tablet hängt: direkt oder über Netzgeräte. Ausgefallene Geräte und Kanten trennen die Verbindung (P-1, P-2). */
-function hostTypes(node: Node, topology: Topology, c: Cat): string[] {
-  const byId = new Map(topology.nodes.map((n) => [n.id, n]));
-  const seen = new Set([node.id]);
-  const found = new Set<string>();
-  const queue = [node.id];
-  for (const id of queue)
-    for (const e of topology.edges) {
-      if (e.fault) continue;
-      const [a, b] = e.ends;
-      const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
-      const n = other === undefined ? undefined : byId.get(other);
-      if (!n || n.fault || seen.has(n.id)) continue;
-      seen.add(n.id);
-      if (HOSTS.includes(n.type)) found.add(n.type);
-      else if (c.deviceTypes.find((d) => d.id === n.type)?.category === "lan")
-        queue.push(n.id);
-    }
-  return [...found];
-}
-
 /**
  * Aktionen des Geräts mit `enabled` und Begründung (FR-6, FR-7). Der Katalog
  * führt PC und Tablet in keinem `offeredBy`, sie erben die Aktionen ihres
@@ -251,9 +237,31 @@ export function availableActions(
   mode: "simple" | "advanced" = "simple",
 ): ActionState[] {
   const advanced = mode === "advanced";
-  const types = ["pc", "tab"].includes(node.type)
-    ? hostTypes(node, topology, catalog)
-    : [node.type];
+  const category = catalog.deviceTypes.find(
+    (d) => d.id === node.type,
+  )?.category;
+  // Aktionen starten am Rechner, die Software ist Knoten im Ablauf (T-724b).
+  // Im Modus Einfach ist der Rechner ausgeblendet: dort startet die Software selbst.
+  if (
+    advanced &&
+    topology.edges.some(
+      (e) =>
+        e.ends.some((end) => end.node === node.id) &&
+        isHostEdge(e, topology, catalog),
+    ) &&
+    category !== "computer"
+  )
+    return [];
+  const types =
+    category === "computer"
+      ? [
+          ...new Set(
+            softwareOn(topology, node.id, catalog)
+              .map((n) => n.type)
+              .filter((t) => HOSTS.includes(t)),
+          ),
+        ]
+      : [node.type];
   // Je Zugang eine Auswertung: Terminals nach `zugangOf` gruppiert (6.0, 6.1).
   const own = caps(catalog, node).includes("cardSlots");
   const choice = own ? undefined : terminalFor(topology, node.id, catalog);

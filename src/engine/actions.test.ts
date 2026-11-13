@@ -22,6 +22,7 @@ const TYPES: Record<string, string> = {
   mkt: "mkt",
   cardlink: "cardlink",
   sw: "switch",
+  srv: "server",
   ap: "ap",
   kon: "kon",
   rt: "router",
@@ -70,9 +71,12 @@ const lan = [
   "kon",
   "ap",
 ];
-const links: [string, string][] = [
+// Dritter Wert `true`: Kante „läuft auf“ (Software auf Rechner).
+const links: [string, string, true?][] = [
   ...lan.map((n): [string, string] => ["sw", n]),
-  ["pc", "pvs"],
+  ["pc", "pvs", true],
+  ["sw", "srv"],
+  ["srv", "kis", true],
   ["tab", "ap"],
   ["cardlink", "kon"],
   ["kon", "rt"],
@@ -101,12 +105,12 @@ const full = (): Topology => ({
     fault: false,
     ...(CARDS[id] ? { cards: CARDS[id] } : {}),
   })),
-  edges: links.map(([a, b]) => ({
+  edges: links.map(([a, b, host]) => ({
     id: `${a}-${b}`,
     fault: false,
     ends: [
-      { node: a, port: "p" },
-      { node: b, port: "p" },
+      { node: a, port: host ? "soft" : "p" },
+      { node: b, port: host ? "host" : "p" },
     ],
   })),
 });
@@ -474,7 +478,7 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     expect(a?.chooseTerminal).toBeUndefined();
   });
 
-  it("PC und Tablet bieten die Aktionen ihres Primärsystems an", () => {
+  it("PC und Tablet bieten die Aktionen ihrer Software an", () => {
     const ids = (t: Topology, n: string) =>
       availableActions(t.nodes.find((x) => x.id === n) as Node, t, catalog).map(
         (a) => a.id,

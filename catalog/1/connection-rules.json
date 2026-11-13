@@ -89,7 +89,7 @@
   {
     "id": "erl-ps-lan",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "ris", "lis", "server"]
+      "types": ["pc", "server"]
     },
     "b": {
       "types": ["switch", "router"]
@@ -112,18 +112,6 @@
     "visibleSimple": false,
     "source": ["KH"],
     "status": "plausibel"
-  },
-  {
-    "id": "erl-pc-ps",
-    "a": {
-      "types": ["pc"]
-    },
-    "b": {
-      "types": ["kis", "pvs", "avs"]
-    },
-    "visibleSimple": false,
-    "source": ["gemILF_PS"],
-    "status": "bestätigt"
   },
   {
     "id": "erl-risl-kis",

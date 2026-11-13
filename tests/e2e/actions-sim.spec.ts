@@ -75,7 +75,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Kontextmenü: Menütaste öffnet, Pfeile wandern, Esc gibt den Fokus zurück (FR-6)", async ({
     page,
   }) => {
-    await gerät(page, "pvs1").focus();
+    await gerät(page, "pc1").focus();
     await page.keyboard.press("Shift+F10");
     const menü = page.getByRole("menu");
     await expect(menü).toBeVisible();
@@ -84,16 +84,16 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await expect(eintrag(page, "E-Rezept ausstellen")).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(menü).toHaveCount(0);
-    await expect(gerät(page, "pvs1")).toBeFocused();
+    await expect(gerät(page, "pc1")).toBeFocused();
     // Rechtsklick zeigt dasselbe Menü
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     await expect(eintrag(page, "Ausfall simulieren")).toBeVisible();
   });
 
   test("ausgegraute Aktion bleibt sichtbar mit Begründung und wird ausführbar (FR-7)", async ({
     page,
   }) => {
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     const kim = eintrag(page, "KIM-Nachricht senden");
     await expect(kim).toHaveAttribute("aria-disabled", "true");
     // nicht nur Farbe: Begründung als Text, dazu ein Symbol
@@ -112,7 +112,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
       .getByRole("button", { name: /KIM-Clientmodul.* hinzufügen$/ })
       .click();
     await schliessePalette(page);
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     await expect(kim).not.toHaveAttribute("aria-disabled", "true");
     // KIM-Mail senden
     await kim.click();
@@ -129,24 +129,24 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     "Medikationsplan auslesen",
     "VSDM-Prüfung anstoßen",
   ]) {
-    test(`Aktion „${aktion}“ ist am PVS ausführbar und im Player sichtbar (FR-6, FR-9)`, async ({
+    test(`Aktion „${aktion}“ ist am PC ausführbar und im Player sichtbar (FR-6, FR-9)`, async ({
       page,
     }) => {
-      await starte(page, "pvs1", aktion);
+      await starte(page, "pc1", aktion);
       await expect(spieler(page)).toHaveAccessibleName(`Simulation: ${aktion}`);
       await expect(page.locator(".is-sim").first()).toBeVisible();
       await bisZumEnde(page);
     });
   }
 
-  test("E-Rezept einlösen ist am AVS der Apotheke ausführbar (FR-6)", async ({
+  test("E-Rezept einlösen ist am PC der Apotheke ausführbar (FR-6)", async ({
     page,
   }) => {
     await page
       .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
       .click();
     await öffne(page, /^Apotheke am/);
-    await starte(page, "avs1", "E-Rezept einlösen \\(eGK einlesen\\)");
+    await starte(page, "pc1", "E-Rezept einlösen \\(eGK einlesen\\)");
     await bisZumEnde(page);
   });
 
@@ -172,7 +172,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Abspielen läuft von allein bis zum Ende (Tempo ändern, FR-9)", async ({
     page,
   }) => {
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     await eintrag(page, "Medikationsplan auslesen").click();
     const tempo = page.getByRole("slider", { name: "Tempo" });
     await tempo.fill("2");
@@ -187,7 +187,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Abbrechen mit Esc, Leertaste pausiert, Schließen gibt den Fokus zurück (FR-10)", async ({
     page,
   }) => {
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     await eintrag(page, "E-Rezept ausstellen").click();
     await expect(spieler(page)).toBeFocused();
     await page.keyboard.press("Space");
@@ -200,31 +200,34 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await expect(spieler(page)).toContainText(abgebrochen);
     await page.getByRole("button", { name: "Schließen" }).click();
     await expect(spieler(page)).toBeHidden();
-    await expect(gerät(page, "pvs1")).toBeFocused();
+    await expect(gerät(page, "pc1")).toBeFocused();
   });
 
   test("Bearbeiten ist gesperrt: Ziehen und Palette, Störung bricht ab (Regelwerk 7)", async ({
     page,
   }) => {
-    await starte(page, "pvs1", "Medikationsplan auslesen");
+    await starte(page, "pc1", "Medikationsplan auslesen");
     // Ohne Ziehen der Geräte schiebt die Geste nur die Ansicht: der Abstand
     // zum Switch bleibt gleich, wenn das PVS nicht wandert.
     const abstand = async () => {
       const [a, b] = await Promise.all([
-        gerät(page, "pvs1").boundingBox(),
+        gerät(page, "pc1").boundingBox(),
         gerät(page, "sw1").boundingBox(),
       ]);
       if (!a || !b) throw new Error("Geräte nicht sichtbar");
       return { x: b.x - a.x, y: b.y - a.y };
     };
     const vorher = await abstand();
-    const von = await gerät(page, "pvs1").boundingBox();
+    const von = await gerät(page, "pc1").boundingBox();
     if (!von) throw new Error("PVS nicht sichtbar");
     await page.mouse.move(von.x + 20, von.y + von.height / 2);
     await page.mouse.down();
     await page.mouse.move(von.x + 90, von.y + 60, { steps: 8 });
     await page.mouse.up();
-    expect(await abstand()).toEqual(vorher);
+    // WebKit rundet Teilpixel leicht anders: mit Toleranz vergleichen
+    const nachher = await abstand();
+    expect(nachher.x).toBeCloseTo(vorher.x, 1);
+    expect(nachher.y).toBeCloseTo(vorher.y, 1);
 
     const kanten = await page.locator(".react-flow__edge").count();
     await öffnePalette(page);
@@ -246,7 +249,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Moduswechsel bricht die Simulation ab (Regelwerk 7)", async ({
     page,
   }) => {
-    await starte(page, "pvs1", "Medikationsplan auslesen");
+    await starte(page, "pc1", "Medikationsplan auslesen");
     await page.getByRole("button", { name: "Einfach" }).click();
     await expect(spieler(page)).toContainText(abgebrochen);
   });
@@ -254,11 +257,11 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Detailpanel: nur die Überschrift ist live (FR-11, T-406)", async ({
     page,
   }) => {
-    await menüAn(page, "pvs1");
+    await menüAn(page, "pc1");
     await eintrag(page, "Details").click();
     const panel = page.getByRole("complementary", { name: "Detailpanel" });
     const titel = panel.getByRole("heading", { level: 3 });
-    await expect(titel).toContainText("Praxisverwaltungssystem");
+    await expect(titel).toContainText("Arbeitsplatz-PC");
     await expect(titel).toHaveAttribute("aria-live", "polite");
     await expect(panel.locator("#tiv-detail-body")).not.toHaveAttribute(
       "aria-live",

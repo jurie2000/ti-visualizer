@@ -32,7 +32,7 @@ const run = (t: Topology, mode: "simple" | "advanced" = "advanced") =>
   runChecks(t, mode, catalog);
 const hits = (t: Topology, id: string) => run(t).filter((f) => f.id === id);
 
-/** Praxis in Reihe: PVS und KT am Switch, Konnektor zwischen Switch und Router. */
+/** Praxis in Reihe: PC (mit PVS) und KT am Switch, Konnektor zwischen Switch und Router. */
 const praxis = (over: Over = {}): Topology => {
   const cfg = (id: string) => ({ config: { ...over[id] } });
   return {
@@ -41,7 +41,8 @@ const praxis = (over: Over = {}): Topology => {
     simDate: "2026-11-01",
     zones: [],
     nodes: [
-      node("pvs", "pvs", cfg("pvs")),
+      node("pc", "pc", cfg("pc")),
+      node("pvs", "pvs"),
       node("kt", "kt", {
         ...cfg("kt"),
         cards: [
@@ -61,7 +62,15 @@ const praxis = (over: Over = {}): Topology => {
       node("vsdm", "vsdm"),
     ],
     edges: [
-      edge("sw", "pvs"),
+      edge("sw", "pc"),
+      {
+        id: "pvs-pc",
+        fault: false,
+        ends: [
+          { node: "pvs", port: "host" },
+          { node: "pc", port: "soft" },
+        ] as [{ node: string; port: string }, { node: string; port: string }],
+      },
       edge("sw", "kt"),
       edge("sw", "kon"),
       edge("kon", "rt"),
@@ -90,7 +99,7 @@ describe("Betrieb: Grundlagen", () => {
     const ok = praxis({
       kon: { ip: "192.168.10.2", updateOk: true, timeOffset: 0, mode: "reihe" },
       rt: { ip: "192.168.10.1", ipsecAllowed: true },
-      pvs: { gateway: "192.168.10.2", dns: "192.168.10.2", routeTI: true },
+      pc: { gateway: "192.168.10.2", dns: "192.168.10.2", routeTI: true },
       kt: { paired: true, workplace: "AP-1" },
     });
     expect(run(ok)).toEqual([]);
@@ -175,10 +184,10 @@ describe("P-21 IPsec", () => {
 });
 
 describe("P-23, P-24 Segment", () => {
-  const dhcp = { pvs: { dhcp: true } };
+  const dhcp = { pc: { dhcp: true } };
 
   it("[P-23] positiv: DHCP ohne Server; negativ: Zugang oder Router im Segment ist Server", () => {
-    expect(hits(praxis(dhcp), "P-23").map((f) => f.nodes)).toEqual([["pvs"]]);
+    expect(hits(praxis(dhcp), "P-23").map((f) => f.nodes)).toEqual([["pc"]]);
     expect(
       hits(praxis({ ...dhcp, kon: { dhcpServer: true } }), "P-23"),
     ).toEqual([]);
@@ -196,12 +205,12 @@ describe("P-23, P-24 Segment", () => {
 
   it("[P-24] positiv: anderes VLAN am selben Switch; negativ: gleiches oder Standard", () => {
     expect(
-      hits(praxis({ pvs: { vlan: "Gast" } }), "P-24").map((f) => f.nodes),
-    ).toEqual([["kon", "pvs"]]);
+      hits(praxis({ pc: { vlan: "Gast" } }), "P-24").map((f) => f.nodes),
+    ).toEqual([["kon", "pc"]]);
     expect(
       hits(
         praxis({
-          pvs: { vlan: "Gast" },
+          pc: { vlan: "Gast" },
           kt: { vlan: "Gast" },
           kon: { vlan: "Gast" },
         }),
@@ -216,44 +225,44 @@ describe("P-25 bis P-28 Clients", () => {
   it("[P-25] Reihe: Gateway muss der Zugang sein", () => {
     const ip = { kon: { ip: "192.168.10.2" } };
     expect(
-      hits(praxis({ ...ip, pvs: { gateway: "192.168.10.1" } }), "P-25"),
+      hits(praxis({ ...ip, pc: { gateway: "192.168.10.1" } }), "P-25"),
     ).toHaveLength(1);
     expect(
-      hits(praxis({ ...ip, pvs: { gateway: "192.168.10.2" } }), "P-25"),
+      hits(praxis({ ...ip, pc: { gateway: "192.168.10.2" } }), "P-25"),
     ).toEqual([]);
     expect(hits(praxis(ip), "P-25")).toEqual([]); // ungesetzt = Standard
     expect(
-      hits(parallel({ ...ip, pvs: { gateway: "192.168.10.9" } }), "P-25"),
+      hits(parallel({ ...ip, pc: { gateway: "192.168.10.9" } }), "P-25"),
     ).toEqual([]);
   });
 
   it("[P-26] Parallel: Gateway muss der Router sein", () => {
     const ip = { rt: { ip: "192.168.10.1" } };
     expect(
-      hits(parallel({ ...ip, pvs: { gateway: "192.168.10.2" } }), "P-26"),
+      hits(parallel({ ...ip, pc: { gateway: "192.168.10.2" } }), "P-26"),
     ).toHaveLength(1);
     expect(
-      hits(parallel({ ...ip, pvs: { gateway: "192.168.10.1" } }), "P-26"),
+      hits(parallel({ ...ip, pc: { gateway: "192.168.10.1" } }), "P-26"),
     ).toEqual([]);
     expect(
-      hits(praxis({ ...ip, pvs: { gateway: "192.168.10.2" } }), "P-26"),
+      hits(praxis({ ...ip, pc: { gateway: "192.168.10.2" } }), "P-26"),
     ).toEqual([]);
   });
 
   it("[P-27] Parallel ohne Route meldet; Reihe und Standard nicht", () => {
-    expect(hits(parallel({ pvs: { routeTI: false } }), "P-27")).toHaveLength(1);
-    expect(hits(parallel({ pvs: { routeTI: true } }), "P-27")).toEqual([]);
+    expect(hits(parallel({ pc: { routeTI: false } }), "P-27")).toHaveLength(1);
+    expect(hits(parallel({ pc: { routeTI: true } }), "P-27")).toEqual([]);
     expect(hits(parallel(), "P-27")).toEqual([]);
-    expect(hits(praxis({ pvs: { routeTI: false } }), "P-27")).toEqual([]);
+    expect(hits(praxis({ pc: { routeTI: false } }), "P-27")).toEqual([]);
   });
 
   it("[P-28] fremder DNS meldet als Warnung, Zugang oder ungesetzt nicht", () => {
     const ip = { kon: { ip: "192.168.10.2" } };
     expect(
-      hits(praxis({ ...ip, pvs: { dns: "8.8.8.8" } }), "P-28")[0]?.severity,
+      hits(praxis({ ...ip, pc: { dns: "8.8.8.8" } }), "P-28")[0]?.severity,
     ).toBe("Warnung");
     expect(
-      hits(praxis({ ...ip, pvs: { dns: "192.168.10.2" } }), "P-28"),
+      hits(praxis({ ...ip, pc: { dns: "192.168.10.2" } }), "P-28"),
     ).toEqual([]);
     expect(hits(praxis(ip), "P-28")).toEqual([]);
   });
@@ -261,17 +270,15 @@ describe("P-25 bis P-28 Clients", () => {
 
 describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
   it("[P-29] Arbeitsplatz ohne Terminal meldet; passend, Standard oder ohne Terminal nicht", () => {
-    expect(hits(praxis({ pvs: { workplace: "AP-2" } }), "P-29")).toHaveLength(
-      1,
-    );
+    expect(hits(praxis({ pc: { workplace: "AP-2" } }), "P-29")).toHaveLength(1);
     expect(
       hits(
-        praxis({ pvs: { workplace: "AP-2" }, kt: { workplace: "AP-2" } }),
+        praxis({ pc: { workplace: "AP-2" }, kt: { workplace: "AP-2" } }),
         "P-29",
       ),
     ).toEqual([]);
     expect(hits(praxis(), "P-29")).toEqual([]);
-    const ohneKt = praxis({ pvs: { workplace: "AP-2" } });
+    const ohneKt = praxis({ pc: { workplace: "AP-2" } });
     ohneKt.nodes = ohneKt.nodes.filter((n) => n.id !== "kt");
     expect(hits(ohneKt, "P-29")).toEqual([]);
   });
@@ -299,14 +306,14 @@ describe("Betrieb in availableActions (Modus Erweitert)", () => {
       mode,
     ).find((a) => a.id === id);
   const erezept = (t: Topology, mode: "simple" | "advanced" = "advanced") =>
-    action(t, "pvs", "erezept-ausstellen", mode);
+    action(t, "pc", "erezept-ausstellen", mode);
 
   it("gesunde Praxis: E-Rezept ausstellen ist möglich", () => {
     expect(erezept(praxis())?.enabled).toBe(true);
   });
 
   it("[P-27] graut E-Rezept ausstellen aus, im Modus Einfach nicht", () => {
-    const t = parallel({ pvs: { routeTI: false } });
+    const t = parallel({ pc: { routeTI: false } });
     expect(erezept(t)?.enabled).toBe(false);
     expect(erezept(t)?.disabledReason).toContain("P-27");
     expect(erezept(t, "simple")?.enabled).toBe(true);
@@ -319,13 +326,13 @@ describe("Betrieb in availableActions (Modus Erweitert)", () => {
     ["P-21", praxis({ rt: { ipsecAllowed: false } })],
     [
       "P-25",
-      praxis({ kon: { ip: "192.168.10.2" }, pvs: { gateway: "192.168.10.9" } }),
+      praxis({ kon: { ip: "192.168.10.2" }, pc: { gateway: "192.168.10.9" } }),
     ],
     [
       "P-26",
       parallel({
         rt: { ip: "192.168.10.1" },
-        pvs: { gateway: "192.168.10.9" },
+        pc: { gateway: "192.168.10.9" },
       }),
     ],
     ["P-30", praxis({ kt: { paired: false } })],
@@ -352,7 +359,7 @@ describe("Betrieb in availableActions (Modus Erweitert)", () => {
   });
 
   it("Regeln ohne Pfadwirkung (P-19, P-23, P-29) sperren nichts", () => {
-    const t = parallel({ pvs: { dhcp: true, workplace: "AP-2" } });
+    const t = parallel({ pc: { dhcp: true, workplace: "AP-2" } });
     expect(erezept(t)?.enabled).toBe(true);
   });
 });

@@ -22,14 +22,14 @@ const edge = (id: string, a: string, b: string) => ({
 });
 
 const MASK = "255.255.255.0";
-/** Praxis mit IPs: Router .1, Konnektor .2, PVS .10, KT .11. */
+/** Praxis mit IPs: Router .1, Konnektor .2, PC .10, KT .11. */
 const addressed = (): Topology => ({
   name: "t",
   description: "",
   simDate: "2026-11-01",
   zones: [],
   nodes: [
-    node("pvs", "pvs", {
+    node("pc", "pc", {
       ip: "192.168.10.10",
       mask: MASK,
       gateway: "192.168.10.2",
@@ -41,7 +41,7 @@ const addressed = (): Topology => ({
     node("vpn", "vpn"),
   ],
   edges: [
-    edge("e1", "pvs", "sw"),
+    edge("e1", "pc", "sw"),
     edge("e2", "kt", "sw"),
     edge("e3", "sw", "kon"),
     edge("e4", "kon", "rt"),
@@ -66,13 +66,13 @@ const nodesOf = (t: Topology, id: string) => only(t, id).map((f) => f.nodes);
 describe("Adressierung P-8 bis P-15", () => {
   it("[P-8] ungültige IP meldet, gültige nicht", () => {
     for (const bad of ["999.1.1.1", "1.2.3", "a.b.c.d", "01.2.3.4", ""])
-      expect(nodesOf(withCfg("pvs", { ip: bad }), "P-8")).toEqual([["pvs"]]);
+      expect(nodesOf(withCfg("pc", { ip: bad }), "P-8")).toEqual([["pc"]]);
     expect(only(addressed(), "P-8")).toEqual([]);
   });
 
   it("[P-9] gleiche IP meldet beide Geräte einmal, verschiedene nicht", () => {
     expect(nodesOf(withCfg("kt", { ip: "192.168.10.10" }), "P-9")).toEqual([
-      ["kt", "pvs"],
+      ["kt", "pc"],
     ]);
     expect(only(addressed(), "P-9")).toEqual([]);
   });
@@ -80,15 +80,15 @@ describe("Adressierung P-8 bis P-15", () => {
   it("[P-9] ungültige IPs gelten nicht als Konflikt (P-8)", () => {
     const t = withCfg("kt", { ip: "x" });
     t.nodes = t.nodes.map((n) =>
-      n.id === "pvs" ? { ...n, config: { ip: "x" } } : n,
+      n.id === "pc" ? { ...n, config: { ip: "x" } } : n,
     );
     expect(only(t, "P-9")).toEqual([]);
   });
 
   it("[P-10] Lücke, /0, /32 und Unsinn melden, /24 und /16 nicht", () => {
     for (const bad of ["255.0.255.0", "0.0.0.0", "255.255.255.255", "abc"])
-      expect(nodesOf(withCfg("pvs", { mask: bad }), "P-10")).toEqual([["pvs"]]);
-    expect(only(withCfg("pvs", { mask: "255.255.0.0" }), "P-10")).toEqual([]);
+      expect(nodesOf(withCfg("pc", { mask: bad }), "P-10")).toEqual([["pc"]]);
+    expect(only(withCfg("pc", { mask: "255.255.0.0" }), "P-10")).toEqual([]);
     expect(only(addressed(), "P-10")).toEqual([]);
   });
 
@@ -116,42 +116,42 @@ describe("Adressierung P-8 bis P-15", () => {
   });
 
   it("[P-12] ungültiges Gateway meldet, gültiges oder fehlendes nicht", () => {
-    expect(nodesOf(withCfg("pvs", { gateway: "192.168.10" }), "P-12")).toEqual([
-      ["pvs"],
+    expect(nodesOf(withCfg("pc", { gateway: "192.168.10" }), "P-12")).toEqual([
+      ["pc"],
     ]);
     expect(only(addressed(), "P-12")).toEqual([]);
   });
 
   it("[P-13] Gateway außerhalb des eigenen Subnetzes meldet, innerhalb nicht", () => {
-    expect(nodesOf(withCfg("pvs", { gateway: "10.0.0.1" }), "P-13")).toEqual([
-      ["pvs"],
+    expect(nodesOf(withCfg("pc", { gateway: "10.0.0.1" }), "P-13")).toEqual([
+      ["pc"],
     ]);
     expect(only(addressed(), "P-13")).toEqual([]);
   });
 
   it("[P-13] ungültige Werte meldet P-8/P-12, nicht P-13", () => {
-    expect(only(withCfg("pvs", { gateway: "x" }), "P-13")).toEqual([]);
+    expect(only(withCfg("pc", { gateway: "x" }), "P-13")).toEqual([]);
     expect(
-      only(withCfg("pvs", { ip: "x", gateway: "10.0.0.1" }), "P-13"),
+      only(withCfg("pc", { ip: "x", gateway: "10.0.0.1" }), "P-13"),
     ).toEqual([]);
   });
 
   it("[P-14] Gateway ohne Gerät mit dieser IP meldet, vorhandenes nicht", () => {
     expect(
-      nodesOf(withCfg("pvs", { gateway: "192.168.10.99" }), "P-14"),
-    ).toEqual([["pvs"]]);
+      nodesOf(withCfg("pc", { gateway: "192.168.10.99" }), "P-14"),
+    ).toEqual([["pc"]]);
     expect(only(addressed(), "P-14")).toEqual([]);
   });
 
   it("[P-14] das eigene Gerät zählt nicht als Gateway", () => {
     expect(
-      only(withCfg("pvs", { gateway: "192.168.10.10" }), "P-14"),
+      only(withCfg("pc", { gateway: "192.168.10.10" }), "P-14"),
     ).toHaveLength(1);
   });
 
   it("[P-15] Client in anderem Subnetz als der Zugang meldet Gerät und Zugang", () => {
-    const t = withCfg("pvs", { ip: "192.168.20.10", gateway: "192.168.20.1" });
-    expect(nodesOf(t, "P-15")).toEqual([["kon", "pvs"]]);
+    const t = withCfg("pc", { ip: "192.168.20.10", gateway: "192.168.20.1" });
+    expect(nodesOf(t, "P-15")).toEqual([["kon", "pc"]]);
   });
 
   it("[P-15] Kartenterminal zählt, gleiches Subnetz nicht", () => {
@@ -162,7 +162,7 @@ describe("Adressierung P-8 bis P-15", () => {
   });
 
   it("[P-15] /16-Maske am Client reicht, solange die IP im Netz des Zugangs liegt", () => {
-    expect(only(withCfg("pvs", { mask: "255.255.0.0" }), "P-15")).toEqual([]);
+    expect(only(withCfg("pc", { mask: "255.255.0.0" }), "P-15")).toEqual([]);
   });
 
   it("[P-15] ohne bestimmbaren Zugang oder ohne IP keine Meldung", () => {
@@ -171,12 +171,12 @@ describe("Adressierung P-8 bis P-15", () => {
     t.edges = t.edges.filter((e) => e.id !== "e3" && e.id !== "e4");
     expect(only(t, "P-15")).toEqual([]);
     const u = addressed();
-    u.nodes = u.nodes.map((n) => (n.id === "pvs" ? { ...n, config: {} } : n));
+    u.nodes = u.nodes.map((n) => (n.id === "pc" ? { ...n, config: {} } : n));
     expect(only(u, "P-15")).toEqual([]);
   });
 
   it("[P-8] bis [P-15] melden im Modus Einfach nicht", () => {
-    const t = withCfg("pvs", { ip: "999.1.1.1", mask: "x", gateway: "y" });
+    const t = withCfg("pc", { ip: "999.1.1.1", mask: "x", gateway: "y" });
     const pick = (mode: "simple" | "advanced") =>
       runChecks(t, mode, catalog).filter((f) => /^P-(8|9|1[0-5])$/.test(f.id));
     expect(pick("simple")).toEqual([]);

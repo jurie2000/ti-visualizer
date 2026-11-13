@@ -84,7 +84,7 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
   it("[G-3] ohne freien verträglichen Anschluss nennt die Meldung das Gerät", () => {
     const t = topo(
       [
-        ["p", "pvs"],
+        ["p", "pc"],
         ["s", "switch"],
         ["r", "router"],
       ],
@@ -95,7 +95,7 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
     expect(r.reason).toBe(
       msg("G-3").message.replace(
         "‹Gerät›",
-        catalog.deviceTypes.find((d) => d.id === "pvs")?.name ?? "",
+        catalog.deviceTypes.find((d) => d.id === "pc")?.name ?? "",
       ),
     );
   });
@@ -117,9 +117,9 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
   it("[G-3] ein genannter Anschluss muss existieren, frei und verträglich sein", () => {
     const t = topo(
       [
-        ["p", "pvs"],
+        ["p", "pc"],
         ["s", "switch"],
-        ["q", "pvs"],
+        ["q", "pc"],
       ],
       [["e1", "s", "p1", "q", "eth0"]],
     );
@@ -425,9 +425,9 @@ describe("autoPorts (A-3)", () => {
   it("[A-3] überspringt belegte Anschlüsse", () => {
     const t = topo(
       [
-        ["x", "pvs"],
+        ["x", "pc"],
         ["y", "switch"],
-        ["z", "pvs"],
+        ["z", "pc"],
       ],
       [["e1", "y", "p1", "z", "eth0"]],
     );
@@ -437,7 +437,7 @@ describe("autoPorts (A-3)", () => {
   it("[A-3] liefert nichts ohne freies Paar oder bekanntes Gerät", () => {
     const t = topo(
       [
-        ["x", "pvs"],
+        ["x", "pc"],
         ["y", "switch"],
         ["z", "switch"],
       ],
@@ -446,7 +446,7 @@ describe("autoPorts (A-3)", () => {
     expect(autoPorts(t, "x", "y", catalog)).toBeUndefined();
     expect(autoPorts(t, "x", "nix", catalog)).toBeUndefined();
     expect(autoPorts(t, "nix", "x", catalog)).toBeUndefined();
-    expect(autoPorts(pair("pvs", "vsdm"), "x", "y", catalog)).toBeUndefined();
+    expect(autoPorts(pair("pc", "vsdm"), "x", "y", catalog)).toBeUndefined();
   });
 
   it("[A-3] Konnektor-LAN ist mehrfach und bleibt wählbar", () => {
@@ -456,9 +456,9 @@ describe("autoPorts (A-3)", () => {
         ["y", "kon"],
         ["z", "kis"],
       ],
-      [["e1", "y", "lan", "z", "eth0"]],
+      [["e1", "y", "lan", "z", "app"]],
     );
-    expect(autoPorts(t, "x", "y", catalog)).toEqual({ a: "eth0", b: "lan" });
+    expect(autoPorts(t, "x", "y", catalog)).toEqual({ a: "app", b: "lan" });
   });
 });
 
@@ -467,7 +467,7 @@ describe("WLAN-Erkennung (A-4)", () => {
     [
       ["tab", "tab"],
       ["ap", "ap"],
-      ["pv", "pvs"],
+      ["pv", "pc"],
       ["s", "switch"],
     ],
     [

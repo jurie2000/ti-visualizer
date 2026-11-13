@@ -70,15 +70,15 @@ const rects = (
 const pos = (t: Topology, id: string) => center(t, id);
 
 describe("T-720a Sortieren (FR-16)", () => {
-  // Die Presets sind von Hand gesetzt. Das Mockup-Verfahren lässt Kanten übrig, die
+  // Die Presets sind seit T-724b mit „Sortieren“ angeordnet (Software und Rechner). Das Verfahren lässt Kanten übrig, die
   // nicht im Baum der Breitensuche liegen: timc1-tim1 (Gerät ohne Weg zur Wurzel
   // unten links, Fachdienst rechts) und im Klinikum die Querverbindungen zu kis1.
   // Orthogonale Führung (T-713b) und Anschlusspunkte (#106) sind nicht Teil von T-720a.
   it.each([
-    ["praxis", 0, 1],
+    ["praxis", 1, 1],
     ["apotheke", 0, 0],
-    ["krankenhaus", 0, 1],
-    ["klinikum", 12, 12],
+    ["krankenhaus", 1, 1],
+    ["klinikum", 7, 7],
   ])("T-720a Kreuzungen %s: vorher %i, nachher %i", (id, vorher, nachher) => {
     expect(crossings(preset(id))).toBe(vorher);
     expect(crossings(sorted(preset(id)))).toBe(nachher);

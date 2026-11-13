@@ -95,14 +95,18 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
     await weiter(page, "Willkommen", false);
 
     // Teil 1: Arztpraxis
-    await prüfe("Das Primärsystem", () => hinzufügen(page, /^PVS /));
+    await prüfe("PC und PVS", async () => {
+      await hinzufügen(page, /^PC /);
+      await hinzufügen(page, /^PVS /);
+      await verbinde(page, "pvs-1", "pc-1");
+    });
     await prüfe("Das Kartenterminal", () => hinzufügen(page, /^eHealth-KT /));
     await prüfe("Karten stecken", () =>
       stecke(page, "kt-1", ["SMC-B", "HBA", "eGK"]),
     );
     await prüfe("Das Praxisnetz", async () => {
       await hinzufügen(page, /^Switch /);
-      await verbinde(page, "pvs-1", "switch-1");
+      await verbinde(page, "pc-1", "switch-1");
       await verbinde(page, "kt-1", "switch-1");
     });
     await prüfe("Der Konnektor", async () => {
@@ -121,7 +125,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
         await verbinde(page, "vpn-1", d);
     });
     await prüfe("Dein erstes E-Rezept", () =>
-      spiele(page, "pvs-1", "E-Rezept ausstellen"),
+      spiele(page, "pc-1", "E-Rezept ausstellen"),
     );
     await weiter(page, "Praxis fertig", false);
 
@@ -130,14 +134,18 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
     await expect(page.locator(".react-flow__node-zone")).toContainText(
       "Apotheke am Markt",
     );
-    await prüfe("Eine Apotheke nebenan", () => hinzufügen(page, /^AVS /));
+    await prüfe("Eine Apotheke nebenan", async () => {
+      await hinzufügen(page, /^PC /);
+      await hinzufügen(page, /^AVS /);
+      await verbinde(page, "avs-1", "pc-2");
+    });
     await prüfe("Terminal der Apotheke", async () => {
       await hinzufügen(page, /^eHealth-KT /);
       await stecke(page, "kt-2", ["SMC-B", "eGK"]);
     });
     await prüfe("Netz der Apotheke", async () => {
       await hinzufügen(page, /^Switch /);
-      await verbinde(page, "avs-1", "switch-2");
+      await verbinde(page, "pc-2", "switch-2");
       await verbinde(page, "kt-2", "switch-2");
     });
     await prüfe("Eigener Konnektor", async () => {
@@ -151,17 +159,17 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
         .getByRole("group", { name: "Pairing mit" })
         .getByLabel("kon-2")
         .check();
-      // Reihenbetrieb: das Gateway des AVS ist die IP-Adresse des Konnektors (P-25)
+      // Reihenbetrieb: das Gateway des PCs ist die IP-Adresse des Konnektors (P-25)
       await gerät(page, "kon-2").focus();
       await page.keyboard.press("Enter");
       const ip = await page.getByLabel("IP-Adresse").inputValue();
-      await gerät(page, "avs-1").focus();
+      await gerät(page, "pc-2").focus();
       await page.keyboard.press("Enter");
       await page.getByLabel(/^Gateway/).fill(ip);
       await page.keyboard.press("Tab");
     });
     await prüfe("Rezept einlösen", () =>
-      spiele(page, "avs-1", "E-Rezept einlösen \\(eGK einlesen\\)"),
+      spiele(page, "pc-2", "E-Rezept einlösen \\(eGK einlesen\\)"),
     );
     await expect(
       karte(page).getByRole("heading", { name: "Geschafft" }),

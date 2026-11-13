@@ -49,13 +49,13 @@ describe("Modus (Regelwerk 11, D36)", () => {
 
   it("[A-3] Verbinden ohne Anschlüsse wählt im Modus Einfach das erste freie Paar", () => {
     const t = run("simple", [
-      { add: "pvs" },
+      { add: "pc" },
       { add: "switch" },
       { connect: [0, 1] },
     ]);
     expect(t.edges).toHaveLength(1);
     // erstes verträgliches Paar in Katalogreihenfolge
-    const pvs = catalog.deviceTypes.find((d) => d.id === "pvs");
-    expect(t.edges[0]?.ends[0].port).toBe(pvs?.ports[0]?.id);
+    const pc = catalog.deviceTypes.find((d) => d.id === "pc");
+    expect(t.edges[0]?.ends[0].port).toBe(pc?.ports[0]?.id);
   });
 });

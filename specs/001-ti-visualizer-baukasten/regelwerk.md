@@ -151,7 +151,8 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp` |
 | `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `hskon`, `gateway` |
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
-| `netConfig:client` | Einstellungen als ClientConfig | `pvs`, `kis`, `avs`, `pflege`, `pc`, `server`, `ris`, `lis`, `tab`, `kimcm` |
+| `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software; T-724b) | `pc`, `server`, `tab`, `kimcm` |
+| `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an (T-724b) | `pc`, `tab` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
@@ -174,6 +175,7 @@ für SICCT), siehe Abschnitt 3.
 | `tun` | VPN-Zugang (logisch) | bestätigt | Arch, gemSpec_VPN_ZugD |
 | `ti` | Anschluss am Zentralen Netz (logisch) | bestätigt | Arch |
 | `host` | Läuft auf (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
+| `app` | Anwendungsverbindung (logisch: Software mit Konnektor, Software mit Software, mobilem KT) | Vereinfachung | gemILF_PS |
 
 Karten haben keine Anschlüsse. Wie sie in Geräte kommen, regelt
 Abschnitt 5.
@@ -184,11 +186,11 @@ Abschnitt 5.
 
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
-| PVS, AVS, Pflege | Ethernet0, USB0, USB1, Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Mockup, plausibel; „Läuft auf“ Vereinfachung (T-724a) | gemILF_PS |
+| PVS, AVS, Pflege | Anwendung (`app`, mehrfach), Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Vereinfachung (T-724b: Software hat kein Ethernet, das Kabel hängt am Rechner) | gemILF_PS |
 | PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach) | Mockup, plausibel; „Software“ Vereinfachung (T-724a) | gemILF_PS |
 | Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
-| KIS | LAN0 bis LAN5, USB0 (für das mobile KT, ergänzt 2026-11-05) | Mockup, plausibel | KH, gemSpec_MobKT |
-| RIS, LIS | LAN0, LAN1 (KIS-Schnittstelle) | Mockup, plausibel | KH |
+| KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH, gemILF_PS |
+| RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
 | KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang) | Vereinfachung | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | WAN (Internet) | plausibel | gemSpec_TI-M_Basis |
@@ -214,6 +216,10 @@ Abschnitt 5.
   Vereinfachung)
 - **A-2** Zusätzlich erlaubt: `eth` mit `wan`, `wan` mit `net`, `tun` mit `net`.
   (Vereinfachung nach Arch)
+- **A-6** `app` passt zu `app`, `eth` und `usb` (T-724b). Das ist der logische
+  Kurzweg der Software, solange der Rechner im Modus Einfach ausgeblendet ist
+  (Software ↔ Konnektor, Software ↔ KIM-Clientmodul, Software ↔ mobiles KT,
+  RIS/LIS ↔ KIS). (Vereinfachung)
 - **A-3** Modus Einfach: Das System wählt das erste freie, verträgliche
   Anschlusspaar. Modus Erweitert: Der Nutzer wählt. (Mockup)
 - **A-4** Läuft eine Verbindung über `wifi`, ist sie eine
@@ -344,7 +350,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | eHealth-KT | Switch, Router-LAN | nein | bestätigt (KT im LAN) | gemSpec_KT, DVO |
 | eHealth-CardLink | Zugang | ja | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
 | eHealth-CardLink | Internet | nein | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
-| Mobiles KT | PVS, KIS, AVS, Pflege (USB, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
+| Mobiles KT | PVS, KIS, AVS, Pflege (logisch `app`; Kurzweg im Modus Einfach, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
 | Mobiles KT | PC (USB) | nein | bestätigt | gemSpec_MobKT |
 
 **Primärsysteme und Clients**
@@ -352,10 +358,9 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | ja | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
-| PVS, KIS, AVS, Pflege, PC, Server, RIS, LIS | Switch, Router-LAN | nein | plausibel (T-724a: Software direkt am Switch bis T-724b) | DVO |
+| PC, Server | Switch, Router-LAN | nein | plausibel | DVO |
 | PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server (läuft auf) | nein | Vereinfachung (T-724a) | gemILF_PS |
 | Visite-Tablet | Access Point, Router-WLAN | nein | plausibel | KH |
-| PC | KIS, PVS, AVS (als Arbeitsplatz) | nein | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
 | RIS, LIS | KIS (HL7-Schnittstelle) | nein | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | nein | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul | Zugang | nein | bestätigt | gemSpec_CM_KOMLE |
@@ -496,8 +501,8 @@ ausgegrauten Menüeintrag.
 ein Existenztest, Status `Vereinfachung` (Quellen nennen keine feste
 Verkabelung des KIM-Clientmoduls). (b) K-7 steht im Katalog als
 `{card: egk, pin: true}`, die Engine liest `pinActive` über `cardState`.
-(c) PC und Tablet erben die Aktionen der Primärsysteme (PVS, KIS, AVS), die
-sie direkt oder über Netzgeräte erreichen, ohne einen Weg über ein anderes
+(c) PC und Tablet erben die Aktionen der Software (PVS, KIS, AVS), die
+auf ihnen oder auf einem erreichbaren Server läuft (T-724b), ohne einen Weg über ein anderes
 Primärsystem. (d) Karten dürfen auf mehrere Terminals desselben Zugangs verteilt sein
 (Baustein „Karte X“); gilt das zugeordnete Terminal (P-29), zählt nur
 dieses. Steckt eine benötigte Karte in mehr als einem Terminal ohne
@@ -529,8 +534,17 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
 
-**Arbeitsplatz-PC und Visite-Tablet** bieten die Aktionen des
-Primärsystems an, an dem sie hängen (Arbeitsplatz im Infomodell,
+**Aktionen starten am Rechner (T-724b):** PC, Tablet und Server bieten die
+Aktionen der Software an, die auf ihnen läuft; ein Arbeitsplatz (PC, Tablet)
+auch die der Software auf einem erreichbaren Server (z. B. KIS). Die Software
+ist im Ablauf der Absender (Rolle `P`): Das Paket läuft von ihr über den
+Rechner und die Netzgeräte zum Zugang. Software mit Rechner bietet im Modus
+Erweitert selbst keine Aktionen an. Im Modus Einfach (Rechner
+ausgeblendet) und ohne Rechner startet die Software selbst. Quelle:
+gemILF_PS (Arbeitsplatz im Infomodell).
+
+**Arbeitsplatz-PC und Visite-Tablet** bieten die Aktionen der Software
+an, an der sie arbeiten (Arbeitsplatz im Infomodell,
 gemILF_PS). **RIS und LIS** bieten nur „Befund in die ePA hochladen“
 und „eArztbrief per KIM senden“ mit denselben Voraussetzungen (plausibel,
 KH).
@@ -755,7 +769,7 @@ mit Konfiguration wird geprüft.
 | P-26 | Parallelbetrieb: Gateway eines Clients ist nicht der Router | `mode`, `gateway` | Fehler | bestätigt | Betriebsarten |
 | P-27 | Parallelbetrieb: Client ohne Route 100.102.0.0/15 über den Zugang | `routeTI` | Fehler | bestätigt | gemILF_PS |
 | P-28 | DNS eines Clients ist nicht der Zugang | `dns` | Warnung | plausibel, wegen C_12389 neu zu prüfen | gemILF_PS |
-| P-29 | Arbeitsplatz eines Clients keinem Kartenterminal zugeordnet | `workplace` | Fehler | bestätigt | gemILF_PS |
+| P-29 | Arbeitsplatz eines Rechners (Fähigkeit `workplace`) keinem Kartenterminal zugeordnet | `workplace` | Fehler | bestätigt | gemILF_PS |
 | P-30 | Kartenterminal nicht gepairt, Karten darin sind unsichtbar | `paired` | Fehler | bestätigt | gemSpec_KT |
 
 **Geändert gegenüber dem Mockup:** P-16 (statt „Firmware älter als 5“),
@@ -866,10 +880,10 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 
 | Preset | Name im Mockup | Geräte | Karten | Abweichung vom Mockup |
 |---|---|---|---|---|
-| Arztpraxis | Arztpraxis Dr. Behrens | 1 PVS, 2 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
-| Apotheke | Apotheke am Markt | 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: IDP, **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
-| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B. KT 2: HBA | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1) |
-| Klinikum | Klinikum St. Anna | 1 KIS, 6 Arbeitsplatz-PCs, 1 Visite-Tablet, RIS, LIS, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | Router nicht direkt am VPN-Zugangsdienst: der Highspeed-Konnektor hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt |
+| Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS, 2 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
+| Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: IDP, **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
+| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B. KT 2: HBA | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1) |
+| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | Router nicht direkt am VPN-Zugangsdienst: der Highspeed-Konnektor hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt |
 
 Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.

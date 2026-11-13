@@ -46,7 +46,7 @@ beforeEach(() => {
     nodes: [
       ADD("kon", "kon-1", "<i>Zugang</i>"),
       ADD("kt", "kt-1"),
-      ADD("pvs", "pvs-1"),
+      ADD("pc", "pc-1"),
       ADD("router", "router-1"),
       ADD("switch", "switch-1"),
     ],
@@ -54,7 +54,7 @@ beforeEach(() => {
   for (const [i, id] of [
     "kon-1",
     "kt-1",
-    "pvs-1",
+    "pc-1",
     "router-1",
     "switch-1",
   ].entries())
@@ -65,7 +65,7 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
   it("[Regelwerk 8] jedes Feld kommt im Formular einer Variante vor, mit Standard-Hinweis", () => {
     const found = new Set<string>();
     render(<DetailPanel />);
-    for (const id of ["kon-1", "kt-1", "pvs-1", "router-1", "switch-1"]) {
+    for (const id of ["kon-1", "kt-1", "pc-1", "router-1", "switch-1"]) {
       open(id);
       for (const e of catalog.configDefaults)
         if (document.querySelector(`[id^="cfg-${id}-${e.field}"]`))
@@ -77,7 +77,7 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
 
   it("[Regelwerk 8] zeigt bei abgeleiteten Feldern die Standard-Beschreibung", () => {
     render(<DetailPanel />);
-    open("pvs-1");
+    open("pc-1");
     expect(
       screen.getByText("Standard: Reihe: Zugang. Parallel: Router"),
     ).toBeInTheDocument();
@@ -93,24 +93,24 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
   it("[Regelwerk 8] gültige IP wird beim Verlassen übernommen", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    open("pvs-1");
+    open("pc-1");
     const f = screen.getByLabelText("IP-Adresse");
     await user.clear(f);
     await user.type(f, "192.168.10.50");
     await user.tab();
-    expect(nodeOf("pvs-1")?.config?.ip).toBe("192.168.10.50");
+    expect(nodeOf("pc-1")?.config?.ip).toBe("192.168.10.50");
   });
 
   it("[Regelwerk 8] ungültige IP wird abgelehnt, Meldung nicht nur über Farbe, Eingabe bleibt", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    open("pvs-1");
-    const before = nodeOf("pvs-1")?.config?.ip;
+    open("pc-1");
+    const before = nodeOf("pc-1")?.config?.ip;
     const f = screen.getByLabelText("IP-Adresse");
     await user.clear(f);
     await user.type(f, "999.1.1.1");
     await user.tab();
-    expect(nodeOf("pvs-1")?.config?.ip).toBe(before);
+    expect(nodeOf("pc-1")?.config?.ip).toBe(before);
     expect(screen.getByRole("alert")).toHaveTextContent(/^Fehler: IP-Adresse/);
     expect(f).toHaveAttribute("aria-invalid", "true");
     expect(f).toHaveValue("999.1.1.1");
@@ -168,13 +168,13 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     expect(document.querySelector("label i")).toBeNull();
     const set = useTopology.getState().setConfig;
     expect(set("kt-1", { pairedWith: "weg" }).ok).toBe(false);
-    expect(set("kt-1", { pairedWith: "pvs-1" }).ok).toBe(false);
+    expect(set("kt-1", { pairedWith: "pc-1" }).ok).toBe(false);
   });
 
   it("[Regelwerk 8] setConfig verlangt IPv4 für ip, mask, gateway und dns", () => {
     for (const f of ["ip", "mask", "gateway", "dns"])
       for (const bad of ["999.1.1.1", "abc", "1.2.3", ""])
-        expect(useTopology.getState().setConfig("pvs-1", { [f]: bad }).ok).toBe(
+        expect(useTopology.getState().setConfig("pc-1", { [f]: bad }).ok).toBe(
           false,
         );
   });
@@ -193,16 +193,16 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
 
   it("[Regelwerk 8] setConfig lehnt fremde Felder und Geräte ohne Einstellungen ab", () => {
     const s = useTopology.getState();
-    expect(s.setConfig("pvs-1", { sis: true }).ok).toBe(false);
+    expect(s.setConfig("pc-1", { sis: true }).ok).toBe(false);
     expect(s.setConfig("gibt-es-nicht", { ip: "10.0.0.1" }).ok).toBe(false);
-    expect(nodeOf("pvs-1")?.config).not.toHaveProperty("sis");
+    expect(nodeOf("pc-1")?.config).not.toHaveProperty("sis");
   });
 
   it("[Regelwerk 8] ein Rückgängig-Schritt je Änderung, Formular folgt Rückgängig", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);
-    open("pvs-1");
-    const before = nodeOf("pvs-1")?.config?.vlan;
+    open("pc-1");
+    const before = nodeOf("pc-1")?.config?.vlan;
     const f = screen.getByLabelText("VLAN");
     await user.clear(f);
     await user.type(f, "Praxis");
@@ -212,14 +212,14 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
       useTopology.getState().undo();
     });
     expect(useTopology.getState().past.length).toBe(steps - 1);
-    expect(nodeOf("pvs-1")?.config?.vlan).toBe(before);
+    expect(nodeOf("pc-1")?.config?.vlan).toBe(before);
     expect(screen.getByLabelText("VLAN")).toHaveValue(before ?? "");
   });
 
   it("[Regelwerk 7] während der Simulation ist das Formular gesperrt", () => {
     useSim.setState({ sim: { ...IDLE, status: "running" } });
     render(<DetailPanel />);
-    open("pvs-1");
+    open("pc-1");
     expect(screen.getByLabelText("IP-Adresse")).toBeDisabled();
     expect(screen.getByText(/Simulation gesperrt/)).toBeInTheDocument();
   });

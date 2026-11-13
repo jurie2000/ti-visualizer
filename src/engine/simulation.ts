@@ -1,7 +1,8 @@
 import type { Catalog, Node, Topology } from "../schema";
-import { resolvePath, terminalFor, zugangOf } from "./paths";
+import { offers } from "./actions";
+import { resolvePath, softwareOn, terminalFor, zugangOf } from "./paths";
 
-type Cat = Pick<Catalog, "deviceTypes">;
+type Cat = Pick<Catalog, "deviceTypes" | "actions">;
 type Flow = Catalog["flows"][number];
 
 export interface BoundStep {
@@ -29,7 +30,7 @@ type Path = { nodes: string[]; edges: string[] };
 
 // Spiegelt die Ausnahmen in connection-rules.json (erl-mkt-ps, kim ↔ kk).
 const DIRECT: Record<string, string[]> = {
-  mkt: ["pvs", "kis", "avs", "pflege"],
+  mkt: ["pvs", "kis", "avs", "pflege", "pc"],
   kim: ["kk"],
 };
 
@@ -109,6 +110,7 @@ function roleBinder(
   topology: Topology,
   catalog: Cat,
   terminal: string | undefined,
+  flowId: string,
 ): (role: string) => string | undefined {
   const own = caps(catalog, trigger);
   const choice = terminalFor(topology, trigger.id, catalog);
@@ -145,7 +147,8 @@ function roleBinder(
   return (role) => {
     switch (role) {
       case "P":
-        return primary || trigger.id;
+        // Am Rechner ausgelöst: die Software darauf sendet (T-724b)
+        return primary || senderOn(trigger, topology, catalog, flowId);
       case "T":
         return term;
       case "K":
@@ -161,6 +164,22 @@ function roleBinder(
   };
 }
 
+/** Am Rechner ausgelöst: die Software darauf, die den Ablauf anbietet, sonst die erste (T-724b). */
+function senderOn(
+  trigger: Node,
+  topology: Topology,
+  catalog: Cat,
+  flowId: string,
+): string {
+  const software = softwareOn(topology, trigger.id, catalog);
+  const offered = catalog.actions.filter((a) => a.flow === flowId);
+  const sender =
+    software.find((s) =>
+      offered.some((a) => offers(a.offeredBy, catalog, s.node.type)),
+    ) ?? software[0];
+  return sender?.node.id ?? trigger.id;
+}
+
 /**
  * Schritte eines Ablaufs auf die Topologie gebunden (FR-8, Regelwerk 7).
  * Rollen folgen dem Pfad vom Auslöser (Regelwerk 7 „Rollenbindung“); was kein
@@ -174,7 +193,7 @@ export function bindFlow(
   catalog: Cat,
   terminal?: string,
 ): BoundStep[] {
-  const bind = roleBinder(trigger, topology, catalog, terminal);
+  const bind = roleBinder(trigger, topology, catalog, terminal, flow.id);
   const choosing =
     !terminal && terminalFor(topology, trigger.id, catalog).status === "choose";
   return flow.steps.map((s) => {

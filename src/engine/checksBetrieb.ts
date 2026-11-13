@@ -254,7 +254,7 @@ export const BETRIEB: Record<string, Rule> = {
     return terminals.length === 0
       ? []
       : t.nodes
-          .filter((n) => has(c, n, "netConfig:client") && !plaetze.has(wp(n)))
+          .filter((n) => has(c, n, "workplace") && !plaetze.has(wp(n)))
           .map((n) => ({ subject: n.id, nodes: [n.id] }));
   },
 

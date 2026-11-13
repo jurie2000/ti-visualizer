@@ -41,7 +41,9 @@ describe("FR-20 Erledigt-Prüfung der Tutorial-Schritte", () => {
   it("Schritt ohne Aufgabe gilt als erledigt, leere Fläche nicht für Aufgaben", () => {
     expect(stepDone("willkommen", ctx([]))).toBe(true);
     expect(stepDone("primaersystem", ctx([]))).toBe(false);
-    expect(stepDone("primaersystem", ctx([node("a", "pvs")]))).toBe(true);
+    const nodes = [node("a", "pvs"), node("c", "pc")];
+    expect(stepDone("primaersystem", ctx(nodes))).toBe(false);
+    expect(stepDone("primaersystem", ctx(nodes, [edge("a", "c")]))).toBe(true);
   });
 
   it("verlangt alle drei Karten im Terminal der Praxis", () => {
@@ -52,7 +54,7 @@ describe("FR-20 Erledigt-Prüfung der Tutorial-Schritte", () => {
   });
 
   it("verlangt die Verbindung zum richtigen Gerätetyp, in beliebiger Richtung", () => {
-    const nodes = [node("p", "pvs"), node("k", "kt"), node("s", "switch")];
+    const nodes = [node("p", "pc"), node("k", "kt"), node("s", "switch")];
     expect(stepDone("praxisnetz", ctx(nodes, [edge("p", "s")]))).toBe(false);
     expect(
       stepDone("praxisnetz", ctx(nodes, [edge("p", "s"), edge("s", "k")])),
@@ -69,17 +71,27 @@ describe("FR-20 Erledigt-Prüfung der Tutorial-Schritte", () => {
   });
 
   it("Teil 2 zählt nur Geräte im Bereich der Apotheke, Teil 1 nur außerhalb", () => {
-    const nodes = [node("a", "avs"), node("p", "pvs")];
-    expect(stepDone("apotheke-nebenan", ctx(nodes))).toBe(false);
-    expect(stepDone("apotheke-nebenan", ctx(nodes, [], ["a"]))).toBe(true);
-    expect(stepDone("primaersystem", ctx(nodes, [], ["p"]))).toBe(false);
+    const nodes = [
+      node("a", "avs"),
+      node("c", "pc"),
+      node("p", "pvs"),
+      node("d", "pc"),
+    ];
+    const edges = [edge("a", "c"), edge("p", "d")];
+    expect(stepDone("apotheke-nebenan", ctx(nodes, edges))).toBe(false);
+    expect(stepDone("apotheke-nebenan", ctx(nodes, edges, ["a", "c"]))).toBe(
+      true,
+    );
+    expect(stepDone("primaersystem", ctx(nodes, edges, ["p", "d"]))).toBe(
+      false,
+    );
   });
 
-  it("Apotheken-Konnektor: Verbindungen, Pairing des Terminals und Gateway des AVS (P-25)", () => {
+  it("Apotheken-Konnektor: Verbindungen, Pairing des Terminals und Gateway des PCs (P-25)", () => {
     const kt = (pairedWith?: string) =>
       node("t", "kt", { config: pairedWith ? { pairedWith } : {} });
     const avs = (gateway?: string) =>
-      node("a", "avs", { config: gateway ? { gateway } : {} });
+      node("a", "pc", { config: gateway ? { gateway } : {} });
     const base = [
       node("s", "switch"),
       node("k", "kon", { config: { ip: "192.168.10.16" } }),

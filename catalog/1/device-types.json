@@ -8,31 +8,15 @@
     "icon": "screen",
     "visibleSimple": true,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "Ethernet0",
-        "kind": "eth",
-        "multi": false,
+        "id": "app",
+        "name": "Anwendung",
+        "kind": "app",
+        "multi": true,
         "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb0",
-        "name": "USB0",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb1",
-        "name": "USB1",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -55,63 +39,15 @@
     "icon": "server",
     "visibleSimple": true,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "LAN0",
-        "kind": "eth",
-        "multi": false,
+        "id": "app",
+        "name": "Anwendung",
+        "kind": "app",
+        "multi": true,
         "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth1",
-        "name": "LAN1",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth2",
-        "name": "LAN2",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth3",
-        "name": "LAN3",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth4",
-        "name": "LAN4",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth5",
-        "name": "LAN5",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb0",
-        "name": "USB0",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemSpec_MobKT"],
-        "status": "plausibel"
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -134,31 +70,15 @@
     "icon": "screen",
     "visibleSimple": true,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "Ethernet0",
-        "kind": "eth",
-        "multi": false,
+        "id": "app",
+        "name": "Anwendung",
+        "kind": "app",
+        "multi": true,
         "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb0",
-        "name": "USB0",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb1",
-        "name": "USB1",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -180,31 +100,15 @@
     "icon": "screen",
     "visibleSimple": true,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "Ethernet0",
-        "kind": "eth",
-        "multi": false,
+        "id": "app",
+        "name": "Anwendung",
+        "kind": "app",
+        "multi": true,
         "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb0",
-        "name": "USB0",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
-      },
-      {
-        "id": "usb1",
-        "name": "USB1",
-        "kind": "usb",
-        "multi": false,
-        "source": ["gemILF_PS"],
-        "status": "plausibel"
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -227,23 +131,15 @@
     "icon": "scan",
     "visibleSimple": false,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "LAN0",
-        "kind": "eth",
+        "id": "app",
+        "name": "KIS-Schnittstelle",
+        "kind": "app",
         "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth1",
-        "name": "LAN1 · KIS-Schnittstelle",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -266,23 +162,15 @@
     "icon": "flask",
     "visibleSimple": false,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": [],
     "ports": [
       {
-        "id": "eth0",
-        "name": "LAN0",
-        "kind": "eth",
+        "id": "app",
+        "name": "KIS-Schnittstelle",
+        "kind": "app",
         "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
-      },
-      {
-        "id": "eth1",
-        "name": "LAN1 · KIS-Schnittstelle",
-        "kind": "eth",
-        "multi": false,
-        "source": ["KH"],
-        "status": "plausibel"
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       },
       {
         "id": "host",
@@ -300,12 +188,12 @@
     "id": "pc",
     "abbr": "PC",
     "name": "Arbeitsplatz-PC",
-    "description": "Der Arbeitsplatz-PC ist der Rechner, auf dem die Software läuft (PVS, AVS, Pflege). Er hängt per Ethernet am Switch. Die Daten liegen je nach Einrichtung lokal oder auf einem Server.",
+    "description": "Der Arbeitsplatz-PC ist der Rechner, auf dem Software läuft (PVS, AVS, Pflege). Er hängt per Ethernet am Switch. Bei zentraler Software (KIS) ist er nur die Oberfläche.",
     "category": "computer",
     "icon": "screen",
     "visibleSimple": false,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": ["netConfig:client", "workplace"],
     "ports": [
       {
         "id": "eth0",
@@ -391,7 +279,7 @@
     "icon": "tablet",
     "visibleSimple": false,
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": ["netConfig:client", "workplace"],
     "ports": [
       {
         "id": "wlan0",

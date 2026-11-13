@@ -20,13 +20,20 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
 
   it("Anschlussarten sind genau die aus Regelwerk 2.1", () => {
     expect([...kinds].sort()).toEqual(
-      ["eth", "host", "net", "ti", "tun", "usb", "wan", "wifi"].sort(),
+      ["app", "eth", "host", "net", "ti", "tun", "usb", "wan", "wifi"].sort(),
     );
   });
 
   it("[A-1] gleiche Anschlussarten passen zusammen, außer wan mit wan", () => {
     for (const k of kinds)
       expect(compatible(k, k), `${k}/${k}`).toBe(k !== "wan");
+  });
+
+  it("[A-6] Anwendungsverbindung passt zu eth, usb und app, in beide Richtungen", () => {
+    for (const b of ["eth", "usb", "app"] as const) {
+      expect(compatible("app", b), `app/${b}`).toBe(true);
+      expect(compatible(b, "app"), `${b}/app`).toBe(true);
+    }
   });
 
   it("[A-2] zusätzlich erlaubt: eth-wan, wan-net, tun-net, in beide Richtungen", () => {
@@ -40,8 +47,14 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
     }
   });
 
-  it("[A-1][A-2] alle übrigen Paare unterschiedlicher Arten sind unverträglich", () => {
-    const allowed = new Set(["eth-wan", "net-wan", "net-tun"]);
+  it("[A-1][A-2][A-6] alle übrigen Paare unterschiedlicher Arten sind unverträglich", () => {
+    const allowed = new Set([
+      "eth-wan",
+      "net-wan",
+      "net-tun",
+      "app-eth",
+      "app-usb",
+    ]);
     for (const a of kinds)
       for (const b of kinds)
         if (a !== b)
@@ -78,19 +91,9 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
     expect(owners("netConfig:router")).toEqual(["router"]);
     expect(owners("netConfig:infra")).toEqual(["ap", "fw", "switch"]);
     expect(owners("netConfig:client")).toEqual(
-      [
-        "avs",
-        "kimcm",
-        "kis",
-        "lis",
-        "pc",
-        "pflege",
-        "pvs",
-        "ris",
-        "server",
-        "tab",
-      ].sort(),
+      ["kimcm", "pc", "server", "tab"].sort(),
     );
+    expect(owners("workplace")).toEqual(["pc", "tab"]);
   });
 });
 

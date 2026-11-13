@@ -47,6 +47,12 @@
       "name": "Läuft auf (logisch)",
       "source": ["gemILF_PS"],
       "status": "Vereinfachung"
+    },
+    {
+      "id": "app",
+      "name": "Anwendungsverbindung (logisch)",
+      "source": ["gemILF_PS"],
+      "status": "Vereinfachung"
     }
   ],
   "compatible": [
@@ -107,6 +113,24 @@
     {
       "a": "host",
       "b": "host",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "app",
+      "b": "app",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "app",
+      "b": "eth",
+      "source": ["editor"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "app",
+      "b": "usb",
       "source": ["editor"],
       "status": "Vereinfachung"
     }

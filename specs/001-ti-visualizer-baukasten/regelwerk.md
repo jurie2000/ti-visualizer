@@ -56,7 +56,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 | `lis` | Labor-Informationssystem | plausibel (Subsystem im Krankenhaus) | KH |
 | `pc` | Arbeitsplatz-PC | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
 | `server` | Server, neu | plausibel | gemILF_PS, DVO |
-| `cloud` | Cloud-Server (SaaS), neu | Vereinfachung | gemILF_PS |
+| `cloud` | Cloud-Server (SaaS), neu | Vereinfachung | gemILF_PS, CGM_ManagedTI, Concat_TIaaS |
 | `tab` | Visite-Tablet (KIS-Client per WLAN) | plausibel | gemILF_PS, KH |
 | `kimcm` | KIM-Clientmodul, neu | bestätigt | gemSpec_CM_KOMLE |
 | `timc` | TI-Messenger-Client, neu | bestätigt | gemSpec_TI-M_Basis |
@@ -152,6 +152,7 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
 | `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software; T-724b) | `pc`, `server`, `tab`, `kimcm` |
 | `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an (T-724b) | `pc`, `tab` |
+| `trigger` | startet die Aktionen der Software, die auf ihm läuft (T-724c; der Cloud-Server hat sie nicht) | `pc`, `server`, `tab` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
@@ -174,7 +175,7 @@ für SICCT), siehe Abschnitt 3.
 | `tun` | VPN-Zugang (logisch) | bestätigt | Arch, gemSpec_VPN_ZugD |
 | `ti` | Anschluss am Zentralen Netz (logisch) | bestätigt | Arch |
 | `host` | Läuft auf (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
-| `web` | Zugriff über das Internet (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
+| `web` | Zugriff über das Internet (logisch, kein Kabel) | Vereinfachung | gemILF_PS, CGM_ManagedTI, Concat_TIaaS |
 | `app` | Anwendungsverbindung (logisch: Software mit Konnektor, Software mit Software, mobilem KT) | Vereinfachung | gemILF_PS |
 
 Karten haben keine Anschlüsse. Wie sie in Geräte kommen, regelt

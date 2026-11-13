@@ -105,6 +105,7 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
       ["kimcm", "pc", "server", "tab"].sort(),
     );
     expect(owners("workplace")).toEqual(["pc", "tab"]);
+    expect(owners("trigger")).toEqual(["pc", "server", "tab"]);
   });
 });
 

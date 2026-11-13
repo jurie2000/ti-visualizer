@@ -250,6 +250,9 @@ export function availableActions(
     category !== "computer"
   )
     return [];
+  // Rechner ohne Fähigkeit `trigger` (Cloud-Server) lösen nichts aus: der PC startet (T-724c).
+  if (category === "computer" && !caps(catalog, node).includes("trigger"))
+    return [];
   const types =
     category === "computer"
       ? [

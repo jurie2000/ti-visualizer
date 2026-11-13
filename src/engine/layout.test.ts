@@ -148,6 +148,7 @@ describe("T-720a Sortieren (FR-16)", () => {
       ...emptyOf(),
       nodes: ["w", "a", "b"].map((id, i) => ({
         id,
+        // Server statt PC: gleich hohe Kachel wie der VPN-Zugang (der PC hat seit T-724c fünf Anschlüsse)
         type: id === "w" ? "vpn" : "server",
         fault: false,
         position: { x: i * 10, y: 0 },

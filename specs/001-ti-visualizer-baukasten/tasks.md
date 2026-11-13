@@ -1133,8 +1133,10 @@ Sicherheitsprüfung.
     der Cloud-Software über den PC und den Switch zum Konnektor. Die Kante
     zeigt die Verbindungsart „Internet“.
   - Fertig, wenn: Tests (Name mit T-724c) prüfen Verbinden und Ablehnen
-    (Cloud-Server nicht am Switch, nicht an Fachdiensten), Aktionen am PC,
-    Ablauf mit Cloud-Software als Absender und die Verbindungsart.
+    (Cloud-Server nicht am Switch, V-4 mit Begründung), Aktionen am PC (der
+    Cloud-Server startet selbst keine), Ablauf mit Cloud-Software als Absender
+    und die Verbindungsart. Preset und Tutorial-Hinweis zu SaaS entfallen in
+    diesem Task; bei Bedarf ein eigener Folge-Task.
   - Auslegung (2026-11-13): Die gematik spezifiziert Primärsysteme nicht,
     TI-as-a-Service-Anbieter binden Cloud-Primärsysteme über ein Rechenzentrum
     an (quellen.md Abschnitt 7, nicht gematik). Das Modell vereinfacht: Die

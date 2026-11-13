@@ -377,7 +377,7 @@
       "a": ["web"],
       "b": ["web"]
     },
-    "source": ["gemILF_PS"],
+    "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
     "status": "Vereinfachung"
   }
 ]

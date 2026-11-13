@@ -57,7 +57,7 @@
     {
       "id": "web",
       "name": "Zugriff über das Internet (logisch)",
-      "source": ["gemILF_PS"],
+      "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
       "status": "Vereinfachung"
     }
   ],

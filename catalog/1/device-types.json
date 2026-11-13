@@ -186,7 +186,7 @@
     "category": "computer",
     "icon": "screen",
     "placeable": true,
-    "capabilities": ["netConfig:client", "workplace"],
+    "capabilities": ["netConfig:client", "workplace", "trigger"],
     "ports": [
       {
         "id": "eth0",
@@ -225,7 +225,7 @@
         "name": "Internet-Zugriff",
         "kind": "web",
         "multi": true,
-        "source": ["gemILF_PS"],
+        "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
         "status": "Vereinfachung"
       }
     ],
@@ -240,7 +240,7 @@
     "category": "computer",
     "icon": "server",
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": ["netConfig:client", "trigger"],
     "ports": [
       {
         "id": "eth0",
@@ -285,7 +285,7 @@
         "name": "Internet-Zugriff",
         "kind": "web",
         "multi": true,
-        "source": ["gemILF_PS"],
+        "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
         "status": "Vereinfachung"
       },
       {
@@ -297,7 +297,7 @@
         "status": "Vereinfachung"
       }
     ],
-    "source": ["gemILF_PS"],
+    "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
     "status": "Vereinfachung"
   },
   {
@@ -308,7 +308,7 @@
     "category": "computer",
     "icon": "tablet",
     "placeable": true,
-    "capabilities": ["netConfig:client", "workplace"],
+    "capabilities": ["netConfig:client", "workplace", "trigger"],
     "ports": [
       {
         "id": "wlan0",

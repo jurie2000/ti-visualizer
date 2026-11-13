@@ -211,6 +211,20 @@ describe("T-724c Software als Dienst (SaaS)", () => {
     expect(check(t, ["cloud1", "web"], ["erp1", "ti"]).ok).toBe(false);
   });
 
+  it("[V-4] T-724c: Ein Cloud-Server direkt an einem Fachdienst wird mit der Begründung abgelehnt", () => {
+    const r = check(saas(), ["cloud1", "web"], ["erp1", "ti"]);
+    expect(r.ok).toBe(false);
+    expect(r.ruleId).toBe("V-4");
+  });
+
+  it("T-724c: Der Cloud-Server startet selbst keine Aktion, der PC schon", () => {
+    expect(actionsOf(saas(), "cloud1", "advanced")).toEqual([]);
+    expect(actionsOf(saas(), "cloud1", "simple")).toEqual([]);
+    expect(actionsOf(saas(), "pc1", "advanced")).toContain(
+      "erezept-ausstellen",
+    );
+  });
+
   it("T-724c: Der PC erbt die Aktionen der Software auf dem Cloud-Server", () => {
     expect(actionsOf(saas(), "pc1", "advanced")).toContain(
       "erezept-ausstellen",

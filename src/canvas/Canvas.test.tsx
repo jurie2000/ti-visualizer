@@ -45,6 +45,33 @@ beforeEach(() => {
 });
 
 describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
+  it("T-726: Zwei-Finger-Scrollen verschiebt, Strg+Rad (Pinch) zoomt", async () => {
+    render(<Canvas />, { wrapper });
+    const pane = document.querySelector(".react-flow__pane") as HTMLElement;
+    const viewport = document.querySelector(
+      ".react-flow__viewport",
+    ) as HTMLElement;
+    const read = () => viewport.style.transform;
+    await waitFor(() => {
+      expect(read()).toContain("scale");
+    });
+    const start = read();
+    fireEvent.wheel(pane, { deltaY: 40 });
+    await waitFor(() => {
+      expect(read()).not.toBe(start);
+    });
+    expect(read().match(/scale\(([^)]*)\)/)?.[1]).toBe(
+      start.match(/scale\(([^)]*)\)/)?.[1],
+    );
+    const panned = read();
+    fireEvent.wheel(pane, { deltaY: -40, ctrlKey: true });
+    await waitFor(() => {
+      expect(read().match(/scale\(([^)]*)\)/)?.[1]).not.toBe(
+        panned.match(/scale\(([^)]*)\)/)?.[1],
+      );
+    });
+  });
+
   it("zeigt alle Geräte mit Rolle und Label", () => {
     render(<Canvas />, { wrapper });
     const devices = document.querySelectorAll(".react-flow__node");

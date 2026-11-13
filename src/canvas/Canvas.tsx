@@ -305,6 +305,7 @@ export function Canvas() {
         onDrop={onDrop}
         deleteKeyCode={null}
         fitView
+        panOnScroll
         minZoom={0.2}
         maxZoom={2}
         ariaLabelConfig={ariaLabelConfig}

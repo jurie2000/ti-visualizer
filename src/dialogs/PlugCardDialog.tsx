@@ -1,4 +1,4 @@
-import { CreditCard, KeyRound } from "lucide-react";
+import { Check, Circle, CreditCard, KeyRound } from "lucide-react";
 import { useState, type SyntheticEvent } from "react";
 import { CARD_NAMES } from "../canvas/CardChip";
 import type { CardKind } from "../engine/cards";
@@ -133,6 +133,11 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
               setPin(e.target.checked);
             }}
           />
+          {pin ? (
+            <Check size={16} aria-hidden="true" />
+          ) : (
+            <Circle size={16} aria-hidden="true" />
+          )}
           {kind === "egk" ? "PIN aktiv" : "per PIN freigeschaltet"}
         </label>
       )}

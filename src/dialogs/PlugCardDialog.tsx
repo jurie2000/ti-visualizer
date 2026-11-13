@@ -86,8 +86,9 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   return (
     <form className="tiv-plug" onSubmit={submit}>
       <p className="tiv-plug__lead">
-        Wähle die Karte, ihr Ablaufdatum und den PIN-Status. Nach dem Stecken
-        steckt die Karte im Terminal.
+        {nfcOnly
+          ? "Wähle die Karte und ihr Ablaufdatum."
+          : "Wähle die Karte, ihr Ablaufdatum und den PIN-Status. Nach dem Stecken steckt die Karte im Terminal."}
       </p>
       <fieldset className="tiv-plug__kinds">
         <legend>Kartenart</legend>

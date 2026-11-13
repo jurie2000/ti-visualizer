@@ -2,7 +2,17 @@
   {
     "id": "V-4",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "tab",
+        "ris",
+        "lis",
+        "server"
+      ]
     },
     "b": {
       "types": [
@@ -39,18 +49,38 @@
   {
     "id": "V-6",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "tab",
+        "ris",
+        "lis",
+        "server"
+      ]
     },
     "b": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "tab",
+        "ris",
+        "lis",
+        "server"
+      ]
     },
     "except": [
       {
         "a": {
-          "types": ["pc"]
+          "types": ["pc", "server"]
         },
         "b": {
-          "types": ["kis", "pvs", "avs"]
+          "types": ["kis", "pvs", "avs", "pflege", "ris", "lis"]
         }
       },
       {

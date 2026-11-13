@@ -60,7 +60,7 @@ export function collapseHidden(
   );
   const isEndDevice = (id: string) => {
     const c = endCategory.get(typeOf.get(id) ?? "");
-    return c === "primary" || c === "terminal";
+    return c === "primary" || c === "computer" || c === "terminal";
   };
   const ruleConnects = (x: string, y: string) =>
     catalog.connectionRules.some((r) => {

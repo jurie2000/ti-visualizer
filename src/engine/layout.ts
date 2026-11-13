@@ -14,6 +14,7 @@ const RANK: Record<string, number> = {
   network: 0,
   lan: 1,
   primary: 2,
+  computer: 2,
   terminal: 3,
   card: 4,
 };

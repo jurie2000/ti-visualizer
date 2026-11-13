@@ -46,6 +46,7 @@ const BG = ["--color-bg", "--color-surface"];
 const PANEL = "--color-neutral-100";
 const cats = [
   "primary",
+  "computer",
   "card",
   "terminal",
   "lan",
@@ -54,7 +55,7 @@ const cats = [
   "central",
   "insured",
 ].map((c) => `--tiv-cat-${c}`);
-const edges = ["phys", "nfc", "tcp", "vpn", "wlan", "inet"].map(
+const edges = ["phys", "nfc", "tcp", "vpn", "wlan", "inet", "host"].map(
   (e) => `--tiv-edge-${e}`,
 );
 

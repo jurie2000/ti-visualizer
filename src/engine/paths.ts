@@ -47,7 +47,9 @@ function roleOf(node: Node, catalog: Catalogue): Role {
   if (t.capabilities.includes("zugang")) return "zugang";
   if (t.id === "internet" || t.id === "vpn" || t.id === "zentral") return t.id;
   if (t.category === "lan") return "net";
-  return t.category === "primary" ? "local" : "end";
+  return t.category === "primary" || t.category === "computer"
+    ? "local"
+    : "end";
 }
 
 /** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz (Vereinfachung, nicht im Regelwerk 6.0). */

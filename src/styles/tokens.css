@@ -74,6 +74,8 @@
 
   /* Kategorien (CAT): Farbe + Form. Form nie nur über Farbe. */
   --tiv-cat-primary: #0072b2;
+  --tiv-cat-computer: #4f5d73;
+  --tiv-cat-computer-shape: box;
   --tiv-cat-primary-shape: round;
   --tiv-cat-card: #a66a00;
   --tiv-card-fg: #5c3d00;
@@ -115,6 +117,9 @@
   --tiv-edge-inet: #7b7263;
   --tiv-edge-inet-width: 2.2;
   --tiv-edge-inet-dash: 12 4 2 4;
+  --tiv-edge-host: #6e6556;
+  --tiv-edge-host-width: 2.2;
+  --tiv-edge-host-dash: 1 4;
   /* Sammelkante (Modus Einfach): doppelte Linie aus Farbe und hellem Kern */
   --tiv-edge-sammel: #6a4c93;
   --tiv-edge-sammel-width: 7;
@@ -179,6 +184,7 @@
     --tiv-warn-bd: #d9a441;
     --tiv-warn-bg: #3a2e15;
     --tiv-cat-primary: #63bdf2;
+    --tiv-cat-computer: #aab7cc;
     --tiv-cat-card: #f0b84a;
     --tiv-card-fg: #f0c88a;
     --tiv-cat-terminal: #e79cc4;
@@ -193,6 +199,7 @@
     --tiv-edge-vpn: #44d7ac;
     --tiv-edge-wlan: #b6c77a;
     --tiv-edge-inet: #a79e8e;
+    --tiv-edge-host: #b8afa0;
     --tiv-edge-sammel: #b9a2e0;
     --shadow-sm: 0 0 0 1px #413c34;
     --shadow-md: 0 3px 10px #0006;
@@ -238,6 +245,7 @@
   --tiv-warn-bd: #d9a441;
   --tiv-warn-bg: #3a2e15;
   --tiv-cat-primary: #63bdf2;
+  --tiv-cat-computer: #aab7cc;
   --tiv-cat-card: #f0b84a;
   --tiv-card-fg: #f0c88a;
   --tiv-cat-terminal: #e79cc4;
@@ -252,6 +260,7 @@
   --tiv-edge-vpn: #44d7ac;
   --tiv-edge-wlan: #b6c77a;
   --tiv-edge-inet: #a79e8e;
+  --tiv-edge-host: #b8afa0;
   --tiv-edge-sammel: #b9a2e0;
   --shadow-sm: 0 0 0 1px #413c34;
   --shadow-md: 0 3px 10px #0006;

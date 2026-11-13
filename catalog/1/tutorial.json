@@ -48,7 +48,7 @@
       "text": "Jede Praxis arbeitet mit einem Praxisverwaltungssystem (PVS). Es löst alle TI-Vorgänge aus, spricht aber nie selbst mit einem Fachdienst.",
       "story": "Frau Hoffmann, einmal die Karte bitte! Moment — erst mal muss mein PVS hochfahren. Ohne das bin ich hier nur die Dame mit dem Kaffeebecher.",
       "persona": "jana",
-      "task": "Setze ein PVS aus „Primärsysteme“ auf die Canvas.",
+      "task": "Setze ein PVS aus „Software“ auf die Canvas.",
       "devices": ["pvs"],
       "source": ["gemILF_PS"],
       "status": "Vereinfachung"

@@ -44,7 +44,9 @@ sichtbar: nein“ heißt: Das Gerät wird im Modus Einfach ausgeblendet und
 seine Verbindungen werden zu Sammelkanten zusammengefasst. In der Palette
 des Modus Einfach fehlt es. „neu“ = nicht im Mockup.
 
-### 1.1 Primärsysteme und Clients
+### 1.1 Software, Rechner und Clients
+
+**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung).
 
 | Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
@@ -55,6 +57,7 @@ des Modus Einfach fehlt es. „neu“ = nicht im Mockup.
 | `ris` | Radiologie-Informationssystem | nein | plausibel (Subsystem im Krankenhaus) | KH |
 | `lis` | Labor-Informationssystem | nein | plausibel (Subsystem im Krankenhaus) | KH |
 | `pc` | Arbeitsplatz-PC | nein | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
+| `server` | Server, neu | nein | plausibel | gemILF_PS, DVO |
 | `tab` | Visite-Tablet (KIS-Client per WLAN) | nein | plausibel | gemILF_PS, KH |
 | `kimcm` | KIM-Clientmodul, neu | nein | bestätigt | gemSpec_CM_KOMLE |
 | `timc` | TI-Messenger-Client, neu | ja | bestätigt | gemSpec_TI-M_Basis |
@@ -148,7 +151,7 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp` |
 | `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `hskon`, `gateway` |
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
-| `netConfig:client` | Einstellungen als ClientConfig | `pvs`, `kis`, `avs`, `pflege`, `pc`, `ris`, `lis`, `tab`, `kimcm` |
+| `netConfig:client` | Einstellungen als ClientConfig | `pvs`, `kis`, `avs`, `pflege`, `pc`, `server`, `ris`, `lis`, `tab`, `kimcm` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
@@ -170,6 +173,7 @@ für SICCT), siehe Abschnitt 3.
 | `net` | Anschluss an ein Netz (Internet, Zentrales Netz) | Vereinfachung | Arch |
 | `tun` | VPN-Zugang (logisch) | bestätigt | Arch, gemSpec_VPN_ZugD |
 | `ti` | Anschluss am Zentralen Netz (logisch) | bestätigt | Arch |
+| `host` | Läuft auf (logisch, kein Kabel) | Vereinfachung | gemILF_PS |
 
 Karten haben keine Anschlüsse. Wie sie in Geräte kommen, regelt
 Abschnitt 5.
@@ -180,7 +184,9 @@ Abschnitt 5.
 
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
-| PVS, AVS, Pflege, PC | Ethernet0, USB0, USB1 | Mockup, plausibel | gemILF_PS |
+| PVS, AVS, Pflege | Ethernet0, USB0, USB1, Läuft auf (`host`) | Mockup, plausibel; „Läuft auf“ Vereinfachung (T-724a) | gemILF_PS |
+| PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach) | Mockup, plausibel; „Software“ Vereinfachung (T-724a) | gemILF_PS |
+| Server | Ethernet0, Ethernet1, USB0, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
 | KIS | LAN0 bis LAN5, USB0 (für das mobile KT, ergänzt 2026-11-05) | Mockup, plausibel | KH, gemSpec_MobKT |
 | RIS, LIS | LAN0, LAN1 (KIS-Schnittstelle) | Mockup, plausibel | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
@@ -226,12 +232,14 @@ Abschnitt 5.
 | `wlan` | WLAN | Funk im lokalen Netz | kurz gestrichelt |
 | `inet` | Internet | offenes Netz | Strich-Punkt |
 | `usb` | USB | lokale Kabelverbindung, z. B. Mobiles KT | durchgezogen, dick |
+| `host` | Läuft auf | Software läuft auf einem Rechner, kein Kabel | gepunktet, dünn |
 | `sammel` | Sammelkante | nur im Modus Einfach: fasst einen Weg über ausgeblendete Geräte zusammen (Abschnitt 11) | durchgezogen, doppelt |
 
 Zuordnung einer Kante zur Art, in dieser Reihenfolge (aus den
 Anschlussarten der beiden Enden und der Protokolltabelle unten, keine
 eigene Regel-ID):
 
+0. beide Enden `host`: `host`
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
 3. ein Ende `net`: `inet`
@@ -337,14 +345,15 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | eHealth-CardLink | Zugang | ja | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
 | eHealth-CardLink | Internet | nein | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
 | Mobiles KT | PVS, KIS, AVS, Pflege (USB, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
-| Mobiles KT | PC (USB) | nein | bestätigt | gemSpec_MobKT |
+| Mobiles KT | PC, Server (USB) | nein | bestätigt | gemSpec_MobKT |
 
 **Primärsysteme und Clients**
 
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | ja | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
-| PVS, KIS, AVS, Pflege, PC, RIS, LIS | Switch, Router-LAN | nein | plausibel | DVO |
+| PVS, KIS, AVS, Pflege, PC, Server, RIS, LIS | Switch, Router-LAN | nein | plausibel (T-724a: Software direkt am Switch bis T-724b) | DVO |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server (läuft auf) | nein | Vereinfachung (T-724a) | gemILF_PS |
 | Visite-Tablet | Access Point, Router-WLAN | nein | plausibel | KH |
 | PC | KIS, PVS, AVS (als Arbeitsplatz) | nein | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
 | RIS, LIS | KIS (HL7-Schnittstelle) | nein | plausibel | KH |
@@ -393,7 +402,7 @@ und K-6 in Abschnitt 5.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
 | V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
 | V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |

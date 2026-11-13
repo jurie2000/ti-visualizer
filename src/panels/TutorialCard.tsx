@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
 import { APOTHEKEN_ZONE, stepDone } from "../engine/tutorialChecks";
 import { containedNodes } from "../engine/zones";
@@ -17,8 +17,8 @@ const portraits = import.meta.glob<string>("../assets/*.webp", {
 const ZONE = { w: 480, h: 320, gap: 120 };
 
 /**
- * Geführtes Tutorial (FR-20): Persona, Schritt x von y, Aufgabe mit Erledigt-
- * Hinweis, Vor und Zurück. Die Schritte sind nie gesperrt. Der Fortschritt
+ * Geführtes Tutorial (FR-20): schwebende Karte unten links wie im Mockup mit
+ * Fortschrittsbalken, Persona, Aufgabe mit Erledigt-Hinweis, Vor und Zurück. Die Schritte sind nie gesperrt. Der Fortschritt
  * steht in den Einstellungen. Läuft innerhalb des `ReactFlowProvider`.
  */
 export function TutorialCard() {
@@ -28,6 +28,7 @@ export function TutorialCard() {
   const topology = useTopology((s) => s.topology);
   const played = useUi((s) => s.played);
   const { setCenter } = useReactFlow();
+  const [minimiert, setMinimiert] = useState(false);
 
   const index = Math.min(progress, steps.length - 1);
   const step = steps[index];
@@ -86,31 +87,92 @@ export function TutorialCard() {
       ?.focus();
   };
 
+  const kicker = `Tutorial · Teil ${step.part === "praxis" ? "1: Arztpraxis" : "2: Apotheke"} · ${String(index + 1)}/${String(steps.length)}`;
+  if (minimiert) {
+    return (
+      <button
+        type="button"
+        className="tiv-tutorial-mini"
+        onClick={() => {
+          setMinimiert(false);
+        }}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m7 4 13 8-13 8z" />
+        </svg>
+        Tutorial · Schritt {index + 1} von {steps.length}
+      </button>
+    );
+  }
+
   return (
     <section className="tiv-tutorial" aria-label="Tutorial">
-      {persona && (
-        <img
-          className="tiv-tutorial__avatar"
-          src={portraits[`../assets/${persona.image}`]}
-          alt={persona.alt}
-          width={72}
-          height={72}
+      <div className="tiv-tutorial__head">
+        <p className="tiv-tutorial__kicker">{kicker}</p>
+        <button
+          type="button"
+          className="tiv-tutorial__icon"
+          aria-label="Tutorial einklappen"
+          onClick={() => {
+            setMinimiert(true);
+          }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          className="tiv-tutorial__icon"
+          aria-label="Tutorial schließen"
+          onClick={() => {
+            close(false);
+          }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <div className="tiv-tutorial__bar" aria-hidden="true">
+        <div
+          style={{
+            width: `${String(Math.round(((index + (done ? 1 : 0)) / steps.length) * 100))}%`,
+          }}
         />
-      )}
+      </div>
       <div className="tiv-tutorial__body" aria-live="polite">
-        <p className="tiv-tutorial__kicker">
-          Teil {step.part === "praxis" ? "1: Arztpraxis" : "2: Apotheke"} ·
-          Schritt {index + 1} von {steps.length}
-        </p>
         <h2>{step.title}</h2>
-        <p className="tiv-tutorial__story">
-          <strong>{persona?.name}</strong> ({persona?.text}): „{step.story}“
-        </p>
+        <div className="tiv-tutorial__story">
+          {persona && (
+            <img
+              src={portraits[`../assets/${persona.image}`]}
+              alt={persona.alt}
+              width={44}
+              height={44}
+            />
+          )}
+          <p>
+            <strong>
+              {persona?.name}, {persona?.text}
+            </strong>
+            {step.story}
+          </p>
+        </div>
         <p>{step.text}</p>
         {step.task && (
           <p className="tiv-tutorial__task" data-done={done}>
-            <strong>{done ? "Erledigt: " : "Aufgabe: "}</strong>
-            {step.task}
+            <span className="tiv-tutorial__check" aria-hidden="true">
+              {done && (
+                <svg viewBox="0 0 24 24">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              )}
+            </span>
+            <span>
+              <strong>{done ? "Erledigt: " : "Aufgabe: "}</strong>
+              {step.task}
+            </span>
           </p>
         )}
       </div>
@@ -123,6 +185,7 @@ export function TutorialCard() {
         >
           Zurück
         </Button>
+        <span className="tiv-tutorial__spacer" />
         {last ? (
           <Button
             variant="primary"
@@ -140,15 +203,6 @@ export function TutorialCard() {
             }}
           >
             Weiter
-          </Button>
-        )}
-        {!last && (
-          <Button
-            onClick={() => {
-              close(false);
-            }}
-          >
-            Tutorial schließen
           </Button>
         )}
       </div>

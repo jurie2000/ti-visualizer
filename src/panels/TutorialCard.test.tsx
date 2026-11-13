@@ -40,7 +40,7 @@ describe("FR-20 Tutorial-Karte", () => {
   it("zeigt Schritt x von y und die Persona mit Alt-Text", () => {
     render(card);
     expect(
-      screen.getByText(new RegExp(`Schritt 1 von ${String(steps.length)}`)),
+      screen.getByText(new RegExp(`Teil 1.* 1/${String(steps.length)}`)),
     ).toBeInTheDocument();
     const persona = personas.find((p) => p.id === steps[0]?.persona);
     expect(
@@ -108,6 +108,19 @@ describe("FR-20 Tutorial-Karte", () => {
     await user.click(screen.getByRole("button", { name: "Tutorial beenden" }));
     expect(useUi.getState().tutorial).toBe(false);
     expect(progress()).toBe(0);
+  });
+
+  it("klappt ein und wieder auf, ohne den Fortschritt zu ändern", async () => {
+    const user = userEvent.setup();
+    useSettings.setState({ tutorialProgress: 2 });
+    render(card);
+    await user.click(
+      screen.getByRole("button", { name: "Tutorial einklappen" }),
+    );
+    expect(screen.queryByRole("region", { name: "Tutorial" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Schritt 3 von/ }));
+    expect(screen.getByRole("region", { name: "Tutorial" })).toBeVisible();
+    expect(progress()).toBe(2);
   });
 
   it("Schließen behält den Fortschritt", async () => {

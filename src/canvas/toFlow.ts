@@ -1,5 +1,4 @@
 import type { Edge as FlowEdge, Node as FlowNode } from "@xyflow/react";
-import { collapseHidden } from "../engine/collapse";
 import { containedNodes } from "../engine/zones";
 import type {
   Catalog,
@@ -9,7 +8,7 @@ import type {
   Topology,
   Zone,
 } from "../schema";
-import type { Mode, Selection } from "../store";
+import type { Selection } from "../store";
 import { NODE_SIZE } from "./deviceStyle";
 import { describeEdge, type EdgeKind } from "./edgeKind";
 
@@ -20,8 +19,6 @@ export interface DeviceNodeData extends Record<string, unknown> {
   node: TopoNode;
   device: DeviceType;
   category: Catalog["categories"][number] | undefined;
-  /** Namen ausgeblendeter Geräte, die nur an diesem Gerät hängen (Modus Einfach). */
-  hidden: string[];
 }
 export interface ZoneNodeData extends Record<string, unknown> {
   zone: Zone;
@@ -34,19 +31,9 @@ export interface ConnectionEdgeData extends Record<string, unknown> {
   hub: "a" | "b";
 }
 
-export interface GroupEdgeData extends Record<string, unknown> {
-  /** Kurztext am Knopf, z. B. „über Switch“. */
-  label: string;
-  /** Satz für Screenreader (Name des Knopfs). */
-  description: string;
-  /** Namen der ausgeblendeten Geräte auf dem Weg. */
-  hidden: string[];
-}
-
 export type ZoneFlowNode = FlowNode<ZoneNodeData, "zone">;
 export type DeviceFlowNode = FlowNode<DeviceNodeData, "device">;
 export type ConnectionFlowEdge = FlowEdge<ConnectionEdgeData, "connection">;
-export type GroupFlowEdge = FlowEdge<GroupEdgeData, "group">;
 
 export const TONE_NAME: Record<Tone, string> = {
   sage: "Salbei",
@@ -57,30 +44,17 @@ export const TONE_NAME: Record<Tone, string> = {
 /**
  * Bildet die Topologie auf React-Flow-Elemente ab. Die Topologie bleibt die
  * einzige Wahrheit; `drag` hält nur die Zwischenpositionen während des Ziehens.
- * Im Modus Einfach blendet `collapseHidden` Geräte aus und ersetzt ihre Wege
- * durch Sammelkanten (Regelwerk 11).
+ * Beide Modi zeigen alle Geräte und Verbindungen (Regelwerk 11).
  */
 export function toFlow(
   topology: Topology,
   catalog: Catalog,
   selection: Selection,
   drag: Record<string, Point> = {},
-  mode: Mode = "advanced",
 ): {
   nodes: (ZoneFlowNode | DeviceFlowNode)[];
-  edges: (ConnectionFlowEdge | GroupFlowEdge)[];
-  /** Namen ausgeblendeter Geräte ohne sichtbaren Nachbarn (Modus Einfach). */
-  isolated: string[];
+  edges: ConnectionFlowEdge[];
 } {
-  const view =
-    mode === "simple"
-      ? collapseHidden(topology, catalog)
-      : { ...topology, groups: [], stubs: [], isolated: [] };
-  const name = (id: string) => {
-    const n = topology.nodes.find((x) => x.id === id);
-    const d = catalog.deviceTypes.find((t) => t.id === n?.type);
-    return n?.label ?? d?.name ?? id;
-  };
   const nodes: (ZoneFlowNode | DeviceFlowNode)[] = [];
   // Zonen zuerst und mit stark negativem zIndex: sie liegen hinter Geräten und Kanten
   for (const zone of topology.zones) {
@@ -102,7 +76,7 @@ export function toFlow(
       data: { zone },
     });
   }
-  for (const node of view.nodes) {
+  for (const node of topology.nodes) {
     const device = catalog.deviceTypes.find((d) => d.id === node.type);
     if (!device) continue;
     const title = node.label ?? device.name;
@@ -120,14 +94,11 @@ export function toFlow(
         node,
         device,
         category: catalog.categories.find((c) => c.id === device.category),
-        hidden: view.stubs
-          .filter((s) => s.at === node.id)
-          .flatMap((s) => s.hidden.map(name)),
       },
     });
   }
 
-  const edges: (ConnectionFlowEdge | GroupFlowEdge)[] = view.edges.map(
+  const edges: ConnectionFlowEdge[] = topology.edges.map(
     (edge): ConnectionFlowEdge => {
       const selected = selection?.kind === "edge" && selection.id === edge.id;
       const { kind, label, description } = describeEdge(
@@ -138,7 +109,7 @@ export function toFlow(
       );
       const [a, b] = edge.ends;
       const degree = (id: string) =>
-        view.edges.filter((e) => e.ends.some((x) => x.node === id)).length;
+        topology.edges.filter((e) => e.ends.some((x) => x.node === id)).length;
       return {
         id: edge.id,
         type: "connection",
@@ -156,22 +127,5 @@ export function toFlow(
       };
     },
   );
-  for (const g of view.groups) {
-    const hidden = g.hidden.map(name);
-    edges.push({
-      id: g.id,
-      type: "group",
-      source: g.ends[0],
-      target: g.ends[1],
-      // keine Kante der Topologie: nicht wählbar, der Knopf am Label bedient sie
-      selectable: false,
-      focusable: false,
-      data: {
-        label: `über ${hidden.join(", ")}`,
-        description: `Sammelkante ${name(g.ends[0])} zu ${name(g.ends[1])} über ${hidden.join(", ")}`,
-        hidden,
-      },
-    });
-  }
-  return { nodes, edges, isolated: view.isolated.map(name) };
+  return { nodes, edges };
 }

@@ -181,15 +181,6 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     expect([...members(b as Selector)]).toEqual(["gateway"]);
   });
 
-  it("Erlaubnisliste: im Modus Einfach sichtbar nur zwischen sichtbaren Geräten", () => {
-    const visible = new Set(
-      catalog.deviceTypes.filter((t) => t.visibleSimple).map((t) => t.id),
-    );
-    for (const r of catalog.connectionRules.filter((x) => x.visibleSimple))
-      for (const t of [...members(r.a), ...members(r.b)])
-        expect(visible.has(t), `${r.id}: ${t}`).toBe(true);
-  });
-
   it("Konsistenz: keine Begründungsregel erfasst ein erlaubtes Paar", () => {
     const allowed = (x: string, y: string) =>
       catalog.connectionRules.some((r) => covers(r.a, r.b, x, y));
@@ -206,7 +197,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     }
   });
 
-  it("Protokolle: acht Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
+  it("Protokolle: sieben Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
     expect(catalog.protocols.connectionKinds.map((k) => k.id)).toEqual([
       "phys",
       "tcp",
@@ -215,7 +206,6 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "inet",
       "usb",
       "host",
-      "sammel",
     ]);
     expect(catalog.protocols.protocols).toHaveLength(13);
     const byId = (id: string) =>

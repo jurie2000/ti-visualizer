@@ -6,7 +6,6 @@
     "description": "Das Praxisverwaltungssystem ist die Software am Arbeitsplatz. Es löst alle TI-Aktionen aus, spricht aber nie direkt mit einem Fachdienst.",
     "category": "primary",
     "icon": "screen",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -37,7 +36,6 @@
     "description": "Das Krankenhausinformationssystem ist das zentrale Primärsystem der Klinik. Alle Abteilungen arbeiten mit derselben Installation — die Arbeitsplätze greifen als PC darauf zu.",
     "category": "primary",
     "icon": "server",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -68,7 +66,6 @@
     "description": "Das Apothekenverwaltungssystem ruft E-Rezepte ab und beliefert sie.",
     "category": "primary",
     "icon": "screen",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -98,7 +95,6 @@
     "name": "Pflege-Software (Pflegeeinrichtung)",
     "category": "primary",
     "icon": "screen",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -129,7 +125,6 @@
     "description": "Das Radiologie-Informationssystem steuert Untersuchungen und Befunde der Radiologie. Es ist ein Subsystem und tauscht Aufträge und Befunde per HL7 mit dem KIS aus.",
     "category": "primary",
     "icon": "scan",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -160,7 +155,6 @@
     "description": "Das Labor-Informationssystem verwaltet Proben und Laborwerte. Als Subsystem meldet es Ergebnisse per HL7 an das KIS zurück.",
     "category": "primary",
     "icon": "flask",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -191,7 +185,6 @@
     "description": "Der Arbeitsplatz-PC ist der Rechner, auf dem Software läuft (PVS, AVS, Pflege). Er hängt per Ethernet am Switch. Bei zentraler Software (KIS) ist er nur die Oberfläche.",
     "category": "computer",
     "icon": "screen",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client", "workplace"],
     "ports": [
@@ -238,7 +231,6 @@
     "description": "Auf einem Server läuft zentrale Software, zum Beispiel KIS, RIS und LIS. Der Server hängt per Ethernet am Switch, die Software ist ihm über „läuft auf“ zugeordnet.",
     "category": "computer",
     "icon": "server",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client"],
     "ports": [
@@ -277,7 +269,6 @@
     "description": "Das Visite-Tablet ist ein mobiler KIS-Client. Es verbindet sich per WLAN mit dem Access Point und nutzt die TI über denselben Konnektor wie die festen Arbeitsplätze.",
     "category": "computer",
     "icon": "tablet",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client", "workplace"],
     "ports": [
@@ -307,7 +298,6 @@
     "name": "KIM-Clientmodul",
     "category": "primary",
     "icon": "mail",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:client"],
     "ports": [
@@ -329,7 +319,6 @@
     "name": "TI-Messenger-Client",
     "category": "primary",
     "icon": "chat",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -351,7 +340,6 @@
     "name": "elektronische Gesundheitskarte",
     "category": "card",
     "icon": "card",
-    "visibleSimple": true,
     "placeable": false,
     "capabilities": [],
     "ports": [],
@@ -364,7 +352,6 @@
     "name": "Heilberufsausweis",
     "category": "card",
     "icon": "key",
-    "visibleSimple": true,
     "placeable": false,
     "capabilities": [],
     "ports": [],
@@ -377,7 +364,6 @@
     "name": "Institutionskarte SMC-B",
     "category": "card",
     "icon": "card",
-    "visibleSimple": true,
     "placeable": false,
     "capabilities": [],
     "ports": [],
@@ -391,7 +377,6 @@
     "description": "Am Kartenterminal werden eGK, HBA und SMC-B gesteckt. Es hängt physisch am Konnektor.",
     "category": "terminal",
     "icon": "term",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["cardSlots", "netConfig:terminal"],
     "ports": [
@@ -414,7 +399,6 @@
     "description": "Das mobile Kartenterminal wird für Hausbesuche verwendet und später am Konnektor ausgelesen.",
     "category": "terminal",
     "icon": "term",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["cardSlots"],
     "ports": [
@@ -437,7 +421,6 @@
     "description": "CardLink liest die eGK kontaktlos per NFC über das Smartphone der versicherten Person.",
     "category": "terminal",
     "icon": "nfc",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["nfcCard", "netConfig:terminal"],
     "ports": [
@@ -460,7 +443,6 @@
     "description": "Der Switch verbindet PVS, Kartenterminals und Konnektor im lokalen Netz der Einrichtung. Er hat acht Ethernet-Ports und leitet Pakete nur weiter.",
     "category": "lan",
     "icon": "sw",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -539,7 +521,6 @@
     "description": "Der Router verbindet das lokale Netz mit dem Internet. Der Konnektor schickt seinen VPN-Tunnel durch ihn hindurch — lesen kann der Router davon nichts. Zusätzlich spannt er ein WLAN auf.",
     "category": "lan",
     "icon": "wrouter",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:router"],
     "ports": [
@@ -602,7 +583,6 @@
     "description": "Der WLAN Access Point bringt mobile Geräte wie Visite-Tablets ins lokale Netz. Er hängt per Kabel (PoE) am Switch.",
     "category": "lan",
     "icon": "wifi",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -632,7 +612,6 @@
     "name": "Firewall",
     "category": "lan",
     "icon": "shield",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:infra"],
     "ports": [
@@ -663,7 +642,6 @@
     "description": "Der Konnektor ist das Tor der Praxis zur TI: er baut den VPN-Tunnel auf, signiert, verschlüsselt und kennt die Karten.",
     "category": "network",
     "icon": "router",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:konnektor", "zugang"],
     "ports": [
@@ -702,7 +680,6 @@
     "description": "Der Highspeed-Konnektor ist die leistungsfähigere Variante für große Einrichtungen.",
     "category": "network",
     "icon": "router",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:konnektor", "zugang"],
     "ports": [
@@ -749,7 +726,6 @@
     "description": "Das TI-Gateway ersetzt den Konnektor in der Zero-Trust-Architektur. Beide schließen sich in einer Topologie gegenseitig aus.",
     "category": "network",
     "icon": "gate",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["netConfig:konnektor", "zugang"],
     "ports": [
@@ -788,7 +764,6 @@
     "description": "Der VPN-Zugangsdienst ist der Einstiegspunkt in das geschlossene Netz der TI.",
     "category": "network",
     "icon": "shield",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -826,7 +801,6 @@
     "name": "Internet (Transportnetz)",
     "category": "network",
     "icon": "globe",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -848,7 +822,6 @@
     "name": "Zentrales Netz der TI",
     "category": "network",
     "icon": "layers",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -870,7 +843,6 @@
     "name": "Namensdienst",
     "category": "zentral",
     "icon": "server",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -892,7 +864,6 @@
     "name": "Zeitdienst",
     "category": "zentral",
     "icon": "server",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -914,7 +885,6 @@
     "name": "Verzeichnisdienst (FHIR-Directory)",
     "category": "zentral",
     "icon": "folder",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -936,7 +906,6 @@
     "name": "TSL-Dienst mit OCSP-Responder",
     "category": "zentral",
     "icon": "shield",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -959,7 +928,6 @@
     "description": "Der Identity Provider stellt Identitätsnachweise aus — die Grundlage jeder Anmeldung in der TI.",
     "category": "zentral",
     "icon": "key",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -995,7 +963,6 @@
     "name": "Sektoraler IDP (GesundheitsID)",
     "category": "zentral",
     "icon": "key",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1032,7 +999,6 @@
     "description": "Der VSDM-Dienst prüft und aktualisiert die Versichertenstammdaten auf der eGK.",
     "category": "service",
     "icon": "server",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1055,7 +1021,6 @@
     "description": "Der E-Rezept-Fachdienst speichert Verordnungen und gibt sie an Apotheken heraus.",
     "category": "service",
     "icon": "pill",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1092,7 +1057,6 @@
     "description": "KIM ist der sichere E-Mail-Dienst der TI — etwa für den Versand der eAU.",
     "category": "service",
     "icon": "mail",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1115,7 +1079,6 @@
     "description": "Der TI-Messenger erlaubt Chat-Nachrichten zwischen Leistungserbringern.",
     "category": "service",
     "icon": "chat",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1152,7 +1115,6 @@
     "description": "Das ePA-Aktensystem speichert Dokumente der Versicherten.",
     "category": "service",
     "icon": "folder",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1188,7 +1150,6 @@
     "name": "PoPP-Service",
     "category": "service",
     "icon": "shield",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1224,7 +1185,6 @@
     "name": "Krankenkasse (Empfänger z. B. der eAU)",
     "category": "versicherte",
     "icon": "mail",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [
@@ -1246,7 +1206,6 @@
     "name": "E-Rezept-App der Versicherten",
     "category": "versicherte",
     "icon": "tablet",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["nfcCard"],
     "ports": [
@@ -1268,7 +1227,6 @@
     "name": "ePA-App der Versicherten",
     "category": "versicherte",
     "icon": "tablet",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": ["nfcCard"],
     "ports": [

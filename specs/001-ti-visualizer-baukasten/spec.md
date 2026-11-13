@@ -55,10 +55,9 @@ Log-Import und Replay gehören nicht dazu.
 
 **Ansichten**
 7. Benutzer wechselt zwischen **Einfach** und **Erweitert**. Die
-   Topologie bleibt dabei dieselbe. Einfach blendet Netzgeräte wie Switch
-   und Router aus und fasst Wege über sie als Sammelkanten zusammen.
-   Erweitert zeigt alle Geräte, ihre Anschlüsse (z. B. Ethernet, USB,
-   WLAN) und erlaubt Netzwerk- und Geräteeinstellungen (siehe FR-17).
+   Topologie bleibt dabei dieselbe. Beide Modi zeigen alle Geräte
+   (seit T-725a). Erweitert ergänzt die Anschlussauswahl (z. B. Ethernet,
+   USB, WLAN) und die Netzwerk- und Geräteeinstellungen (siehe FR-17).
 
 **Abläufe**
 8. Benutzer öffnet per Rechtsklick auf ein Gerät ein Kontextmenü mit allen
@@ -440,7 +439,7 @@ Fachmodule, ohne VPN und Fachdienst (korrigiert 2026-11-03).
 - [x] Persona-Bilder: von Justin selbst generiert, zur Veröffentlichung
   freigegeben (2026-11-03)
 - [x] Prüfbericht (Fable, 2026-11-04) eingearbeitet: Anschlussmodell,
-  Modus nur als Darstellung mit Sammelkanten, Presets gegen die
+  Modus ohne Änderung der Topologie (später ohne Ausblenden, T-725a), Presets gegen die
   Erlaubnisliste, Karten als Stecken-Regeln, Pfadregel, Rolle des
   Konnektors, Prüfungsnachweis, CardLink, TI-Messenger, Simulationsdatum,
   Importbefunde, gekürzte Pipeline, Datenschutzhinweis

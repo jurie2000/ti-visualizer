@@ -41,12 +41,6 @@
       "name": "Läuft auf",
       "meaning": "Software läuft auf einem Rechner, kein Kabel",
       "lineStyle": "gepunktet, dünn"
-    },
-    {
-      "id": "sammel",
-      "name": "Sammelkante",
-      "meaning": "nur im Modus Einfach: fasst einen Weg über ausgeblendete Geräte zusammen (Abschnitt 11)",
-      "lineStyle": "durchgezogen, doppelt"
     }
   ],
   "protocols": [

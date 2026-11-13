@@ -67,27 +67,25 @@ export function ViewPanel() {
       <section aria-label="Verbindungsarten">
         <h4>Verbindungsarten</h4>
         <ul className="tiv-legend">
-          {kinds
-            .filter((k) => k.id !== "sammel")
-            .map((k) => (
-              <li key={k.id}>
-                <svg width="52" height="12" aria-hidden="true">
-                  <path
-                    d="M2 6h48"
-                    fill="none"
-                    strokeLinecap="round"
-                    style={{
-                      stroke: `var(--tiv-edge-${k.id})`,
-                      strokeWidth: `var(--tiv-edge-${k.id}-width)`,
-                      strokeDasharray: `var(--tiv-edge-${k.id}-dash, none)`,
-                    }}
-                  />
-                </svg>
-                <span>
-                  <strong>{k.name}</strong> {k.meaning}, {k.lineStyle}
-                </span>
-              </li>
-            ))}
+          {kinds.map((k) => (
+            <li key={k.id}>
+              <svg width="52" height="12" aria-hidden="true">
+                <path
+                  d="M2 6h48"
+                  fill="none"
+                  strokeLinecap="round"
+                  style={{
+                    stroke: `var(--tiv-edge-${k.id})`,
+                    strokeWidth: `var(--tiv-edge-${k.id}-width)`,
+                    strokeDasharray: `var(--tiv-edge-${k.id}-dash, none)`,
+                  }}
+                />
+              </svg>
+              <span>
+                <strong>{k.name}</strong> {k.meaning}, {k.lineStyle}
+              </span>
+            </li>
+          ))}
         </ul>
       </section>
       <section aria-label="Ansicht">

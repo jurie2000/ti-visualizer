@@ -2,17 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { categoryColor } from "../canvas/deviceStyle";
 import { useCatalog } from "../store";
 import { PaletteGroup } from "./PaletteGroup";
-import { PaletteItem, type DeviceType } from "./PaletteItem";
+import { PaletteItem } from "./PaletteItem";
 import "./palette.css";
 
 interface Props {
   /** Fügt ein Gerät dieses Typs ein (Position bestimmt der Aufrufer). */
   onAdd: (type: string) => void;
-  /**
-   * Filter (T-207): `PalettePanel` zeigt im Modus Einfach nur Typen mit `visibleSimple`.
-   * Ohne Angabe erscheinen alle platzierbaren Typen.
-   */
-  filter?: ((device: DeviceType) => boolean) | undefined;
   /** Schienen-Symbol (T-711): klappt diese Gruppe auf und scrollt sie ins Bild; `n` zählt die Klicks. */
   reveal?: { id: string; n: number } | undefined;
 }
@@ -26,7 +21,7 @@ const toggled = (set: Set<string>, id: string) => {
 };
 
 /** Gerätepalette: nach Kategorie gruppiert, einklappbar, anpinnbar, mit Suche. */
-export function Palette({ onAdd, filter, reveal }: Props) {
+export function Palette({ onAdd, reveal }: Props) {
   const catalog = useCatalog((s) => s.catalog);
   const [query, setQuery] = useState("");
   const [closed, setClosed] = useState<Set<string>>(new Set());
@@ -52,7 +47,6 @@ export function Palette({ onAdd, filter, reveal }: Props) {
     const devices = catalog.deviceTypes.filter(
       (d) =>
         d.placeable &&
-        (filter?.(d) ?? true) &&
         (!q ||
           d.name.toLowerCase().includes(q) ||
           d.abbr.toLowerCase().includes(q)),
@@ -72,7 +66,7 @@ export function Palette({ onAdd, filter, reveal }: Props) {
         : []),
       ...byCategory,
     ].filter((g) => g.devices.length > 0);
-  }, [catalog, query, filter, pinned]);
+  }, [catalog, query, pinned]);
 
   return (
     <div className="tiv-palette__root">

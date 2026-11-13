@@ -60,16 +60,11 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await expect(page.locator(".react-flow__edge")).toHaveCount(kanten);
   });
 
-  test("T-725a Moduswechsel: Einfach zeigt alle Geräte, keine Sammelkanten", async ({
-    page,
-  }) => {
+  test("T-725a Moduswechsel: Einfach zeigt alle Geräte", async ({ page }) => {
     const alle = await page.locator(".react-flow__node").count();
     await page.getByRole("button", { name: "Einfach" }).click();
     await expect(gerät(page, "sw1")).toBeVisible();
     expect(await page.locator(".react-flow__node").count()).toBe(alle);
-    await expect(
-      page.getByRole("button", { name: /^Sammelkante .* über / }),
-    ).toHaveCount(0);
     await page.getByRole("button", { name: "Erweitert" }).click();
     expect(await page.locator(".react-flow__node").count()).toBe(alle);
   });

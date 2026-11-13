@@ -104,8 +104,6 @@ describe("T-406 Detailpanel (FR-11)", () => {
     ).toBeInTheDocument();
     const legend = screen.getByRole("region", { name: "Verbindungsarten" });
     expect(within(legend).getByText("VPN")).toBeInTheDocument();
-    // Sammelkante gibt es nur im Modus Einfach
-    expect(within(legend).queryByText("Sammelkante")).toBeNull();
     for (const key of ["edges", "zones", "handles", "minimap"] as const) {
       const label = {
         edges: "Verbindungen anzeigen",

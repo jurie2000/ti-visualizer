@@ -105,7 +105,6 @@ export const deviceTypes = z.array(
     // false für Smartcards: Karten sind keine Knoten (D12), nicht in der Palette
     placeable: z.boolean().default(true),
     icon: Id,
-    visibleSimple: z.boolean(),
     capabilities: z.array(Id),
     ports: z.array(Port),
     ...sourced,
@@ -131,7 +130,6 @@ export const connectionRules = z.array(
         b: z.array(Id).min(1).optional(),
       })
       .optional(),
-    visibleSimple: z.boolean(),
     ...sourced,
   }),
 );

@@ -10,7 +10,6 @@ const dt = (id: string, category: string, capabilities: string[] = []) => ({
   category,
   placeable: true,
   icon: "box",
-  visibleSimple: true,
   capabilities,
   ports: [],
   source: ["arch"],
@@ -177,17 +176,6 @@ describe("Pfadregel 6.0", () => {
       fault: false,
     });
     expect(resolvePath(t, "pvs", "dns", catalog).ok).toBe(false);
-  });
-
-  it("Ausgeblendete Geräte zählen voll mit", () => {
-    // switch, router, internet haben im Katalog visibleSimple false: kein Filter im Pfad
-    const hidden = {
-      deviceTypes: catalog.deviceTypes.map((d) => ({
-        ...d,
-        visibleSimple: !["switch", "router", "internet"].includes(d.id),
-      })),
-    };
-    expect(resolvePath(praxis(), "pvs", "erp", hidden).ok).toBe(true);
   });
 
   it("Ausgefallenes Gerät unterbricht den Pfad und wird genannt", () => {

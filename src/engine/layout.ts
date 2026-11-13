@@ -66,8 +66,7 @@ export function tileSize(
  * Eltern mittig über ihren Kindern, Fachdienste rechts, Geräte ohne Weg
  * unten. Zonen ziehen mit: Sie werden um ihre bisherigen Mitglieder neu
  * aufgezogen; Zonen ohne Mitglieder bleiben. Anders als im Mockup entfällt
- * keine Zone (Auslegung 2026-11-12). Alle Geräte zählen, auch die im Modus
- * Einfach ausgeblendeten (wie im Mockup, das nie ausblendet). Zeilen und Spalten
+ * keine Zone (Auslegung 2026-11-12). Alle Geräte zählen. Zeilen und Spalten
  * richten sich nach der größten Kachel (`tileSize`), damit nichts überlappt.
  */
 export function arrange(

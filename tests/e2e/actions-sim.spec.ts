@@ -224,7 +224,10 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await page.mouse.down();
     await page.mouse.move(von.x + 90, von.y + 60, { steps: 8 });
     await page.mouse.up();
-    expect(await abstand()).toEqual(vorher);
+    // WebKit rundet Teilpixel leicht anders: mit Toleranz vergleichen
+    const nachher = await abstand();
+    expect(nachher.x).toBeCloseTo(vorher.x, 1);
+    expect(nachher.y).toBeCloseTo(vorher.y, 1);
 
     const kanten = await page.locator(".react-flow__edge").count();
     await öffnePalette(page);

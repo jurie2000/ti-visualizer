@@ -795,7 +795,7 @@ Herausforderung, wenn
 
 ## 11. Modus Einfach und Erweitert
 
-Entschieden 2026-11-04 (Plan D36).
+Entschieden 2026-11-04 (Plan D36), geändert 2026-11-13 (T-725a, siehe unten).
 
 | | Einfach | Erweitert |
 |---|---|---|

@@ -1102,7 +1102,7 @@ Sicherheitsprüfung.
     `host`), Klärung folgt mit T-724c. (e) Die Presets sind mit „Sortieren“
     angeordnet; im Klinikum liegt je ein Server für KIS, RIS und LIS.
 
-- [x] **T-725a Modus Einfach zeigt alle Geräte** · FR: FR-2, FR-6 · Regeln: – · nach: T-724b · Anmerkung des Nutzers 2026-11-13
+- [x] **T-725a Modus Einfach zeigt alle Geräte** · FR: FR-13, FR-6 · Regeln: – · nach: T-724b · Anmerkung des Nutzers 2026-11-13
   - Umfang: Alle Gerätetypen und Verbindungsregeln haben `visibleSimple: true`.
     Einfach zeigt Geräte und Verbindungen wie Erweitert; Erweitert ergänzt nur
     die Geräteeinstellungen (IP, Zeit, Zertifikat, Firewall, VLAN, Pairing,
@@ -1116,7 +1116,7 @@ Sicherheitsprüfung.
   - Auslegung (2026-11-13): Ersetzt D36. Die Anschlussauswahl bleibt in
     Erweitert; die Palette ist in beiden Modi gleich.
 
-- [ ] **T-725b Ausblendefunktion entfernen** · FR: FR-2 · Regeln: – · nach: T-725a
+- [ ] **T-725b Ausblendefunktion entfernen** · FR: FR-13 · Regeln: – · nach: T-725a
   - Umfang: Löscht `collapseHidden`, Sammelkante und GroupEdge, den Hinweis
     „+n ausgeblendet“, die Palettenfilterung nach Modus, die Verbindungsart
     `sammel`, das Feld `visibleSimple` in Katalog und Schema sowie

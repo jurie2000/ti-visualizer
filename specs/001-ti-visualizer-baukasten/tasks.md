@@ -1045,6 +1045,19 @@ Sicherheitsprüfung.
     aus dem Mockup folgen erst mit passenden Katalogdaten. Der Schließen-Knopf
     (Kreuz) behält den Fortschritt, „Tutorial beenden“ setzt ihn zurück.
 
+- [x] **T-723 Dialog „Karte stecken“ schöner, Detailpanel bleibt sichtbar** · FR: FR-8 · Regeln: K-2, K-3, K-4, K-6 · nach: T-722 · Mockup: `dlgCards`, Zeilen 955 bis 970
+  - Umfang: Kartenart als wählbare Karten mit Symbol, Kürzel und Namen
+    (statt Auswahlliste), Ablaufdatum und PIN-Status in abgesetzten Feldern,
+    Einleitungstext, rundes Schließen. Solange der Dialog offen ist, bleibt
+    das rechte Detailpanel offen und wird nicht abgedunkelt; der Dialog
+    sitzt links daneben (ab 1101 px).
+  - Fertig, wenn: die bestehenden Tests für K-2, K-3, K-4 und K-6 laufen mit
+    der neuen Auswahl; ein Test prüft, dass ein Seitenpanel mit `hold` offen
+    bleibt.
+  - Auslegung (2026-11-13): Die Namen der Kartenarten kommen aus dem
+    Katalog. Die Kartenart bleibt eine Radiogruppe (D10), kein
+    Listenknopf wie im Mockup, weil Datum und PIN dazugehören.
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

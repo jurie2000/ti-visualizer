@@ -38,7 +38,7 @@ async function stecke(page: Page, gerätId: string, arten: string[]) {
   for (const art of arten) {
     await öffneKarteStecken(page, gerät(page, gerätId));
     const dialog = page.getByRole("dialog", { name: "Karte stecken" });
-    await dialog.getByLabel("Kartenart").selectOption({ label: art });
+    await dialog.getByRole("radio", { name: new RegExp(`^${art}`) }).check();
     await dialog.getByRole("button", { name: "Stecken" }).click();
     await expect(dialog).toBeHidden();
   }

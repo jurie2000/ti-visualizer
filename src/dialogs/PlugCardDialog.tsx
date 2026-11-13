@@ -1,3 +1,4 @@
+import { CreditCard, KeyRound } from "lucide-react";
 import { useState, type SyntheticEvent } from "react";
 import { CARD_NAMES } from "../canvas/CardChip";
 import type { CardKind } from "../engine/cards";
@@ -56,6 +57,9 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   // voll und die Engine meldet die Belegung.
   const { nfcOnly, candidates, free } = missingKinds(node, device);
   const kinds = free.length ? free : candidates;
+  const names = new Map(
+    useCatalog((s) => s.catalog.deviceTypes).map((d) => [d.id, d.name]),
+  );
   const [kind, setKind] = useState<CardKind>(kinds[0] ?? "egk");
   // Zieldatum: simDate + 3 Jahre, 29.02. wird zum 28.02.
   const [expires, setExpires] = useState(
@@ -80,50 +84,57 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   };
 
   return (
-    <form onSubmit={submit}>
-      <p>
-        <label>
-          Kartenart{" "}
-          <select
-            value={kind}
-            onChange={(e) => {
-              setKind(e.target.value as CardKind);
-            }}
-          >
-            {kinds.map((k) => (
-              <option key={k} value={k}>
-                {CARD_NAMES[k]}
-              </option>
-            ))}
-          </select>
-        </label>
+    <form className="tiv-plug" onSubmit={submit}>
+      <p className="tiv-plug__lead">
+        Wähle die Karte, ihr Ablaufdatum und den PIN-Status. Nach dem Stecken
+        steckt die Karte im Terminal.
       </p>
-      <p>
-        <label>
-          Ablaufdatum{" "}
+      <fieldset className="tiv-plug__kinds">
+        <legend>Kartenart</legend>
+        {kinds.map((k) => {
+          const Icon = k === "hba" ? KeyRound : CreditCard;
+          return (
+            <label key={k} className="tiv-plug__kind">
+              <input
+                type="radio"
+                name="kind"
+                value={k}
+                checked={kind === k}
+                onChange={() => {
+                  setKind(k);
+                }}
+              />
+              <Icon size={18} aria-hidden="true" />
+              <span>
+                <strong>{CARD_NAMES[k]}</strong>
+                <span>{names.get(k)}</span>
+              </span>
+            </label>
+          );
+        })}
+      </fieldset>
+      <label className="tiv-plug__field">
+        Ablaufdatum
+        <input
+          type="date"
+          required
+          value={expires}
+          onChange={(e) => {
+            setExpires(e.target.value);
+          }}
+        />
+      </label>
+      {!nfcOnly && (
+        <label className="tiv-plug__pin">
           <input
-            type="date"
-            required
-            value={expires}
+            type="checkbox"
+            checked={pin}
             onChange={(e) => {
-              setExpires(e.target.value);
+              setPin(e.target.checked);
             }}
           />
+          {kind === "egk" ? "PIN aktiv" : "per PIN freigeschaltet"}
         </label>
-      </p>
-      {!nfcOnly && (
-        <p>
-          <label>
-            <input
-              type="checkbox"
-              checked={pin}
-              onChange={(e) => {
-                setPin(e.target.checked);
-              }}
-            />{" "}
-            {kind === "egk" ? "PIN aktiv" : "per PIN freigeschaltet"}
-          </label>
-        </p>
       )}
       <Button type="submit" variant="primary">
         Stecken

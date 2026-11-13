@@ -31,6 +31,8 @@ interface Props {
   rail: RailItem[];
   /** Ändert sich der Wert (z. B. neue Auswahl), öffnet das Panel kurz von selbst. */
   autoOpen?: unknown;
+  /** Bleibt offen, solange etwas daraus Geöffnetes läuft (Dialog „Karte stecken“); Fokus im Dialog schließt es nicht. */
+  hold?: boolean | undefined;
   children: ReactNode;
 }
 
@@ -72,6 +74,7 @@ export function SidePanel({
   overlayOpen,
   rail,
   autoOpen,
+  hold,
   children,
 }: Props) {
   const pinned = useSettings((s) => s.pinnedPanels.includes(id));
@@ -159,7 +162,7 @@ export function SidePanel({
     skipFocus.current = false;
   };
 
-  const open = pinned || shown;
+  const open = pinned || shown || !!hold;
   return (
     <div
       role="presentation"

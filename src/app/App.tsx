@@ -29,6 +29,7 @@ export function App() {
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
   const selection = useUi((s) => s.selection);
+  const plugging = useUi((s) => s.dialog?.startsWith("plugCard:") ?? false);
   const [reveal, setReveal] = useState<{ id: string; n: number }>();
   const paletteRail = usePaletteRail((id) => {
     setReveal((r) => ({ id, n: (r?.n ?? 0) + 1 }));
@@ -188,6 +189,7 @@ export function App() {
                 label="Detailpanel"
                 overlayOpen={overlay === "detail"}
                 autoOpen={selection}
+                hold={plugging}
                 rail={[
                   {
                     label: selection ? "Details" : "Legende",

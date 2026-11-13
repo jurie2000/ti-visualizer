@@ -42,13 +42,9 @@ async function bisZumEnde(page: Page) {
 
 test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   let verletzungen: string[];
-  // Ein natives <select> löst in WebKit selbst eine style-src-Meldung aus (auch auf
-  // einer leeren Seite mit dieser CSP); nur der Test mit der Kartenart-Auswahl erlaubt sie.
-  let nativesSelect = false;
 
   test.beforeEach(async ({ page }) => {
     verletzungen = [];
-    nativesSelect = false;
     // CSP-Verletzungen (z. B. Inline-Styles in WebKit) und Konsolenfehler
     await page.addInitScript(() => {
       document.addEventListener("securitypolicyviolation", (e) => {
@@ -58,8 +54,6 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     // WebKit meldet die harmlose ResizeObserver-Schleife von React Flow als Seitenfehler
     const melde = (text: string) => {
       if (text.startsWith("ResizeObserver loop completed")) return;
-      if (nativesSelect && /style-src-attr|apply a stylesheet/.test(text))
-        return;
       verletzungen.push(text);
     };
     page.on("console", (m) => {
@@ -159,7 +153,6 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("eGK stecken macht die VSDM-Prüfung am Terminal ausführbar (FR-6, FR-7)", async ({
     page,
   }) => {
-    nativesSelect = true;
     await menüAn(page, "kt1");
     await expect(eintrag(page, "VSDM-Prüfung anstoßen")).toHaveAttribute(
       "aria-disabled",
@@ -168,7 +161,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await page.keyboard.press("Escape");
     await öffneKarteStecken(page, gerät(page, "kt1"));
     const dialog = page.getByRole("dialog", { name: "Karte stecken" });
-    await dialog.getByLabel("Kartenart").selectOption({ label: "eGK" });
+    await dialog.getByRole("radio", { name: /^eGK/ }).check();
     await dialog.getByLabel("PIN aktiv").check();
     await dialog.getByRole("button", { name: "Stecken" }).click();
     await expect(dialog).toBeHidden();

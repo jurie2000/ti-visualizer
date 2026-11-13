@@ -118,6 +118,7 @@ describe("FR-20 Tutorial-Karte", () => {
       screen.getByRole("button", { name: "Tutorial einklappen" }),
     );
     expect(screen.queryByRole("region", { name: "Tutorial" })).toBeNull();
+    expect(screen.getByRole("button", { name: /Schritt 3 von/ })).toHaveFocus();
     await user.click(screen.getByRole("button", { name: /Schritt 3 von/ }));
     expect(screen.getByRole("region", { name: "Tutorial" })).toBeVisible();
     expect(progress()).toBe(2);

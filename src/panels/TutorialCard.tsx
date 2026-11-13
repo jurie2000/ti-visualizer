@@ -32,6 +32,7 @@ export function TutorialCard() {
   // Ohne Maus oder Fokus schrumpft die Karte auf die aktuelle Aufgabe (Mockup `tutCompact`).
   const [offen, setOffen] = useState(true);
   const zu = useRef<number>(undefined);
+  const wurdeUmgeschaltet = useRef(false);
   const zeige = (an: boolean) => {
     window.clearTimeout(zu.current);
     if (an) setOffen(true);
@@ -112,6 +113,7 @@ export function TutorialCard() {
         type="button"
         className="tiv-tutorial-mini"
         onClick={() => {
+          wurdeUmgeschaltet.current = true;
           setMinimiert(false);
         }}
       >
@@ -142,12 +144,15 @@ export function TutorialCard() {
       }}
     >
       <div className="tiv-tutorial__head">
-        <p className="tiv-tutorial__kicker">{kicker}</p>
+        <p className="tiv-tutorial__kicker" aria-live="polite">
+          {kicker}
+        </p>
         <button
           type="button"
           className="tiv-tutorial__icon"
           aria-label="Tutorial einklappen"
           onClick={() => {
+            wurdeUmgeschaltet.current = true;
             setMinimiert(true);
           }}
         >

@@ -33,6 +33,15 @@ export function TutorialCard() {
   const [offen, setOffen] = useState(true);
   const zu = useRef<number>(undefined);
   const wurdeUmgeschaltet = useRef(false);
+  // Der fokussierte Knopf wird beim Umschalten ausgehängt: Fokus auf den Gegenknopf (D10).
+  useEffect(() => {
+    if (!wurdeUmgeschaltet.current) return;
+    document
+      .querySelector<HTMLElement>(
+        minimiert ? ".tiv-tutorial-mini" : ".tiv-tutorial__icon",
+      )
+      ?.focus();
+  }, [minimiert]);
   const zeige = (an: boolean) => {
     window.clearTimeout(zu.current);
     if (an) setOffen(true);

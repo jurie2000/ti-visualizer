@@ -38,7 +38,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }
@@ -117,7 +117,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }
@@ -164,7 +164,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }
@@ -210,7 +210,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }
@@ -249,7 +249,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }
@@ -288,7 +288,7 @@
         "id": "host",
         "name": "Läuft auf",
         "kind": "host",
-        "multi": false,
+        "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
       }

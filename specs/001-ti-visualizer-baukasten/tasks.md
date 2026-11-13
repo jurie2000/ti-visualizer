@@ -1068,7 +1068,7 @@ Sicherheitsprüfung.
     bisher die Primärsysteme. Bestehende Presets und Tutorial bleiben
     unverändert gültig (Software hat noch ihren Ethernet-Anschluss).
   - Fertig, wenn: Tests (Name mit T-724a) prüfen Verbinden und Ablehnen,
-    mehrere Programme je Rechner, Weg über den Rechner, Aktionen am PC,
+    mehrere Programme je Rechner und mehrere Rechner je Programm, Weg über den Rechner, Aktionen am PC,
     Sammelkante in Einfach und die Verbindungsart `host`.
   - Auslegung (2026-11-13): Software hat kein Ethernet, das Kabel hängt am
     Rechner (gemILF_PS Infomodell: Clientsystem läuft am Arbeitsplatz). Die

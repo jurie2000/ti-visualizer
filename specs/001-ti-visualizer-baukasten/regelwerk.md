@@ -184,7 +184,7 @@ Abschnitt 5.
 
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
-| PVS, AVS, Pflege | Ethernet0, USB0, USB1, Läuft auf (`host`) | Mockup, plausibel; „Läuft auf“ Vereinfachung (T-724a) | gemILF_PS |
+| PVS, AVS, Pflege | Ethernet0, USB0, USB1, Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Mockup, plausibel; „Läuft auf“ Vereinfachung (T-724a) | gemILF_PS |
 | PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach) | Mockup, plausibel; „Software“ Vereinfachung (T-724a) | gemILF_PS |
 | Server | Ethernet0, Ethernet1, USB0, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
 | KIS | LAN0 bis LAN5, USB0 (für das mobile KT, ergänzt 2026-11-05) | Mockup, plausibel | KH, gemSpec_MobKT |

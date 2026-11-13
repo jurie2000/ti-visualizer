@@ -53,7 +53,7 @@ describe("T-724a Software läuft auf einem Rechner", () => {
     expect(check(mitPc(), ["pvs1", "host"], ["pc1", "soft"]).ok).toBe(false);
   });
 
-  it("T-724a: Ein Rechner trägt mehrere Programme, ein Programm läuft nur auf einem Rechner", () => {
+  it("T-724a: Ein Rechner trägt mehrere Programme, ein Programm läuft auf mehreren Rechnern", () => {
     const t = mitPc();
     t.nodes.push(
       { id: "srv", type: "server", position: { x: 0, y: 0 }, fault: false },
@@ -70,7 +70,7 @@ describe("T-724a Software läuft auf einem Rechner", () => {
       ],
     });
     expect(check(t, ["ris1", "host"], ["srv", "soft"]).ok).toBe(true);
-    expect(check(t, ["kis1", "host"], ["pc1", "soft"]).ok).toBe(false);
+    expect(check(t, ["kis1", "host"], ["pc1", "soft"]).ok).toBe(true);
   });
 
   it("T-724a: „Läuft auf“ gibt es nicht zu Switch oder Konnektor", () => {

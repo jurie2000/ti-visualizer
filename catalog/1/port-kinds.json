@@ -41,6 +41,12 @@
       "name": "Anschluss am Zentralen Netz (logisch)",
       "source": ["Arch"],
       "status": "bestätigt"
+    },
+    {
+      "id": "host",
+      "name": "Läuft auf (logisch)",
+      "source": ["gemILF_PS"],
+      "status": "Vereinfachung"
     }
   ],
   "compatible": [
@@ -96,6 +102,12 @@
       "a": "tun",
       "b": "net",
       "source": ["Arch"],
+      "status": "Vereinfachung"
+    },
+    {
+      "a": "host",
+      "b": "host",
+      "source": ["editor"],
       "status": "Vereinfachung"
     }
   ]

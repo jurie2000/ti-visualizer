@@ -2,7 +2,8 @@ import { isWlan } from "../engine/rules";
 import type { Catalog, Edge, Selector, Topology } from "../schema";
 
 /** Verbindungsarten mit eigenem Linienstil (Tokens `--tiv-edge-…`). */
-export type EdgeKind = "phys" | "usb" | "tcp" | "vpn" | "wlan" | "inet";
+export type EdgeKind =
+  "phys" | "usb" | "tcp" | "vpn" | "wlan" | "inet" | "host";
 
 interface Described {
   kind: EdgeKind;
@@ -19,6 +20,7 @@ const KIND_NAME: Record<EdgeKind, string> = {
   vpn: "VPN",
   wlan: "WLAN",
   inet: "Internet",
+  host: "läuft auf",
 };
 
 const selects = (s: Selector, type: string, catalog: Catalog) =>
@@ -68,19 +70,21 @@ export function describeEdge(
   const both = (k: string) => ends.every((e) => e.kind === k);
 
   const [a, b] = ends;
-  const kind: EdgeKind = isWlan(edge, topology, catalog)
-    ? "wlan"
-    : both("tun")
-      ? "vpn"
-      : has("net")
-        ? "inet"
-        : both("ti")
-          ? "tcp"
-          : has("usb")
-            ? "usb"
-            : a && b && carriesTls([a.type, b.type], catalog)
-              ? "tcp"
-              : "phys";
+  const kind: EdgeKind = both("host")
+    ? "host"
+    : isWlan(edge, topology, catalog)
+      ? "wlan"
+      : both("tun")
+        ? "vpn"
+        : has("net")
+          ? "inet"
+          : both("ti")
+            ? "tcp"
+            : has("usb")
+              ? "usb"
+              : a && b && carriesTls([a.type, b.type], catalog)
+                ? "tcp"
+                : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

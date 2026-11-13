@@ -89,7 +89,7 @@
   {
     "id": "erl-ps-lan",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "ris", "lis"]
+      "types": ["pvs", "kis", "avs", "pflege", "pc", "ris", "lis", "server"]
     },
     "b": {
       "types": ["switch", "router"]
@@ -391,5 +391,21 @@
     "visibleSimple": false,
     "source": ["gemSpec_eRp_FdV", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
+  },
+  {
+    "id": "erl-sw-host",
+    "a": {
+      "types": ["pvs", "kis", "avs", "pflege", "ris", "lis"]
+    },
+    "b": {
+      "types": ["pc", "server"]
+    },
+    "kinds": {
+      "a": ["host"],
+      "b": ["host"]
+    },
+    "visibleSimple": false,
+    "source": ["gemILF_PS"],
+    "status": "Vereinfachung"
   }
 ]

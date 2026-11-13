@@ -2,7 +2,17 @@
   {
     "id": "V-4",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "server",
+        "tab",
+        "ris",
+        "lis"
+      ]
     },
     "b": {
       "types": [
@@ -39,18 +49,38 @@
   {
     "id": "V-6",
     "a": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "server",
+        "tab",
+        "ris",
+        "lis"
+      ]
     },
     "b": {
-      "types": ["pvs", "kis", "avs", "pflege", "pc", "tab", "ris", "lis"]
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "server",
+        "tab",
+        "ris",
+        "lis"
+      ]
     },
     "except": [
       {
         "a": {
-          "types": ["pc"]
+          "types": ["pc", "server"]
         },
         "b": {
-          "types": ["kis", "pvs", "avs"]
+          "types": ["kis", "pvs", "avs", "pflege", "ris", "lis"]
         }
       },
       {
@@ -62,7 +92,7 @@
         }
       }
     ],
-    "message": "Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden.",
+    "message": "Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden.",
     "source": ["gemILF_PS", "KH"],
     "status": "plausibel"
   },

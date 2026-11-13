@@ -32,6 +32,9 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("[A-4] WLAN-Anschluss ergibt WLAN", () => {
     expect(kindOf(["tab", "wlan0"], ["ap", "wlan"])).toBe("wlan");
   });
+  it("T-724a: „Läuft auf“ zwischen Software und Rechner ergibt eigene Art", () => {
+    expect(kindOf(["pvs", "host"], ["pc", "soft"])).toBe("host");
+  });
   it("USB-Anschluss ergibt USB", () => {
     expect(kindOf(["mkt", "usb0"], ["pvs", "usb0"])).toBe("usb");
   });

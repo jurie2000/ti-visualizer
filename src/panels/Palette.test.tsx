@@ -23,7 +23,7 @@ describe("Palette", () => {
   it("gruppiert nach Kategorie, klappt ein und zeigt nur platzierbare Typen", async () => {
     const user = userEvent.setup();
     render(<Palette onAdd={() => undefined} />);
-    const head = screen.getByRole("button", { name: /Primärsysteme/ });
+    const head = screen.getByRole("button", { name: /^Software/ });
     expect(head).toHaveAttribute("aria-expanded", "true");
     expect(
       screen.getByRole("button", {
@@ -159,12 +159,12 @@ describe("Palette", () => {
     Element.prototype.scrollIntoView = vi.fn(); // fehlt in jsdom
     const user = userEvent.setup();
     const { rerender } = render(<Palette onAdd={() => undefined} />);
-    const head = screen.getByRole("button", { name: /Primärsysteme/ });
+    const head = screen.getByRole("button", { name: /^Software/ });
     await user.click(head);
     expect(head).toHaveAttribute("aria-expanded", "false");
     const id = useCatalog
       .getState()
-      .catalog.categories.find((c) => c.name === "Primärsysteme")?.id;
+      .catalog.categories.find((c) => c.name === "Software")?.id;
     rerender(
       <Palette onAdd={() => undefined} reveal={{ id: id ?? "", n: 1 }} />,
     );

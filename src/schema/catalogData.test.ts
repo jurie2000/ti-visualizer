@@ -20,7 +20,7 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
 
   it("Anschlussarten sind genau die aus Regelwerk 2.1", () => {
     expect([...kinds].sort()).toEqual(
-      ["eth", "net", "ti", "tun", "usb", "wan", "wifi"].sort(),
+      ["eth", "host", "net", "ti", "tun", "usb", "wan", "wifi"].sort(),
     );
   });
 
@@ -87,6 +87,7 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
         "pflege",
         "pvs",
         "ris",
+        "server",
         "tab",
       ].sort(),
     );
@@ -202,7 +203,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     }
   });
 
-  it("Protokolle: sieben Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
+  it("Protokolle: acht Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
     expect(catalog.protocols.connectionKinds.map((k) => k.id)).toEqual([
       "phys",
       "tcp",
@@ -210,6 +211,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "wlan",
       "inet",
       "usb",
+      "host",
       "sammel",
     ]);
     expect(catalog.protocols.protocols).toHaveLength(13);

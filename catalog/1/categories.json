@@ -1,11 +1,19 @@
 [
   {
     "id": "primary",
-    "name": "Primärsysteme",
+    "name": "Software",
     "color": "#0072B2",
     "colorDark": "#63BDF2",
     "shape": "round",
     "order": 1
+  },
+  {
+    "id": "computer",
+    "name": "Rechner",
+    "color": "#4F5D73",
+    "colorDark": "#AAB7CC",
+    "shape": "box",
+    "order": 2
   },
   {
     "id": "card",
@@ -13,7 +21,7 @@
     "color": "#A66A00",
     "colorDark": "#F0B84A",
     "shape": "pill",
-    "order": 2
+    "order": 3
   },
   {
     "id": "terminal",
@@ -21,7 +29,7 @@
     "color": "#B0568D",
     "colorDark": "#E79CC4",
     "shape": "notch",
-    "order": 3
+    "order": 4
   },
   {
     "id": "lan",
@@ -29,7 +37,7 @@
     "color": "#5E6E2C",
     "colorDark": "#B6C77A",
     "shape": "box",
-    "order": 4
+    "order": 5
   },
   {
     "id": "network",
@@ -37,7 +45,7 @@
     "color": "#00795C",
     "colorDark": "#44D7AC",
     "shape": "box",
-    "order": 5
+    "order": 6
   },
   {
     "id": "service",
@@ -45,7 +53,7 @@
     "color": "#2C6FA8",
     "colorDark": "#7CBDEA",
     "shape": "hex",
-    "order": 6
+    "order": 7
   },
   {
     "id": "zentral",
@@ -53,7 +61,7 @@
     "color": "#B34E00",
     "colorDark": "#F08A4B",
     "shape": "diamond",
-    "order": 7
+    "order": 8
   },
   {
     "id": "versicherte",
@@ -61,6 +69,6 @@
     "color": "#7A6D00",
     "colorDark": "#F0E442",
     "shape": "bubble",
-    "order": 8
+    "order": 9
   }
 ]

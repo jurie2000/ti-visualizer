@@ -33,6 +33,14 @@
         "multi": false,
         "source": ["gemILF_PS"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS"],
@@ -104,6 +112,14 @@
         "multi": false,
         "source": ["gemSpec_MobKT"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS", "KH"],
@@ -143,6 +159,14 @@
         "multi": false,
         "source": ["gemILF_PS"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS", "gemF_eRp_Autorisierung_Apo"],
@@ -181,6 +205,14 @@
         "multi": false,
         "source": ["gemILF_PS"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["Pflege-FAQ"],
@@ -212,6 +244,14 @@
         "multi": false,
         "source": ["KH"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["KH"],
@@ -243,6 +283,14 @@
         "multi": false,
         "source": ["KH"],
         "status": "plausibel"
+      },
+      {
+        "id": "host",
+        "name": "Läuft auf",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["KH"],
@@ -252,8 +300,8 @@
     "id": "pc",
     "abbr": "PC",
     "name": "Arbeitsplatz-PC",
-    "description": "Der Arbeitsplatz-PC ist nur die Oberfläche. Er hängt am Switch oder direkt an KIS, RIS oder LIS — die Daten liegen dort, nicht auf dem PC.",
-    "category": "primary",
+    "description": "Der Arbeitsplatz-PC ist der Rechner, auf dem die Software läuft (PVS, AVS, Pflege). Er hängt per Ethernet am Switch. Die Daten liegen je nach Einrichtung lokal oder auf einem Server.",
+    "category": "computer",
     "icon": "screen",
     "visibleSimple": false,
     "placeable": true,
@@ -282,17 +330,64 @@
         "multi": false,
         "source": ["gemILF_PS"],
         "status": "plausibel"
+      },
+      {
+        "id": "soft",
+        "name": "Software",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS"],
     "status": "bestätigt"
   },
   {
+    "id": "server",
+    "abbr": "Server",
+    "name": "Server",
+    "description": "Auf einem Server läuft zentrale Software, zum Beispiel KIS, RIS und LIS. Der Server hängt per Ethernet am Switch, die Software ist ihm über „läuft auf“ zugeordnet.",
+    "category": "computer",
+    "icon": "server",
+    "visibleSimple": false,
+    "placeable": true,
+    "capabilities": ["netConfig:client"],
+    "ports": [
+      {
+        "id": "eth0",
+        "name": "Ethernet0",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "plausibel"
+      },
+      {
+        "id": "eth1",
+        "name": "Ethernet1",
+        "kind": "eth",
+        "multi": false,
+        "source": ["DVO"],
+        "status": "plausibel"
+      },
+      {
+        "id": "soft",
+        "name": "Software",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemILF_PS", "DVO"],
+    "status": "plausibel"
+  },
+  {
     "id": "tab",
     "abbr": "Visite-Tablet",
     "name": "Visite-Tablet (KIS-Client per WLAN)",
     "description": "Das Visite-Tablet ist ein mobiler KIS-Client. Es verbindet sich per WLAN mit dem Access Point und nutzt die TI über denselben Konnektor wie die festen Arbeitsplätze.",
-    "category": "primary",
+    "category": "computer",
     "icon": "tablet",
     "visibleSimple": false,
     "placeable": true,

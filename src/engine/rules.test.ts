@@ -283,7 +283,7 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
   it("[V-6] die erlaubten Primärsystem-Paare sind ausgenommen", () => {
     expect(check(pair("pc", "kis"), "x", "y").ok).toBe(true);
     expect(check(pair("lis", "kis"), "x", "y").ok).toBe(true);
-    expect(check(pair("pc", "ris"), "x", "y").ruleId).toBe("V-6");
+    expect(check(pair("tab", "kis"), "x", "y").ruleId).toBe("V-6");
   });
 
   it("[V-17] Konnektor an Gateway gehört zu V-10, nicht zu V-17", () => {

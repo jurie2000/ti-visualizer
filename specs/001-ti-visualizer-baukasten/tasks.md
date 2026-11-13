@@ -1058,6 +1058,43 @@ Sicherheitsprüfung.
     Katalog. Die Kartenart bleibt eine Radiogruppe (D10), kein
     Listenknopf wie im Mockup, weil Datum und PIN dazugehören.
 
+- [x] **T-724a Software läuft auf einem Rechner: Modell** · FR: FR-2 · Regeln: – · nach: T-723 · Issue: Anmerkung des Nutzers 2026-11-13
+  - Umfang: Neue Kategorie „Rechner“ (`computer`: PC, Server, Tablet), die
+    Kategorie „Primärsysteme“ heißt „Software“ (PVS, KIS, AVS, Pflege, RIS,
+    LIS, KIM-Clientmodul, TI-Messenger-Client). Neuer Gerätetyp `server`,
+    neue Anschlussart `host` („läuft auf“, kein Kabel), Verbindungsregel
+    Software ↔ PC/Server, eigene Verbindungsart `host` mit Linienstil.
+    Wege, Sammelkanten (Einfach), Aktionen und Layout behandeln Rechner wie
+    bisher die Primärsysteme. Bestehende Presets und Tutorial bleiben
+    unverändert gültig (Software hat noch ihren Ethernet-Anschluss).
+  - Fertig, wenn: Tests (Name mit T-724a) prüfen Verbinden und Ablehnen,
+    mehrere Programme je Rechner und mehrere Rechner je Programm, Weg über den Rechner, Aktionen am PC,
+    Sammelkante in Einfach und die Verbindungsart `host`.
+  - Auslegung (2026-11-13): Software hat kein Ethernet, das Kabel hängt am
+    Rechner (gemILF_PS Infomodell: Clientsystem läuft am Arbeitsplatz). Die
+    Verkabelung selbst nennt keine Quelle, Status Vereinfachung. Die
+    Verknüpfung ist ein eigener Knoten-Link (Modell A), keine Eigenschaft
+    am Rechner.
+
+- [ ] **T-724b Software ohne Ethernet, Presets und Tutorial umstellen** · FR: FR-2, FR-20 · Regeln: V-6, P-29 · nach: T-724a
+  - Umfang: PVS, KIS, AVS, Pflege, RIS, LIS verlieren Ethernet und USB.
+    Presets bekommen PC und Server, auf denen die Software läuft; IP-
+    Konfiguration und Arbeitsplatz-Zuordnung (P-29) wandern an den Rechner;
+    Mobiles KT hängt am Rechner. Verbindungsregeln „Software direkt am
+    Switch“ und „PC ↔ KIS“ entfallen. Tutorial-Schritte und Texte
+    (PC, dann PVS darauf) werden angepasst. Regelwerk 4, 6, 11, 13 folgen.
+  - Fertig, wenn: alle Presets und das Tutorial laufen mit dem neuen
+    Modell; Tests prüfen, dass Software nicht mehr per Kabel verbunden wird.
+
+- [ ] **T-724c Software als Dienst (SaaS) über das Internet** · FR: FR-2 · Regeln: – · nach: T-724b
+  - Umfang: Software kann auf einem Server im Internet laufen und wird dem
+    PC über das Internet bereitgestellt. Neuer Zustand am Server („im
+    Internet“) oder Gerätetyp „Server im Internet“, passende Regeln und
+    Wege für die TI-Aktionen, Preset oder Tutorial-Hinweis.
+  - Fertig, wenn: ein Test baut PC im Praxisnetz mit einer Software auf
+    einem Server im Internet und prüft Verbindung, Weg und Meldung.
+  - Auslegung folgt vor Beginn (Quellen zur Anbindung von Cloud-PVS prüfen).
+
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,
     Changelog, Tag `v1.0.0`. Bericht „FR → Tasks → Tests“ als Anhang für

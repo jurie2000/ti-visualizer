@@ -125,11 +125,12 @@ function roleBinder(
       .flatMap(([x, y]) =>
         x === trigger.id ? [y] : y === trigger.id ? [x] : [],
       )
-      .find(
-        (id) =>
+      .find((id) =>
+        ["primary", "computer"].includes(
           catalog.deviceTypes.find(
             (d) => d.id === topology.nodes.find((n) => n.id === id)?.type,
-          )?.category === "primary",
+          )?.category ?? "",
+        ),
       );
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>

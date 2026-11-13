@@ -70,13 +70,6 @@ describe("Palette", () => {
     expect(within(group).getAllByRole("listitem")).toHaveLength(1);
   });
 
-  it("wendet den Filter an", () => {
-    render(<Palette onAdd={() => undefined} filter={(d) => d.id === "pvs"} />);
-    expect(
-      screen.getAllByRole("button", { name: / hinzufügen$/ }),
-    ).toHaveLength(1);
-  });
-
   it("fügt per Enter hinzu, beliebig oft je Typ", async () => {
     const user = userEvent.setup();
     render(

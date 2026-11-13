@@ -11,7 +11,6 @@ import { FALLBACK_ICON, ICONS, categoryColor } from "./deviceStyle";
 import { isFree } from "../engine/rules";
 import { useSettings, useTopology } from "../store";
 import { CardMark } from "./CardChip";
-import { HiddenToggle } from "./HiddenToggle";
 import type { DeviceFlowNode } from "./toFlow";
 
 /**
@@ -26,7 +25,7 @@ import type { DeviceFlowNode } from "./toFlow";
  * - Kartenmarken (T-205, T-718): `.tiv-node__slot` unter dem Namen, `data.node.cards`.
  */
 export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
-  const { node, device, category, hidden } = data;
+  const { node, device, category } = data;
   const shape = category?.shape ?? "box";
   // Ziel annehmen beim Ziehen und beim Verbinden per Klick (Punkt, dann Ziel)
   const dragging = useConnection().inProgress;
@@ -82,13 +81,6 @@ export function DeviceNode({ data, selected }: NodeProps<DeviceFlowNode>) {
             {node.cards?.map((c) => (
               <CardMark key={c.kind} nodeId={node.id} card={c} />
             ))}
-            {hidden.length > 0 && (
-              <HiddenToggle
-                label={`+${String(hidden.length)} ausgeblendet`}
-                description={`+${String(hidden.length)} ausgeblendet an ${node.label ?? device.name}`}
-                hidden={hidden}
-              />
-            )}
           </div>
         </div>
       </div>

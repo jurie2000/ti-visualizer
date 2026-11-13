@@ -109,11 +109,6 @@ describe("T-724a/b Software läuft auf einem Rechner", () => {
         ).toBe(true);
   });
 
-  it("T-725a: Kein Gerätetyp ist in Einfach ausgeblendet", () => {
-    expect(catalog.deviceTypes.filter((d) => !d.visibleSimple)).toEqual([]);
-    expect(catalog.connectionRules.filter((r) => !r.visibleSimple)).toEqual([]);
-  });
-
   it("T-725a: Die Aktion startet am Rechner, nicht an der Software, in beiden Modi", () => {
     const t = mitPc();
     for (const mode of ["simple", "advanced"] as const) {

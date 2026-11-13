@@ -39,36 +39,35 @@ und Erweitert · 12 Offene Fragen · 13 Presets
 
 ## 1. Gerätetypen
 
-Die Topologie ist in beiden Modi dieselbe (Abschnitt 11). Seit T-725a sind
-alle Geräte in beiden Modi sichtbar („In Einfach sichtbar“ steht überall auf
-„ja“; die Spalte bleibt bis T-725b erhalten). „neu“ = nicht im Mockup.
+Die Topologie ist in beiden Modi dieselbe, alle Geräte sind in beiden Modi
+sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
 **Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen in T-724a noch keinen `host`-Anschluss. **Auslegung (2026-11-13, T-724c):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS (T-724c):** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). Das Modell vereinfacht: Die TI-Aktionen der Cloud-Software gehen vom PC der Praxis über den Konnektor der Praxis (Weg: Cloud-Server, PC, Switch, Konnektor). Ein Konnektor oder TI-Gateway im Rechenzentrum ist nicht Teil des Modells.
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `pvs` | Praxisverwaltungssystem | ja | bestätigt | gemILF_PS |
-| `kis` | Krankenhausinformationssystem | ja | bestätigt | gemILF_PS, KH |
-| `avs` | Apothekenverwaltungssystem | ja | bestätigt | gemILF_PS, gemF_eRp_Autorisierung_Apo |
-| `pflege` | Pflege-Software (Pflegeeinrichtung), neu | ja | bestätigt | gematik Pflege-FAQ |
-| `ris` | Radiologie-Informationssystem | ja | plausibel (Subsystem im Krankenhaus) | KH |
-| `lis` | Labor-Informationssystem | ja | plausibel (Subsystem im Krankenhaus) | KH |
-| `pc` | Arbeitsplatz-PC | ja | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
-| `server` | Server, neu | ja | plausibel | gemILF_PS, DVO |
-| `cloud` | Cloud-Server (SaaS), neu | ja | Vereinfachung | gemILF_PS |
-| `tab` | Visite-Tablet (KIS-Client per WLAN) | ja | plausibel | gemILF_PS, KH |
-| `kimcm` | KIM-Clientmodul, neu | ja | bestätigt | gemSpec_CM_KOMLE |
-| `timc` | TI-Messenger-Client, neu | ja | bestätigt | gemSpec_TI-M_Basis |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `pvs` | Praxisverwaltungssystem | bestätigt | gemILF_PS |
+| `kis` | Krankenhausinformationssystem | bestätigt | gemILF_PS, KH |
+| `avs` | Apothekenverwaltungssystem | bestätigt | gemILF_PS, gemF_eRp_Autorisierung_Apo |
+| `pflege` | Pflege-Software (Pflegeeinrichtung), neu | bestätigt | gematik Pflege-FAQ |
+| `ris` | Radiologie-Informationssystem | plausibel (Subsystem im Krankenhaus) | KH |
+| `lis` | Labor-Informationssystem | plausibel (Subsystem im Krankenhaus) | KH |
+| `pc` | Arbeitsplatz-PC | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
+| `server` | Server, neu | plausibel | gemILF_PS, DVO |
+| `cloud` | Cloud-Server (SaaS), neu | Vereinfachung | gemILF_PS |
+| `tab` | Visite-Tablet (KIS-Client per WLAN) | plausibel | gemILF_PS, KH |
+| `kimcm` | KIM-Clientmodul, neu | bestätigt | gemSpec_CM_KOMLE |
+| `timc` | TI-Messenger-Client, neu | bestätigt | gemSpec_TI-M_Basis |
 
 ### 1.2 Smartcards
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `egk` | elektronische Gesundheitskarte | ja | bestätigt | gemSpec_eGK_ObjSys_G2_1 |
-| `hba` | Heilberufsausweis | ja | bestätigt | gemSpec_HBA_ObjSys |
-| `smcb` | Institutionskarte SMC-B | ja | bestätigt | gemSpec_SMC-B_ObjSys_G2_1 |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `egk` | elektronische Gesundheitskarte | bestätigt | gemSpec_eGK_ObjSys_G2_1 |
+| `hba` | Heilberufsausweis | bestätigt | gemSpec_HBA_ObjSys |
+| `smcb` | Institutionskarte SMC-B | bestätigt | gemSpec_SMC-B_ObjSys_G2_1 |
 
 Smartcards sind **keine Knoten** auf der Fläche (D12). Sie stecken in
 Geräten mit der Fähigkeit `cardSlots` oder `nfcCard` (Abschnitt 5). Die
@@ -81,61 +80,61 @@ gemF_Highspeed-Konnektor.
 
 ### 1.3 Kartenterminals
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `kt` | eHealth-Kartenterminal | ja | bestätigt | gemSpec_KT |
-| `mkt` | Mobiles Kartenterminal (offline) | ja | bestätigt | gemSpec_MobKT |
-| `cardlink` | eHealth-CardLink (Dienst im Internet ohne Kartenslots, liest die eGK über das Smartphone der versicherten Person) | ja | bestätigt | gemSpec_eHealth-CardLink, FP eHealth-CardLink |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `kt` | eHealth-Kartenterminal | bestätigt | gemSpec_KT |
+| `mkt` | Mobiles Kartenterminal (offline) | bestätigt | gemSpec_MobKT |
+| `cardlink` | eHealth-CardLink (Dienst im Internet ohne Kartenslots, liest die eGK über das Smartphone der versicherten Person) | bestätigt | gemSpec_eHealth-CardLink, FP eHealth-CardLink |
 
 ### 1.4 Lokales Netz
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `switch` | Switch | ja | plausibel | DVO |
-| `router` | Internet-Router (IAG, Internet Access Gateway), mit WLAN | ja | bestätigt | Betriebsarten, gemSpec_Kon |
-| `ap` | WLAN Access Point | ja | plausibel | DVO |
-| `fw` | Firewall, neu | ja | bestätigt (im Parallelbetrieb nötig) | Betriebsarten |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `switch` | Switch | plausibel | DVO |
+| `router` | Internet-Router (IAG, Internet Access Gateway), mit WLAN | bestätigt | Betriebsarten, gemSpec_Kon |
+| `ap` | WLAN Access Point | plausibel | DVO |
+| `fw` | Firewall, neu | bestätigt (im Parallelbetrieb nötig) | Betriebsarten |
 
 ### 1.5 Zugang zur TI und Netze
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `kon` | Konnektor | ja | bestätigt | gemSpec_Kon |
-| `hskon` | Highspeed-Konnektor | ja | bestätigt | gemF_Highspeed-Konnektor |
-| `gateway` | TI-Gateway (Zugangsmodul + HSK-Instanz) | ja | bestätigt | gemF_TI-Gateway |
-| `vpn` | VPN-Zugangsdienst | ja | bestätigt | Arch, gemSpec_VPN_ZugD |
-| `internet` | Internet (Transportnetz), neu | ja | bestätigt | Arch |
-| `zentral` | Zentrales Netz der TI, neu | ja | bestätigt | Arch, gemSpec_Net |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `kon` | Konnektor | bestätigt | gemSpec_Kon |
+| `hskon` | Highspeed-Konnektor | bestätigt | gemF_Highspeed-Konnektor |
+| `gateway` | TI-Gateway (Zugangsmodul + HSK-Instanz) | bestätigt | gemF_TI-Gateway |
+| `vpn` | VPN-Zugangsdienst | bestätigt | Arch, gemSpec_VPN_ZugD |
+| `internet` | Internet (Transportnetz), neu | bestätigt | Arch |
+| `zentral` | Zentrales Netz der TI, neu | bestätigt | Arch, gemSpec_Net |
 
 ### 1.6 Zentrale Dienste (neu)
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `dns` | Namensdienst | ja | bestätigt | gemSpec_Net |
-| `ntp` | Zeitdienst | ja | bestätigt | gemSpec_Net |
-| `vzd` | Verzeichnisdienst (FHIR-Directory) | ja | bestätigt | gemSpec_VZD, gemSpec_VZD_FHIR_Directory |
-| `tsl` | TSL-Dienst mit OCSP-Responder | ja | bestätigt | gemSpec_TSL, gemSpec_PKI |
-| `idp` | Identity Provider (zentral) | ja | bestätigt | gemSpec_IDP_FD, gemSpec_FD_eRp |
-| `idpsek` | Sektoraler IDP (GesundheitsID) | ja | bestätigt | gemSpec_IDP_Sek |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `dns` | Namensdienst | bestätigt | gemSpec_Net |
+| `ntp` | Zeitdienst | bestätigt | gemSpec_Net |
+| `vzd` | Verzeichnisdienst (FHIR-Directory) | bestätigt | gemSpec_VZD, gemSpec_VZD_FHIR_Directory |
+| `tsl` | TSL-Dienst mit OCSP-Responder | bestätigt | gemSpec_TSL, gemSpec_PKI |
+| `idp` | Identity Provider (zentral) | bestätigt | gemSpec_IDP_FD, gemSpec_FD_eRp |
+| `idpsek` | Sektoraler IDP (GesundheitsID) | bestätigt | gemSpec_IDP_Sek |
 
 ### 1.7 Fachdienste
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `vsdm` | VSDM-Fachdienst der Krankenkasse | ja | bestätigt | gemSysL_VSDM, gemSpec_VSDM_2 |
-| `erp` | E-Rezept-Fachdienst | ja | bestätigt | gemSpec_FD_eRp |
-| `kim` | KIM-Fachdienst | ja | bestätigt | gemSpec_FD_KOMLE |
-| `tim` | TI-Messenger-Fachdienst | ja | bestätigt | gemSpec_TI-M_Basis |
-| `epa` | ePA-Aktensystem | ja | bestätigt | gemSpec_Aktensystem_ePAfueralle |
-| `popp` | PoPP-Service, neu | ja | bestätigt | gemSpec_PoPP_Service |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `vsdm` | VSDM-Fachdienst der Krankenkasse | bestätigt | gemSysL_VSDM, gemSpec_VSDM_2 |
+| `erp` | E-Rezept-Fachdienst | bestätigt | gemSpec_FD_eRp |
+| `kim` | KIM-Fachdienst | bestätigt | gemSpec_FD_KOMLE |
+| `tim` | TI-Messenger-Fachdienst | bestätigt | gemSpec_TI-M_Basis |
+| `epa` | ePA-Aktensystem | bestätigt | gemSpec_Aktensystem_ePAfueralle |
+| `popp` | PoPP-Service, neu | bestätigt | gemSpec_PoPP_Service |
 
 ### 1.8 Versicherte und Gegenstellen (neu)
 
-| Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| `kk` | Krankenkasse (Empfänger z. B. der eAU) | ja | bestätigt | PM eAU, KIM-DK |
-| `erpapp` | E-Rezept-App der Versicherten | ja | bestätigt | gemSpec_eRp_FdV |
-| `epaapp` | ePA-App der Versicherten | ja | bestätigt | gemSpec_Aktensystem_ePAfueralle |
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `kk` | Krankenkasse (Empfänger z. B. der eAU) | bestätigt | PM eAU, KIM-DK |
+| `erpapp` | E-Rezept-App der Versicherten | bestätigt | gemSpec_eRp_FdV |
+| `epaapp` | ePA-App der Versicherten | bestätigt | gemSpec_Aktensystem_ePAfueralle |
 
 Kategorien haben je eine farbenblind-sichere Farbe und eine eigene Form
 (Mockup). Neue Kategorien: Zentrale Dienste und Versicherte.
@@ -241,7 +240,6 @@ Abschnitt 5.
 | `inet` | Internet | offenes Netz | Strich-Punkt |
 | `usb` | USB | lokale Kabelverbindung, z. B. Mobiles KT | durchgezogen, dick |
 | `host` | Läuft auf | Software läuft auf einem Rechner, kein Kabel | gepunktet, dünn |
-| `sammel` | Sammelkante | entfällt seit T-725a (kein Gerät ist mehr ausgeblendet); Entfernung in T-725b | durchgezogen, doppelt |
 
 Zuordnung einer Kante zur Art, in dieser Reihenfolge (aus den
 Anschlussarten der beiden Enden und der Protokolltabelle unten, keine
@@ -289,9 +287,8 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 ## 4. Verbindungsregeln
 
 **Zugang** steht in diesem Abschnitt für Konnektor, Highspeed-Konnektor
-und TI-Gateway (Fähigkeit `zugang`). „In Einfach sichtbar“ zeigt, ob die
-Verbindung im Modus Einfach als eigene Kante erscheint. Gültig ist jede
-erlaubte Verbindung in beiden Modi.
+und TI-Gateway (Fähigkeit `zugang`). Gültig ist jede erlaubte Verbindung
+in beiden Modi.
 
 ### 4.0 Prüflogik (entschieden 2026-11-03)
 
@@ -346,58 +343,58 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 
 **Kartenterminals**
 
-| Von | Nach | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| eHealth-KT | Zugang | ja | bestätigt | gemSpec_KT, gemSpec_Kon |
-| eHealth-KT | Switch, Router-LAN | ja | bestätigt (KT im LAN) | gemSpec_KT, DVO |
-| eHealth-CardLink | Zugang | ja | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
-| eHealth-CardLink | Internet | ja | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
-| Mobiles KT | PVS, KIS, AVS, Pflege (logisch `app`; Kurzweg im Modus Einfach, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
-| Mobiles KT | PC (USB) | ja | bestätigt | gemSpec_MobKT |
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| eHealth-KT | Zugang | bestätigt | gemSpec_KT, gemSpec_Kon |
+| eHealth-KT | Switch, Router-LAN | bestätigt (KT im LAN) | gemSpec_KT, DVO |
+| eHealth-CardLink | Zugang | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
+| eHealth-CardLink | Internet | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
+| Mobiles KT | PVS, KIS, AVS, Pflege (logisch `app`; Kurzweg im Modus Einfach, zur Datenübergabe) | bestätigt | gemSpec_MobKT |
+| Mobiles KT | PC (USB) | bestätigt | gemSpec_MobKT |
 
 **Primärsysteme und Clients**
 
-| Von | Nach | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| PVS, KIS, AVS, Pflege | Zugang | ja | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
-| PC, Server | Switch, Router-LAN | ja | plausibel | DVO |
-| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | ja | Vereinfachung (T-724a, T-724c) | gemILF_PS |
-| PC | Cloud-Server (Zugriff über das Internet, SaaS) | ja | Vereinfachung (T-724c) | gemILF_PS |
-| Visite-Tablet | Access Point, Router-WLAN | ja | plausibel | KH |
-| RIS, LIS | KIS (HL7-Schnittstelle) | ja | plausibel | KH |
-| PVS, KIS, AVS, Pflege | KIM-Clientmodul | ja | bestätigt | gemSpec_CM_KOMLE |
-| KIM-Clientmodul | Zugang | ja | bestätigt | gemSpec_CM_KOMLE |
-| TI-Messenger-Client | TI-Messenger-FD (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_TI-M_Basis |
-| TI-Messenger-Client | Internet | ja | plausibel | gemSpec_TI-M_Basis |
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| PVS, KIS, AVS, Pflege | Zugang | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
+| PC, Server | Switch, Router-LAN | plausibel | DVO |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung (T-724a, T-724c) | gemILF_PS |
+| PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung (T-724c) | gemILF_PS |
+| Visite-Tablet | Access Point, Router-WLAN | plausibel | KH |
+| RIS, LIS | KIS (HL7-Schnittstelle) | plausibel | KH |
+| PVS, KIS, AVS, Pflege | KIM-Clientmodul | bestätigt | gemSpec_CM_KOMLE |
+| KIM-Clientmodul | Zugang | bestätigt | gemSpec_CM_KOMLE |
+| TI-Messenger-Client | TI-Messenger-FD (direkt) | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_TI-M_Basis |
+| TI-Messenger-Client | Internet | plausibel | gemSpec_TI-M_Basis |
 
 **Lokales Netz**
 
-| Von | Nach | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| Switch | Switch, Router-LAN, Access Point, Firewall, Zugang | ja | plausibel | DVO |
-| Router (WAN) | Internet | ja | bestätigt | Betriebsarten |
-| Firewall | Router-LAN, Switch, Zugang | ja | bestätigt (Parallelbetrieb) | Betriebsarten |
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| Switch | Switch, Router-LAN, Access Point, Firewall, Zugang | plausibel | DVO |
+| Router (WAN) | Internet | bestätigt | Betriebsarten |
+| Firewall | Router-LAN, Switch, Zugang | bestätigt (Parallelbetrieb) | Betriebsarten |
 
 **Zugang zur TI**
 
-| Von | Nach | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | ja | bestätigt | Betriebsarten, gemSpec_Kon |
-| Zugang | VPN-Zugangsdienst (direkt, über `tun`) | ja | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
-| VPN-Zugangsdienst | Internet | ja | bestätigt | Arch |
-| VPN-Zugangsdienst | Zentrales Netz | ja | bestätigt | Arch |
-| VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | ja | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | bestätigt | Betriebsarten, gemSpec_Kon |
+| Zugang | VPN-Zugangsdienst (direkt, über `tun`) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
+| VPN-Zugangsdienst | Internet | bestätigt | Arch |
+| VPN-Zugangsdienst | Zentrales Netz | bestätigt | Arch |
+| VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
 
 **Zentrales Netz, Dienste und Versicherte**
 
-| Von | Nach | In Einfach sichtbar | Status | Quelle |
-|---|---|---|---|---|
-| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, IDP, VSDM, E-Rezept, KIM, ePA | ja | bestätigt | gemSpec_Net, Arch |
-| KIM-Fachdienst | Krankenkasse | ja | plausibel (Krankenkasse hat eigenen KIM-Zugang) | KIM-DK, PM eAU |
-| E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | Internet | ja | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
-| E-Rezept-App | E-Rezept-FD (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_eRp_FdV |
-| ePA-App | ePA (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_Aktensystem_ePAfueralle |
-| E-Rezept-App, ePA-App | Internet, sektoraler IDP | ja | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, IDP, VSDM, E-Rezept, KIM, ePA | bestätigt | gemSpec_Net, Arch |
+| KIM-Fachdienst | Krankenkasse | plausibel (Krankenkasse hat eigenen KIM-Zugang) | KIM-DK, PM eAU |
+| E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | Internet | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
+| E-Rezept-App | E-Rezept-FD (direkt) | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_eRp_FdV |
+| ePA-App | ePA (direkt) | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_Aktensystem_ePAfueralle |
+| E-Rezept-App, ePA-App | Internet, sektoraler IDP | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
 
 Der PoPP-Service hat keine direkte Verbindung zum Primärsystem. Er ist
 über Router und Internet erreichbar (ZETA, TI 2.0). In v1 hat er keinen
@@ -472,7 +469,6 @@ Zentrales Netz (optional) → **Dienst**
   ePA-App ↔ ePA-Dienst, sektoraler IdP ·
   TI-Messenger-Client ↔ TI-Messenger ·
   CardLink ↔ sein Zugang · jeder Auslöser ↔ PoPP.
-- Ausgeblendete Geräte (Modus Einfach) zählen voll mit.
 - **Mehrere Zugänge im Netz:** Ein Kartenterminal gehört zu dem Zugang,
   mit dem es gepairt ist (`pairedWith` in der TerminalConfig). Bei einer
   direkten Verbindung ist das der verbundene Zugang. Fehlt beides und gibt
@@ -814,11 +810,10 @@ Entschieden 2026-11-04 (Plan D36), geändert 2026-11-13 (T-725a, siehe unten).
 Entschieden 2026-11-13 (T-725a, ersetzt D36): Beide Modi zeigen alle Geräte
 und Verbindungen. Erweitert ergänzt nur die Geräteeinstellungen (IP-Konfiguration, Zeit,
 Zertifikat, Firewall, VLAN, Pairing, Arbeitsplatz) samt ihren Prüfregeln und
-die Anschlussauswahl. Das Ausblenden von Geräten und die
-Sammelkanten entfallen. Der Modus gehört zu den Einstellungen, nicht zur
-Topologie; eine Datei lässt sich in jedem Modus öffnen. Der Code der
-Ausblendefunktion (Sammelkante, „+n ausgeblendet“, `visibleSimple`) wird in
-T-725b entfernt.
+die Anschlussauswahl. Das Ausblenden von Geräten, die Sammelkanten und das
+Katalogfeld „In Einfach sichtbar“ sind entfallen (T-725a, T-725b). Der Modus
+gehört zu den Einstellungen, nicht zur Topologie; eine Datei lässt sich in
+jedem Modus öffnen.
 
 ## 12. Offene Fragen
 
@@ -841,7 +836,7 @@ T-725b entfernt.
   SMC-B-Authentisierung und leitet weiter. Mit dem Fachdienst spricht das
   Primärsystem (gemILF_PS_eRp, Prüfbericht 2026-11-04).
 - [x] Prüfungsnachweis als Voraussetzung für Apotheke und ePA ergänzt.
-- [x] Modus nur als Darstellung, Sammelkanten im Modus Einfach (11).
+- [x] Modus ändert nie die Topologie, beide Modi zeigen alle Geräte (11, T-725a).
 
 **Noch offen**
 

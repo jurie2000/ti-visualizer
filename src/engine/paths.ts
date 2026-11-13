@@ -244,10 +244,16 @@ export function terminalFor(
   const terminals = topology.nodes.filter((n) => slots.has(n.type));
   // Software hat keinen eigenen Arbeitsplatz: es zählen die ihrer Rechner („läuft auf“).
   const hostIds = new Set(
-    topology.edges.flatMap((e) => {
-      const [a, b] = e.ends;
-      return a.node === trigger ? [b.node] : b.node === trigger ? [a.node] : [];
-    }),
+    topology.edges
+      .filter((e) => isHostEdge(e, topology, catalog))
+      .flatMap((e) => {
+        const [a, b] = e.ends;
+        return a.node === trigger
+          ? [b.node]
+          : b.node === trigger
+            ? [a.node]
+            : [];
+      }),
   );
   const wps = topology.nodes
     .filter((n) => n.id === trigger || hostIds.has(n.id))
@@ -286,13 +292,14 @@ export function isHostEdge(
  * Software, die ein Rechner nutzt (T-724b): die auf ihm selbst läuft („läuft
  * auf“) und, wenn er ein Arbeitsplatz ist (Fähigkeit `workplace`), die auf
  * Servern läuft, die er über Netzgeräte erreicht. Ausgefallene Geräte und
- * Kanten trennen die Verbindung (P-1, P-2). Eigene zuerst.
+ * Kanten trennen die Verbindung (P-1, P-2). Eigene zuerst, `own` trennt sie
+ * von der Software auf Servern.
  */
 export function softwareOn(
   topology: Topology,
   machine: string,
   catalog: Catalogue,
-): Node[] {
+): { node: Node; own: boolean }[] {
   const byId = new Map(topology.nodes.map((n) => [n.id, n]));
   const type = (n: Node) => catalog.deviceTypes.find((d) => d.id === n.type);
   const neighbours = (id: string) =>
@@ -305,14 +312,15 @@ export function softwareOn(
         ? [{ n, host: isHostEdge(e, topology, catalog) }]
         : [];
     });
-  const found: Node[] = [];
-  const take = (id: string) => {
+  const found: { node: Node; own: boolean }[] = [];
+  const take = (id: string, own: boolean) => {
     for (const { n, host } of neighbours(id))
-      if (host && !found.includes(n)) found.push(n);
+      if (host && !found.some((f) => f.node === n))
+        found.push({ node: n, own });
   };
   const start = byId.get(machine);
   if (!start || type(start)?.category !== "computer") return found;
-  take(machine);
+  take(machine, true);
   if (!type(start)?.capabilities.includes("workplace")) return found;
   const seen = new Set([machine]);
   const queue = [machine];
@@ -327,7 +335,7 @@ export function softwareOn(
         t?.category === "computer" &&
         !t.capabilities.includes("workplace")
       )
-        take(n.id);
+        take(n.id, false);
     }
   return found;
 }

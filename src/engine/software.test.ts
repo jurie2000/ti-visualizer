@@ -140,6 +140,32 @@ describe("T-724b Software ohne Ethernet, Aktionen am Rechner", () => {
     expect(actionsOf(kh, "srv1", "advanced")).toContain("erezept-ausstellen");
   });
 
+  it("T-724b: Server bieten die Aktionen von RIS und LIS an, ein PC erbt nur die von KIS", () => {
+    const kl = catalog.presets.find((p) => p.id === "klinikum")?.topology;
+    if (!kl) throw new Error("Preset klinikum fehlt");
+    expect(actionsOf(kl, "rad_srv", "advanced")).toContain(
+      "befund-epa-hochladen",
+    );
+    expect(actionsOf(kl, "lab_srv", "advanced")).toContain("earztbrief-kim");
+    expect(actionsOf(kl, "rad_pc", "advanced")).toContain("erezept-ausstellen");
+  });
+
+  it("T-724b: Im Klinikum bindet der Ablauf die Software, die ihn anbietet, nicht die erste auf dem Weg", () => {
+    const kl = catalog.presets.find((p) => p.id === "klinikum")?.topology;
+    const pc = kl?.nodes.find((n) => n.id === "rad_pc");
+    const srv = kl?.nodes.find((n) => n.id === "rad_srv");
+    const erezept = catalog.flows.find((f) => f.id === "erezept");
+    const epa = catalog.flows.find((f) => f.id === "epa");
+    if (!kl || !pc || !srv || !erezept || !epa)
+      throw new Error("Fixture fehlt");
+    // E-Rezept gibt es nur im KIS, auch wenn RIS vor KIS erreichbar ist
+    const [first] = bindFlow(erezept, pc, kl, catalog);
+    expect(first?.nodes[0]).toBe("kis1");
+    // ePA-Upload am Server der Radiologie: das RIS darauf sendet
+    const [upload] = bindFlow(epa, srv, kl, catalog);
+    expect(upload?.nodes[0]).toBe("rad_ris");
+  });
+
   it("T-724b: Im Ablauf ist die Software der Absender, der Weg führt über den Rechner", () => {
     const t = mitPc();
     const pc = t.nodes.find((n) => n.id === "pc1");

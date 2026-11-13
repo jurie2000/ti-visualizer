@@ -58,7 +58,7 @@ describe("Karten stecken und ziehen", () => {
     render(app);
     await user.click(plugButton());
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
-    await user.selectOptions(within(dlg).getByLabelText("Kartenart"), "hba");
+    await user.click(within(dlg).getByRole("radio", { name: /^HBA/ }));
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
     expect(cardsOf().map((c) => c.kind)).toEqual(["hba"]);
     expect(screen.getByText(/HBA · gesteckt · ISO 7816/)).toBeInTheDocument();
@@ -76,10 +76,10 @@ describe("Karten stecken und ziehen", () => {
     render(app);
     await user.click(plugButton());
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
-    const options = within(
-      within(dlg).getByLabelText("Kartenart"),
-    ).getAllByRole("option");
-    expect(options.map((o) => o.textContent)).toEqual(["HBA", "SMC-B"]);
+    const arten = within(
+      within(dlg).getByRole("group", { name: "Kartenart" }),
+    ).getAllByRole<HTMLInputElement>("radio");
+    expect(arten.map((r) => r.value)).toEqual(["hba", "smcb"]);
   });
 
   it("[K-2] meldet bei voller Kartenbelegung, dass alle Arten stecken", async () => {
@@ -133,10 +133,10 @@ describe("Karten stecken und ziehen", () => {
     useUi.getState().openDialog(`plugCard:${target.id}`);
     render(app);
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
-    const options = within(
-      within(dlg).getByLabelText("Kartenart"),
-    ).getAllByRole("option");
-    expect(options.map((o) => o.textContent)).toEqual(["eGK"]);
+    const arten = within(
+      within(dlg).getByRole("group", { name: "Kartenart" }),
+    ).getAllByRole<HTMLInputElement>("radio");
+    expect(arten.map((r) => r.value)).toEqual(["egk"]);
     expect(within(dlg).queryByRole("checkbox")).toBeNull();
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
     const card = useTopology

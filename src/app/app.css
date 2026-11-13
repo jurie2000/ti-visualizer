@@ -1199,3 +1199,157 @@ a {
   line-height: 1.45;
   color: var(--color-neutral-800);
 }
+
+/* Dialog „Karte stecken“ (T-723): Mockup-Optik, rechtes Detailpanel bleibt sichtbar */
+.tiv-dialog:has(.tiv-plug) {
+  width: min(460px, calc(100% - 32px));
+  padding: 0;
+  background: var(--color-neutral-100);
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+.tiv-dialog:has(.tiv-plug) .tiv-dialog__head {
+  padding: 18px 20px 4px;
+}
+.tiv-dialog:has(.tiv-plug) .tiv-dialog__head h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.15;
+}
+.tiv-dialog:has(.tiv-plug) .tiv-dialog__head .tiv-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+}
+.tiv-dialog:has(.tiv-plug) .tiv-dialog__body {
+  padding: 0 20px 20px;
+}
+@media (min-width: 1101px) {
+  /* Rechts 400 px frei (Schiene und Detailpanel): nicht abdunkeln, Dialog daneben mittig */
+  .tiv-dialog:has(.tiv-plug) {
+    inset-inline-end: 400px;
+  }
+  .tiv-dialog:has(.tiv-plug)::backdrop {
+    background: linear-gradient(
+      to right,
+      rgb(32 30 29 / 38%) calc(100% - 400px),
+      transparent calc(100% - 400px)
+    );
+  }
+}
+.tiv-plug {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tiv-plug__lead {
+  margin: 0;
+  color: var(--color-neutral-800);
+}
+.tiv-plug__kinds {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.tiv-plug__kinds legend {
+  margin-bottom: 8px;
+  padding: 0;
+  color: var(--color-neutral-700);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tiv-plug__kind {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.tiv-plug__kind:has(input:checked) {
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--color-bg));
+  border-color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+.tiv-plug__kind:has(input:focus-visible) {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.tiv-plug__kind input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.tiv-plug__kind svg {
+  flex: none;
+  box-sizing: content-box;
+  padding: 8px;
+  color: var(--color-accent-700);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border-radius: 999px;
+}
+.tiv-plug__kind strong,
+.tiv-plug__kind span span {
+  display: block;
+}
+.tiv-plug__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 700;
+}
+.tiv-plug__field input {
+  font: inherit;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 12px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-500);
+  border-radius: var(--radius-sm);
+}
+/* PIN-Schalter: Knopf, der bei gesetztem Zustand grün wird; Zustand auch über Symbol und Rahmen */
+.tiv-plug__pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  background: var(--tiv-btn-bg);
+  border: 1px solid var(--tiv-btn-bd);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.tiv-plug__pin:has(input:checked) {
+  color: var(--tiv-ok-fg);
+  background: var(--tiv-ok-bg);
+  border-color: var(--tiv-ok-bd);
+  box-shadow: inset 0 0 0 1px var(--tiv-ok-bd);
+}
+.tiv-plug__pin:has(input:focus-visible) {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+  outline-offset: 2px;
+}
+.tiv-plug__pin input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.tiv-plug > .tiv-btn {
+  align-self: flex-end;
+}

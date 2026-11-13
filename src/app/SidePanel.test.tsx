@@ -6,7 +6,7 @@ import { useSettings } from "../store";
 import { SidePanel } from "./SidePanel";
 
 const onClick = vi.fn();
-const view = (autoOpen?: unknown) => (
+const view = (autoOpen?: unknown, hold?: boolean) => (
   <ReactFlowProvider>
     <SidePanel
       side="right"
@@ -14,6 +14,7 @@ const view = (autoOpen?: unknown) => (
       label="Detailpanel"
       overlayOpen={false}
       autoOpen={autoOpen}
+      hold={hold}
       rail={[{ label: "Details", icon: Info, onClick }]}
     >
       <button type="button">Inhalt</button>
@@ -37,6 +38,14 @@ afterEach(() => {
 });
 
 describe("T-711 Seitenleiste (FR-22)", () => {
+  it("T-723: bleibt mit `hold` offen, auch wenn der Fokus den Bereich verlässt", () => {
+    render(view(undefined, true));
+    expect(wrap()).toHaveAttribute("data-open", "true");
+    fireEvent.blur(screen.getByRole("button", { name: "Details" }));
+    wait(500);
+    expect(wrap()).toHaveAttribute("data-open", "true");
+  });
+
   it("öffnet bei Hover nach 150 ms und schließt nach 280 ms", () => {
     render(view());
     expect(wrap()).toHaveAttribute("data-open", "false");

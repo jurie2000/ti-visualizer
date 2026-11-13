@@ -277,7 +277,6 @@
     "description": "Hier läuft Software als Dienst im Internet (SaaS). Der PC bekommt sie über das Internet, die Software läuft auf dem Server im Rechenzentrum. Die TI-Aktionen gehen vom PC der Praxis über den Konnektor der Praxis (Vereinfachung).",
     "category": "computer",
     "icon": "cloud",
-    "visibleSimple": true,
     "placeable": true,
     "capabilities": [],
     "ports": [

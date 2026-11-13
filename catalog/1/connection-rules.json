@@ -377,7 +377,6 @@
       "a": ["web"],
       "b": ["web"]
     },
-    "visibleSimple": true,
     "source": ["gemILF_PS"],
     "status": "Vereinfachung"
   }

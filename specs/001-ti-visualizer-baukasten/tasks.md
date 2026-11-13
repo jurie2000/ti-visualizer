@@ -1125,14 +1125,24 @@ Sicherheitsprüfung.
   - Fertig, wenn: kein Code und kein Test mehr auf die Ausblendefunktion
     verweist; alle Prüfungen laufen.
 
-- [ ] **T-724c Software als Dienst (SaaS) über das Internet** · FR: FR-2 · Regeln: – · nach: T-724b
-  - Umfang: Software kann auf einem Server im Internet laufen und wird dem
-    PC über das Internet bereitgestellt. Neuer Zustand am Server („im
-    Internet“) oder Gerätetyp „Server im Internet“, passende Regeln und
-    Wege für die TI-Aktionen, Preset oder Tutorial-Hinweis.
-  - Fertig, wenn: ein Test baut PC im Praxisnetz mit einer Software auf
-    einem Server im Internet und prüft Verbindung, Weg und Meldung.
-  - Auslegung folgt vor Beginn (Quellen zur Anbindung von Cloud-PVS prüfen).
+- [x] **T-724c Software als Dienst (SaaS) über das Internet** · FR: FR-2 · Regeln: A-1 · nach: T-725a · Anmerkung des Nutzers 2026-11-13
+  - Umfang: Neuer Gerätetyp `cloud` („Cloud-Server (SaaS)“, Kategorie Rechner)
+    und neue Anschlussart `web` („Internet-Zugriff“, kein Kabel). Software läuft
+    auf dem Cloud-Server, der PC greift über `web` darauf zu. Der PC erbt die
+    Aktionen der Software auf dem Cloud-Server; im Ablauf läuft das Paket von
+    der Cloud-Software über den PC und den Switch zum Konnektor. Die Kante
+    zeigt die Verbindungsart „Internet“.
+  - Fertig, wenn: Tests (Name mit T-724c) prüfen Verbinden und Ablehnen
+    (Cloud-Server nicht am Switch, V-4 mit Begründung), Aktionen am PC (der
+    Cloud-Server startet selbst keine), Ablauf mit Cloud-Software als Absender
+    und die Verbindungsart. Preset und Tutorial-Hinweis zu SaaS entfallen in
+    diesem Task; bei Bedarf ein eigener Folge-Task.
+  - Auslegung (2026-11-13): Die gematik spezifiziert Primärsysteme nicht,
+    TI-as-a-Service-Anbieter binden Cloud-Primärsysteme über ein Rechenzentrum
+    an (quellen.md Abschnitt 7, nicht gematik). Das Modell vereinfacht: Die
+    TI-Aktionen gehen vom PC der Praxis über den Konnektor der Praxis, ein
+    Konnektor oder TI-Gateway im Rechenzentrum fehlt (Status Vereinfachung).
+    KIM-Clientmodul und TI-Messenger-Client bleiben ohne `host`.
 
 - [ ] **T-705 Release v1** · FR: – · Regeln: – · nach: T-704, T-906
   - Umfang: README-Status, Feature-Tabelle in `specs/README.md`,

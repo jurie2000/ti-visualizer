@@ -356,13 +356,28 @@
       "types": ["pvs", "kis", "avs", "pflege", "ris", "lis"]
     },
     "b": {
-      "types": ["pc", "server"]
+      "types": ["pc", "server", "cloud"]
     },
     "kinds": {
       "a": ["host"],
       "b": ["host"]
     },
     "source": ["gemILF_PS"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-saas-zugriff",
+    "a": {
+      "types": ["pc"]
+    },
+    "b": {
+      "types": ["cloud"]
+    },
+    "kinds": {
+      "a": ["web"],
+      "b": ["web"]
+    },
+    "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
     "status": "Vereinfachung"
   }
 ]

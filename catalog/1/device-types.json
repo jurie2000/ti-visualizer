@@ -186,7 +186,7 @@
     "category": "computer",
     "icon": "screen",
     "placeable": true,
-    "capabilities": ["netConfig:client", "workplace"],
+    "capabilities": ["netConfig:client", "workplace", "trigger"],
     "ports": [
       {
         "id": "eth0",
@@ -219,6 +219,14 @@
         "multi": true,
         "source": ["gemILF_PS"],
         "status": "Vereinfachung"
+      },
+      {
+        "id": "web",
+        "name": "Internet-Zugriff",
+        "kind": "web",
+        "multi": true,
+        "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
+        "status": "Vereinfachung"
       }
     ],
     "source": ["gemILF_PS"],
@@ -232,7 +240,7 @@
     "category": "computer",
     "icon": "server",
     "placeable": true,
-    "capabilities": ["netConfig:client"],
+    "capabilities": ["netConfig:client", "trigger"],
     "ports": [
       {
         "id": "eth0",
@@ -263,6 +271,36 @@
     "status": "plausibel"
   },
   {
+    "id": "cloud",
+    "abbr": "Cloud",
+    "name": "Cloud-Server (SaaS)",
+    "description": "Hier läuft Software als Dienst im Internet (SaaS). Der PC bekommt sie über das Internet, die Software läuft auf dem Server im Rechenzentrum. Die TI-Aktionen gehen vom PC der Praxis über den Konnektor der Praxis (Vereinfachung).",
+    "category": "computer",
+    "icon": "cloud",
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "web",
+        "name": "Internet-Zugriff",
+        "kind": "web",
+        "multi": true,
+        "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "soft",
+        "name": "Software",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
+    "status": "Vereinfachung"
+  },
+  {
     "id": "tab",
     "abbr": "Visite-Tablet",
     "name": "Visite-Tablet (KIS-Client per WLAN)",
@@ -270,7 +308,7 @@
     "category": "computer",
     "icon": "tablet",
     "placeable": true,
-    "capabilities": ["netConfig:client", "workplace"],
+    "capabilities": ["netConfig:client", "workplace", "trigger"],
     "ports": [
       {
         "id": "wlan0",

@@ -182,6 +182,47 @@
   stroke-width: 2;
   stroke-linejoin: round;
 }
+/* Weiches Zuklappen ohne feste Höhe (grid 0fr → 1fr); Eingang der Karte per Keyframes */
+.tiv-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 0.2s ease,
+    opacity 0.15s ease;
+}
+.tiv-collapse[data-open="false"] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.2s ease,
+    opacity 0.15s ease,
+    visibility 0s linear 0.2s;
+}
+.tiv-collapse > div {
+  min-height: 0;
+  overflow: hidden;
+}
+@keyframes tiv-tutorial-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.tiv-tutorial,
+.tiv-tutorial-mini {
+  animation: tiv-tutorial-in 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tiv-collapse,
+  .tiv-collapse[data-open="false"],
+  .tiv-tutorial,
+  .tiv-tutorial-mini {
+    transition: none;
+    animation: none;
+  }
+}
 .tiv-tutorial__hint {
   margin-top: 8px !important;
   color: var(--color-neutral-700);

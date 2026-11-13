@@ -131,15 +131,16 @@ describe("FR-20 Tutorial-Karte", () => {
     useSettings.setState({ tutorialProgress: i });
     render(card);
     const karte = screen.getByRole("region", { name: "Tutorial" });
-    expect(screen.getByText(step?.text ?? "")).toBeVisible();
+    expect(screen.getByText(step?.text ?? "").closest("[inert]")).toBeNull();
     await user.hover(karte);
     await user.unhover(karte);
+    const text = screen.getByText(step?.text ?? "");
     await waitFor(() => {
-      expect(screen.queryByText(step?.text ?? "")).toBeNull();
+      expect(text.closest("[inert]")).not.toBeNull();
     });
-    expect(screen.getByText(step?.task ?? "")).toBeVisible();
+    expect(screen.getByText(step?.task ?? "").closest("[inert]")).toBeNull();
     await user.hover(karte);
-    expect(screen.getByText(step?.text ?? "")).toBeVisible();
+    expect(text.closest("[inert]")).toBeNull();
   });
 
   it("Schließen behält den Fortschritt", async () => {

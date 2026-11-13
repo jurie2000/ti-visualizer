@@ -1034,7 +1034,10 @@ Sicherheitsprüfung.
     und Weiter. Eingeklappt bleibt eine Pille „Tutorial · Schritt n von 16“.
     Ohne Maus oder Fokus schrumpft die Karte (nach 350 ms) auf Titel und
     offene Aufgabe; Hover oder Fokus zeigen Persona und Erklärung. Klappt die
-    linke Palette über die Fläche aus, rückt die Karte daneben.
+    linke Palette über die Fläche aus, rückt die Karte daneben. Zu- und
+    Aufklappen laufen weich per CSS (`grid-template-rows`, 0,2 s, Eingang
+    per Keyframes, nichts unter `prefers-reduced-motion`). Pilotversuch: bei
+    Gefallen später für weitere Aktionen übernehmen.
   - Fertig, wenn: bestehende Tutorial-Tests laufen mit den neuen Namen; ein
     Test prüft Einklappen und Aufklappen ohne Änderung des Fortschritts, ein
     weiterer das Schrumpfen ohne Maus und die volle Ansicht bei Hover.

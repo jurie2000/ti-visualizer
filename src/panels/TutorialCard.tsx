@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NODE_SIZE } from "../canvas/deviceStyle";
 import { APOTHEKEN_ZONE, stepDone } from "../engine/tutorialChecks";
 import { containedNodes } from "../engine/zones";
@@ -191,7 +191,7 @@ export function TutorialCard() {
       </div>
       <div className="tiv-tutorial__body" aria-live="polite">
         <h2>{step.title}</h2>
-        {!kompakt && (
+        <Zuklappbar offen={!kompakt}>
           <div className="tiv-tutorial__story">
             {persona && (
               <img
@@ -208,8 +208,8 @@ export function TutorialCard() {
               {step.story}
             </p>
           </div>
-        )}
-        {!kompakt && <p>{step.text}</p>}
+          <p>{step.text}</p>
+        </Zuklappbar>
         {step.task && (
           <p className="tiv-tutorial__task" data-done={done}>
             <span className="tiv-tutorial__check" aria-hidden="true">
@@ -225,11 +225,11 @@ export function TutorialCard() {
             </span>
           </p>
         )}
-        {kompakt && (
+        <Zuklappbar offen={kompakt}>
           <p className="tiv-tutorial__hint">
             Maus hierher bewegen für die Erklärung
           </p>
-        )}
+        </Zuklappbar>
       </div>
       <div className="tiv-tutorial__nav">
         <Button
@@ -262,5 +262,20 @@ export function TutorialCard() {
         )}
       </div>
     </section>
+  );
+}
+
+/** Klappt Inhalt per CSS weich zu; `inert` nimmt ihn dabei aus Tab-Reihenfolge und Vorlesen. */
+function Zuklappbar({
+  offen,
+  children,
+}: {
+  offen: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="tiv-collapse" data-open={offen} inert={!offen}>
+      <div>{children}</div>
+    </div>
   );
 }

@@ -8,10 +8,10 @@
         "avs",
         "pflege",
         "pc",
+        "server",
         "tab",
         "ris",
-        "lis",
-        "server"
+        "lis"
       ]
     },
     "b": {
@@ -55,10 +55,10 @@
         "avs",
         "pflege",
         "pc",
+        "server",
         "tab",
         "ris",
-        "lis",
-        "server"
+        "lis"
       ]
     },
     "b": {
@@ -68,10 +68,10 @@
         "avs",
         "pflege",
         "pc",
+        "server",
         "tab",
         "ris",
-        "lis",
-        "server"
+        "lis"
       ]
     },
     "except": [
@@ -92,7 +92,7 @@
         }
       }
     ],
-    "message": "Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden.",
+    "message": "Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden.",
     "source": ["gemILF_PS", "KH"],
     "status": "plausibel"
   },

@@ -371,14 +371,6 @@
         "status": "plausibel"
       },
       {
-        "id": "usb0",
-        "name": "USB0",
-        "kind": "usb",
-        "multi": false,
-        "source": ["DVO"],
-        "status": "plausibel"
-      },
-      {
         "id": "soft",
         "name": "Software",
         "kind": "host",

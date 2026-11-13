@@ -52,12 +52,8 @@
   "protocols": [
     {
       "id": "prot-kt-zugang",
-      "a": {
-        "types": ["kt"]
-      },
-      "b": {
-        "capability": "zugang"
-      },
+      "a": { "types": ["kt"] },
+      "b": { "capability": "zugang" },
       "label": "SICCT",
       "protocol": "SICCT, nach Pairing",
       "netPort": "4742",
@@ -68,12 +64,8 @@
     },
     {
       "id": "prot-cardlink-zugang",
-      "a": {
-        "types": ["cardlink"]
-      },
-      "b": {
-        "capability": "zugang"
-      },
+      "a": { "types": ["cardlink"] },
+      "b": { "capability": "zugang" },
       "label": "wie Kartenterminal",
       "protocol": "wie Kartenterminal, über das Internet",
       "netPort": null,
@@ -83,12 +75,8 @@
     },
     {
       "id": "prot-ps-zugang",
-      "a": {
-        "types": ["pvs", "kis", "avs", "pflege"]
-      },
-      "b": {
-        "capability": "zugang"
-      },
+      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "b": { "capability": "zugang" },
       "label": "SOAP",
       "protocol": "SOAP, XML",
       "netPort": "443",
@@ -99,12 +87,8 @@
     },
     {
       "id": "prot-mkt-ps",
-      "a": {
-        "types": ["mkt"]
-      },
-      "b": {
-        "types": ["pvs", "kis", "avs", "pflege", "pc"]
-      },
+      "a": { "types": ["mkt"] },
+      "b": { "types": ["pvs", "kis", "avs", "pflege", "pc"] },
       "label": "CT-API",
       "protocol": "CT-API über USB",
       "netPort": "keiner",
@@ -114,12 +98,8 @@
     },
     {
       "id": "prot-zugang-vpn",
-      "a": {
-        "capability": "zugang"
-      },
-      "b": {
-        "types": ["vpn"]
-      },
+      "a": { "capability": "zugang" },
+      "b": { "types": ["vpn"] },
       "label": "IPsec",
       "protocol": "IPsec (IKEv2) über das Transportnetz",
       "netPort": "UDP 500 und 4500",
@@ -130,12 +110,8 @@
     },
     {
       "id": "prot-ps-kimcm",
-      "a": {
-        "types": ["pvs", "kis", "avs", "pflege"]
-      },
-      "b": {
-        "types": ["kimcm"]
-      },
+      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "b": { "types": ["kimcm"] },
       "label": "SMTP/POP3",
       "protocol": "SMTP und POP3",
       "netPort": null,
@@ -145,12 +121,8 @@
     },
     {
       "id": "prot-kimcm-kim",
-      "a": {
-        "types": ["kimcm"]
-      },
-      "b": {
-        "types": ["kim"]
-      },
+      "a": { "types": ["kimcm"] },
+      "b": { "types": ["kim"] },
       "label": "SMTP/POP3",
       "protocol": "SMTP und POP3, über die Route des Zugangs",
       "netPort": null,
@@ -160,12 +132,8 @@
     },
     {
       "id": "prot-timc-tim",
-      "a": {
-        "types": ["timc"]
-      },
-      "b": {
-        "types": ["tim"]
-      },
+      "a": { "types": ["timc"] },
+      "b": { "types": ["tim"] },
       "label": "Matrix",
       "protocol": "Matrix (Client-Server-API), JSON",
       "netPort": "443",
@@ -176,12 +144,8 @@
     },
     {
       "id": "prot-ps-erp",
-      "a": {
-        "types": ["pvs", "kis", "avs", "pflege"]
-      },
-      "b": {
-        "types": ["erp"]
-      },
+      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "b": { "types": ["erp"] },
       "label": "HTTPS/VAU",
       "protocol": "HTTPS mit VAU, FHIR. Läuft über die Route des Zugangs, der Zugang leitet nur weiter",
       "netPort": "443",
@@ -191,12 +155,8 @@
     },
     {
       "id": "prot-ps-epa",
-      "a": {
-        "types": ["pvs", "kis", "avs", "pflege"]
-      },
-      "b": {
-        "types": ["epa"]
-      },
+      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "b": { "types": ["epa"] },
       "label": "HTTPS/VAU",
       "protocol": "HTTPS mit VAU, FHIR. Über die Route des Zugangs",
       "netPort": "443",
@@ -206,12 +166,8 @@
     },
     {
       "id": "prot-zugang-vsdm",
-      "a": {
-        "capability": "zugang"
-      },
-      "b": {
-        "types": ["vsdm"]
-      },
+      "a": { "capability": "zugang" },
+      "b": { "types": ["vsdm"] },
       "label": "SOAP",
       "protocol": "SOAP (ReadVSD)",
       "netPort": null,
@@ -221,12 +177,8 @@
     },
     {
       "id": "prot-ps-idp",
-      "a": {
-        "types": ["pvs", "kis", "avs", "pflege"]
-      },
-      "b": {
-        "types": ["idp"]
-      },
+      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "b": { "types": ["idp"] },
       "label": "OAuth 2.0/OIDC",
       "protocol": "OAuth 2.0 und OpenID Connect, über die Route des Zugangs",
       "netPort": "443",
@@ -236,12 +188,8 @@
     },
     {
       "id": "prot-kis-risl",
-      "a": {
-        "types": ["kis"]
-      },
-      "b": {
-        "types": ["ris", "lis"]
-      },
+      "a": { "types": ["kis"] },
+      "b": { "types": ["ris", "lis"] },
       "label": "HL7 v2",
       "protocol": "HL7 v2 (außerhalb der TI)",
       "netPort": null,

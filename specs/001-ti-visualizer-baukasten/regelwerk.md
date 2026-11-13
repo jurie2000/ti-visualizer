@@ -46,7 +46,7 @@ des Modus Einfach fehlt es. „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung).
+**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen in T-724a noch keinen `host`-Anschluss (Klärung in T-724b).
 
 | Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
@@ -186,7 +186,7 @@ Abschnitt 5.
 |---|---|---|---|
 | PVS, AVS, Pflege | Ethernet0, USB0, USB1, Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Mockup, plausibel; „Läuft auf“ Vereinfachung (T-724a) | gemILF_PS |
 | PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach) | Mockup, plausibel; „Software“ Vereinfachung (T-724a) | gemILF_PS |
-| Server | Ethernet0, Ethernet1, USB0, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
+| Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
 | KIS | LAN0 bis LAN5, USB0 (für das mobile KT, ergänzt 2026-11-05) | Mockup, plausibel | KH, gemSpec_MobKT |
 | RIS, LIS | LAN0, LAN1 (KIS-Schnittstelle) | Mockup, plausibel | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
@@ -345,7 +345,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | eHealth-CardLink | Zugang | ja | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
 | eHealth-CardLink | Internet | nein | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
 | Mobiles KT | PVS, KIS, AVS, Pflege (USB, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
-| Mobiles KT | PC, Server (USB) | nein | bestätigt | gemSpec_MobKT |
+| Mobiles KT | PC (USB) | nein | bestätigt | gemSpec_MobKT |
 
 **Primärsysteme und Clients**
 
@@ -404,7 +404,7 @@ und K-6 in Abschnitt 5.
 |---|---|---|---|---|
 | V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
-| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Arbeitsplatz-PCs hängen am KIS, PVS oder AVS. RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
+| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
 | V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |
 | V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
 | V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |

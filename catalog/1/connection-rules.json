@@ -68,7 +68,7 @@
       "types": ["mkt"]
     },
     "b": {
-      "types": ["pc", "server"]
+      "types": ["pc"]
     },
     "visibleSimple": false,
     "source": ["gemSpec_MobKT"],

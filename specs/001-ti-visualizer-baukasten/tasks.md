@@ -1102,6 +1102,27 @@ Sicherheitsprüfung.
     `host`), Klärung folgt mit T-724c. (e) Die Presets sind mit „Sortieren“
     angeordnet; im Klinikum liegt je ein Server für KIS, RIS und LIS.
 
+- [x] **T-725a Modus Einfach zeigt alle Geräte** · FR: FR-2, FR-6 · Regeln: – · nach: T-724b · Anmerkung des Nutzers 2026-11-13
+  - Umfang: Alle Gerätetypen und Verbindungsregeln haben `visibleSimple: true`.
+    Einfach zeigt Geräte und Verbindungen wie Erweitert; Erweitert ergänzt nur
+    die IP-Konfiguration samt Betriebsregeln und die Anschlussauswahl.
+    Aktionen starten am Rechner in beiden Modi. Regelwerk 1, 3, 4, 6, 11.
+  - Fertig, wenn: Tests (Name mit T-725a) prüfen: beide Modi zeigen alle
+    Geräte ohne Sammelkante; Software mit Rechner bietet in keinem Modus
+    Aktionen an. Die Tests der Ausblendefunktion laufen bis T-725b über einen
+    Test-Katalog mit den früher ausgeblendeten Typen (`hiddenCatalog.ts`).
+  - Auslegung (2026-11-13): Ersetzt D36. Die Anschlussauswahl bleibt in
+    Erweitert; die Palette ist in beiden Modi gleich.
+
+- [ ] **T-725b Ausblendefunktion entfernen** · FR: FR-2 · Regeln: – · nach: T-725a
+  - Umfang: Löscht `collapseHidden`, Sammelkante und GroupEdge, den Hinweis
+    „+n ausgeblendet“, die Palettenfilterung nach Modus, die Verbindungsart
+    `sammel`, das Feld `visibleSimple` in Katalog und Schema sowie
+    `hiddenCatalog.ts` samt der zugehörigen Tests. Regelwerk 1, 3, 4, 11
+    und die Verbindungsarten-Legende folgen.
+  - Fertig, wenn: kein Code und kein Test mehr auf die Ausblendefunktion
+    verweist; alle Prüfungen laufen.
+
 - [ ] **T-724c Software als Dienst (SaaS) über das Internet** · FR: FR-2 · Regeln: – · nach: T-724b
   - Umfang: Software kann auf einem Server im Internet laufen und wird dem
     PC über das Internet bereitgestellt. Neuer Zustand am Server („im

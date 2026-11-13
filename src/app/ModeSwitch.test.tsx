@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { PalettePanel } from "../panels/PalettePanel";
-import { useSettings } from "../store";
+import { loadCatalog } from "../schema";
+import { useCatalog, useSettings } from "../store";
+import { withHiddenTypes } from "../test/hiddenCatalog";
 import { ToastProvider } from "../ui/Toast";
 import { ModeSwitch } from "./ModeSwitch";
 
@@ -32,6 +34,7 @@ describe("ModeSwitch", () => {
   });
 
   it("Palette zeigt im Modus Einfach nur sichtbare Typen", async () => {
+    useCatalog.setState({ catalog: withHiddenTypes(loadCatalog()) });
     render(<PalettePanel />, { wrapper });
     // der Switch ist im Modus Einfach ausgeblendet (Regelwerk 1), das PVS nicht
     expect(

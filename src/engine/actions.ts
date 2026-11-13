@@ -241,9 +241,7 @@ export function availableActions(
     (d) => d.id === node.type,
   )?.category;
   // Aktionen starten am Rechner, die Software ist Knoten im Ablauf (T-724b).
-  // Im Modus Einfach ist der Rechner ausgeblendet: dort startet die Software selbst.
   if (
-    advanced &&
     topology.edges.some(
       (e) =>
         e.ends.some((end) => end.node === node.id) &&

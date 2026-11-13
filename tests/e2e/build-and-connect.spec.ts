@@ -60,24 +60,17 @@ test.describe("build-and-connect", { tag: "@build-and-connect" }, () => {
     await expect(page.locator(".react-flow__edge")).toHaveCount(kanten);
   });
 
-  test("Moduswechsel: Einfach blendet Geräte aus und zeigt Sammelkanten", async ({
+  test("T-725a Moduswechsel: Einfach zeigt alle Geräte, keine Sammelkanten", async ({
     page,
   }) => {
     const alle = await page.locator(".react-flow__node").count();
     await page.getByRole("button", { name: "Einfach" }).click();
-    await expect(gerät(page, "sw1")).toHaveCount(0);
-    expect(await page.locator(".react-flow__node").count()).toBeLessThan(alle);
-    const sammel = page.getByRole("button", { name: /^Sammelkante .* über / });
-    await expect(sammel.first()).toBeVisible();
-    // Klick zeigt die ausgeblendeten Geräte
-    await sammel.first().click();
-    await expect(
-      page.getByRole("list", { name: "Ausgeblendete Geräte" }),
-    ).toBeVisible();
-    // zurück: alles wieder da, keine Sammelkanten
-    await page.getByRole("button", { name: "Erweitert" }).click();
     await expect(gerät(page, "sw1")).toBeVisible();
-    await expect(sammel).toHaveCount(0);
+    expect(await page.locator(".react-flow__node").count()).toBe(alle);
+    await expect(
+      page.getByRole("button", { name: /^Sammelkante .* über / }),
+    ).toHaveCount(0);
+    await page.getByRole("button", { name: "Erweitert" }).click();
     expect(await page.locator(".react-flow__node").count()).toBe(alle);
   });
 

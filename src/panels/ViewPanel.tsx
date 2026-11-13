@@ -1,4 +1,4 @@
-import { useCatalog, useSettings, useUi, type ViewSettings } from "../store";
+import { useCatalog, useUi, type ViewSettings } from "../store";
 
 type Switch = "edges" | "zones" | "handles" | "minimap";
 
@@ -57,7 +57,6 @@ function Segmented<K extends "route" | "labels">({
 /** Detailpanel ohne Auswahl (Mockup `noSelection`): Hinweis, Legende der Verbindungsarten, Ansicht-Schalter. */
 export function ViewPanel() {
   const kinds = useCatalog((s) => s.catalog.protocols.connectionKinds);
-  const simple = useSettings((s) => s.mode) === "simple";
   const view = useUi((s) => s.view);
   return (
     <div className="tiv-view">
@@ -69,7 +68,7 @@ export function ViewPanel() {
         <h4>Verbindungsarten</h4>
         <ul className="tiv-legend">
           {kinds
-            .filter((k) => simple || k.id !== "sammel")
+            .filter((k) => k.id !== "sammel")
             .map((k) => (
               <li key={k.id}>
                 <svg width="52" height="12" aria-hidden="true">

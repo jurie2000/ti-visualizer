@@ -39,10 +39,9 @@ und Erweitert · 12 Offene Fragen · 13 Presets
 
 ## 1. Gerätetypen
 
-Die Topologie ist in beiden Modi dieselbe (Abschnitt 11). „In Einfach
-sichtbar: nein“ heißt: Das Gerät wird im Modus Einfach ausgeblendet und
-seine Verbindungen werden zu Sammelkanten zusammengefasst. In der Palette
-des Modus Einfach fehlt es. „neu“ = nicht im Mockup.
+Die Topologie ist in beiden Modi dieselbe (Abschnitt 11). Seit T-725a sind
+alle Geräte in beiden Modi sichtbar („In Einfach sichtbar“ steht überall auf
+„ja“; die Spalte bleibt bis T-725b erhalten). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
@@ -54,12 +53,12 @@ des Modus Einfach fehlt es. „neu“ = nicht im Mockup.
 | `kis` | Krankenhausinformationssystem | ja | bestätigt | gemILF_PS, KH |
 | `avs` | Apothekenverwaltungssystem | ja | bestätigt | gemILF_PS, gemF_eRp_Autorisierung_Apo |
 | `pflege` | Pflege-Software (Pflegeeinrichtung), neu | ja | bestätigt | gematik Pflege-FAQ |
-| `ris` | Radiologie-Informationssystem | nein | plausibel (Subsystem im Krankenhaus) | KH |
-| `lis` | Labor-Informationssystem | nein | plausibel (Subsystem im Krankenhaus) | KH |
-| `pc` | Arbeitsplatz-PC | nein | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
-| `server` | Server, neu | nein | plausibel | gemILF_PS, DVO |
-| `tab` | Visite-Tablet (KIS-Client per WLAN) | nein | plausibel | gemILF_PS, KH |
-| `kimcm` | KIM-Clientmodul, neu | nein | bestätigt | gemSpec_CM_KOMLE |
+| `ris` | Radiologie-Informationssystem | ja | plausibel (Subsystem im Krankenhaus) | KH |
+| `lis` | Labor-Informationssystem | ja | plausibel (Subsystem im Krankenhaus) | KH |
+| `pc` | Arbeitsplatz-PC | ja | bestätigt (Arbeitsplatz im Infomodell) | gemILF_PS |
+| `server` | Server, neu | ja | plausibel | gemILF_PS, DVO |
+| `tab` | Visite-Tablet (KIS-Client per WLAN) | ja | plausibel | gemILF_PS, KH |
+| `kimcm` | KIM-Clientmodul, neu | ja | bestätigt | gemSpec_CM_KOMLE |
 | `timc` | TI-Messenger-Client, neu | ja | bestätigt | gemSpec_TI-M_Basis |
 
 ### 1.2 Smartcards
@@ -91,10 +90,10 @@ gemF_Highspeed-Konnektor.
 
 | Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
-| `switch` | Switch | nein | plausibel | DVO |
-| `router` | Internet-Router (IAG, Internet Access Gateway), mit WLAN | nein | bestätigt | Betriebsarten, gemSpec_Kon |
-| `ap` | WLAN Access Point | nein | plausibel | DVO |
-| `fw` | Firewall, neu | nein | bestätigt (im Parallelbetrieb nötig) | Betriebsarten |
+| `switch` | Switch | ja | plausibel | DVO |
+| `router` | Internet-Router (IAG, Internet Access Gateway), mit WLAN | ja | bestätigt | Betriebsarten, gemSpec_Kon |
+| `ap` | WLAN Access Point | ja | plausibel | DVO |
+| `fw` | Firewall, neu | ja | bestätigt (im Parallelbetrieb nötig) | Betriebsarten |
 
 ### 1.5 Zugang zur TI und Netze
 
@@ -104,19 +103,19 @@ gemF_Highspeed-Konnektor.
 | `hskon` | Highspeed-Konnektor | ja | bestätigt | gemF_Highspeed-Konnektor |
 | `gateway` | TI-Gateway (Zugangsmodul + HSK-Instanz) | ja | bestätigt | gemF_TI-Gateway |
 | `vpn` | VPN-Zugangsdienst | ja | bestätigt | Arch, gemSpec_VPN_ZugD |
-| `internet` | Internet (Transportnetz), neu | nein | bestätigt | Arch |
-| `zentral` | Zentrales Netz der TI, neu | nein | bestätigt | Arch, gemSpec_Net |
+| `internet` | Internet (Transportnetz), neu | ja | bestätigt | Arch |
+| `zentral` | Zentrales Netz der TI, neu | ja | bestätigt | Arch, gemSpec_Net |
 
 ### 1.6 Zentrale Dienste (neu)
 
 | Schlüssel | Name | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
-| `dns` | Namensdienst | nein | bestätigt | gemSpec_Net |
-| `ntp` | Zeitdienst | nein | bestätigt | gemSpec_Net |
-| `vzd` | Verzeichnisdienst (FHIR-Directory) | nein | bestätigt | gemSpec_VZD, gemSpec_VZD_FHIR_Directory |
-| `tsl` | TSL-Dienst mit OCSP-Responder | nein | bestätigt | gemSpec_TSL, gemSpec_PKI |
+| `dns` | Namensdienst | ja | bestätigt | gemSpec_Net |
+| `ntp` | Zeitdienst | ja | bestätigt | gemSpec_Net |
+| `vzd` | Verzeichnisdienst (FHIR-Directory) | ja | bestätigt | gemSpec_VZD, gemSpec_VZD_FHIR_Directory |
+| `tsl` | TSL-Dienst mit OCSP-Responder | ja | bestätigt | gemSpec_TSL, gemSpec_PKI |
 | `idp` | Identity Provider (zentral) | ja | bestätigt | gemSpec_IDP_FD, gemSpec_FD_eRp |
-| `idpsek` | Sektoraler IDP (GesundheitsID) | nein | bestätigt | gemSpec_IDP_Sek |
+| `idpsek` | Sektoraler IDP (GesundheitsID) | ja | bestätigt | gemSpec_IDP_Sek |
 
 ### 1.7 Fachdienste
 
@@ -127,7 +126,7 @@ gemF_Highspeed-Konnektor.
 | `kim` | KIM-Fachdienst | ja | bestätigt | gemSpec_FD_KOMLE |
 | `tim` | TI-Messenger-Fachdienst | ja | bestätigt | gemSpec_TI-M_Basis |
 | `epa` | ePA-Aktensystem | ja | bestätigt | gemSpec_Aktensystem_ePAfueralle |
-| `popp` | PoPP-Service, neu | nein | bestätigt | gemSpec_PoPP_Service |
+| `popp` | PoPP-Service, neu | ja | bestätigt | gemSpec_PoPP_Service |
 
 ### 1.8 Versicherte und Gegenstellen (neu)
 
@@ -135,7 +134,7 @@ gemF_Highspeed-Konnektor.
 |---|---|---|---|---|
 | `kk` | Krankenkasse (Empfänger z. B. der eAU) | ja | bestätigt | PM eAU, KIM-DK |
 | `erpapp` | E-Rezept-App der Versicherten | ja | bestätigt | gemSpec_eRp_FdV |
-| `epaapp` | ePA-App der Versicherten | nein | bestätigt | gemSpec_Aktensystem_ePAfueralle |
+| `epaapp` | ePA-App der Versicherten | ja | bestätigt | gemSpec_Aktensystem_ePAfueralle |
 
 Kategorien haben je eine farbenblind-sichere Farbe und eine eigene Form
 (Mockup). Neue Kategorien: Zentrale Dienste und Versicherte.
@@ -217,7 +216,7 @@ Abschnitt 5.
 - **A-2** Zusätzlich erlaubt: `eth` mit `wan`, `wan` mit `net`, `tun` mit `net`.
   (Vereinfachung nach Arch)
 - **A-6** `app` passt zu `app`, `eth` und `usb` (T-724b). Das ist der logische
-  Kurzweg der Software, solange der Rechner im Modus Einfach ausgeblendet ist
+  Kurzweg der Software ohne Rechner (seit T-725a ist der Rechner auch in Einfach sichtbar)
   (Software ↔ Konnektor, Software ↔ KIM-Clientmodul, Software ↔ mobiles KT,
   RIS/LIS ↔ KIS). (Vereinfachung)
 - **A-3** Modus Einfach: Das System wählt das erste freie, verträgliche
@@ -239,7 +238,7 @@ Abschnitt 5.
 | `inet` | Internet | offenes Netz | Strich-Punkt |
 | `usb` | USB | lokale Kabelverbindung, z. B. Mobiles KT | durchgezogen, dick |
 | `host` | Läuft auf | Software läuft auf einem Rechner, kein Kabel | gepunktet, dünn |
-| `sammel` | Sammelkante | nur im Modus Einfach: fasst einen Weg über ausgeblendete Geräte zusammen (Abschnitt 11) | durchgezogen, doppelt |
+| `sammel` | Sammelkante | entfällt seit T-725a (kein Gerät ist mehr ausgeblendet); Entfernung in T-725b | durchgezogen, doppelt |
 
 Zuordnung einer Kante zur Art, in dieser Reihenfolge (aus den
 Anschlussarten der beiden Enden und der Protokolltabelle unten, keine
@@ -347,54 +346,54 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
 | eHealth-KT | Zugang | ja | bestätigt | gemSpec_KT, gemSpec_Kon |
-| eHealth-KT | Switch, Router-LAN | nein | bestätigt (KT im LAN) | gemSpec_KT, DVO |
+| eHealth-KT | Switch, Router-LAN | ja | bestätigt (KT im LAN) | gemSpec_KT, DVO |
 | eHealth-CardLink | Zugang | ja | bestätigt (verhält sich wie ein Kartenterminal) | gemSpec_eHealth-CardLink (A_24769) |
-| eHealth-CardLink | Internet | nein | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
+| eHealth-CardLink | Internet | ja | bestätigt (Dienst im Internet) | FP eHealth-CardLink |
 | Mobiles KT | PVS, KIS, AVS, Pflege (logisch `app`; Kurzweg im Modus Einfach, zur Datenübergabe) | ja | bestätigt | gemSpec_MobKT |
-| Mobiles KT | PC (USB) | nein | bestätigt | gemSpec_MobKT |
+| Mobiles KT | PC (USB) | ja | bestätigt | gemSpec_MobKT |
 
 **Primärsysteme und Clients**
 
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | ja | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
-| PC, Server | Switch, Router-LAN | nein | plausibel | DVO |
-| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server (läuft auf) | nein | Vereinfachung (T-724a) | gemILF_PS |
-| Visite-Tablet | Access Point, Router-WLAN | nein | plausibel | KH |
-| RIS, LIS | KIS (HL7-Schnittstelle) | nein | plausibel | KH |
-| PVS, KIS, AVS, Pflege | KIM-Clientmodul | nein | bestätigt | gemSpec_CM_KOMLE |
-| KIM-Clientmodul | Zugang | nein | bestätigt | gemSpec_CM_KOMLE |
+| PC, Server | Switch, Router-LAN | ja | plausibel | DVO |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server (läuft auf) | ja | Vereinfachung (T-724a) | gemILF_PS |
+| Visite-Tablet | Access Point, Router-WLAN | ja | plausibel | KH |
+| RIS, LIS | KIS (HL7-Schnittstelle) | ja | plausibel | KH |
+| PVS, KIS, AVS, Pflege | KIM-Clientmodul | ja | bestätigt | gemSpec_CM_KOMLE |
+| KIM-Clientmodul | Zugang | ja | bestätigt | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | TI-Messenger-FD (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_TI-M_Basis |
-| TI-Messenger-Client | Internet | nein | plausibel | gemSpec_TI-M_Basis |
+| TI-Messenger-Client | Internet | ja | plausibel | gemSpec_TI-M_Basis |
 
 **Lokales Netz**
 
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
-| Switch | Switch, Router-LAN, Access Point, Firewall, Zugang | nein | plausibel | DVO |
-| Router (WAN) | Internet | nein | bestätigt | Betriebsarten |
-| Firewall | Router-LAN, Switch, Zugang | nein | bestätigt (Parallelbetrieb) | Betriebsarten |
+| Switch | Switch, Router-LAN, Access Point, Firewall, Zugang | ja | plausibel | DVO |
+| Router (WAN) | Internet | ja | bestätigt | Betriebsarten |
+| Firewall | Router-LAN, Switch, Zugang | ja | bestätigt (Parallelbetrieb) | Betriebsarten |
 
 **Zugang zur TI**
 
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
-| Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | nein | bestätigt | Betriebsarten, gemSpec_Kon |
+| Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | ja | bestätigt | Betriebsarten, gemSpec_Kon |
 | Zugang | VPN-Zugangsdienst (direkt, über `tun`) | ja | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
-| VPN-Zugangsdienst | Internet | nein | bestätigt | Arch |
-| VPN-Zugangsdienst | Zentrales Netz | nein | bestätigt | Arch |
+| VPN-Zugangsdienst | Internet | ja | bestätigt | Arch |
+| VPN-Zugangsdienst | Zentrales Netz | ja | bestätigt | Arch |
 | VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | ja | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
 
 **Zentrales Netz, Dienste und Versicherte**
 
 | Von | Nach | In Einfach sichtbar | Status | Quelle |
 |---|---|---|---|---|
-| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, IDP, VSDM, E-Rezept, KIM, ePA | nein | bestätigt | gemSpec_Net, Arch |
+| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, IDP, VSDM, E-Rezept, KIM, ePA | ja | bestätigt | gemSpec_Net, Arch |
 | KIM-Fachdienst | Krankenkasse | ja | plausibel (Krankenkasse hat eigenen KIM-Zugang) | KIM-DK, PM eAU |
-| E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | Internet | nein | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
+| E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | Internet | ja | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
 | E-Rezept-App | E-Rezept-FD (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_eRp_FdV |
-| ePA-App | ePA (direkt) | nein | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_Aktensystem_ePAfueralle |
-| E-Rezept-App, ePA-App | Internet, sektoraler IDP | nein | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
+| ePA-App | ePA (direkt) | ja | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_Aktensystem_ePAfueralle |
+| E-Rezept-App, ePA-App | Internet, sektoraler IDP | ja | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
 
 Der PoPP-Service hat keine direkte Verbindung zum Primärsystem. Er ist
 über Router und Internet erreichbar (ZETA, TI 2.0). In v1 hat er keinen
@@ -538,9 +537,8 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 Aktionen der Software an, die auf ihnen läuft; ein Arbeitsplatz (PC, Tablet)
 auch die der Software auf einem erreichbaren Server (z. B. KIS). Die Software
 ist im Ablauf der Absender (Rolle `P`): Das Paket läuft von ihr über den
-Rechner und die Netzgeräte zum Zugang. Software mit Rechner bietet im Modus
-Erweitert selbst keine Aktionen an. Im Modus Einfach (Rechner
-ausgeblendet) und ohne Rechner startet die Software selbst. Quelle:
+Rechner und die Netzgeräte zum Zugang. Software mit Rechner bietet in keinem
+Modus selbst Aktionen an (T-725a), Software ohne Rechner startet selbst. Quelle:
 gemILF_PS (Arbeitsplatz im Infomodell).
 
 **Arbeitsplatz-PC und Visite-Tablet** bieten die Aktionen der Software
@@ -802,33 +800,20 @@ Entschieden 2026-11-04 (Plan D36).
 | | Einfach | Erweitert |
 |---|---|---|
 | **Topologie** | dieselbe | dieselbe |
-| **Geräte** | Geräte mit „In Einfach sichtbar: ja“. Die anderen sind ausgeblendet, aber vorhanden | alle |
-| **Verbindungen** | Verbindungen zwischen sichtbaren Geräten. Ein Weg über ausgeblendete Geräte erscheint als **Sammelkante** (z. B. PVS über den Switch zum Konnektor). Ein Klick auf die Sammelkante zeigt die ausgeblendeten Geräte | alle einzeln |
-| **Palette** | nur sichtbare Gerätetypen | alle |
-| **Anschlüsse und Einstellungen** | ausgeblendet, das System wählt Anschlüsse (A-3) | sichtbar und änderbar |
-| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle |
+| **Geräte** | alle | alle |
+| **Verbindungen** | alle einzeln | alle einzeln |
+| **Palette** | alle Gerätetypen | alle Gerätetypen |
+| **Anschlüsse und Einstellungen** | Anschlüsse wählt das System (A-3), keine Geräteeinstellungen | Anschlussauswahl beim Verbinden und Geräteeinstellungen (IP-Konfiguration, Abschnitt 8) |
+| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Betriebsregeln P-8 bis P-35 der IP-Konfiguration |
 | **Vereinfachte Direktverbindungen** | erlaubt | erlaubt, die Sicherheitsprüfung weist mit einem Hinweis auf den realen Weg hin |
 
-Der Modus gehört zu den Einstellungen, nicht zur Topologie. Eine Datei
-mit ausgeblendeten Geräten lässt sich daher in jedem Modus öffnen.
-
-Auslegung (2026-11-06): Ausgeblendete Geräte, die keine Sammelkante nennt
-(Sackgasse an nur einem sichtbaren Gerät, Abzweig neben dem Weg), zeigt ein
-Knopf „+n ausgeblendet“ am sichtbaren Nachbarn; ein Klick klappt ihre Namen
-auf. Ausgeblendete Geräte ganz ohne sichtbaren Nachbarn nennt ein Hinweis
-auf der Canvas („nur im Modus Erweitert sichtbar“). So bleibt jedes
-ausgeblendete Gerät auffindbar. Status: Vereinfachung.
-
-Auslegung (2026-11-12, Issue 124): Eine Sammelkante entsteht nur, wenn
-mindestens ein Ende kein Endgerät am LAN ist oder wenn eine Verbindungsregel
-die beiden Endgeräte verbindet (z. B. mobiles Kartenterminal und PVS, `erl-mkt-ps`). Endgeräte sind die Geräte der
-Kategorie `primary` (Primärsysteme) und `terminal` (Kartenterminals); die
-Abgrenzung kommt aus den Katalogdaten, ein neues Feld gibt es nicht. Ziele
-sind alle übrigen sichtbaren Geräte (Konnektor, Gateway, Dienste). Zwei
-Endgeräte am selben Switch ohne solche Regel haben keine Sammelkante, sonst sähe es nach einer
-Direktverbindung zwischen Kartenterminals aus, die es in den Daten und im
-Modus Erweitert nicht gibt. Der Switch bleibt über die Sammelkanten zum
-Konnektor auffindbar. Status: Vereinfachung.
+Entschieden 2026-11-13 (T-725a, ersetzt D36): Beide Modi zeigen alle Geräte
+und Verbindungen. Erweitert ergänzt nur die IP-Konfiguration samt ihren
+Prüfregeln und die Anschlussauswahl. Das Ausblenden von Geräten und die
+Sammelkanten entfallen. Der Modus gehört zu den Einstellungen, nicht zur
+Topologie; eine Datei lässt sich in jedem Modus öffnen. Der Code der
+Ausblendefunktion (Sammelkante, „+n ausgeblendet“, `visibleSimple`) wird in
+T-725b entfernt.
 
 ## 12. Offene Fragen
 

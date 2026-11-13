@@ -1,9 +1,10 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { loadCatalog, type Topology } from "../schema";
+import { withHiddenTypes } from "../test/hiddenCatalog";
 import { collapseHidden } from "./collapse";
 
-const catalog = loadCatalog();
+const catalog = withHiddenTypes(loadCatalog());
 const types = catalog.deviceTypes.filter((d) => d.placeable).map((d) => d.id);
 const hiddenTypes = new Set(
   catalog.deviceTypes.filter((d) => !d.visibleSimple).map((d) => d.id),

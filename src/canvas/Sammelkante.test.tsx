@@ -4,7 +4,8 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
-import { useSettings, useTopology, useUi } from "../store";
+import { useCatalog, useSettings, useTopology, useUi } from "../store";
+import { withHiddenTypes } from "../test/hiddenCatalog";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "./Canvas";
 
@@ -21,6 +22,7 @@ const wrapper = ({ children }: { children: ReactNode }) => (
 );
 
 beforeEach(() => {
+  useCatalog.setState({ catalog: withHiddenTypes(loadCatalog()) });
   useSettings.setState({ mode: "simple" });
   useUi.setState({ selection: undefined });
   useTopology.getState().reset(praxis);
@@ -29,7 +31,7 @@ beforeEach(() => {
 describe("Canvas im Modus Einfach (Regelwerk 11)", () => {
   it("blendet Geräte aus und zeigt Sammelkanten statt ihrer Verbindungen", async () => {
     render(<Canvas />, { wrapper });
-    const hidden = loadCatalog()
+    const hidden = withHiddenTypes(loadCatalog())
       .deviceTypes.filter((d) => !d.visibleSimple)
       .map((d) => d.id);
     const shown = praxis.nodes.filter((n) => !hidden.includes(n.type));

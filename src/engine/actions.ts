@@ -218,7 +218,7 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
   return "Diese Bedingung ist nicht prüfbar.";
 }
 
-const offers = (s: Selector, c: Cat, type: string) =>
+export const offers = (s: Selector, c: Cat, type: string) =>
   "types" in s
     ? s.types.includes(type)
     : (c.deviceTypes.find((d) => d.id === type)?.capabilities ?? []).includes(
@@ -253,10 +253,11 @@ export function availableActions(
   const types =
     category === "computer"
       ? [
+          // Eigene Software bietet ihre Aktionen an, von der auf Servern erbt der Arbeitsplatz nur HOSTS.
           ...new Set(
             softwareOn(topology, node.id, catalog)
-              .map((n) => n.type)
-              .filter((t) => HOSTS.includes(t)),
+              .filter((s) => s.own || HOSTS.includes(s.node.type))
+              .map((s) => s.node.type),
           ),
         ]
       : [node.type];

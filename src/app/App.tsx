@@ -114,13 +114,12 @@ export function App() {
             </button>
           </h1>
           <div className="tiv-header__actions">
-            {started && (
-              <>
-                <EditShortcuts />
-              </>
-            )}
-            <SaveControls />
-            <ModeSwitch />
+            {started && <EditShortcuts />}
+            {/* Bleibt gemountet (Strg+S, Schutz vor Verlust beim Schließen), nur ausgeblendet (#157) */}
+            <span hidden={!started}>
+              <SaveControls />
+            </span>
+            {started && <ModeSwitch />}
             <ThemeToggle />
           </div>
         </header>

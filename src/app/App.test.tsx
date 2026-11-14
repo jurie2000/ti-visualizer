@@ -56,6 +56,22 @@ describe("App-Shell", () => {
     await user.keyboard("{Escape}");
   });
 
+  it("Issue #157: Speichern und Modus-Umschalter nur mit geöffnetem Canvas sichtbar", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(
+      screen.queryByRole("button", { name: /Speichern/ }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("group", { name: "Modus" }),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Leer starten/ }));
+    expect(
+      screen.getByRole("button", { name: /Speichern/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Modus" })).toBeInTheDocument();
+  });
+
   it("fragt in der Startansicht bei ungespeichertem Stand, bevor ein Preset ersetzt", async () => {
     const user = userEvent.setup();
     render(<App />);

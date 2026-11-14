@@ -36,7 +36,7 @@ const BUS = 40;
  * Weg einer Kante zwischen den Seitenmitten zweier Geräte (Mockup `edgePath`):
  * `curve` als Kurve, `ortho` rechtwinklig. Bei `ortho` laufen alle Kanten eines
  * Geräts über dieselbe Schiene vor dessen Seite (`hub`, „Gebündelt“).
- * `mid` ist der Punkt für das Label. Mit `waypoints` (T-720) läuft die Linie
+ * `mid` ist der Punkt für das Label. Mit `waypoints` (FR-23) läuft die Linie
  * als Linienzug durch diese Punkte, die Kantenführung gilt dann nicht.
  */
 export function routePath(

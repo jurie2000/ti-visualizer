@@ -248,3 +248,76 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
     });
   });
 });
+
+describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
+  const edgeId = praxis.edges[0]?.id ?? "";
+  const waypoints = () =>
+    useTopology.getState().topology.edges.find((e) => e.id === edgeId)
+      ?.waypoints;
+  const handle = () =>
+    screen.queryAllByRole("button", { name: /^Gelenkpunkt / });
+
+  it("zeigt nur bei gewählter Verbindung Griffe", async () => {
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      expect(
+        screen.getAllByRole("group", { name: /^Verbindung .* zu .*, / }),
+      ).toHaveLength(praxis.edges.length);
+    });
+    expect(handle()).toHaveLength(0);
+    act(() => {
+      useUi.setState({ selection: { kind: "edge", id: edgeId } });
+    });
+    expect(handle()).toHaveLength(1);
+  });
+
+  it("Pfeiltasten legen Gelenkpunkte an und verschieben sie, Undo stellt die Linie her", async () => {
+    useUi.setState({ selection: { kind: "edge", id: edgeId } });
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      expect(handle()).toHaveLength(1);
+    });
+    const first = handle()[0] as HTMLElement;
+    fireEvent.keyDown(first, { key: "ArrowRight" });
+    expect(waypoints()).toHaveLength(1);
+    const x = waypoints()?.[0]?.x ?? 0;
+    fireEvent.keyDown(handle()[0] as HTMLElement, { key: "ArrowDown" });
+    fireEvent.keyDown(handle()[0] as HTMLElement, { key: "a" });
+    expect(waypoints()?.[0]?.x).toBe(x);
+    act(() => {
+      useTopology.getState().undo();
+    });
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(waypoints()).toBeUndefined();
+  });
+
+  it("Ziehen mit der Maus setzt den Punkt beim Loslassen als ein Schritt, Klick und Abbruch nicht", async () => {
+    useUi.setState({ selection: { kind: "edge", id: edgeId } });
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      expect(handle()).toHaveLength(1);
+    });
+    const first = handle()[0] as HTMLElement;
+    first.setPointerCapture = () => undefined;
+    const before = useTopology.getState().past.length;
+    fireEvent.pointerDown(first, { pointerId: 1 });
+    fireEvent.pointerUp(first, { pointerId: 1 });
+    expect(waypoints()).toBeUndefined();
+    fireEvent.pointerDown(first, { pointerId: 1 });
+    fireEvent.pointerMove(first, { clientX: 20, clientY: 30, pointerId: 1 });
+    fireEvent.pointerCancel(first, { pointerId: 1 });
+    fireEvent.pointerUp(first, { pointerId: 1 });
+    expect(waypoints()).toBeUndefined();
+    fireEvent.pointerDown(first, { pointerId: 1 });
+    fireEvent.pointerMove(first, { clientX: 20, clientY: 30, pointerId: 1 });
+    fireEvent.pointerUp(first, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(1);
+    expect(useTopology.getState().past.length).toBe(before + 1);
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(waypoints()).toBeUndefined();
+  });
+});

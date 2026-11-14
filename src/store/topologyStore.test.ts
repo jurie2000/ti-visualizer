@@ -193,3 +193,35 @@ describe("Topologie-Store (T-201)", () => {
     expect(s().topology.edges).toHaveLength(1);
   });
 });
+
+describe("Gelenkpunkte im Store (FR-23)", () => {
+  const edge = () => {
+    s().connect(add("pc"), add("switch"));
+    return s().topology.edges[0]?.id ?? "";
+  };
+  const points = () => s().topology.edges[0]?.waypoints;
+
+  it("setzt Gelenkpunkte als ein Schritt, Undo und Redo stellen die Linie her", () => {
+    const id = edge();
+    s().setWaypoints(id, [{ x: 5, y: 6 }]);
+    s().setWaypoints(id, [{ x: 50, y: 60 }]);
+    expect(points()).toEqual([{ x: 50, y: 60 }]);
+    s().undo();
+    expect(points()).toEqual([{ x: 5, y: 6 }]);
+    s().undo();
+    expect(points()).toBeUndefined();
+    s().redo();
+    expect(points()).toEqual([{ x: 5, y: 6 }]);
+  });
+
+  it("leere Liste entfernt das Feld, unbekannte Kante und gleicher Stand legen keinen Schritt an", () => {
+    const id = edge();
+    s().setWaypoints(id, [{ x: 1, y: 1 }]);
+    s().setWaypoints(id, []);
+    expect(s().topology.edges[0]).not.toHaveProperty("waypoints");
+    const before = s().past.length;
+    s().setWaypoints("nix", [{ x: 1, y: 1 }]);
+    s().setWaypoints(id, []);
+    expect(s().past).toHaveLength(before);
+  });
+});

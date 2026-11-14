@@ -11,6 +11,7 @@ import {
   configVariants,
   LIMITS,
   type AnyCard,
+  type Edge,
   type Point,
   type Rect,
   type Tone,
@@ -48,6 +49,8 @@ interface TopologyState {
   /** Ein Schritt je Aufruf: die Canvas ruft es beim Loslassen, nicht bei jeder Mausbewegung. */
   moveNodes: (moves: Record<string, Point>) => void;
   removeNode: (id: string) => void;
+  /** Setzt die Gelenkpunkte einer Verbindung (FR-23) als ein Schritt; leer entfernt sie. */
+  setWaypoints: (edgeId: string, points: Point[]) => void;
   /** Ohne Anschlüsse wählt `autoPorts` das erste freie Paar (A-3). */
   connect: (
     a: string,
@@ -201,6 +204,19 @@ export const useTopology = create<TopologyState>((set, get) => {
         ],
       });
       return { ok: true, id };
+    },
+
+    setWaypoints: (edgeId, points) => {
+      const t = get().topology;
+      commit({
+        ...t,
+        edges: t.edges.map((e) => {
+          if (e.id !== edgeId) return e;
+          const next: Edge = { ...e, waypoints: points };
+          if (points.length === 0) delete next.waypoints;
+          return next;
+        }),
+      });
     },
 
     removeEdge: (id) => {

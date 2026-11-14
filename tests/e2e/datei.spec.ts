@@ -70,7 +70,7 @@ async function speichern(page: Page, mitEinstellungen: boolean) {
   const file = await download;
   expect(file.suggestedFilename()).toMatch(/\.tiv\.json$/);
   await expect(
-    page.getByText(`Eigene Datei: ${file.suggestedFilename()}`),
+    page.getByRole("button", { name: "Speichern (gespeichert)" }),
   ).toBeVisible();
   return {
     name: file.suggestedFilename(),
@@ -116,6 +116,7 @@ test.describe("datei", { tag: "@datei" }, () => {
     const pruefe = await csp(page);
     await page.goto("./");
     await praxis(page).click(); // Arbeitsfläche, damit die Kopfleiste da ist
+    const vorher = await page.locator(".react-flow__node").count();
     await oeffnen(page, datei.name, datei.text);
 
     // Nein: Topologie kommt, Modus bleibt „Einfach“
@@ -123,7 +124,8 @@ test.describe("datei", { tag: "@datei" }, () => {
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Nein, nur die Topologie" }).click();
-    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
+    // Die Datei enthält einen Switch mehr als das Preset
+    await expect(page.locator(".react-flow__node")).toHaveCount(vorher + 1);
     await expect(page.getByRole("button", { name: "Einfach" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -154,8 +156,10 @@ test.describe("datei", { tag: "@datei" }, () => {
     const pruefe = await csp(page);
     await page.goto("./");
     await praxis(page).click();
+    const vorher = await page.locator(".react-flow__node").count();
     await oeffnen(page, datei.name, datei.text);
-    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
+    // Die Datei enthält einen Switch mehr als das Preset
+    await expect(page.locator(".react-flow__node")).toHaveCount(vorher + 1);
     await expect(
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toHaveCount(0);

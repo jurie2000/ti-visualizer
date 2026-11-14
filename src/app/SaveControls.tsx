@@ -1,11 +1,14 @@
+import { Check, Circle, Save } from "lucide-react";
 import { useEffect } from "react";
-import { useFile, useHasUnsaved, useUi } from "../store";
+import { useHasUnsaved, useUi } from "../store";
 import { Button } from "../ui/Button";
 
-/** Speichern (Kopfleiste und Strg/Cmd+S) öffnet den Speichern-Dialog. */
+/**
+ * Speichern (Kopfleiste und Strg/Cmd+S) öffnet den Speichern-Dialog. Die
+ * Diskette zeigt den Stand: grün mit Haken gespeichert, rot mit Punkt nicht.
+ */
 export function SaveControls() {
   const unsaved = useHasUnsaved();
-  const fileName = useFile((s) => s.fileName);
 
   const openSave = () => {
     useUi.getState().openDialog("save");
@@ -39,10 +42,23 @@ export function SaveControls() {
 
   return (
     <div className="tiv-save">
-      {fileName && (
-        <span className="tiv-save__file">Eigene Datei: {fileName}</span>
-      )}
-      <Button onClick={openSave}>Speichern</Button>
+      <Button
+        className={unsaved ? "tiv-save__btn is-open" : "tiv-save__btn is-saved"}
+        onClick={openSave}
+      >
+        <span className="tiv-save__icon" aria-hidden="true">
+          <Save size={17} />
+          {unsaved ? (
+            <Circle size={8} fill="currentColor" />
+          ) : (
+            <Check size={9} strokeWidth={3.5} />
+          )}
+        </span>
+        Speichern{" "}
+        <span className="tiv-sr-only">
+          {unsaved ? "(nicht gespeichert)" : "(gespeichert)"}
+        </span>
+      </Button>
     </div>
   );
 }

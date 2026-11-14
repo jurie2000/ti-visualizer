@@ -27,6 +27,24 @@ beforeEach(() => {
 });
 
 describe("Speichern: Dialog und Schutz", () => {
+  it("Status-Icon: gespeichert grün mit Haken, geändert rot mit Punkt, jeweils auch als Text", () => {
+    ui();
+    const knopf = screen.getByRole("button", { name: /^Speichern/ });
+    expect(knopf).toHaveClass("is-saved");
+    expect(knopf).toHaveAccessibleName("Speichern (gespeichert)");
+    act(() => {
+      useTopology.getState().addNode("switch", { x: 0, y: 0 });
+    });
+    expect(knopf).toHaveClass("is-open");
+    expect(knopf).toHaveAccessibleName("Speichern (nicht gespeichert)");
+    act(() => {
+      useFile
+        .getState()
+        .markSaved(useTopology.getState().topology, "x.tiv.json");
+    });
+    expect(knopf).toHaveClass("is-saved");
+  });
+
   it("meldet ein unverändertes Preset nicht, ein bearbeitetes schon", () => {
     const preset = useCatalog.getState().catalog.presets[0];
     if (!preset) throw new Error("kein Preset");
@@ -58,7 +76,7 @@ describe("Speichern: Dialog und Schutz", () => {
     await user.keyboard("{Control>}s{/Control}");
     expect(useUi.getState().dialog).toBe("save");
     useUi.getState().openDialog(undefined);
-    await user.click(screen.getByRole("button", { name: "Speichern" }));
+    await user.click(screen.getByRole("button", { name: /^Speichern/ }));
     expect(useUi.getState().dialog).toBe("save");
   });
 

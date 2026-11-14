@@ -51,7 +51,6 @@ async function csp(page: Page) {
   };
 }
 
-const NICHT_GESPEICHERT = "Nicht als Datei gespeichert";
 const praxis = (page: Page) =>
   page.getByRole("button", { name: /^Arztpraxis Dr/ });
 
@@ -62,22 +61,28 @@ async function speichern(page: Page, mitEinstellungen: boolean) {
   await page.getByRole("button", { name: "Erweitert" }).click();
   await öffnePalette(page);
   await page.getByRole("button", { name: /Switch hinzufügen$/ }).click();
-  await expect(page.getByText(NICHT_GESPEICHERT)).toBeVisible();
-  if (mitEinstellungen)
-    await page.getByLabel("Einstellungen mitspeichern").check();
-  const download = page.waitForEvent("download");
   await page.keyboard.press("ControlOrMeta+s");
+  const dialog = page.getByRole("dialog", { name: "Speichern" });
+  if (mitEinstellungen)
+    await dialog.getByLabel("Einstellungen mitspeichern").check();
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "Speichern" }).click();
   const file = await download;
   expect(file.suggestedFilename()).toMatch(/\.tiv\.json$/);
-  await expect(page.getByText(NICHT_GESPEICHERT)).toHaveCount(0);
+  await expect(
+    page.getByText(`Eigene Datei: ${file.suggestedFilename()}`),
+  ).toBeVisible();
   return {
     name: file.suggestedFilename(),
     text: await readFile(await file.path(), "utf8"),
   };
 }
 
-/** Öffnen-Dialog der Kopfleiste, Datei in den Input legen. */
+/** Öffnen-Dialog der Startseite, Datei in den Input legen. */
 async function oeffnen(page: Page, name: string, text: string) {
+  await page
+    .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+    .click();
   await page.getByRole("button", { name: "Öffnen", exact: true }).click();
   await page.locator("input[type=file]").setInputFiles({
     name,
@@ -118,7 +123,7 @@ test.describe("datei", { tag: "@datei" }, () => {
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Nein, nur die Topologie" }).click();
-    await expect(page.getByText(`Gespeichert: ${datei.name}`)).toBeVisible();
+    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
     await expect(page.getByRole("button", { name: "Einfach" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -150,7 +155,7 @@ test.describe("datei", { tag: "@datei" }, () => {
     await page.goto("./");
     await praxis(page).click();
     await oeffnen(page, datei.name, datei.text);
-    await expect(page.getByText(`Gespeichert: ${datei.name}`)).toBeVisible();
+    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toHaveCount(0);

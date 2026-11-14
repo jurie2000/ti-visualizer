@@ -271,8 +271,12 @@ test.describe("injection", { tag: "@security" }, () => {
         nodes: [knoten("a", "kt")],
       }),
     );
-    const download = page.waitForEvent("download");
     await page.keyboard.press("ControlOrMeta+s");
+    const download = page.waitForEvent("download");
+    await page
+      .getByRole("dialog", { name: "Speichern" })
+      .getByRole("button", { name: "Speichern" })
+      .click();
     const name = (await download).suggestedFilename();
     expect(name).toMatch(/^[a-z0-9äöüß-]+\.tiv\.json$/);
     await w.pruefen();

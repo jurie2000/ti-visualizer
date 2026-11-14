@@ -53,9 +53,7 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto("./");
     await preset(page);
-    await expect(
-      page.getByRole("button", { name: "Sicherheitsprüfung" }),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Speichern" })).toBeVisible();
     expect(await keinSeitenScroll(page)).toBe(true);
   });
 
@@ -73,6 +71,9 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await expect(page.locator(".react-flow__node").first()).toBeVisible();
     expect(await keinSeitenScroll(page)).toBe(true);
     // Datei öffnen ist bedienbar: Dialog erreichbar, Datei wird geladen
+    await page
+      .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
+      .click();
     await page.getByRole("button", { name: "Öffnen", exact: true }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.locator("input[type=file]").setInputFiles({

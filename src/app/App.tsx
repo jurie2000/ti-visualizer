@@ -5,6 +5,7 @@ import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
 import { ImportFindingsDialog } from "../dialogs/ImportFindingsDialog";
 import { OpenDialog } from "../dialogs/OpenDialog";
+import { SaveDialog } from "../dialogs/SaveDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { SecurityDialog } from "../dialogs/SecurityDialog";
 import { ShortcutsDialog } from "../dialogs/ShortcutsDialog";
@@ -116,13 +117,6 @@ export function App() {
             {started && (
               <>
                 <EditShortcuts />
-                <Button
-                  onClick={() => {
-                    useUi.getState().openDialog("security");
-                  }}
-                >
-                  Sicherheitsprüfung
-                </Button>
               </>
             )}
             <SaveControls />
@@ -231,6 +225,7 @@ export function App() {
         </footer>
         <PlugCardDialog />
         <OpenDialog />
+        <SaveDialog />
         <UnsavedGuardDialog />
         <ImportFindingsDialog />
         <SecurityDialog />

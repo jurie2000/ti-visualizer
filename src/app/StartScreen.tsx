@@ -5,6 +5,7 @@ import {
   startTutorial,
   useCatalog,
   useSettings,
+  useUi,
 } from "../store";
 import { Button } from "../ui/Button";
 import { AutosaveHint } from "./AutosaveHint";
@@ -30,6 +31,16 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
       <p className="tiv-start__lead">
         Lade eine fertige Einrichtung und sieh dir an, wie die Geräte
         zusammenhängen — oder baue die Topologie selbst aus der Palette auf.
+      </p>
+      <p>
+        <Button
+          title="Gespeicherte Datei öffnen"
+          onClick={() => {
+            useUi.getState().openDialog("open");
+          }}
+        >
+          Öffnen
+        </Button>
       </p>
       <div className="tiv-start__modes">
         <button type="button" className="tiv-mode" onClick={startTutorial}>

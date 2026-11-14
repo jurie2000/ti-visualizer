@@ -537,6 +537,24 @@ describe("Importbefunde", () => {
       "einstellungen:",
     ]);
   });
+
+  it("alte Datei mit settings.solvedChallenges lädt, das Feld wird ignoriert (#156)", () => {
+    const s = {
+      ...toFileSettings({
+        theme: "light",
+        mode: "simple",
+        simSpeed: 1,
+        pinnedPanels: [],
+        reduceMotion: false,
+        tutorialProgress: 0,
+        saveSettingsWithFile: false,
+      }),
+      solvedChallenges: ["c1"],
+    };
+    const r = ok(file(base(), { settings: s }));
+    expect(r.settings).toBeDefined();
+    expect(r.settings).not.toHaveProperty("solvedChallenges");
+  });
 });
 
 describe("Eingabeprüfung an der Vertrauensgrenze", () => {

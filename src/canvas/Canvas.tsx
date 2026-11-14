@@ -308,6 +308,7 @@ export function Canvas() {
         fitView
         minZoom={0.2}
         maxZoom={2}
+        fitViewOptions={{ maxZoom: 1 }}
         ariaLabelConfig={ariaLabelConfig}
       >
         <Background />

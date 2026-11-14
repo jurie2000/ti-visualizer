@@ -176,6 +176,32 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       await user.click(screen.getByRole("button", { name: "Übersicht" }));
       expect(screen.getByRole("button", { name: "Sortieren" })).toBeEnabled();
     });
+
+    const zoom = () =>
+      Number(
+        /scale\((-?[\d.]+)\)/.exec(
+          document.querySelector<HTMLElement>(".react-flow__viewport")?.style
+            .transform ?? "",
+        )?.[1],
+      );
+
+    it("Issue #140: Start und Übersicht zoomen kleine Topologien nicht über 100 %", async () => {
+      const user = userEvent.setup();
+      useTopology.getState().reset(praxis);
+      render(<Canvas />, { wrapper: sized });
+      await waitFor(() => {
+        expect(zoom()).toBeGreaterThan(0);
+      });
+      expect(zoom()).toBeLessThanOrEqual(1);
+      await user.click(screen.getByRole("button", { name: "Vergrößern" }));
+      await waitFor(() => {
+        expect(zoom()).toBeGreaterThan(1);
+      });
+      await user.click(screen.getByRole("button", { name: "Übersicht" }));
+      await waitFor(() => {
+        expect(zoom()).toBeLessThanOrEqual(1);
+      });
+    });
   });
 
   it("wählt per Enter und verschiebt per Pfeiltaste (ein Verlaufsschritt je Taste)", async () => {

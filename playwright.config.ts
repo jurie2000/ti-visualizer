@@ -47,7 +47,7 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
-      // Tablet und kleine Bildschirme (T-703): Breiten setzt die Suite selbst
+      // Tablet und kleine Bildschirme: Breiten setzt die Suite selbst
       name: "responsive",
       testMatch: "responsive.spec.ts",
       use: { ...devices["Desktop Chrome"] },
@@ -91,7 +91,7 @@ export default defineConfig({
       use: { ...devices["Desktop Safari"] },
     },
     {
-      // Injection-Suite und Fuzzing (T-305)
+      // Injection-Suite und Fuzzing
       name: "security",
       testDir: "tests/security",
       testMatch: "*.spec.ts",

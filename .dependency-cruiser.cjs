@@ -1,4 +1,4 @@
-// Architekturregeln (D32, plan.md „Statische Qualität“). Aufruf: pnpm check:architektur
+// Architekturregeln . Aufruf: pnpm check:architektur
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
   forbidden: [

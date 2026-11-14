@@ -1,4 +1,4 @@
-// Gemeinsamer Leser für regelwerk.md (T-109). Liest nur Regel-IDs, Status und
+// Gemeinsamer Leser für regelwerk.md. Liest nur Regel-IDs, Status und
 // Quelle aus den Tabellen, keine Inhalte wie Gerätelisten.
 
 export const ID = /[A-Z]-\d+[a-z]?/;

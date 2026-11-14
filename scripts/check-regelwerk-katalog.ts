@@ -1,9 +1,9 @@
-// T-109: Regel-ID, Status und Quelle müssen in regelwerk.md und im Katalog
-// übereinstimmen (plan.md, „Rückverfolgbarkeit“). Aufruf: pnpm check:katalog
+// Regel-ID, Status und Quelle müssen in regelwerk.md und im Katalog
+// übereinstimmen. Aufruf: pnpm check:katalog
 import { readdirSync, readFileSync } from "node:fs";
 import { ID, regelwerkRows } from "./regelwerk.ts";
 
-// Familien, die der Katalog immer führt (T-104). Weitere kommen über die Katalogdaten dazu.
+// Familien, die der Katalog immer führt. Weitere kommen über die Katalogdaten dazu.
 const KATALOG_FAMILIEN = ["G", "V", "X"];
 
 export type KatalogRegel = { id: string; status?: string; source?: string[] };
@@ -11,7 +11,7 @@ export type KatalogRegel = { id: string; status?: string; source?: string[] };
 /**
  * Vergleicht je Regel-Familie (Buchstabe), die im Katalog vorkommt. Familien
  * ohne Katalogeinträge (K …) liegen noch in der Engine und werden nicht
- * verlangt. P-8 bis P-15 (T-504) dürfen bis dahin im Katalog fehlen.
+ * verlangt. P-8 bis P-15 dürfen bis dahin im Katalog fehlen.
  */
 export function pruefeRegelwerkKatalog(
   regelwerk: string,

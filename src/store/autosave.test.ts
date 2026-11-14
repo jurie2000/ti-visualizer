@@ -73,7 +73,7 @@ describe("Autosave (T-304)", () => {
     await saveNow();
     useSettings.getState().set({ theme: "light" });
     await saveNow();
-    useSettings.getState().set({ theme: "light" });
+    useSettings.getState().set({ theme: "dark" });
     useTopology.getState().reset(emptyTopology());
     await start();
     expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");

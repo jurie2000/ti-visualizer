@@ -25,7 +25,6 @@ function blockAfter(selector: string): string {
 
 const light = vars(blockAfter(":root {"));
 const darkOverrides = vars(blockAfter(':root[data-theme="dark"]'));
-const darkMedia = vars(blockAfter(":root:not([data-theme="));
 const dark = { ...light, ...darkOverrides };
 
 function luminance(hex: string): number {
@@ -102,10 +101,6 @@ describe.each([
 });
 
 describe("Dunkelmodus", () => {
-  it("prefers-color-scheme-Block entspricht data-theme=dark", () => {
-    expect(darkMedia).toEqual(darkOverrides);
-  });
-
   it("jede Kategorie hat eine Form", () => {
     for (const c of cats) expect(light[`${c}-shape`], c).toBeTruthy();
   });

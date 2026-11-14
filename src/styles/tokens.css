@@ -4,13 +4,12 @@
  * darkVars aus "TI Visualizer.dc.html". Abweichungen für WCAG AA stehen
  * als Kommentar an der Stelle. Der Kontrasttest liest diese Datei.
  *
- * Dunkel: Standard folgt prefers-color-scheme, data-theme="light|dark"
- * überschreibt. Der Dunkel-Block steht deshalb zweimal (identisch,
- * vom Test geprüft).
+ * Hell ist der Standard, data-theme="dark" (Umschalter) überschreibt.
+ * index.html setzt data-theme="light", damit der erste Frame nie dunkel ist.
  */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   --color-bg: #f5ead8;
   --color-surface: #ebddc5;
@@ -139,67 +138,6 @@
   --shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
   --shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
   --shadow-lg: 0 12px 32px color-mix(in srgb, #2e2b25 22%, transparent);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --color-bg: #221f1c;
-    --color-surface: #2c2925;
-    --color-text: #f4ede2;
-    --color-text-muted: #aba292;
-    --color-accent: #e0975d;
-    --color-divider: #413c34;
-    --color-neutral-100: #2c2925;
-    --color-neutral-200: #332f2a;
-    --color-neutral-300: #3d3831;
-    --color-neutral-400: #4a443c;
-    --color-neutral-500: #5e574d;
-    --color-neutral-600: #8c8474;
-    --color-neutral-700: #aba292;
-    --color-neutral-800: #d6cdbd;
-    --color-neutral-900: #f4ede2;
-    --color-accent-700: #f0b37f;
-    --color-accent-900: #f8d2ae;
-    --color-accent-2-100: #2a3122;
-    --color-accent-2-300: #4a5639;
-    --color-accent-2-800: #c6d3ac; /* Mockup lässt 800 hell: 1,4:1 auf dunklem 100 */
-    --color-accent-2-900: #c6d3ac;
-    --tiv-focus: #f0b37f;
-    --tiv-btn-bg: #3d3831;
-    --tiv-btn-bd: #6f6759;
-    --tiv-seg-bg: #1b1917;
-    --tiv-seg-on: #554d44;
-    --tiv-error-fg: #ffc2a0;
-    --tiv-error-bd: #e8845a;
-    --tiv-error-bg: #3b2219;
-    --tiv-ok-fg: #8fe9c6;
-    --tiv-ok-bd: #44d7ac;
-    --tiv-ok-bg: #14332a;
-    --tiv-warn-fg: #f5ce86;
-    --tiv-warn-bd: #d9a441;
-    --tiv-warn-bg: #3a2e15;
-    --tiv-cat-primary: #63bdf2;
-    --tiv-cat-computer: #aab7cc;
-    --tiv-cat-card: #f0b84a;
-    --tiv-card-fg: #f0c88a;
-    --tiv-cat-terminal: #e79cc4;
-    --tiv-cat-lan: #b6c77a;
-    --tiv-cat-network: #44d7ac;
-    --tiv-cat-service: #7cbdea;
-    --tiv-cat-central: #e8743b;
-    --tiv-cat-insured: #f0e442;
-    --tiv-edge-phys: #cec5b5;
-    --tiv-edge-nfc: #e79cc4;
-    --tiv-edge-tcp: #7cbdea;
-    --tiv-edge-vpn: #44d7ac;
-    --tiv-edge-wlan: #b6c77a;
-    --tiv-edge-inet: #a79e8e;
-    --tiv-edge-host: #b8afa0;
-    --shadow-sm: 0 0 0 1px #413c34;
-    --shadow-md: 0 3px 10px #0006;
-    --shadow-lg: 0 12px 32px #0008;
-  }
 }
 
 :root[data-theme="dark"] {

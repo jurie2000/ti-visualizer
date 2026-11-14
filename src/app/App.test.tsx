@@ -1,6 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useTopology } from "../store";
+import { useSettings, useTopology } from "../store";
 import { App } from "./App";
 
 describe("App-Shell", () => {
@@ -67,6 +67,17 @@ describe("App-Shell", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(link).toHaveFocus();
+  });
+
+  it("zeigt und wendet ein geladenes Theme an (Einstellungen aus Datei oder Autosave)", () => {
+    useSettings.getState().set({ theme: "dark" });
+    render(<App />);
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(screen.getByRole("button", { name: "Dunkel" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    useSettings.getState().set({ theme: "light" });
   });
 
   it("setzt data-theme über den Theme-Schalter", async () => {

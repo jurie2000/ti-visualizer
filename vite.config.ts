@@ -1,7 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
-// Wortlaut nach plan.md, „Härtung der Seite“.
+// Wortlaut der Content-Security-Policy.
 const csp = [
   "default-src 'self'",
   "script-src 'self'",

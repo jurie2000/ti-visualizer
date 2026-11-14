@@ -1,7 +1,6 @@
 # Architektur 001: TI Visualizer
 
-**Stand:** 2026-11-04 · **Bezug:** [plan.md](./plan.md) (D1 bis D36),
-[spec.md](./spec.md), [regelwerk.md](./regelwerk.md)
+**Stand:** 2026-11-04 · **Bezug:** [regelwerk.md](./regelwerk.md)
 
 Die Diagramme sind in [Mermaid](https://mermaid.js.org/) geschrieben.
 GitHub zeigt sie direkt als Grafik an. Lokal geht das zum Beispiel mit der
@@ -15,9 +14,8 @@ prüfen · 8 Verteilung
 
 Der Systemkontext zeigt, wer mit dem TI Visualizer arbeitet und mit
 welchen Systemen er verbunden ist. Die App läuft vollständig im Browser,
-einen eigenen Server gibt es nicht (D1). Es gibt eine Rolle, den Benutzer.
-Seine Topologien gehören ihm als Datei und hängen nicht vom Browser ab
-(D3, D34).
+einen eigenen Server gibt es nicht. Es gibt eine Rolle, den Benutzer.
+Seine Topologien gehören ihm als Datei und hängen nicht vom Browser ab.
 
 Bausteine mit „▸“ sind in einem eigenen Diagramm genauer dargestellt.
 
@@ -146,7 +144,7 @@ wird weder geprüft noch gespeichert.
 
 ## 3. Datenmodell
 
-Aufbau des Dateiformats `.tiv.json` (D23) und der Topologie (D35), in
+Aufbau des Dateiformats `.tiv.json` und der Topologie, in
 drei Teilen. Eine Datei enthält immer eine Topologie und optional die
 Einstellungen. Gemeinsame Felder stehen in Basistypen, Varianten werden über
 ein Feld wie `kind` unterschieden. Welche Geräte Karten oder
@@ -186,7 +184,7 @@ classDiagram
 ```
 
 Eine Datei enthält immer genau eine `topology` und höchstens einmal
-`settings` (D23). Einstellungen werden nur mitgespeichert, wenn der
+`settings`. Einstellungen werden nur mitgespeichert, wenn der
 Benutzer es beim Speichern wählt, und beim Öffnen nur nach Rückfrage
 übernommen. Eine Datei nur mit Einstellungen gibt es nicht. Den Aufbau
 von `topology` zeigen 3.2 und 3.3.
@@ -251,7 +249,7 @@ classDiagram
 
 `id` und `label` stammen aus dem gemeinsamen Basistyp `Element`, `fault`
 aus `Disruptable`. Im Diagramm stehen sie zur Übersicht direkt bei den
-Bausteinen. Kanten haben genau zwei gleichwertige Enden (D15). Jedes Ende
+Bausteinen. Kanten haben genau zwei gleichwertige Enden. Jedes Ende
 nennt einen Knoten und dessen Anschluss.
 
 **Beispiel:** der Inhalt von `topology` aus `praxis.tiv.json`. Ein PVS und
@@ -442,10 +440,8 @@ ist nicht freigeschaltet (Regelwerk P-22).
 
 ## 4. Speichern und Öffnen
 
-Der einzige Weg zu einem anderen Browser oder Benutzer ist die Datei
-(D24). Sie enthält immer die Topologie, die Einstellungen nur auf Wunsch
-(D23). Der
-Autosave sichert nur im eigenen Browser (D34).
+Der einzige Weg zu einem anderen Browser oder Benutzer ist die Datei. Sie enthält immer die Topologie, die Einstellungen nur auf Wunsch. Der
+Autosave sichert nur im eigenen Browser.
 
 ```mermaid
 sequenceDiagram
@@ -479,7 +475,7 @@ sequenceDiagram
 
 ## 5. CI/CD-Pipeline
 
-Stufen aus [plan.md](./plan.md#cicd-pipeline-und-deployment-d8-d26-d27).
+Stufen siehe `.github/workflows/`.
 Deploy nur auf `main` und nur, wenn alles grün ist.
 
 ```mermaid

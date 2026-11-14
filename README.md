@@ -45,20 +45,12 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
 | NFDM / eMP | Notfalldaten und Medikationsplan direkt auf der eGK schreiben und lesen (ohne zentralen Fachdienst) |
 | TI-Messenger | informelle Rückfrage an Kolleg:innen |
 
-## Entwicklung: Spec-Driven
+## Dokumentation
 
-Hier entsteht erst die Spec, dann der Code. Maßgeblich ist die Spec, nicht der Chat-Verlauf.
-
-1. `spec.md`: was und warum
-2. `plan.md`: Architektur und Technologieentscheidungen
-3. `tasks.md`: überprüfbare Arbeitspakete
-4. Umsetzung durch Coding-Agenten, jeder Commit referenziert die Task-ID
-
-Details: [specs/README.md](specs/README.md)
-
-| Nr. | Feature | Status |
-|---|---|---|
-| [001](specs/001-ti-visualizer-baukasten/spec.md) | Netzwerk-Baukasten | freigegeben, P0 abgeschlossen |
+Fachliche Grundlagen liegen in [`docu/001-ti-visualizer-baukasten/`](docu/001-ti-visualizer-baukasten/):
+[Regelwerk](docu/001-ti-visualizer-baukasten/regelwerk.md),
+[Architektur](docu/001-ti-visualizer-baukasten/architektur.md) und
+[Quellen](docu/001-ti-visualizer-baukasten/quellen.md).
 
 ## Quellen
 

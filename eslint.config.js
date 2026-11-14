@@ -23,7 +23,7 @@ export default defineConfig(
     },
   },
   {
-    // engine/ ist reine Logik: keine Browser-Globals (plan.md, D32)
+    // engine/ ist reine Logik: keine Browser-Globals
     files: ["src/engine/**/*.ts"],
     ignores: ["**/*.test.ts"],
     rules: {

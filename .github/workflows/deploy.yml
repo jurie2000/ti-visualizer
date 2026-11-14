@@ -1,6 +1,6 @@
 name: Deploy
 
-# Stufen 1 bis 5 wie in ci.yml, danach Stufe 6 (plan.md, „CI/CD-Pipeline“).
+# Stufen 1 bis 5 wie in ci.yml, danach Stufe 6.
 # Auf `main` übernimmt dieser Workflow die Prüfung; ci.yml läuft dort nicht.
 on:
   push:

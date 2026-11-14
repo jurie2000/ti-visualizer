@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
-import regelwerk from "../../specs/001-ti-visualizer-baukasten/regelwerk.md?raw";
+import regelwerk from "../../docu/001-ti-visualizer-baukasten/regelwerk.md?raw";
 import { IDLE } from "../engine/simulation";
 import { loadCatalog, type Node } from "../schema";
 import { useSettings, useSim, useTopology, useUi } from "../store";

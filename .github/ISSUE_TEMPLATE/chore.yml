@@ -1,0 +1,16 @@
+name: Aufgabe
+description: Aufräumen, Abhängigkeiten, Build, Dokumentation oder Ähnliches ohne neues Verhalten
+labels: [chore]
+body:
+  - type: textarea
+    id: aufgabe
+    attributes:
+      label: Was ist zu tun?
+    validations:
+      required: true
+  - type: textarea
+    id: fertig
+    attributes:
+      label: Fertig, wenn
+    validations:
+      required: true

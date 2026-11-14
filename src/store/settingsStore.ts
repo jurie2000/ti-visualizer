@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type Theme = "system" | "light" | "dark";
+export type Theme = "light" | "dark";
 export type Mode = "simple" | "advanced";
 
 /** Einstellungen laut plan.md „Was gespeichert wird“. Speichern und Autosave folgen in P3. */
@@ -18,7 +18,7 @@ export interface SettingsState {
 }
 
 export const useSettings = create<SettingsState>((set) => ({
-  theme: "system",
+  theme: "light",
   mode: "simple",
   simSpeed: 1,
   pinnedPanels: [],

@@ -68,7 +68,7 @@ beforeEach(() => {
   useCatalog.setState({ catalog });
   useTopology.getState().reset(emptyTopology());
   useFile.getState().markSaved(useTopology.getState().topology, null);
-  useSettings.getState().set({ theme: "system" });
+  useSettings.getState().set({ theme: "light" });
   useOpen.setState({
     pending: undefined,
     guard: undefined,
@@ -87,7 +87,7 @@ describe("Öffnen (T-303)", () => {
     expect(screen.getByRole("button", { name: /^Nein/ })).toHaveFocus();
     await userEvent.click(screen.getByRole("button", { name: /^Nein/ }));
     expect(useTopology.getState().topology).toEqual(praxis);
-    expect(useSettings.getState().theme).toBe("system");
+    expect(useSettings.getState().theme).toBe("light");
     expect(useFile.getState().fileName).toBe("meine.tiv.json");
     expect(hasUnsaved()).toBe(false);
   });

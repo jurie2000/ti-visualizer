@@ -73,13 +73,12 @@ describe("App-Shell", () => {
     const user = userEvent.setup();
     render(<App />);
     const root = document.documentElement;
-    expect(root).not.toHaveAttribute("data-theme");
+    expect(screen.queryByRole("button", { name: "System" })).toBeNull();
+    expect(root).toHaveAttribute("data-theme", "light");
     await user.click(screen.getByRole("button", { name: "Dunkel" }));
     expect(root).toHaveAttribute("data-theme", "dark");
     await user.click(screen.getByRole("button", { name: "Hell" }));
     expect(root).toHaveAttribute("data-theme", "light");
-    await user.click(screen.getByRole("button", { name: "System" }));
-    expect(root).not.toHaveAttribute("data-theme");
   });
 
   it("T-703 Überlagerungen: Knöpfe öffnen, Fokus, Escape schließt nur aus der Überlagerung", async () => {

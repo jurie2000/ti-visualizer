@@ -525,7 +525,7 @@ describe("Importbefunde", () => {
 
   it("Einstellungen: übernommen, wenn gültig, sonst Befund", () => {
     const s = toFileSettings({
-      theme: "system",
+      theme: "light",
       mode: "simple",
       simSpeed: 1,
       pinnedPanels: [],
@@ -681,5 +681,24 @@ describe("Unicode-Tricks in Topologie-Texten (T-305)", () => {
 
   it("saubere Texte erzeugen keinen Befund", () => {
     expect(ok(file(base())).findings).toEqual([]);
+  });
+});
+
+describe("Theme in Dateien", () => {
+  it("altes „system“ gilt beim Laden als Hell, Speichern kennt es nicht mehr", () => {
+    const patch = fromFileSettings({
+      ...toFileSettings({
+        theme: "dark",
+        mode: "simple",
+        simSpeed: 1,
+        pinnedPanels: [],
+        reduceMotion: false,
+        tutorialProgress: 0,
+        solvedChallenges: [],
+        saveSettingsWithFile: false,
+      }),
+      theme: "system",
+    });
+    expect(patch.theme).toBe("light");
   });
 });

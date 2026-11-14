@@ -30,7 +30,7 @@ beforeEach(async () => {
   await clear();
   useAutosave.setState({ start: undefined, failed: false });
   useTopology.getState().reset(emptyTopology());
-  useSettings.getState().set({ mode: "simple", theme: "system" });
+  useSettings.getState().set({ mode: "simple", theme: "light" });
 });
 afterEach(() => {
   off?.();
@@ -46,7 +46,7 @@ describe("Autosave (T-304)", () => {
     await saveNow(); // zweites Sichern überschreibt, keine Liste
 
     useTopology.getState().reset(emptyTopology());
-    useSettings.getState().set({ mode: "simple", theme: "system" });
+    useSettings.getState().set({ mode: "simple", theme: "light" });
     await start();
 
     expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");
@@ -63,7 +63,7 @@ describe("Autosave (T-304)", () => {
   it("übernimmt die Einstellungen auch bei Verwerfen und fragt bei leerer Topologie nicht", async () => {
     useSettings.getState().set({ mode: "advanced", theme: "dark" });
     await saveNow(); // leere Topologie, nur Einstellungen
-    useSettings.getState().set({ mode: "simple", theme: "system" });
+    useSettings.getState().set({ mode: "simple", theme: "light" });
     await start();
     expect(useAutosave.getState().start?.kind).toBe("hinweis");
     expect(useSettings.getState().theme).toBe("dark");
@@ -73,7 +73,7 @@ describe("Autosave (T-304)", () => {
     await saveNow();
     useSettings.getState().set({ theme: "light" });
     await saveNow();
-    useSettings.getState().set({ theme: "system" });
+    useSettings.getState().set({ theme: "light" });
     useTopology.getState().reset(emptyTopology());
     await start();
     expect(useAutosave.getState().start?.kind).toBe("wiederherstellen");

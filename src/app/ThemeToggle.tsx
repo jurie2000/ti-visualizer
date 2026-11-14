@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
+import type { Theme } from "../store";
 import { Button } from "../ui/Button";
 
-type Theme = "system" | "light" | "dark";
-
 const OPTIONS: { value: Theme; label: string }[] = [
-  { value: "system", label: "System" },
   { value: "light", label: "Hell" },
   { value: "dark", label: "Dunkel" },
 ];
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("system");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "system") root.removeAttribute("data-theme");
-    else root.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   return (

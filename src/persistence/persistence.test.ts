@@ -717,3 +717,26 @@ describe("Theme in Dateien", () => {
     expect(patch.theme).toBe("light");
   });
 });
+
+describe("Gelenkpunkte einer Verbindung (FR-23, L-1, L-2)", () => {
+  const preset = catalog.presets[0]?.topology ?? base();
+  const waypoints = [
+    { x: 10, y: 20 },
+    { x: -30.5, y: 40 },
+  ];
+  const withPoints = (): Topology => ({
+    ...preset,
+    edges: preset.edges.map((e, i) => (i === 0 ? { ...e, waypoints } : e)),
+  });
+
+  it("werden gespeichert und wieder geladen", () => {
+    const r = parse(serialize(withPoints(), catalog), catalog);
+    expect(r.ok && r.topology.edges[0]?.waypoints).toEqual(waypoints);
+  });
+
+  it("alte Datei ohne Gelenkpunkte lädt unverändert", () => {
+    const r = ok(file(preset));
+    expect(r.topology).toEqual(preset);
+    expect(r.topology.edges.every((e) => !("waypoints" in e))).toBe(true);
+  });
+});

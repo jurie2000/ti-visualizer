@@ -7,7 +7,7 @@ freigegebene Matrix der ursprünglichen Spec. Alle Regeln sind jetzt mit
 mindestens einer offiziellen Quelle belegt oder ausdrücklich als
 Vereinfachung bzw. offen markiert. Fachlich freigegeben durch Justin am
 2026-11-05.
-**Bezug:** Spec FR-4, FR-7, FR-14, FR-17 bis FR-21
+**Bezug:** Spec FR-4, FR-7, FR-14, FR-17 bis FR-21, FR-23
 **Quellen:** [quellen.md](./quellen.md)
 
 ## Zweck und Aufbau
@@ -35,7 +35,7 @@ gematik-Fachportal-Seite zur jeweiligen Anwendung.
 Abschnitte: 1 Gerätetypen · 2 Anschlüsse · 3 Verbindungsarten ·
 4 Verbindungsregeln · 5 Karten · 6 Aktionen · 7 Abläufe ·
 8 Konfiguration · 9 Prüfregeln · 10 Herausforderungen (entfernt) · 11 Modus Einfach
-und Erweitert · 12 Offene Fragen · 13 Presets
+und Erweitert · 12 Offene Fragen · 13 Presets · 14 Linienführung
 
 ## 1. Gerätetypen
 
@@ -862,3 +862,21 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 
 Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.
+
+## 14. Linienführung mit Gelenkpunkten (FR-23)
+
+Neu 2026-11-14 (Issue #137, Teil 1 in #163). Eine Verbindung lässt sich manuell
+anpassen: Sie kann Gelenkpunkte tragen, die der Nutzer verschiebt (Bedienung
+folgt in eigenen Issues).
+
+| ID | Regel |
+|---|---|
+| L-1 | Eine Verbindung hat optional `waypoints`: eine Liste von Punkten (höchstens 20) in Weltkoordinaten, geordnet von `ends[0]` nach `ends[1]`. |
+| L-2 | Ohne `waypoints` läuft die Linie automatisch nach der Kantenführung (Kurve, Rechtwinklig). Dateien ohne Gelenkpunkte laden unverändert. |
+| L-3 | Mit `waypoints` läuft die Linie als Linienzug durch die Punkte. Sie verlässt jedes Gerät an der Seitenmitte, die dem nächsten Gelenkpunkt zugewandt ist. Die Kantenführung gilt dann nicht. |
+
+Auslegung (2026-11-14): `waypoints` ist ein optionales Feld, daher bleibt
+`schemaVersion` 1 und eine Migration entfällt. Ältere Dateien sind gültig,
+ältere Programmstände verwerfen das Feld beim Öffnen. Die Koordinaten
+unterliegen demselben Limit wie Geräte (`LIMITS.coord`). `spec.md` und
+`plan.md` liegen nicht im Repo; die Anforderung steht hier und im Issue #137.

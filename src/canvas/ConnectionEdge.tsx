@@ -40,7 +40,7 @@ export function ConnectionEdge({
 
   const a = boxOf(from);
   const b = boxOf(to);
-  const { d: path, mid } = routePath(a, b, route, data.hub);
+  const { d: path, mid } = routePath(a, b, route, data.hub, data.waypoints);
   const { x, y } = mid;
   // Beschriftung „Wichtige“: einfache Ethernet- und WLAN-Labels entfallen; Störung und Auswahl bleiben (Mockup `trivial`)
   const trivial = !data.fault && (data.kind === "phys" || data.kind === "wlan");

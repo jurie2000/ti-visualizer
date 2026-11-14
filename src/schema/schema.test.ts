@@ -126,6 +126,25 @@ describe("TivFile", () => {
   });
 });
 
+describe("Gelenkpunkte (FR-23, L-1)", () => {
+  const edgeWith = (waypoints: unknown) =>
+    topoOk({ edges: [{ ...e1, waypoints }] });
+  const pts = (n: number) => Array.from({ length: n }, () => ({ x: 0, y: 0 }));
+
+  it("sind optional, leer und mit Punkten gültig", () => {
+    expect(topoOk({ edges: [e1] })).toBe(true);
+    expect(edgeWith([])).toBe(true);
+    expect(edgeWith([{ x: 1, y: 2 }])).toBe(true);
+  });
+
+  it("lehnt mehr als 20 Punkte und Punkte außerhalb der Grenzen ab", () => {
+    expect(edgeWith(pts(20))).toBe(true);
+    expect(edgeWith(pts(21))).toBe(false);
+    expect(edgeWith([{ x: 1e9, y: 0 }])).toBe(false);
+    expect(edgeWith([{ x: 1 }])).toBe(false);
+  });
+});
+
 describe("Topology", () => {
   it("lehnt doppelte IDs ab (auch über Listen hinweg)", () => {
     expect(topoOk({ nodes: [kt, kt] })).toBe(false);

@@ -70,7 +70,7 @@ async function speichern(page: Page, mitEinstellungen: boolean) {
   const file = await download;
   expect(file.suggestedFilename()).toMatch(/\.tiv\.json$/);
   await expect(
-    page.getByText(`Eigene Datei: ${file.suggestedFilename()}`),
+    page.getByRole("button", { name: "Speichern (gespeichert)" }),
   ).toBeVisible();
   return {
     name: file.suggestedFilename(),
@@ -123,7 +123,9 @@ test.describe("datei", { tag: "@datei" }, () => {
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Nein, nur die Topologie" }).click();
-    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Speichern (gespeichert)" }),
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "Einfach" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -155,7 +157,9 @@ test.describe("datei", { tag: "@datei" }, () => {
     await page.goto("./");
     await praxis(page).click();
     await oeffnen(page, datei.name, datei.text);
-    await expect(page.getByText(`Eigene Datei: ${datei.name}`)).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Speichern (gespeichert)" }),
+    ).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Einstellungen übernehmen?" }),
     ).toHaveCount(0);

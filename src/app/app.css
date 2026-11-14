@@ -489,6 +489,29 @@ a {
   gap: 12px;
   align-items: center;
 }
+.tiv-save__btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.tiv-save__icon {
+  position: relative;
+  display: inline-flex;
+}
+.tiv-save__icon > :last-child {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  padding: 1px;
+  border-radius: 999px;
+  background: var(--tiv-btn-bg);
+}
+.tiv-save__btn.is-saved .tiv-save__icon {
+  color: var(--tiv-ok-bd);
+}
+.tiv-save__btn.is-open .tiv-save__icon {
+  color: var(--tiv-error-bd);
+}
 .tiv-save__check {
   display: flex;
   gap: 6px;

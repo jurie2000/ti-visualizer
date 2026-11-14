@@ -5,15 +5,16 @@ im CI beim KI-Review.
 
 ## Quellen
 
-Alles Fachliche steht in `docu/001-ti-visualizer-baukasten/`:
-`regelwerk.md` (Regel-IDs), `architektur.md`, `quellen.md`. Im Repo
-liegen nur diese drei. `spec.md` (FR-IDs), `plan.md` (Entscheidungen
-D1 bis D30), `tasks.md` (Task-IDs) und `ki-workflow.md` stehen im selben
-Ordner, sind aber in `.gitignore` und nur lokal da. In CI und im KI-Review
-fehlen sie.
+Fachliches steht in `docu/001-ti-visualizer-baukasten/`: `regelwerk.md`
+(Regel-IDs), `architektur.md`, `quellen.md`. Das Regelwerk dient dazu,
+fachliche Fragen zu klären und Tests zu schreiben. Die Anforderung selbst
+steht im Issue (Beschreibung, „Fertig, wenn“, Bilder).
 
-Die Specs zusammen haben über 3.500 Zeilen. Nicht ganz lesen, sondern
-gezielt: `grep` nach Regel-ID oder Stichwort, dann den Abschnitt.
+Verweise (Kommentare, PR-Text, Review) nur auf das, was im Repo liegt oder
+im Issue steht. Lokale Dateien außerhalb des Repos nicht nennen.
+
+Das Regelwerk ist lang. Nicht ganz lesen, sondern gezielt: `grep` nach
+Regel-ID oder Stichwort, dann den Abschnitt.
 
 ## Ablauf
 
@@ -34,7 +35,7 @@ gezielt: `grep` nach Regel-ID oder Stichwort, dann den Abschnitt.
 
 Erst das Problem verstehen, dann beim ersten Punkt anhalten, der trägt:
 
-1. Muss das gebaut werden? Nichts über den Task hinaus.
+1. Muss das gebaut werden? Nichts über das Issue hinaus.
 2. Gibt es das im Projekt schon? Vorhandene Helfer und Muster nutzen.
 3. Kann das die Standardbibliothek, die Plattform oder eine installierte
    Abhängigkeit? Keine neue Abhängigkeit ohne Begründung im PR.
@@ -45,19 +46,20 @@ Erst das Problem verstehen, dann beim ersten Punkt anhalten, der trägt:
 - Bugfix behebt die Ursache in der gemeinsamen Funktion, nicht das
   Symptom an einem Aufrufer.
 - Nicht sparen bei: Prüfung geöffneter Dateien, Texte nie als HTML,
-  Barrierefreiheit (D10), Fehlerbehandlung gegen Datenverlust.
+  Barrierefreiheit, Fehlerbehandlung gegen Datenverlust.
 
 ## Kommentare
 
-- Nur das Warum oder eine Referenz (Regel-ID, D-Nummer), nie den Code
-  nacherzählen. Keine Spec-Absätze in den Code kopieren.
+- Nur das Warum oder eine Referenz (Regel-ID, Issue-Nummer), nie den Code
+  nacherzählen. Keine Absätze aus dem Regelwerk in den Code kopieren.
 - JSDoc nur an exportierten Funktionen und Typen, und nur wenn der Name
   nicht reicht.
 
 ## Tests
 
-- Jede Regel-ID hat mindestens einen Testfall mit der ID im Namen (D18),
-  dazu die Kriterien aus „Fertig, wenn“. Keine Varianten-Flut.
+- Tests decken die Kriterien aus „Fertig, wenn“ im Issue und die berührten
+  Regeln des Regelwerks ab. Die Regel-ID im Testnamen hilft beim Finden,
+  ist aber keine Pflicht. Keine Varianten-Flut.
 - Bugfix: zuerst ein Test, der den Fehler zeigt, dann der Fix.
 - Vor dem PR: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
   `pnpm format:check`.

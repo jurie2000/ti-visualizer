@@ -1,5 +1,5 @@
-// T-109: Regel-ID, Status und Quelle müssen in regelwerk.md und im Katalog
-// übereinstimmen (plan.md, „Rückverfolgbarkeit“). Aufruf: pnpm check:katalog
+// Regel-ID, Status und Quelle müssen in regelwerk.md und im Katalog
+// übereinstimmen. Aufruf: pnpm check:katalog
 import { readdirSync, readFileSync } from "node:fs";
 import { ID, regelwerkRows } from "./regelwerk.ts";
 

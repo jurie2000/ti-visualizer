@@ -4,10 +4,9 @@
 
 Closes #
 
-## Anforderungen und Regeln
+## Regeln
 
-- FR-IDs: <!-- z. B. FR-003, oder „–“ -->
-- Regel-IDs: <!-- z. B. K-3, oder „–“. Jede Regel braucht einen Test mit der ID im Namen -->
+- Regel-IDs: <!-- berührte Regeln aus dem Regelwerk, z. B. K-3, oder „–“ -->
 
 ## Was ändert sich?
 
@@ -15,7 +14,7 @@ Closes #
 
 ## Tests
 
-- [ ] Neue oder geänderte Regeln haben je einen Testfall
+- [ ] Kriterien aus dem Issue und geänderte Regeln sind getestet
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build` und `pnpm format:check` laufen lokal grün
 - [ ] Neue Katalogeinträge haben `source` und `status`
 

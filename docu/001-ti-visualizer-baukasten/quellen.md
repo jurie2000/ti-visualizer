@@ -1,7 +1,7 @@
 # Quellen 001: TI Visualizer
 
 **Stand:** 2026-11-03
-**Bezug:** [spec.md](./spec.md), [regelwerk.md](./regelwerk.md)
+**Bezug:** [regelwerk.md](./regelwerk.md)
 
 Fachliche Quellen sind ausschließlich offizielle Veröffentlichungen der
 gematik (gematik.de, fachportal.gematik.de, gemspec.gematik.de). Links

@@ -1,7 +1,6 @@
 # Architektur 001: TI Visualizer
 
-**Stand:** 2026-11-04 · **Bezug:** [plan.md](./plan.md) (D1 bis D36),
-[spec.md](./spec.md), [regelwerk.md](./regelwerk.md)
+**Stand:** 2026-11-04 · **Bezug:** [regelwerk.md](./regelwerk.md)
 
 Die Diagramme sind in [Mermaid](https://mermaid.js.org/) geschrieben.
 GitHub zeigt sie direkt als Grafik an. Lokal geht das zum Beispiel mit der
@@ -479,7 +478,7 @@ sequenceDiagram
 
 ## 5. CI/CD-Pipeline
 
-Stufen aus [plan.md](./plan.md#cicd-pipeline-und-deployment-d8-d26-d27).
+Stufen siehe `.github/workflows/`.
 Deploy nur auf `main` und nur, wenn alles grün ist.
 
 ```mermaid

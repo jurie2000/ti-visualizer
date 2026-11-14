@@ -3,7 +3,7 @@
 **Status:** Überarbeitet am 2026-11-04 nach dem Prüfbericht
 (Fable). Ausgangsbasis waren die
 Regeln aus dem Mockup (`design/mockup/TI Visualizer.dc.html`) und die
-freigegebene Matrix der [Spec](./spec.md). Alle Regeln sind jetzt mit
+freigegebene Matrix der ursprünglichen Spec. Alle Regeln sind jetzt mit
 mindestens einer offiziellen Quelle belegt oder ausdrücklich als
 Vereinfachung bzw. offen markiert. Fachlich freigegeben durch Justin am
 2026-11-05 (T-907).

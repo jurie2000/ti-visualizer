@@ -170,7 +170,6 @@ test.describe("injection", { tag: "@security" }, () => {
           simSpeed: 1,
           reducedMotion: false,
           tutorialStep: 0,
-          solvedChallenges: [p],
           pinnedPanels: [p],
           saveSettings: true,
         };
@@ -207,7 +206,9 @@ test.describe("injection", { tag: "@security" }, () => {
     const w = await wache(page);
     const fall = async (text: string, meldung: RegExp) => {
       await page.goto("./");
-      await page.getByRole("button", { name: "Öffnen", exact: true }).click();
+      await page
+        .getByRole("button", { name: /Topologie aus Datei öffnen/ })
+        .click();
       await page.getByLabel("Datei auswählen").setInputFiles({
         name: "x.tiv.json",
         mimeType: "application/json",

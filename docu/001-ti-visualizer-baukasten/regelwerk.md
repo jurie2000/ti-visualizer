@@ -750,7 +750,7 @@ mit Konfiguration wird geprüft.
 - P-15: gilt für Clients und stationäre Kartenterminals. Die IP des Geräts
   muss im Netz des Zugangs (dessen IP und Maske) liegen. Zugang nach
   `zugangOf`; ohne bestimmbaren Zugang keine Aussage. Eine weitere Maske
-  am Gerät (z. B. /16, Herausforderung 3) ist kein Verstoß.
+  am Gerät (z. B. /16) ist kein Verstoß.
 
 **Betrieb (nur Erweitert)**
 
@@ -776,23 +776,12 @@ P-17 (3600 s statt 5 Minuten), P-19 (SIS im Parallelbetrieb ist erlaubt,
 die Regel prüft jetzt die fehlende Firewall). Neu: P-17a, P-31, P-32,
 P-33. In beiden Modi geprüft: P-18, P-22. P-28 ist nur noch eine Warnung.
 
-## 10. Herausforderungen
+## 10. Herausforderungen (entfernt)
 
-Grundlage ist das Preset Arztpraxis. Beim Start schaltet die App in den
-Modus Erweitert, weil die Fehler dort liegen. Gelöst ist eine
-Herausforderung, wenn
-
-1. ihre Prüfregeln keinen Fehler und keine Warnung mehr melden,
-2. alle Geräte aus dem Start noch vorhanden sind und
-3. die Zielaktion ausführbar ist.
-
-| Nr. | Titel | Eingebaute Fehler | Verletzte Regeln | Zielaktion |
-|---|---|---|---|---|
-| 1 | Kein Rezept am Empfang | PVS in falschem Subnetz | P-13, P-15 | eRezept ausstellen am PVS |
-| 2 | Montagmorgen | KT 1 mit doppelter IP, KT 2 mit Broadcast-Adresse | P-9, P-11 | VSDM-Prüfung an KT 1 und KT 2 |
-| 3 | Nach dem Umzug | PVS mit falschem Gateway und /16-Maske, KT 1 nicht gepairt | P-14, P-25, P-30 | eRezept ausstellen am PVS |
-| 4 | Schnelles Internet | Router ergänzt, Zugang parallel, PVS ohne TI-Route und mit fremdem DNS, Firewall blockiert IPsec | P-27, P-28, P-21 | eRezept ausstellen am PVS |
-| 5 | Totalausfall | wie 4, dazu Zeitabweichung **75 min** (Mockup: 14 min, liegt unter dem Grenzwert), KT 1 nicht gepairt, HBA nicht freigeschaltet, Arbeitsplatz falsch zugeordnet, IP-Konflikt KT 2 | P-17, P-21, P-22, P-27 bis P-30, P-9 | eRezept ausstellen und VSDM-Prüfung |
+Entfernt 2026-11-14 (Issue #151): Die Herausforderungen samt Katalogteil
+`challenges` und Einstellung `solvedChallenges` gibt es nicht mehr. Die
+Nummer 10 bleibt frei, damit die Verweise auf Abschnitt 11 bis 13 gelten.
+Alte Dateien mit `solvedChallenges` laden weiter, das Feld wird ignoriert.
 
 ## 11. Modus Einfach und Erweitert
 

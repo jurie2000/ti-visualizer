@@ -83,7 +83,9 @@ async function oeffnen(page: Page, name: string, text: string) {
   await page
     .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
     .click();
-  await page.getByRole("button", { name: "Öffnen", exact: true }).click();
+  await page
+    .getByRole("button", { name: /Topologie aus Datei öffnen/ })
+    .click();
   await page.locator("input[type=file]").setInputFiles({
     name,
     mimeType: "application/json",

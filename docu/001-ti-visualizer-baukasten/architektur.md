@@ -80,7 +80,7 @@ flowchart TB
         detail["Detailpanel"]
         player["Simulations-Player"]
         dialogs["Dialoge<br/>Öffnen, Prüfung, …"]
-        learn["Tutorial,<br/>Herausforderungen"]
+        learn["Tutorial"]
     end
 
     subgraph stores["Stores (Bibliothek Zustand)"]
@@ -170,7 +170,6 @@ classDiagram
         simSpeed: number
         reducedMotion: boolean
         tutorialStep: number
-        solvedChallenges: string[]
         pinnedPanels: string[]
         saveSettingsByDefault: boolean
     }
@@ -205,7 +204,6 @@ ausführlich in 3.2.
     "simSpeed": 1.5,
     "reducedMotion": false,
     "tutorialStep": 4,
-    "solvedChallenges": ["kein-rezept-am-empfang"],
     "pinnedPanels": ["palette"],
     "saveSettingsByDefault": false
   },

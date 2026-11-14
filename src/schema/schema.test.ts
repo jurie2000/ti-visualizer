@@ -54,7 +54,6 @@ const settings = {
   simSpeed: 1.5,
   reducedMotion: false,
   tutorialStep: 4,
-  solvedChallenges: ["kein-rezept-am-empfang"],
 };
 
 const file = {

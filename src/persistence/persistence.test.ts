@@ -158,7 +158,6 @@ describe("Speichern und Öffnen", () => {
       pinnedPanels: [],
       reduceMotion: true,
       tutorialProgress: 3,
-      solvedChallenges: ["a"],
       saveSettingsWithFile: true,
     });
     expect(settings).toMatchObject({ theme: "dunkel", simSpeed: 4 });
@@ -531,7 +530,6 @@ describe("Importbefunde", () => {
       pinnedPanels: [],
       reduceMotion: false,
       tutorialProgress: 0,
-      solvedChallenges: [],
       saveSettingsWithFile: false,
     });
     expect(ok(file(base(), { settings: s })).settings).toEqual(s);
@@ -694,7 +692,6 @@ describe("Theme in Dateien", () => {
         pinnedPanels: [],
         reduceMotion: false,
         tutorialProgress: 0,
-        solvedChallenges: [],
         saveSettingsWithFile: false,
       }),
       theme: "system",

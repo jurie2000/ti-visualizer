@@ -74,7 +74,9 @@ test.describe("responsive", { tag: "@responsive" }, () => {
     await page
       .getByRole("button", { name: "TI Visualizer, zur Startansicht" })
       .click();
-    await page.getByRole("button", { name: "Öffnen", exact: true }).click();
+    await page
+      .getByRole("button", { name: /Topologie aus Datei öffnen/ })
+      .click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.locator("input[type=file]").setInputFiles({
       name: "leer.tiv.json",

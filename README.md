@@ -31,7 +31,7 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
 - **Aktionen per Rechtsklick**: Das Kontextmenü eines Geräts zeigt alle möglichen Aktionen. Aktuell nicht ausführbare sind ausgegraut statt versteckt.
 - **Simulation-Modus**: Eine Aktion läuft verlangsamt, Schritt für Schritt und mit Erklärtext über den tatsächlichen Pfad des Geräts zur TI. Sie ist jederzeit abbrechbar.
 - **Details**: Ein Klick auf Gerät oder Verbindung zeigt Protokoll, Port, TLS-Stufe und Datenformat.
-- **Lernen**: geführtes Tutorial, Herausforderungen mit eingebauten Fehlern und eine Sicherheitsprüfung.
+- **Lernen**: geführtes Tutorial und eine Sicherheitsprüfung.
 - **Speichern und Öffnen**: Topologie als Datei speichern, auf Wunsch mit den eigenen Einstellungen, und in jedem Browser wieder öffnen. Einstellungen aus einer Datei werden nur nach Rückfrage übernommen. Ein Autosave schützt vor Datenverlust beim Neuladen.
 
 ### Abgedeckte Abläufe (Auswahl)

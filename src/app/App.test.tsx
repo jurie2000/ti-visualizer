@@ -37,6 +37,25 @@ describe("App-Shell", () => {
     expect(useTopology.getState().topology.nodes).toHaveLength(0);
   });
 
+  it("Issue #151: Startfelder in der Reihenfolge Öffnen, Tutorial, Fortgeschritten; Öffnen-Feld öffnet den Dialog; keine Herausforderungen", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const modes = [...document.querySelectorAll(".tiv-mode__kicker")].map(
+      (e) => e.textContent,
+    );
+    expect(modes).toEqual([
+      "Datei · Öffnen",
+      "Tutorial · Einsteiger",
+      "Tutorial · Fortgeschritten",
+    ]);
+    expect(screen.queryByText(/Herausforderungen/)).not.toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: /Topologie aus Datei öffnen/ }),
+    );
+    expect(screen.getByLabelText("Datei auswählen")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+  });
+
   it("fragt in der Startansicht bei ungespeichertem Stand, bevor ein Preset ersetzt", async () => {
     const user = userEvent.setup();
     render(<App />);

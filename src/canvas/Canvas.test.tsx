@@ -193,6 +193,10 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
         expect(zoom()).toBeGreaterThan(0);
       });
       expect(zoom()).toBeLessThanOrEqual(1);
+      await user.click(screen.getByRole("button", { name: "Vergrößern" }));
+      await waitFor(() => {
+        expect(zoom()).toBeGreaterThan(1);
+      });
       await user.click(screen.getByRole("button", { name: "Übersicht" }));
       await waitFor(() => {
         expect(zoom()).toBeLessThanOrEqual(1);

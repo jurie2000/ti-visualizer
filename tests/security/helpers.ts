@@ -173,7 +173,9 @@ export async function einspielen(
 ): Promise<string> {
   await page.goto("./");
   if (weg === "datei") {
-    await page.getByRole("button", { name: "Öffnen", exact: true }).click();
+    await page
+      .getByRole("button", { name: /Topologie aus Datei öffnen/ })
+      .click();
     await page.getByLabel("Datei auswählen").setInputFiles({
       name: "x.tiv.json",
       mimeType: "application/json",

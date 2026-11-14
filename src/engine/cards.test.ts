@@ -116,7 +116,7 @@ describe("Karten-Engine (T-106)", () => {
       state: "ready",
     });
     expect(cardState(t, "kt1", "smcb").message).toBeUndefined();
-    // Auslegung: unplugCard zieht die SMC-B auf ausdrücklichen Wunsch (Herausforderung „SMC-B fehlt“)
+    // Auslegung: unplugCard zieht die SMC-B auf ausdrücklichen Wunsch
     expect(cardState(unplugCard(t, "kt1", "smcb"), "kt1", "smcb").plugged).toBe(
       false,
     );

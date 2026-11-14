@@ -1,3 +1,4 @@
+import { FolderOpen } from "lucide-react";
 import type { Topology } from "../schema";
 import {
   emptyTopology,
@@ -12,7 +13,7 @@ import { AutosaveHint } from "./AutosaveHint";
 import { PresetCard } from "./PresetCard";
 
 /**
- * Startansicht (FR-2): die Presets und der leere Start.
+ * Startansicht (FR-2): Öffnen, Tutorials, die Presets und der leere Start.
  * Öffnen läuft über `openTopology` (T-303): fragt bei ungespeichertem Stand nach
  * und ersetzt per `replace`; ungespeicherte Arbeit geht danach verloren.
  */
@@ -32,17 +33,24 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
         Lade eine fertige Einrichtung und sieh dir an, wie die Geräte
         zusammenhängen — oder baue die Topologie selbst aus der Palette auf.
       </p>
-      <p>
-        <Button
-          title="Gespeicherte Datei öffnen"
+      <div className="tiv-start__modes">
+        <button
+          type="button"
+          className="tiv-mode"
           onClick={() => {
             useUi.getState().openDialog("open");
           }}
         >
-          Öffnen
-        </Button>
-      </p>
-      <div className="tiv-start__modes">
+          <FolderOpen className="tiv-mode__icon" aria-hidden="true" />
+          <span>
+            <span className="tiv-mode__kicker">Datei · Öffnen</span>
+            <span className="tiv-mode__title">Topologie aus Datei öffnen</span>
+            <span className="tiv-mode__text">
+              Lade eine gespeicherte Datei und arbeite dort weiter, wo du
+              aufgehört hast.
+            </span>
+          </span>
+        </button>
         <button type="button" className="tiv-mode" onClick={startTutorial}>
           <PlayIcon />
           <span>
@@ -68,18 +76,6 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
               Nach dem Umzug der Praxis geht nichts mehr. Mit IT-Dienstleister
               Kai findest du falsche Subnetze, doppelte Adressen und ein
               verirrtes Gateway.
-            </span>
-            <span className="tiv-mode__soon">Kommt bald</span>
-          </span>
-        </button>
-        <button type="button" className="tiv-mode" disabled>
-          <TargetIcon />
-          <span>
-            <span className="tiv-mode__kicker">Herausforderungen</span>
-            <span className="tiv-mode__title">Fünf Störfälle, keine Hilfe</span>
-            <span className="tiv-mode__text">
-              Du erfährst nur, was in der Praxis nicht funktioniert. Die Ursache
-              findest du selbst.
             </span>
             <span className="tiv-mode__soon">Kommt bald</span>
           </span>
@@ -121,22 +117,6 @@ function PlayIcon() {
   return (
     <svg className="tiv-mode__icon" viewBox="0 0 24 24" aria-hidden="true">
       <path d="m9 6 10 6-10 6z" fill="currentColor" />
-    </svg>
-  );
-}
-
-function TargetIcon() {
-  return (
-    <svg
-      className="tiv-mode__icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="8" />
-      <circle cx="12" cy="12" r="3.5" />
     </svg>
   );
 }

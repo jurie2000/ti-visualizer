@@ -238,17 +238,6 @@ export const checks = z.array(
   }),
 );
 
-export const challenges = z.array(
-  z.strictObject({
-    id: Id,
-    title: Text,
-    preset: Id,
-    violatedChecks: z.array(Id),
-    goalActions: z.array(Id),
-    ...sourced,
-  }),
-);
-
 /** Ein Preset ist eine fertige Topologie im Format der Dateien (plan.md, „Presets“). */
 export const presets = z.array(
   z.strictObject({ id: Id, topology: Topology, ...sourced }),
@@ -313,7 +302,6 @@ export const catalogSchema = z.strictObject({
   flows,
   configDefaults,
   checks,
-  challenges,
   presets,
   tutorial,
   glossary,
@@ -348,9 +336,7 @@ export function checkReferences(c: Catalog): string[] {
   const protos = ids(c.protocols.protocols);
   const cats = ids(c.categories);
   const actionIds = ids(c.actions);
-  const checkIds = ids(c.checks);
   const flowIds = ids(c.flows);
-  const presetIds = ids(c.presets);
   const personaIds = ids(c.tutorial.personas);
 
   const ref = (where: string, id: string, known: Set<string>, what: string) => {
@@ -391,7 +377,6 @@ export function checkReferences(c: Catalog): string[] {
     ["Aktionen", c.actions],
     ["Abläufe", c.flows],
     ["Prüfregeln", c.checks],
-    ["Herausforderungen", c.challenges],
     ["Presets", c.presets],
     ["Tutorial-Personas", c.tutorial.personas],
     ["Tutorial-Schritte", c.tutorial.steps],
@@ -448,16 +433,6 @@ export function checkReferences(c: Catalog): string[] {
       ref(w, s.to, ends, "Gerätetyp");
       if (s.protocol) ref(w, s.protocol, protos, "Protokoll");
     }
-  for (const h of c.challenges) {
-    const w = `Herausforderung ${h.id}`;
-    ref(w, h.preset, presetIds, "Preset");
-    h.violatedChecks.forEach((k) => {
-      ref(w, k, checkIds, "Prüfregel");
-    });
-    h.goalActions.forEach((a) => {
-      ref(w, a, actionIds, "Aktion");
-    });
-  }
   for (const st of c.tutorial.steps) {
     const w = `Tutorial-Schritt ${st.id}`;
     ref(w, st.persona, personaIds, "Persona");
@@ -511,7 +486,6 @@ export function checkReferences(c: Catalog): string[] {
   withSource("Ablauf", c.flows);
   withSource("Konfiguration", c.configDefaults);
   withSource("Prüfregel", c.checks);
-  withSource("Herausforderung", c.challenges);
   withSource("Preset", c.presets);
   withSource("Tutorial-Schritt", c.tutorial.steps);
   withSource("Glossar", c.glossary);

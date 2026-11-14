@@ -136,16 +136,6 @@ const valid = {
       ...base,
     },
   ],
-  challenges: [
-    {
-      id: "1",
-      title: "T",
-      preset: "praxis",
-      violatedChecks: ["P-4"],
-      goalActions: ["vsdm"],
-      ...base,
-    },
-  ],
   presets: [
     {
       id: "praxis",
@@ -287,12 +277,6 @@ describe("Referenzen (D5)", () => {
       "flows.0.steps.0.to",
       "nix",
       "Gerätetyp",
-    ],
-    [
-      "Herausforderung mit unbekannter Prüfregel",
-      "challenges.0.violatedChecks",
-      ["nix"],
-      "Prüfregel",
     ],
     [
       "Preset-Kante an unbekanntem Anschluss",

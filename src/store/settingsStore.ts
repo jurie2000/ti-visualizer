@@ -12,7 +12,6 @@ export interface SettingsState {
   pinnedPanels: string[];
   reduceMotion: boolean;
   tutorialProgress: number;
-  solvedChallenges: string[];
   saveSettingsWithFile: boolean;
   set: (patch: Partial<Omit<SettingsState, "set">>) => void;
 }
@@ -24,7 +23,6 @@ export const useSettings = create<SettingsState>((set) => ({
   pinnedPanels: [],
   reduceMotion: false,
   tutorialProgress: 0,
-  solvedChallenges: [],
   saveSettingsWithFile: false,
   set,
 }));

@@ -16,7 +16,6 @@ export function toFileSettings(s: StoredSettings): Settings {
     simSpeed: Math.min(4, Math.max(0.25, s.simSpeed)),
     reducedMotion: s.reduceMotion,
     tutorialStep: s.tutorialProgress,
-    solvedChallenges: s.solvedChallenges,
     pinnedPanels: s.pinnedPanels,
     saveSettings: s.saveSettingsWithFile,
   };
@@ -31,7 +30,6 @@ export function fromFileSettings(s: Settings): StoredSettings {
     pinnedPanels: s.pinnedPanels,
     reduceMotion: s.reducedMotion,
     tutorialProgress: s.tutorialStep,
-    solvedChallenges: s.solvedChallenges,
     saveSettingsWithFile: s.saveSettings,
   };
 }

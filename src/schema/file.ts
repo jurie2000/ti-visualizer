@@ -8,7 +8,6 @@ export const Settings = z.object({
   simSpeed: z.number().min(0.25).max(4),
   reducedMotion: z.boolean(),
   tutorialStep: z.number().int().min(0).max(1000),
-  solvedChallenges: z.array(z.string().max(100)).max(200),
   pinnedPanels: z.array(z.string().max(100)).max(20).default([]),
   saveSettings: z.boolean().default(false),
 });

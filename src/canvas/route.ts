@@ -36,19 +36,38 @@ const BUS = 40;
  * Weg einer Kante zwischen den Seitenmitten zweier Geräte (Mockup `edgePath`):
  * `curve` als Kurve, `ortho` rechtwinklig. Bei `ortho` laufen alle Kanten eines
  * Geräts über dieselbe Schiene vor dessen Seite (`hub`, „Gebündelt“).
- * `mid` ist der Punkt für das Label.
+ * `mid` ist der Punkt für das Label. Mit `waypoints` (FR-23) läuft die Linie
+ * als Linienzug durch diese Punkte, die Kantenführung gilt dann nicht.
  */
 export function routePath(
   a: Box,
   b: Box,
   route: Route,
   hub: "a" | "b" = "a",
+  waypoints: readonly Point[] = [],
 ): { d: string; mid: Point } {
+  const pt = (p: Point) => `${String(p.x)},${String(p.y)}`;
+  const first = waypoints[0];
+  const last = waypoints[waypoints.length - 1];
+  if (first && last) {
+    const dot = (p: Point): Box => ({ cx: p.x, cy: p.y, hw: 0, hh: 0 });
+    const pts = [
+      attach(a, sideOf(a, dot(first))),
+      ...waypoints,
+      attach(b, sideOf(b, dot(last))),
+    ];
+    // Mitte des mittleren Abschnitts, damit das Label auf der Linie liegt
+    const i = Math.floor((pts.length - 1) / 2);
+    const [s, e] = [pts[i] as Point, pts[i + 1] as Point];
+    return {
+      d: `M ${pts.map(pt).join(" L ")}`,
+      mid: { x: (s.x + e.x) / 2, y: (s.y + e.y) / 2 },
+    };
+  }
   const sa = sideOf(a, b);
   const p1 = attach(a, sa);
   const p2 = attach(b, OPP[sa]);
   const horiz = sa === "r" || sa === "l";
-  const pt = (p: Point) => `${String(p.x)},${String(p.y)}`;
   if (route === "ortho") {
     const h = hub === "a" ? a : b;
     const hs = hub === "a" ? sa : OPP[sa];

@@ -29,6 +29,7 @@ export interface ConnectionEdgeData extends Record<string, unknown> {
   fault: boolean;
   /** Ende mit den meisten Kanten: dort läuft die Schiene der Kantenführung „Gebündelt“. */
   hub: "a" | "b";
+  waypoints: Point[];
 }
 
 export type ZoneFlowNode = FlowNode<ZoneNodeData, "zone">;
@@ -123,6 +124,7 @@ export function toFlow(
           label: edge.label ?? label,
           fault: edge.fault,
           hub: degree(b.node) >= degree(a.node) ? "b" : "a",
+          waypoints: edge.waypoints ?? [],
         },
       };
     },

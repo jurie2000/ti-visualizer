@@ -12,6 +12,7 @@ export const LIMITS = {
   name: 100,
   description: 2000,
   coord: 100_000,
+  waypoints: 20,
 } as const;
 
 const text = (max: number) => z.string().max(max);
@@ -122,6 +123,8 @@ export const Node = Element.extend({
 export const Edge = Element.extend({
   ends: z.tuple([Endpoint, Endpoint]),
   fault: z.boolean(),
+  /** Gelenkpunkte der Linienführung von `ends[0]` nach `ends[1]` (FR-23); ohne Angabe läuft die Linie automatisch. */
+  waypoints: z.array(Point).max(LIMITS.waypoints).optional(),
 });
 export const Zone = Element.extend({
   area: Rect,

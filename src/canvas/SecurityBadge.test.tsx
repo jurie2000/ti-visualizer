@@ -33,14 +33,9 @@ describe("Zugang zur Sicherheitsprüfung im Canvas", () => {
     useTopology.getState().reset(preset.topology);
     useTopology.getState().addNode("switch", { x: 0, y: 0 });
     ui();
-    const knopf = screen.queryByRole("button", {
-      name: /Sicherheitsprüfung: \d+ Befund/,
-    });
-    if (!knopf) {
-      // Preset und Switch ergeben keinen Befund: Test überspringt nichts, sondern schlägt fehl
-      throw new Error("Kein Befund im Testaufbau, Aufbau anpassen");
-    }
-    await user.click(knopf);
+    await user.click(
+      screen.getByRole("button", { name: /Sicherheitsprüfung: \d+ Befund/ }),
+    );
     expect(useUi.getState().dialog).toBe("security");
   });
 });

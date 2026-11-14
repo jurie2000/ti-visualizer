@@ -62,6 +62,19 @@ describe("Speichern-Dialog", () => {
     vi.restoreAllMocks();
   });
 
+  it("Abbruch der Dateiauswahl meldet nichts und lässt den Dialog offen", async () => {
+    const user = userEvent.setup();
+    const w = window as { showSaveFilePicker?: unknown };
+    w.showSaveFilePicker = vi
+      .fn()
+      .mockRejectedValue(new DOMException("abgebrochen", "AbortError"));
+    ui();
+    await user.click(screen.getByRole("button", { name: "Speichern" }));
+    expect(screen.queryByText("Datei gespeichert.")).toBeNull();
+    expect(useUi.getState().dialog).toBe("save");
+    delete w.showSaveFilePicker;
+  });
+
   it("Abbrechen schließt ohne zu speichern", async () => {
     const user = userEvent.setup();
     ui();

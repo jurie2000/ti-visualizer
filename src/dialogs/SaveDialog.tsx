@@ -14,7 +14,9 @@ export function SaveDialog() {
   };
   const save = () => {
     saveToFile()
-      .then(() => {
+      .then((saved) => {
+        // false: Dateiauswahl abgebrochen, der Dialog bleibt für einen neuen Versuch offen
+        if (!saved) return;
         close();
         toast.show("Datei gespeichert.");
       })

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Topology } from "./topology";
 
 export const Settings = z.object({
+  // „system“ nur für Dateien aus früheren Ständen, beim Laden wird es Hell
   theme: z.enum(["hell", "dunkel", "system"]),
   mode: z.enum(["einfach", "erweitert"]),
   simSpeed: z.number().min(0.25).max(4),

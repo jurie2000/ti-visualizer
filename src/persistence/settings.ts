@@ -4,8 +4,9 @@ import type { SettingsState } from "../store/settingsStore";
 /** Die Werte des Settings-Stores ohne die Aktion `set`. */
 export type StoredSettings = Omit<SettingsState, "set">;
 
-const themeOut = { system: "system", light: "hell", dark: "dunkel" } as const;
-const themeIn = { system: "system", hell: "light", dunkel: "dark" } as const;
+const themeOut = { light: "hell", dark: "dunkel" } as const;
+// „system“ gibt es nur noch in alten Dateien und gilt als Hell
+const themeIn = { system: "light", hell: "light", dunkel: "dark" } as const;
 
 /** Einstellungen des Stores im Format der Datei (Speichern mit Häkchen). */
 export function toFileSettings(s: StoredSettings): Settings {

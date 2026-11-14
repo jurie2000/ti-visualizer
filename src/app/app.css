@@ -1376,3 +1376,41 @@ a {
 .tiv-plug > .tiv-btn {
   align-self: flex-end;
 }
+.tiv-dialog__body {
+  padding: 0 24px 24px;
+}
+.tiv-dialog__head {
+  padding: 16px 24px 8px;
+}
+.tiv-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 40px 24px;
+  text-align: center;
+  font: inherit;
+  color: inherit;
+  background: var(--color-neutral-100);
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.tiv-dropzone svg {
+  width: 40px;
+  height: 40px;
+  color: var(--color-accent);
+}
+.tiv-dropzone:hover,
+.tiv-dropzone--over {
+  border-style: solid;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.tiv-dropzone__title {
+  font-weight: 600;
+}
+.tiv-dropzone__hint {
+  font-size: 0.875em;
+  opacity: 0.8;
+}

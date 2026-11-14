@@ -1,4 +1,10 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadCatalog } from "../schema";
@@ -164,12 +170,17 @@ describe("Öffnen (T-303)", () => {
     expect(useTopology.getState().topology).toBe(alt);
   });
 
-  it("Preset öffnen ist keine eigene Datei", async () => {
-    useFile.getState().markSaved(useTopology.getState().topology, "x.tiv.json");
+  it("Issue #158: keine Preset-Liste; Ablegen einer Datei öffnet sofort", async () => {
     mount();
-    await userEvent.click(screen.getByRole("button", { name: praxis.name }));
-    expect(useTopology.getState().topology).toEqual(praxis);
-    expect(useFile.getState().fileName).toBeNull();
+    expect(screen.queryByRole("button", { name: praxis.name })).toBeNull();
+    const zone = screen.getByRole("button", { name: /Datei hierher ziehen/ });
+    fireEvent.drop(zone, {
+      dataTransfer: { files: [fileOf(text(false))], items: [] },
+    });
+    await waitFor(() => {
+      expect(useTopology.getState().topology).toEqual(praxis);
+    });
+    expect(useUi.getState().dialog).toBeUndefined();
   });
 
   it("lehnt zu große Dateien vor dem Lesen ab", async () => {
@@ -192,7 +203,7 @@ describe("Öffnen (T-303)", () => {
       });
       mount();
       await userEvent.click(
-        screen.getByRole("button", { name: /Datei wählen/ }),
+        screen.getByRole("button", { name: /Datei hierher ziehen/ }),
       );
       await waitFor(() => {
         expect(useTopology.getState().topology).toEqual(praxis);
@@ -208,7 +219,7 @@ describe("Öffnen (T-303)", () => {
       });
       mount();
       await userEvent.click(
-        screen.getByRole("button", { name: /Datei wählen/ }),
+        screen.getByRole("button", { name: /Datei hierher ziehen/ }),
       );
       expect(useTopology.getState().topology.nodes).toHaveLength(0);
       expect(screen.queryByRole("alert")).toBeNull();

@@ -6,7 +6,7 @@ Regeln aus dem Mockup (`design/mockup/TI Visualizer.dc.html`) und die
 freigegebene Matrix der ursprünglichen Spec. Alle Regeln sind jetzt mit
 mindestens einer offiziellen Quelle belegt oder ausdrücklich als
 Vereinfachung bzw. offen markiert. Fachlich freigegeben durch Justin am
-2026-11-05 (T-907).
+2026-11-05.
 **Bezug:** Spec FR-4, FR-7, FR-14, FR-17 bis FR-21
 **Quellen:** [quellen.md](./quellen.md)
 
@@ -19,7 +19,7 @@ eine Quelle.
 | Status | Bedeutung |
 |---|---|
 | **bestätigt** | in einer gematik-Quelle ausdrücklich belegt |
-| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Einträge bis zur Freigabe am 2026-11-05 von Justin fachlich geprüft (T-907); neue Einträge brauchen eine eigene Prüfung |
+| **plausibel** | aus gematik-Quellen abgeleitet, aber nicht wörtlich belegt. Einträge bis zur Freigabe am 2026-11-05 von Justin fachlich geprüft; neue Einträge brauchen eine eigene Prüfung |
 | **Vereinfachung** | für den Lernzweck vereinfacht. Die Quelle beschreibt den echten Sachverhalt |
 | **offen** | noch ohne Beleg oder zu entscheiden |
 
@@ -44,7 +44,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13, T-724a):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen in T-724a noch keinen `host`-Anschluss. **Auslegung (2026-11-13, T-724c):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS (T-724c):** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). Das Modell vereinfacht: Die TI-Aktionen der Cloud-Software gehen vom PC der Praxis über den Konnektor der Praxis (Weg: Cloud-Server, PC, Switch, Konnektor). Ein Konnektor oder TI-Gateway im Rechenzentrum ist nicht Teil des Modells.
+**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). Das Modell vereinfacht: Die TI-Aktionen der Cloud-Software gehen vom PC der Praxis über den Konnektor der Praxis (Weg: Cloud-Server, PC, Switch, Konnektor). Ein Konnektor oder TI-Gateway im Rechenzentrum ist nicht Teil des Modells.
 
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
@@ -69,7 +69,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 | `hba` | Heilberufsausweis | bestätigt | gemSpec_HBA_ObjSys |
 | `smcb` | Institutionskarte SMC-B | bestätigt | gemSpec_SMC-B_ObjSys_G2_1 |
 
-Smartcards sind **keine Knoten** auf der Fläche (D12). Sie stecken in
+Smartcards sind **keine Knoten** auf der Fläche. Sie stecken in
 Geräten mit der Fähigkeit `cardSlots` oder `nfcCard` (Abschnitt 5). Die
 Tabelle nennt die Kartenarten.
 
@@ -141,7 +141,7 @@ Kategorien haben je eine farbenblind-sichere Farbe und eine eigene Form
 
 ### 1.9 Fähigkeiten
 
-Fähigkeiten im Katalog legen fest, was ein Gerätetyp darf (D35). Die
+Fähigkeiten im Katalog legen fest, was ein Gerätetyp darf. Die
 Regel-Engine und das Dateischema prüfen dagegen.
 
 | Fähigkeit | Bedeutung | Gerätetypen |
@@ -150,9 +150,9 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp` |
 | `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `hskon`, `gateway` |
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
-| `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software; T-724b) | `pc`, `server`, `tab`, `kimcm` |
-| `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an (T-724b) | `pc`, `tab` |
-| `trigger` | startet die Aktionen der Software, die auf ihm läuft (T-724c; der Cloud-Server hat sie nicht) | `pc`, `server`, `tab` |
+| `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software) | `pc`, `server`, `tab`, `kimcm` |
+| `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an | `pc`, `tab` |
+| `trigger` | startet die Aktionen der Software, die auf ihm läuft (der Cloud-Server hat sie nicht) | `pc`, `server`, `tab` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
@@ -187,12 +187,12 @@ Abschnitt 5.
 
 | Gerät | Anschlüsse | Status | Quelle |
 |---|---|---|---|
-| PVS, AVS, Pflege | Anwendung (`app`, mehrfach), Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Vereinfachung (T-724b: Software hat kein Ethernet, das Kabel hängt am Rechner) | gemILF_PS |
-| PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach), Internet-Zugriff (`web`, mehrfach) | Mockup, plausibel; „Software“ und „Internet-Zugriff“ Vereinfachung (T-724a, T-724c) | gemILF_PS |
-| Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel (T-724a) | gemILF_PS, DVO |
-| Cloud-Server | Internet-Zugriff (`web`, mehrfach), Software (`host`, mehrfach) | Vereinfachung (T-724c) | gemILF_PS |
-| KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH, gemILF_PS |
-| RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung (T-724b) | KH |
+| PVS, AVS, Pflege | Anwendung (`app`, mehrfach), Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Vereinfachung (Software hat kein Ethernet, das Kabel hängt am Rechner) | gemILF_PS |
+| PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach), Internet-Zugriff (`web`, mehrfach) | Mockup, plausibel; „Software“ und „Internet-Zugriff“ Vereinfachung | gemILF_PS |
+| Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel | gemILF_PS, DVO |
+| Cloud-Server | Internet-Zugriff (`web`, mehrfach), Software (`host`, mehrfach) | Vereinfachung | gemILF_PS |
+| KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung | KH, gemILF_PS |
+| RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
 | KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang) | Vereinfachung | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | WAN (Internet) | plausibel | gemSpec_TI-M_Basis |
@@ -218,8 +218,8 @@ Abschnitt 5.
   Vereinfachung)
 - **A-2** Zusätzlich erlaubt: `eth` mit `wan`, `wan` mit `net`, `tun` mit `net`.
   (Vereinfachung nach Arch)
-- **A-6** `app` passt zu `app`, `eth` und `usb` (T-724b). Das ist der logische
-  Kurzweg der Software ohne Rechner (seit T-725a ist der Rechner auch in Einfach sichtbar)
+- **A-6** `app` passt zu `app`, `eth` und `usb`. Das ist der logische
+  Kurzweg der Software ohne Rechner (der Rechner ist auch in Einfach sichtbar)
   (Software ↔ Konnektor, Software ↔ KIM-Clientmodul, Software ↔ mobiles KT,
   RIS/LIS ↔ KIS). (Vereinfachung)
 - **A-3** Modus Einfach: Das System wählt das erste freie, verträgliche
@@ -306,7 +306,7 @@ gültig. (3) Sonst abgelehnt mit dem Text der passenden Begründungsregel,
 (4) ohne passende Regel mit der Meldung „Diese Verbindung gibt es in der
 TI nicht. ‹Gerät› kann verbunden werden mit: …“.
 
-Ergänzt 2026-11-05 (T-105):
+Ergänzt 2026-11-05:
 
 - G-3 läuft erst nach der Paarfrage, weil die Regel festlegt, welche
   Anschlussarten zählen. Sonst käme etwa bei PVS ↔ Fachdienst die
@@ -359,8 +359,8 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 |---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
 | PC, Server | Switch, Router-LAN | plausibel | DVO |
-| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung (T-724a, T-724c) | gemILF_PS |
-| PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung (T-724c) | gemILF_PS |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung | gemILF_PS |
+| PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung | gemILF_PS |
 | Visite-Tablet | Access Point, Router-WLAN | plausibel | KH |
 | RIS, LIS | KIS (HL7-Schnittstelle) | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | bestätigt | gemSpec_CM_KOMLE |
@@ -432,7 +432,7 @@ und K-6 in Abschnitt 5.
 
 ## 5. Karten
 
-Karten sind keine Knoten (D12). Diese Regeln ersetzen für Karten die
+Karten sind keine Knoten. Diese Regeln ersetzen für Karten die
 Verbindungsregeln aus Abschnitt 4.
 
 | ID | Regel | Meldung bei Verstoß | Status | Quelle |
@@ -497,12 +497,12 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 Die erste nicht erfüllte Bedingung liefert die Begründung im
 ausgegrauten Menüeintrag.
 
-**Auslegung (2026-11-10, T-402):** (a) „Gerät vorhanden“ ist bewusst nur
+**Auslegung (2026-11-10):** (a) „Gerät vorhanden“ ist bewusst nur
 ein Existenztest, Status `Vereinfachung` (Quellen nennen keine feste
 Verkabelung des KIM-Clientmoduls). (b) K-7 steht im Katalog als
 `{card: egk, pin: true}`, die Engine liest `pinActive` über `cardState`.
 (c) PC und Tablet erben die Aktionen der Software (PVS, KIS, AVS), die
-auf ihnen oder auf einem erreichbaren Server läuft (T-724b), ohne einen Weg über ein anderes
+auf ihnen oder auf einem erreichbaren Server läuft, ohne einen Weg über ein anderes
 Primärsystem. (d) Karten dürfen auf mehrere Terminals desselben Zugangs verteilt sein
 (Baustein „Karte X“); gilt das zugeordnete Terminal (P-29), zählt nur
 dieses. Steckt eine benötigte Karte in mehr als einem Terminal ohne
@@ -534,12 +534,12 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
 
-**Aktionen starten am Rechner (T-724b):** PC, Tablet und Server bieten die
+**Aktionen starten am Rechner:** PC, Tablet und Server bieten die
 Aktionen der Software an, die auf ihnen läuft; ein Arbeitsplatz (PC, Tablet)
 auch die der Software auf einem erreichbaren Server (z. B. KIS). Die Software
 ist im Ablauf der Absender (Rolle `P`): Das Paket läuft von ihr über den
 Rechner und die Netzgeräte zum Zugang. Software mit Rechner bietet in keinem
-Modus selbst Aktionen an (T-725a), Software ohne Rechner startet selbst. Quelle:
+Modus selbst Aktionen an, Software ohne Rechner startet selbst. Quelle:
 gemILF_PS (Arbeitsplatz im Infomodell).
 
 **Arbeitsplatz-PC und Visite-Tablet** bieten die Aktionen der Software
@@ -687,7 +687,7 @@ dort einstellbar sind. Alle anderen gelten in beiden Modi.
 | P-32 | Konnektor und TI-Gateway in derselben Topologie | Node `type` | Fehler | Vereinfachung | X-1 |
 | P-33 | Zugang ohne Weg ins Internet (weder zum Router noch direkt zum VPN-Zugangsdienst) | Kanten | Fehler | bestätigt | Betriebsarten |
 
-Auslegung (2026-11-11, T-503): Die Regeln hängen an Geräten und Kanten,
+Auslegung (2026-11-11): Die Regeln hängen an Geräten und Kanten,
 nicht am „ersten Gerät“. Ein Befund nennt Regel, Schwere, Erklärtext und
 die betroffenen Geräte (und Kante). Ungesetzte Felder gelten als
 Standardwert (Regelwerk 8), nicht als Verstoß.
@@ -734,7 +734,7 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
 P-8 bis P-14 sind allgemeine Netzwerkregeln ohne TI-Bezug. Sie brauchen
 keinen gematik-Beleg.
 
-Auslegung (2026-11-11, T-504): nur IPv4. Ungesetzte Felder melden nichts,
+Auslegung (2026-11-11): nur IPv4. Ungesetzte Felder melden nichts,
 nur die Maske gilt ungesetzt als Standardwert (Regelwerk 8). Jedes Gerät
 mit Konfiguration wird geprüft.
 
@@ -796,7 +796,7 @@ Herausforderung, wenn
 
 ## 11. Modus Einfach und Erweitert
 
-Entschieden 2026-11-04 (Plan D36), geändert 2026-11-13 (T-725a, siehe unten).
+Entschieden 2026-11-04, geändert 2026-11-13 (siehe unten).
 
 | | Einfach | Erweitert |
 |---|---|---|
@@ -808,11 +808,11 @@ Entschieden 2026-11-04 (Plan D36), geändert 2026-11-13 (T-725a, siehe unten).
 | **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Prüfregeln „nur Erweitert“ (Adressierung P-8 bis P-15, Betrieb P-16 bis P-30), die die Geräteeinstellungen auswerten |
 | **Vereinfachte Direktverbindungen** | erlaubt | erlaubt, die Sicherheitsprüfung weist mit einem Hinweis auf den realen Weg hin |
 
-Entschieden 2026-11-13 (T-725a, ersetzt D36): Beide Modi zeigen alle Geräte
+Entschieden 2026-11-13 (ersetzt die Entscheidung vom 2026-11-04): Beide Modi zeigen alle Geräte
 und Verbindungen. Erweitert ergänzt nur die Geräteeinstellungen (IP-Konfiguration, Zeit,
 Zertifikat, Firewall, VLAN, Pairing, Arbeitsplatz) samt ihren Prüfregeln und
 die Anschlussauswahl. Das Ausblenden von Geräten, die Sammelkanten und das
-Katalogfeld „In Einfach sichtbar“ sind entfallen (T-725a, T-725b). Der Modus
+Katalogfeld „In Einfach sichtbar“ sind entfallen. Der Modus
 gehört zu den Einstellungen, nicht zur Topologie; eine Datei lässt sich in
 jedem Modus öffnen.
 
@@ -830,20 +830,20 @@ jedem Modus öffnen.
 - [x] eMP braucht eGK und HBA oder SMC-B (gemSysL_AMTS_A).
 - [x] VSDM braucht neben der eGK die SMC-B oder den HBA (gemSysL_VSDM).
 - [x] IDP über die TI, TI-Messenger über das Internet (2026-11-03).
-- [x] Karten sind Zustand des Terminals (D12), ihre Regeln stehen in
+- [x] Karten sind Zustand des Terminals, ihre Regeln stehen in
   Abschnitt 5.
 - [x] PoPP und VSDM 2.0 nur als Komponente im Modus Erweitert.
 - [x] Rolle des Konnektors bei E-Rezept und ePA: er signiert, liefert die
   SMC-B-Authentisierung und leitet weiter. Mit dem Fachdienst spricht das
   Primärsystem (gemILF_PS_eRp, Prüfbericht 2026-11-04).
 - [x] Prüfungsnachweis als Voraussetzung für Apotheke und ePA ergänzt.
-- [x] Modus ändert nie die Topologie, beide Modi zeigen alle Geräte (11, T-725a).
+- [x] Modus ändert nie die Topologie, beide Modi zeigen alle Geräte (11).
 
 **Noch offen**
 
 Diese Punkte präzisieren nur die Belege. Die betroffenen Einträge behalten
 ihren Status aus den Tabellen (plausibel, Vereinfachung bzw. bestätigt) und
-gehen so in den Katalog (T-905, abgeschlossen am 2026-11-05). Die Punkte
+gehen so in den Katalog (abgeschlossen am 2026-11-05). Die Punkte
 bleiben hier sichtbar, bis ein Beleg vorliegt.
 
 - [ ] Netzweg von CardLink zum Konnektor in gemSpec_eHealth-CardLink

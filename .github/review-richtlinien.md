@@ -5,8 +5,8 @@ den Merge entscheidet ein Mensch, der Review ist kein Pflicht-Check.
 
 ## Vorgehen
 
-Erst `gh pr diff`, dann das verknüpfte Issue (`gh issue view`: Beschreibung,
-„Fertig, wenn“, Bilder), dann nur die geänderten Dateien. Fachliche Fragen
+Erst `gh pr diff`, dann das verknüpfte Issue (`issue-bilder/issue.md` und die
+Bilder daneben: Beschreibung, „Fertig, wenn“), dann nur die geänderten Dateien. Fachliche Fragen
 per `grep` im Regelwerk (`docu/001-ti-visualizer-baukasten/regelwerk.md`)
 nach Regel-ID oder Stichwort klären, nicht das ganze Regelwerk lesen. Nur auf
 Dateien verweisen, die im Repo liegen. Den Diff aus drei Blickwinkeln prüfen.

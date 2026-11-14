@@ -12,5 +12,5 @@ Export vom 2026-11-03 (`MockUp.zip`, entpackt).
 | `assets/`, `uploads/` | Persona-Bilder, Vorlagen-Screenshots, Mockup-Prompts |
 
 Referenz für die Umsetzung sind Template, Logik und `styles.css`. Die Laufzeit-Dateien von Claude Design (`support.js`, `image-slot.js`)
-sind nicht im Repo, weil sie nicht zum Projekt gehören (T-901, T-904).
+sind nicht im Repo, weil sie nicht zum Projekt gehören.
 Zum Anzeigen der `.dc.html`-Dateien `MockUp.zip` lokal entpacken.

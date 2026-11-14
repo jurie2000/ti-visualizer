@@ -123,15 +123,15 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 |---|---|---|
 | [KBV: Welche Dokumente stellen Praxen in die ePA ein?](https://www.kbv.de/praxis/tools-und-services/praxisnachrichten/2025/07-31/neue-serie-alles-nur-eine-frage-welche-dokumente-stellen-praxen-in-die-epa-ein) | eAU-Kopie in der ePA nur auf Wunsch. KBV ist Körperschaft des öffentlichen Rechts, kein Drittanbieter. Bei Gelegenheit durch eine gematik-Quelle ersetzen | ePA-Aktionen |
 
-| [CGM MANAGED TI: Leistungsbeschreibung](https://www.cgm.com/_Resources/Persistent/dffee881638621deba286b19c37401f6f035b5e1/CGM%20MANAGED%20TI%20Leistungsbeschreibung.pdf) | Anbindung von Primärsystemen (vor Ort und in der Cloud) an die TI über ein Rechenzentrum. Anbieterunterlage, keine gematik-Quelle | SaaS (T-724c), Schlüssel `CGM_ManagedTI` |
-| [Concat TIaaS: Leistungsbeschreibung](https://www.concat.de/wp-content/uploads/2023/11/Concat_TIaaS_Leistungsbeschreibung_202311.pdf) | TI als Dienst im Rechenzentrum, Verbindung geht vom Endgerät aus. Anbieterunterlage, keine gematik-Quelle | SaaS (T-724c), Schlüssel `Concat_TIaaS` |
+| [CGM MANAGED TI: Leistungsbeschreibung](https://www.cgm.com/_Resources/Persistent/dffee881638621deba286b19c37401f6f035b5e1/CGM%20MANAGED%20TI%20Leistungsbeschreibung.pdf) | Anbindung von Primärsystemen (vor Ort und in der Cloud) an die TI über ein Rechenzentrum. Anbieterunterlage, keine gematik-Quelle | SaaS, Schlüssel `CGM_ManagedTI` |
+| [Concat TIaaS: Leistungsbeschreibung](https://www.concat.de/wp-content/uploads/2023/11/Concat_TIaaS_Leistungsbeschreibung_202311.pdf) | TI als Dienst im Rechenzentrum, Verbindung geht vom Endgerät aus. Anbieterunterlage, keine gematik-Quelle | SaaS, Schlüssel `Concat_TIaaS` |
 
 ## 8. Technik und Projekt (nicht fachlich)
 
 | Quelle | Inhalt |
 |---|---|
 | [GitHub Blog: Spec-Driven Development mit Spec-Kit](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/) | Vorgehensmodell des Projekts |
-| [React Flow](https://reactflow.dev/) | Canvas-Framework (Plan D6) |
+| [React Flow](https://reactflow.dev/) | Canvas-Framework |
 | [GitHub-Datenschutzerklärung](https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement) | Hosting über GitHub Pages (Impressum) |
 
 ## 9. Erkenntnisse für das Regelwerk

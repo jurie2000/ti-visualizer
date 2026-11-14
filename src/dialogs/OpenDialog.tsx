@@ -1,10 +1,10 @@
+import { UploadCloud } from "lucide-react";
 import { useRef, useState } from "react";
 import {
   confirmOpen,
+  openDropped,
   openFile,
-  openTopology,
   pickFileWithHandle,
-  useCatalog,
   useOpen,
   useUi,
 } from "../store";
@@ -12,13 +12,13 @@ import { Button } from "../ui/Button";
 import { Dialog } from "../ui/Dialog";
 
 /**
- * Öffnen (FR-2, FR-5): Datei wählen oder Preset. Enthält die Rückfrage
+ * Öffnen (FR-2, FR-5): Datei ablegen oder wählen. Enthält die Rückfrage
  * „Einstellungen aus der Datei übernehmen?“ (Standard nein).
  */
 export function OpenDialog() {
   const open = useUi((s) => s.dialog === "open");
   const pending = useOpen((s) => s.pending);
-  const presets = useCatalog((s) => s.catalog.presets);
+  const [over, setOver] = useState(false);
   const [error, setError] = useState<string>();
   const input = useRef<HTMLInputElement>(null);
 
@@ -69,19 +69,35 @@ export function OpenDialog() {
         </>
       ) : (
         <>
-          <h3>Datei</h3>
-          <p>
-            Eine gespeicherte Topologie (.tiv.json). Sie können die Datei auch
-            auf die Arbeitsfläche ziehen.
-          </p>
-          <Button
-            variant="primary"
+          <button
+            type="button"
+            className={`tiv-dropzone${over ? " tiv-dropzone--over" : ""}`}
             onClick={() => {
               void choose();
             }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setOver(true);
+            }}
+            onDragLeave={() => {
+              setOver(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setOver(false);
+              const f = e.dataTransfer.files[0];
+              if (f)
+                void openDropped(e.dataTransfer.items[0], f).then(setError);
+            }}
           >
-            Datei wählen …
-          </Button>
+            <UploadCloud aria-hidden="true" />
+            <span className="tiv-dropzone__title">
+              Datei hierher ziehen oder klicken, um eine zu wählen
+            </span>
+            <span className="tiv-dropzone__hint">
+              Eine gespeicherte Topologie (.tiv.json)
+            </span>
+          </button>
           <input
             ref={input}
             type="file"
@@ -98,21 +114,6 @@ export function OpenDialog() {
             }}
           />
           {error && <p role="alert">{error}</p>}
-          <h3>Preset</h3>
-          <ul>
-            {presets.map((p) => (
-              <li key={p.id}>
-                <Button
-                  onClick={() => {
-                    close();
-                    openTopology(p.topology);
-                  }}
-                >
-                  {p.topology.name}
-                </Button>
-              </li>
-            ))}
-          </ul>
         </>
       )}
     </Dialog>

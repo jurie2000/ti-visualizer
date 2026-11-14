@@ -333,8 +333,9 @@
   width: calc(100% - 32px);
   color: var(--color-text);
   background: var(--color-bg);
-  border: 1px solid var(--color-neutral-300);
-  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-md);
 }
 .tiv-dialog__head {
   display: flex;
@@ -1375,4 +1376,36 @@ a {
 }
 .tiv-plug > .tiv-btn {
   align-self: flex-end;
+}
+.tiv-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 40px 24px;
+  text-align: center;
+  font: inherit;
+  color: inherit;
+  background: var(--color-neutral-100);
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.tiv-dropzone svg {
+  width: 40px;
+  height: 40px;
+  color: var(--color-accent);
+}
+.tiv-dropzone:hover,
+.tiv-dropzone--over {
+  border-style: solid;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+.tiv-dropzone__title {
+  font-weight: 600;
+}
+.tiv-dropzone__hint {
+  font-size: 0.875em;
+  opacity: 0.8;
 }

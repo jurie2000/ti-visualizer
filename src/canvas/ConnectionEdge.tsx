@@ -6,7 +6,7 @@ import {
   type EdgeProps,
   type InternalNode,
 } from "@xyflow/react";
-import { useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { LIMITS, type Point } from "../schema";
 import { useTopology, useUi } from "../store";
 import { NODE_SIZE } from "./deviceStyle";
@@ -50,6 +50,7 @@ export function ConnectionEdge({
   const labels = useUi((s) => s.view.labels);
   const setWaypoints = useTopology((s) => s.setWaypoints);
   const { screenToFlowPosition } = useReactFlow();
+  const pressed = useRef(false);
   const [drag, setDrag] = useState<{ i: number; p: Point } | null>(null);
   if (!from || !to || !data) return null;
 
@@ -121,13 +122,18 @@ export function ConnectionEdge({
             onPointerDown={(e) => {
               e.stopPropagation();
               e.currentTarget.setPointerCapture(e.pointerId);
-              place(e, i);
+              pressed.current = true;
             }}
             onPointerMove={(e) => {
-              if (drag) place(e, i);
+              if (pressed.current) place(e, i);
             }}
             onPointerUp={() => {
+              pressed.current = false;
               if (drag) move(i, drag.p);
+              setDrag(null);
+            }}
+            onPointerCancel={() => {
+              pressed.current = false;
               setDrag(null);
             }}
             onKeyDown={(e) => {

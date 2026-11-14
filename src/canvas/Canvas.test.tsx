@@ -293,7 +293,7 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     expect(waypoints()).toBeUndefined();
   });
 
-  it("Ziehen mit der Maus setzt den Punkt beim Loslassen als ein Schritt", async () => {
+  it("Ziehen mit der Maus setzt den Punkt beim Loslassen als ein Schritt, Klick und Abbruch nicht", async () => {
     useUi.setState({ selection: { kind: "edge", id: edgeId } });
     render(<Canvas />, { wrapper });
     await waitFor(() => {
@@ -302,10 +302,22 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     const first = handle()[0] as HTMLElement;
     first.setPointerCapture = () => undefined;
     const before = useTopology.getState().past.length;
-    fireEvent.pointerDown(first, { clientX: 10, clientY: 10, pointerId: 1 });
+    fireEvent.pointerDown(first, { pointerId: 1 });
+    fireEvent.pointerUp(first, { pointerId: 1 });
+    expect(waypoints()).toBeUndefined();
+    fireEvent.pointerDown(first, { pointerId: 1 });
+    fireEvent.pointerMove(first, { clientX: 20, clientY: 30, pointerId: 1 });
+    fireEvent.pointerCancel(first, { pointerId: 1 });
+    fireEvent.pointerUp(first, { pointerId: 1 });
+    expect(waypoints()).toBeUndefined();
+    fireEvent.pointerDown(first, { pointerId: 1 });
     fireEvent.pointerMove(first, { clientX: 20, clientY: 30, pointerId: 1 });
     fireEvent.pointerUp(first, { pointerId: 1 });
     expect(waypoints()).toHaveLength(1);
     expect(useTopology.getState().past.length).toBe(before + 1);
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(waypoints()).toBeUndefined();
   });
 });

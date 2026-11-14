@@ -34,7 +34,7 @@ gematik-Fachportal-Seite zur jeweiligen Anwendung.
 
 Abschnitte: 1 Gerätetypen · 2 Anschlüsse · 3 Verbindungsarten ·
 4 Verbindungsregeln · 5 Karten · 6 Aktionen · 7 Abläufe ·
-8 Konfiguration · 9 Prüfregeln · 10 Herausforderungen · 11 Modus Einfach
+8 Konfiguration · 9 Prüfregeln · 10 Herausforderungen (entfernt) · 11 Modus Einfach
 und Erweitert · 12 Offene Fragen · 13 Presets
 
 ## 1. Gerätetypen

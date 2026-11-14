@@ -72,7 +72,7 @@ jobs:
           [ -n "$nr" ] || exit 0
           # Prompt Injection: Text und Bilder von Fremden gelangen nie zur KI.
           # Nur Issues von Personen mit Schreibrechten werden übergeben.
-          assoc=$(gh issue view "$nr" --json authorAssociation --jq .authorAssociation)
+          assoc=$(gh api "repos/$GITHUB_REPOSITORY/issues/$nr" --jq .author_association)
           case "$assoc" in
             OWNER|MEMBER|COLLABORATOR) ;;
             *) echo "Issue #$nr stammt nicht von einer Person mit Schreibrechten, es wird nicht gelesen." > issue-bilder/issue.md; exit 0 ;;

@@ -617,3 +617,7 @@
   outline: var(--tiv-focus-width) solid var(--tiv-focus);
   outline-offset: 2px;
 }
+.tiv-waypoint.is-add {
+  stroke-dasharray: 3 2;
+  stroke-width: 2px;
+}

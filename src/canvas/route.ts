@@ -32,6 +32,23 @@ const attach = (n: Box, s: Side): Point =>
 /** Abstand der Sammelschiene vom Gerät mit den meisten Kanten (Mockup `busX`/`busY`). */
 const BUS = 40;
 
+/** Linienzug von Gerät zu Gerät durch die Gelenkpunkte (L-3); ohne Punkte `null`. */
+export function polyline(
+  a: Box,
+  b: Box,
+  waypoints: readonly Point[],
+): Point[] | null {
+  const first = waypoints[0];
+  const last = waypoints[waypoints.length - 1];
+  if (!first || !last) return null;
+  const dot = (p: Point): Box => ({ cx: p.x, cy: p.y, hw: 0, hh: 0 });
+  return [
+    attach(a, sideOf(a, dot(first))),
+    ...waypoints,
+    attach(b, sideOf(b, dot(last))),
+  ];
+}
+
 /**
  * Weg einer Kante zwischen den Seitenmitten zweier Geräte (Mockup `edgePath`):
  * `curve` als Kurve, `ortho` rechtwinklig. Bei `ortho` laufen alle Kanten eines
@@ -47,15 +64,8 @@ export function routePath(
   waypoints: readonly Point[] = [],
 ): { d: string; mid: Point } {
   const pt = (p: Point) => `${String(p.x)},${String(p.y)}`;
-  const first = waypoints[0];
-  const last = waypoints[waypoints.length - 1];
-  if (first && last) {
-    const dot = (p: Point): Box => ({ cx: p.x, cy: p.y, hw: 0, hh: 0 });
-    const pts = [
-      attach(a, sideOf(a, dot(first))),
-      ...waypoints,
-      attach(b, sideOf(b, dot(last))),
-    ];
+  const pts = polyline(a, b, waypoints);
+  if (pts) {
     // Mitte des mittleren Abschnitts, damit das Label auf der Linie liegt
     const i = Math.floor((pts.length - 1) / 2);
     const [s, e] = [pts[i] as Point, pts[i + 1] as Point];

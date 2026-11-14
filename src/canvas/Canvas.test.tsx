@@ -320,4 +320,91 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     });
     expect(waypoints()).toBeUndefined();
   });
+
+  const pts = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({ x: 100 + i * 10, y: 100 }));
+  const select = async (n: number) => {
+    useTopology.getState().setWaypoints(edgeId, pts(n));
+    useUi.setState({ selection: { kind: "edge", id: edgeId } });
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      expect(handle()).toHaveLength(n === 0 ? 1 : 2 * n + 1);
+    });
+  };
+  const named = (re: RegExp) => screen.getAllByRole("button", { name: re });
+
+  it("Eingabetaste am Einfüge-Griff legt dort einen Punkt an (L-6), ein Undo-Schritt", async () => {
+    await select(2);
+    const before = useTopology.getState().past.length;
+    fireEvent.keyDown(
+      named(/^Gelenkpunkt einfügen, Abschnitt 2 /)[0] as Element,
+      {
+        key: "Enter",
+      },
+    );
+    expect(waypoints()).toHaveLength(3);
+    expect(waypoints()?.[1]).toEqual({ x: 105, y: 100 });
+    expect(waypoints()?.[0]).toEqual({ x: 100, y: 100 });
+    expect(useTopology.getState().past.length).toBe(before + 1);
+    expect(document.activeElement?.getAttribute("aria-label")).toMatch(
+      /^Gelenkpunkt 2 von 3/,
+    );
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(waypoints()).toHaveLength(2);
+  });
+
+  it("Ziehen am Einfüge-Griff fügt einen Punkt ein, Klick ohne Ziehen nicht (L-4, L-6)", async () => {
+    await select(1);
+    const add = named(/^Gelenkpunkt einfügen, Abschnitt 1 /)[0] as HTMLElement;
+    add.setPointerCapture = () => undefined;
+    fireEvent.pointerDown(add, { pointerId: 1 });
+    fireEvent.pointerUp(add, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(1);
+    fireEvent.pointerDown(add, { pointerId: 1 });
+    fireEvent.pointerMove(add, { clientX: 20, clientY: 30, pointerId: 1 });
+    fireEvent.pointerUp(add, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(2);
+    expect(waypoints()?.[1]).toEqual({ x: 100, y: 100 });
+  });
+
+  it("Entf und Doppelklick entfernen einen Punkt, je ein Undo-Schritt (L-7)", async () => {
+    await select(3);
+    const before = useTopology.getState().past.length;
+    fireEvent.keyDown(named(/^Gelenkpunkt 3 von 3/)[0] as Element, {
+      key: "Delete",
+    });
+    expect(waypoints()).toHaveLength(2);
+    fireEvent.doubleClick(named(/^Gelenkpunkt 1 von 2/)[0] as Element);
+    expect(waypoints()).toEqual([{ x: 110, y: 100 }]);
+    expect(useTopology.getState().past.length).toBe(before + 2);
+    // Einfüge-Griffe ignorieren Doppelklick und Entf
+    fireEvent.doubleClick(named(/^Gelenkpunkt einfügen/)[0] as Element);
+    fireEvent.keyDown(named(/^Gelenkpunkt einfügen/)[0] as Element, {
+      key: "Delete",
+    });
+    expect(waypoints()).toHaveLength(1);
+    fireEvent.keyDown(named(/^Gelenkpunkt 1 von 1/)[0] as Element, {
+      key: "Delete",
+    });
+    expect(waypoints()).toBeUndefined();
+    expect(document.activeElement?.getAttribute("aria-label")).toMatch(
+      /^Gelenkpunkt einfügen/,
+    );
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(waypoints()).toHaveLength(1);
+  });
+
+  it("bei 20 Punkten gibt es keine Einfüge-Griffe mehr (L-8)", async () => {
+    useTopology.getState().setWaypoints(edgeId, pts(20));
+    useUi.setState({ selection: { kind: "edge", id: edgeId } });
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      expect(handle()).toHaveLength(20);
+    });
+    expect(screen.queryByRole("button", { name: /einfügen/ })).toBeNull();
+  });
 });

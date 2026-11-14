@@ -874,6 +874,8 @@ folgt in eigenen Issues).
 | L-1 | Eine Verbindung hat optional `waypoints`: eine Liste von Punkten (höchstens 20) in Weltkoordinaten, geordnet von `ends[0]` nach `ends[1]`. |
 | L-2 | Ohne `waypoints` läuft die Linie automatisch nach der Kantenführung (Kurve, Rechtwinklig). Dateien ohne Gelenkpunkte laden unverändert. |
 | L-3 | Mit `waypoints` läuft die Linie als Linienzug durch die Punkte. Sie verlässt jedes Gerät an der Seitenmitte, die dem nächsten Gelenkpunkt zugewandt ist. Die Kantenführung gilt dann nicht. |
+| L-4 | Nur die gewählte Verbindung zeigt ihre Gelenkpunkte als Griffe. Ohne Gelenkpunkte zeigt sie einen Griff in der Mitte; Ziehen legt den ersten Punkt an. |
+| L-5 | Griffe lassen sich mit der Maus ziehen (ein Rückgängig-Schritt beim Loslassen) und per Pfeiltaste um 10 verschieben (ein Schritt je Taste). |
 
 Auslegung (2026-11-14): `waypoints` ist ein optionales Feld, daher bleibt
 `schemaVersion` 1 und eine Migration entfällt. Ältere Dateien sind gültig,

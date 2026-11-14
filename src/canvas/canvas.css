@@ -591,6 +591,14 @@
   height: 32px;
   border-radius: 999px;
 }
+.tiv-security__btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 36px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+}
 .tiv-zoom__level {
   min-width: 48px;
   text-align: center;

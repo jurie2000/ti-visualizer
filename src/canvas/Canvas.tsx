@@ -27,6 +27,7 @@ import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
 import { ZoneTools } from "./ZoneTools";
 import { ZoneNode } from "./ZoneNode";
+import { SecurityBadge } from "./SecurityBadge";
 import { ZoomBar } from "./ZoomBar";
 import { SimPacket } from "./SimPacket";
 import { SimPlayer } from "./SimPlayer";
@@ -313,6 +314,7 @@ export function Canvas() {
         {!reduceMotion && <SimPacket hop={hop} onHop={setHop} />}
         <ZoneTools />
         <ZoomBar />
+        <SecurityBadge />
         {view.minimap && (
           <MiniMap
             pannable

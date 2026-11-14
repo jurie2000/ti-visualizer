@@ -94,8 +94,13 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     await expect(spieler).toBeHidden();
 
     // speichern
-    const download = page.waitForEvent("download");
     await page.keyboard.press("ControlOrMeta+s");
+    const download = page.waitForEvent("download");
+    await page
+      .getByRole("dialog", { name: "Speichern" })
+      .getByRole("button", { name: "Speichern" })
+      .focus();
+    await page.keyboard.press("Enter");
     expect((await download).suggestedFilename()).toMatch(/\.tiv\.json$/);
   });
 

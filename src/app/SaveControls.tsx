@@ -1,33 +1,21 @@
 import { useEffect } from "react";
-import {
-  saveToFile,
-  useFile,
-  useHasUnsaved,
-  useSettings,
-  useUi,
-} from "../store";
+import { useFile, useHasUnsaved, useUi } from "../store";
 import { Button } from "../ui/Button";
-import { useToast } from "../ui/Toast";
 
-/** Speichern (Kopfleiste und Strg/Cmd+S), Häkchen für Einstellungen, Hinweis „nicht gespeichert“. */
+/** Speichern (Kopfleiste und Strg/Cmd+S) öffnet den Speichern-Dialog. */
 export function SaveControls() {
-  const toast = useToast();
   const unsaved = useHasUnsaved();
   const fileName = useFile((s) => s.fileName);
-  const withSettings = useSettings((s) => s.saveSettingsWithFile);
-  const set = useSettings((s) => s.set);
 
-  const save = () => {
-    saveToFile().catch(() => {
-      toast.show("Speichern fehlgeschlagen.", "error");
-    });
+  const openSave = () => {
+    useUi.getState().openDialog("save");
   };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        save();
+        openSave();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -51,34 +39,10 @@ export function SaveControls() {
 
   return (
     <div className="tiv-save">
-      <Button
-        onClick={() => {
-          useUi.getState().openDialog("open");
-        }}
-      >
-        Öffnen
-      </Button>
       {fileName && (
         <span className="tiv-save__file">Eigene Datei: {fileName}</span>
       )}
-      <span className="tiv-save__state" role="status">
-        {unsaved
-          ? "Nicht als Datei gespeichert"
-          : fileName
-            ? `Gespeichert: ${fileName}`
-            : ""}
-      </span>
-      <label className="tiv-save__check">
-        <input
-          type="checkbox"
-          checked={withSettings}
-          onChange={(e) => {
-            set({ saveSettingsWithFile: e.target.checked });
-          }}
-        />
-        Einstellungen mitspeichern
-      </label>
-      <Button onClick={save}>Speichern</Button>
+      <Button onClick={openSave}>Speichern</Button>
     </div>
   );
 }

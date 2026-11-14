@@ -7,6 +7,7 @@ import {
   useFile,
   useSettings,
   useTopology,
+  useUi,
 } from "../store";
 import { ToastProvider } from "../ui/Toast";
 import { SaveControls } from "./SaveControls";
@@ -25,37 +26,7 @@ beforeEach(() => {
   useSettings.getState().set({ saveSettingsWithFile: false });
 });
 
-describe("Speichern: Häkchen und Hinweis", () => {
-  it("Häkchen ist standardmäßig aus, schaltet die Einstellung und wird gemerkt", async () => {
-    const user = userEvent.setup();
-    ui();
-    const box = screen.getByRole("checkbox", {
-      name: "Einstellungen mitspeichern",
-    });
-    expect(box).not.toBeChecked();
-    await user.click(box);
-    expect(box).toBeChecked();
-    expect(useSettings.getState().saveSettingsWithFile).toBe(true);
-    expect(localStorage.getItem("tiv.saveSettingsWithFile")).toBe("1");
-  });
-
-  it("meldet leere Fläche nicht, geänderten Stand schon, gespeicherten nicht mehr", () => {
-    ui();
-    expect(hasUnsaved()).toBe(false);
-    expect(screen.queryByText("Nicht als Datei gespeichert")).toBeNull();
-    act(() => {
-      useTopology.getState().addNode("switch", { x: 0, y: 0 });
-    });
-    expect(screen.getByText("Nicht als Datei gespeichert")).toBeInTheDocument();
-    act(() => {
-      useFile
-        .getState()
-        .markSaved(useTopology.getState().topology, "x.tiv.json");
-    });
-    expect(screen.queryByText("Nicht als Datei gespeichert")).toBeNull();
-    expect(screen.getByText("Gespeichert: x.tiv.json")).toBeInTheDocument();
-  });
-
+describe("Speichern: Dialog und Schutz", () => {
   it("meldet ein unverändertes Preset nicht, ein bearbeitetes schon", () => {
     const preset = useCatalog.getState().catalog.presets[0];
     if (!preset) throw new Error("kein Preset");
@@ -81,29 +52,14 @@ describe("Speichern: Häkchen und Hinweis", () => {
     expect(offen.defaultPrevented).toBe(true);
   });
 
-  it("speichert mit Strg+S und per Button, Fehler erscheinen als Meldung", async () => {
+  it("Strg+S und der Knopf öffnen den Speichern-Dialog", async () => {
     const user = userEvent.setup();
-    URL.createObjectURL = vi.fn(() => "blob:x");
-    URL.revokeObjectURL = vi.fn();
-    const click = vi
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => undefined);
     ui();
-    act(() => {
-      useTopology.getState().addNode("switch", { x: 0, y: 0 });
-    });
     await user.keyboard("{Control>}s{/Control}");
+    expect(useUi.getState().dialog).toBe("save");
+    useUi.getState().openDialog(undefined);
     await user.click(screen.getByRole("button", { name: "Speichern" }));
-    expect(click).toHaveBeenCalledTimes(2);
-    expect(screen.queryByText("Nicht als Datei gespeichert")).toBeNull();
-    click.mockImplementation(() => {
-      throw new Error("kaputt");
-    });
-    await user.click(screen.getByRole("button", { name: "Speichern" }));
-    expect(
-      await screen.findByText("Speichern fehlgeschlagen."),
-    ).toBeInTheDocument();
-    vi.restoreAllMocks();
+    expect(useUi.getState().dialog).toBe("save");
   });
 
   it("meldet leere Fläche mit offener Datei als ungespeichert", () => {

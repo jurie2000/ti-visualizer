@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Theme } from "../store";
+import { useEffect } from "react";
+import { useSettings, type Theme } from "../store";
 import { Button } from "../ui/Button";
 
 const OPTIONS: { value: Theme; label: string }[] = [
@@ -8,7 +8,8 @@ const OPTIONS: { value: Theme; label: string }[] = [
 ];
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const theme = useSettings((s) => s.theme);
+  const set = useSettings((s) => s.set);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -21,7 +22,7 @@ export function ThemeToggle() {
           key={o.value}
           aria-pressed={theme === o.value}
           onClick={() => {
-            setTheme(o.value);
+            set({ theme: o.value });
           }}
         >
           {o.label}

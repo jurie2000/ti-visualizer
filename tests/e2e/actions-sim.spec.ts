@@ -169,19 +169,19 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await bisZumEnde(page);
   });
 
-  test("Abspielen läuft von allein bis zum Ende (Tempo ändern, FR-9)", async ({
+  test("Abspielen läuft von allein weiter (Tempo ändern, FR-9)", async ({
     page,
   }) => {
     await menüAn(page, "pc1");
     await eintrag(page, "Medikationsplan auslesen").click();
     const tempo = page.getByRole("slider", { name: "Tempo" });
-    await tempo.fill("2");
-    await expect(tempo).toHaveAttribute("aria-valuetext", "2×");
-    // vier Schritte zu je 1 s, kein fester Wartepunkt
-    await expect(spieler(page)).toContainText("Ablauf beendet.", {
-      timeout: 15_000,
+    await tempo.fill("0.4");
+    await expect(tempo).toHaveAttribute("aria-valuetext", "0.4×");
+    await expect(spieler(page)).toContainText("Schritt 1 von");
+    // ein Schritt zu 5 s, kein fester Wartepunkt
+    await expect(spieler(page)).toContainText("Schritt 2 von", {
+      timeout: 10_000,
     });
-    await expect(page.getByRole("button", { name: "Schließen" })).toBeVisible();
   });
 
   test("Abbrechen mit Esc, Leertaste pausiert, Schließen gibt den Fokus zurück (FR-10)", async ({

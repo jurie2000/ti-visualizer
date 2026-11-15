@@ -632,7 +632,9 @@ Störungen und jede Änderung der Topologie brechen die Simulation ab.
 **Kein fachlicher Zustand (Vereinfachung):** Das Modell merkt sich nicht,
 ob ein Rezept ausgestellt oder ein Medikationsplan geschrieben wurde.
 „eRezept einlösen“ funktioniert deshalb auch ohne vorheriges Ausstellen.
-Das Tutorial führt die Schritte in der richtigen Reihenfolge.
+Das Tutorial führt die Schritte in der richtigen Reihenfolge: „Weiter“
+und „Tutorial beenden“ sind gesperrt, solange die Aufgabe des Schritts
+nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #160.
 
 ## 8. Konfiguration im Modus Erweitert
 

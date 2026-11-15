@@ -185,10 +185,15 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
     await karte(page).getByRole("button", { name: "Weiter" }).focus();
     await page.keyboard.press("Enter");
     await expect(karte(page)).toContainText(" 2/16");
-    await page.keyboard.press("Enter");
-    await expect(karte(page)).toContainText(" 3/16");
+    // Schritt 2 hat eine offene Aufgabe: Weiter ist gesperrt (#160)
+    await expect(
+      karte(page).getByRole("button", { name: "Weiter" }),
+    ).toBeDisabled();
     await karte(page).getByRole("button", { name: "Zurück" }).focus();
     await page.keyboard.press("Space");
+    await expect(karte(page)).toContainText(" 1/16");
+    await karte(page).getByRole("button", { name: "Weiter" }).focus();
+    await page.keyboard.press("Enter");
     await expect(karte(page)).toContainText(" 2/16");
     // Avatar mit Alt-Text aus dem Katalog
     await expect(karte(page).getByRole("img")).toHaveAttribute(

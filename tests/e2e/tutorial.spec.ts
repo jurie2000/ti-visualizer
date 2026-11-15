@@ -89,7 +89,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
   });
 
   test("beide Teile vollständig durchspielen (FR-20)", async ({ page }) => {
-    test.setTimeout(60_000);
+    test.setTimeout(180_000);
     const prüfe = (titel: string, f: () => Promise<void>) =>
       f().then(() => weiter(page, titel, true));
     await weiter(page, "Willkommen", false);

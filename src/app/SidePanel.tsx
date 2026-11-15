@@ -37,7 +37,7 @@ interface Props {
 }
 
 const OPEN_MS = 150;
-const CLOSE_MS = 280;
+const CLOSE_MS = 3000;
 
 /** Maustaste gedrückt (Ziehen, Verbinden, Aufziehen): dann öffnet nichts. */
 function usePressed() {

@@ -876,7 +876,7 @@ folgt in eigenen Issues).
 | L-3 | Mit `waypoints` läuft die Linie als Linienzug durch die Punkte. Sie verlässt jedes Gerät an der Seitenmitte, die dem nächsten Gelenkpunkt zugewandt ist. Die Kantenführung gilt dann nicht. |
 | L-4 | Nur die gewählte Verbindung zeigt ihre Gelenkpunkte als Griffe. Ohne Gelenkpunkte zeigt sie einen Griff in der Mitte; Ziehen legt den ersten Punkt an. |
 | L-5 | Griffe lassen sich mit der Maus ziehen (ein Rückgängig-Schritt beim Loslassen) und per Pfeiltaste um 10 verschieben (ein Schritt je Taste). |
-| L-6 | Die gewählte Verbindung zeigt zwischen je zwei Punkten bzw. Endpunkten einen Einfüge-Griff in der Abschnittsmitte. Ziehen fügt dort einen Punkt ein (ein Rückgängig-Schritt beim Loslassen); Eingabetaste legt ihn auf dem Griff an, Pfeiltasten legen ihn um 10 versetzt an. Ein Klick ohne Ziehen legt nichts an (L-4). Danach hat der neue Punkt den Fokus. |
+| L-6 | Die gewählte Verbindung zeigt zwischen je zwei Punkten bzw. Endpunkten einen Einfüge-Griff in der Abschnittsmitte. Ziehen fügt dort einen Punkt ein (ein Rückgängig-Schritt beim Loslassen); Eingabetaste legt ihn auf dem Griff an, Pfeiltasten legen ihn um 10 versetzt an. Ziehen an der Linie selbst fügt im nächsten Abschnitt ein und folgt der Maus. Erst ab 4 Pixeln Mausbewegung zählt es als Ziehen, ein Klick legt nichts an (L-4). Die Trefferfläche der Griffe ist größer als ihre Darstellung. Danach hat der neue Punkt den Fokus. |
 | L-7 | Ein Gelenkpunkt wird per Doppelklick oder Entf/Rücktaste bei Fokus entfernt (ein Rückgängig-Schritt). Fällt der letzte Punkt weg, läuft die Linie wieder automatisch (L-2). |
 | L-8 | Bei 20 Gelenkpunkten (L-1) gibt es keine Einfüge-Griffe mehr. |
 

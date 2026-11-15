@@ -12,6 +12,7 @@ type Target = { kind: "node" | "edge"; id: string; x: number; y: number };
 export function useContextMenu() {
   const topology = useTopology((s) => s.topology);
   const toggleFault = useTopology((s) => s.toggleFault);
+  const setWaypoints = useTopology((s) => s.setWaypoints);
   const catalog = useCatalog((s) => s.catalog);
   const mode = useSettings((s) => s.mode);
   const toast = useToast();
@@ -44,6 +45,19 @@ export function useContextMenu() {
       const e = topology.edges.find((x) => x.id === t.id);
       return [
         fault(e?.fault ? "Verbindung wiederherstellen" : "Verbindung trennen"),
+        // L-9: nur mit Gelenkpunkten, ein Rückgängig-Schritt
+        ...(e?.waypoints
+          ? [
+              {
+                id: "reset-route",
+                label: "Linienführung zurücksetzen",
+                onSelect: () => {
+                  setWaypoints(t.id, []);
+                  toast.show("Linienführung zurückgesetzt.");
+                },
+              },
+            ]
+          : []),
       ];
     }
     const node = topology.nodes.find((x) => x.id === t.id);

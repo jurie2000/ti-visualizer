@@ -1,5 +1,5 @@
 import { ReactFlowProvider } from "@xyflow/react";
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -200,5 +200,42 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
       useTopology.getState().topology.edges.find((e) => e.id === "sw-pvs")
         ?.fault,
     ).toBe(true);
+  });
+
+  it("setzt die Linienführung per Menü zurück, ein Undo-Schritt (L-9, L-10)", async () => {
+    const user = userEvent.setup();
+    const route = () =>
+      useTopology.getState().topology.edges.find((e) => e.id === "sw-pvs")
+        ?.waypoints;
+    render(<Canvas />, { wrapper });
+    await waitFor(() => {
+      el(".react-flow__edge", "sw-pvs");
+    });
+    // ohne Gelenkpunkte fehlt der Eintrag
+    el(".react-flow__edge", "sw-pvs").focus();
+    await user.keyboard("{ContextMenu}");
+    expect(
+      screen.queryByRole("menuitem", { name: "Linienführung zurücksetzen" }),
+    ).toBeNull();
+    await user.keyboard("{Escape}");
+
+    act(() => {
+      useTopology.getState().setWaypoints("sw-pvs", [
+        { x: 1, y: 2 },
+        { x: 3, y: 4 },
+      ]);
+    });
+    const before = useTopology.getState().past.length;
+    el(".react-flow__edge", "sw-pvs").focus();
+    await user.keyboard("{ContextMenu}");
+    await user.click(
+      screen.getByRole("menuitem", { name: "Linienführung zurücksetzen" }),
+    );
+    expect(route()).toBeUndefined();
+    expect(useTopology.getState().past.length).toBe(before + 1);
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(route()).toHaveLength(2);
   });
 });

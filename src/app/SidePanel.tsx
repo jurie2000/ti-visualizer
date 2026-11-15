@@ -38,7 +38,6 @@ interface Props {
 
 const OPEN_MS = 150;
 const CLOSE_MS = 3000;
-const AUTO_CLOSE_MS = 3000;
 
 /** Maustaste gedrückt (Ziehen, Verbinden, Aufziehen): dann öffnet nichts. */
 function usePressed() {
@@ -80,7 +79,6 @@ export function SidePanel({
   const pinned = useSettings((s) => s.pinnedPanels.includes(id));
   const [shown, setShown] = useState(false);
   const timer = useRef<number>(undefined);
-  const autoTimer = useRef<number>(undefined);
   const hovering = useRef(false);
   const skipFocus = useRef(false);
   const lastRail = useRef<HTMLElement>(null);
@@ -93,8 +91,9 @@ export function SidePanel({
 
   const schedule = (open: boolean, ms: number) => {
     window.clearTimeout(timer.current);
-    window.clearTimeout(autoTimer.current);
     if (open && (pressed.current || connecting)) return;
+    // Bleibt mit Auswahl offen; zu geht es per Klick auf die Fläche oder Escape (#181)
+    if (!open && autoOpen != null) return;
     timer.current = window.setTimeout(() => {
       setShown(open);
     }, ms);
@@ -102,28 +101,18 @@ export function SidePanel({
   useEffect(
     () => () => {
       window.clearTimeout(timer.current);
-      window.clearTimeout(autoTimer.current);
     },
     [],
   );
 
-  // Neue Auswahl: Panel öffnet und klappt wieder ein, wenn niemand darauf zeigt
+  // Neue Auswahl: Panel öffnet und bleibt, bis die Auswahl endet (#181)
   useEffect(() => {
-    if (autoOpen === undefined) return;
+    if (autoOpen == null) return;
     const t = window.setTimeout(() => {
-      if (pressed.current) return;
-      setShown(true);
-      autoTimer.current = window.setTimeout(() => {
-        if (
-          !hovering.current &&
-          !asideRef.current?.contains(document.activeElement)
-        )
-          setShown(false);
-      }, AUTO_CLOSE_MS);
+      if (!pressed.current) setShown(true);
     }, OPEN_MS);
     return () => {
       window.clearTimeout(t);
-      window.clearTimeout(autoTimer.current);
     };
   }, [autoOpen, pressed]);
 
@@ -132,7 +121,6 @@ export function SidePanel({
     const down = (e: PointerEvent) => {
       if (!(e.target as Element).closest(".react-flow__pane")) return;
       window.clearTimeout(timer.current);
-      window.clearTimeout(autoTimer.current);
       setShown(false);
     };
     document.addEventListener("pointerdown", down);
@@ -155,7 +143,6 @@ export function SidePanel({
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key !== "Escape" || e.defaultPrevented || pinned || !shown) return;
     window.clearTimeout(timer.current);
-    window.clearTimeout(autoTimer.current);
     setShown(false);
     skipFocus.current = true;
     (lastRail.current ?? railRef.current?.querySelector("button"))?.focus();
@@ -180,7 +167,6 @@ export function SidePanel({
       onFocus={() => {
         if (!skipFocus.current) {
           window.clearTimeout(timer.current);
-          window.clearTimeout(autoTimer.current);
           setShown(true);
         }
       }}

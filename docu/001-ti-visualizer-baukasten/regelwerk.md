@@ -882,8 +882,12 @@ folgt in eigenen Issues).
 | L-9 | Hauptbedienung: Die Detailansicht einer Verbindung mit Gelenkpunkten zeigt den Knopf „Gelenkpunkte zurücksetzen“, ergänzend bietet das Kontextmenü „Linienführung zurücksetzen“. Beides entfernt alle Gelenkpunkte in einem Rückgängig-Schritt; die Linie läuft wieder automatisch (L-2). Ohne Gelenkpunkte fehlen Knopf und Eintrag (kein deaktivierter Knopf). |
 | L-10 | Das Zurücksetzen ist per Tastatur erreichbar: Menütaste oder Umschalt+F10 an der fokussierten Verbindung öffnet das Kontextmenü (D10). Der Knopf im Detail ist per Tab erreichbar. Ein eigenes Kürzel gibt es nicht. |
 | L-11 | Der Export (Datei) enthält die Gelenkpunkte und damit die angepasste Linienführung; beim Öffnen laufen die Linien wieder so. Ein Bildexport existiert nicht. |
+| L-12 | Das Simulationspaket läuft auf einer Verbindung mit Gelenkpunkten entlang der sichtbaren Linie (L-3), in Laufrichtung des Pakets; ohne Gelenkpunkte auf dem automatischen Weg (L-2). |
+| L-13 | Beim Einfügen kopierter Verbindungen (FR-16) bleiben die Gelenkpunkte erhalten und werden um denselben Versatz verschoben wie die Geräte der Kopie, damit die Kopie dieselbe Linienführung hat (Koordinaten wie bei Geräten auf ±`LIMITS.coord` begrenzt). |
 
 Auslegung (2026-11-15, Issue #165): Kein eigenes Tastenkürzel zum Zurücksetzen. Einzelbuchstaben wären gegen WCAG 2.1.4 riskant, Strg+Umschalt+R ist im Browser belegt; das per Tastatur erreichbare Kontextmenü genügt (D10). Die Tastaturbedienung der Griffe (Auswählen per Tab, Pfeiltasten, Einfügen, Entfernen) ist mit L-5 bis L-7 bereits umgesetzt. Quelle: `quellen.md` enthält keine Vorgabe zur Linienführung; Orientierung ist Issue #137/#165.
+
+Auslegung (2026-11-15, Issue #170): Beim versetzten Einfügen (EditShortcuts, FR-16) verschiebt sich jeder Gelenkpunkt um den Versatz der Geräte, sonst läge die Linie der Kopie nicht mehr zwischen den Kopien der Geräte. Kopierbar sind nur Verbindungen zwischen gewählten Geräten, ihre Punkte werden mitkopiert. Quelle: `quellen.md` enthält keine Vorgabe zur Linienführung; Orientierung ist Issue #137/#170.
 
 Auslegung (2026-11-14, Issue #168): Der Fokus wandert nach Einfügen auf den neuen Punkt, nach Entfernen auf den Nachbarpunkt (ohne Punkte auf den Einfüge-Griff), damit die Tastaturbedienung nicht abreißt. Quelle: `quellen.md` enthält keine Vorgabe zur Linienführung; Orientierung ist die Anforderung in Issue #137/#168.
 

@@ -2,7 +2,7 @@ import { ViewportPortal, useReactFlow } from "@xyflow/react";
 import { Package, PackageX } from "lucide-react";
 import { useEffect, type CSSProperties } from "react";
 import { stepDelayMs } from "../engine/simulation";
-import { useSim, useUi } from "../store";
+import { useSim, useTopology, useUi } from "../store";
 import { boxOf } from "./ConnectionEdge";
 import { routePath } from "./route";
 
@@ -24,11 +24,13 @@ export function SimPacket({
   const { getInternalNode } = useReactFlow();
   const { sim, steps } = useSim();
   const route = useUi((s) => s.view.route);
+  const edges = useTopology((s) => s.topology.edges);
   const step = steps[sim.step];
   const running = sim.status === "running";
 
   // Im Modus Einfach fehlen versteckte Geräte des Pfads
-  const boxes = (step?.nodes ?? []).flatMap((id) => {
+  const ids = (step?.nodes ?? []).filter((id) => getInternalNode(id));
+  const boxes = ids.flatMap((id) => {
     const n = getInternalNode(id);
     return n ? [boxOf(n)] : [];
   });
@@ -46,7 +48,22 @@ export function SimPacket({
   if (sim.status === "cancelled" || !step || !a || !b) return null;
 
   // Das Paket folgt dem Weg der Kante (Mockup: Schritt auf `edgePath`)
-  const { d } = routePath(a, b, route);
+  // Mit Gelenkpunkten (L-12) läuft es durch diese, in Laufrichtung des Pakets
+  const from = ids[hop];
+  const e = edges.find(
+    (x) =>
+      step.edges.includes(x.id) &&
+      x.ends.some((end) => end.node === from) &&
+      x.ends.some((end) => end.node === ids[hop + 1]),
+  );
+  const wp = e?.waypoints ?? [];
+  const { d } = routePath(
+    a,
+    b,
+    route,
+    "a",
+    e?.ends[0].node === from ? wp : [...wp].reverse(),
+  );
   const failed = step.problem?.kind === "ausgefallen";
   const Icon = failed ? PackageX : Package;
 

@@ -146,6 +146,22 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(node("pvs")).toHaveClass("is-sim");
   });
 
+  it("das Paket folgt den Gelenkpunkten, in Laufrichtung (L-12)", () => {
+    const path = () =>
+      document.querySelector<HTMLElement>(".tiv-packet")?.style.offsetPath;
+    render(<Canvas />, { wrapper });
+    start();
+    expect(path()).not.toContain("777");
+    useSim.getState().close();
+    // erste Teilstrecke pvs -> sw; die Kante ist von sw nach pvs angelegt
+    useTopology.getState().setWaypoints("sw-pvs", [
+      { x: 300, y: 555 },
+      { x: 777, y: 555 },
+    ]);
+    start();
+    expect(path()).toMatch(/L 777 555 L 300 555 L/);
+  });
+
   it("bedient sich per Tastatur: Pfeiltasten, Leertaste, Esc", async () => {
     const user = userEvent.setup();
     render(<Canvas />, { wrapper });

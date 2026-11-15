@@ -3,8 +3,9 @@ import { useEffect, useRef, type KeyboardEvent } from "react";
 import {
   bindFlow,
   stepDelayMs,
+  TEMPO_MAX,
+  TEMPO_MIN,
   type BoundStep,
-  type Tempo,
 } from "../engine/simulation";
 import {
   simLocked,
@@ -15,8 +16,6 @@ import {
   useUi,
 } from "../store";
 import { Button } from "../ui/Button";
-
-const TEMPOS: Tempo[] = [0.5, 1, 2];
 
 function problemText(step: BoundStep, nameOf: (id: string) => string) {
   switch (step.problem?.kind) {
@@ -222,16 +221,15 @@ export function SimPlayer() {
             Tempo
             <input
               type="range"
-              min={0}
-              max={TEMPOS.length - 1}
-              step={1}
-              value={TEMPOS.indexOf(sim.tempo)}
+              min={TEMPO_MIN}
+              max={TEMPO_MAX}
+              step={0.1}
+              value={sim.tempo}
               aria-valuetext={`${String(sim.tempo)}×`}
               onChange={(e) => {
-                send({ tempo: TEMPOS[Number(e.target.value)] ?? 1 });
+                send({ tempo: Number(e.target.value) });
               }}
             />
-            <span aria-hidden="true">{sim.tempo}×</span>
           </label>
           {locked ? (
             <Button

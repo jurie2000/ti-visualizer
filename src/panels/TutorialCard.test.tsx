@@ -94,6 +94,23 @@ describe("FR-20 Tutorial-Karte", () => {
     expect(screen.getByText("Erledigt:")).toBeInTheDocument();
   });
 
+  it("sperrt Weiter, bis die Aufgabe erledigt ist (#160)", async () => {
+    const user = userEvent.setup();
+    useSettings.setState({ tutorialProgress: 1 });
+    render(card);
+    const weiter = screen.getByRole("button", { name: "Weiter" });
+    expect(weiter).toBeDisabled();
+    await user.click(weiter);
+    expect(progress()).toBe(1);
+    act(() => {
+      const t = useTopology.getState();
+      const pc = t.addNode("pc", { x: 0, y: 0 });
+      const pvs = t.addNode("pvs", { x: 0, y: 200 });
+      if (pc.ok && pc.id && pvs.ok && pvs.id) t.connect(pvs.id, pc.id);
+    });
+    expect(weiter).toBeEnabled();
+  });
+
   it("legt für Teil 2 genau einmal den Bereich der Apotheke an", () => {
     useSettings.setState({
       tutorialProgress: steps.findIndex((s) => s.part === "apotheke"),

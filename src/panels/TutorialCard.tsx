@@ -18,7 +18,7 @@ const ZONE = { w: 480, h: 320, gap: 120 };
 
 /**
  * Geführtes Tutorial (FR-20): schwebende Karte unten links wie im Mockup mit
- * Fortschrittsbalken, Persona, Aufgabe mit Erledigt-Hinweis, Vor und Zurück. Die Schritte sind nie gesperrt. Der Fortschritt
+ * Fortschrittsbalken, Persona, Aufgabe mit Erledigt-Hinweis, Vor und Zurück. Weiter ist gesperrt, bis die Aufgabe erledigt ist (#160). Der Fortschritt
  * steht in den Einstellungen. Läuft innerhalb des `ReactFlowProvider`.
  */
 export function TutorialCard() {
@@ -244,6 +244,7 @@ export function TutorialCard() {
         {last ? (
           <Button
             variant="primary"
+            disabled={!done}
             onClick={() => {
               close(true);
             }}
@@ -253,6 +254,7 @@ export function TutorialCard() {
         ) : (
           <Button
             variant="primary"
+            disabled={!done}
             onClick={() => {
               go(index + 1);
             }}

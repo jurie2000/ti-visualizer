@@ -144,24 +144,31 @@ describe("FR-20 Tutorial-Karte", () => {
     expect(progress()).toBe(2);
   });
 
-  it("schrumpft ohne Maus auf die Aufgabe und zeigt alles bei Hover", async () => {
-    const user = userEvent.setup();
-    const i = steps.findIndex((s) => s.task && s.text);
-    const step = steps[i];
-    useSettings.setState({ tutorialProgress: i });
-    render(card);
-    const karte = screen.getByRole("region", { name: "Tutorial" });
-    expect(screen.getByText(step?.text ?? "").closest("[inert]")).toBeNull();
-    await user.hover(karte);
-    await user.unhover(karte);
-    const text = screen.getByText(step?.text ?? "");
-    await waitFor(() => {
-      expect(text.closest("[inert]")).not.toBeNull();
-    });
-    expect(screen.getByText(step?.task ?? "").closest("[inert]")).toBeNull();
-    await user.hover(karte);
-    expect(text.closest("[inert]")).toBeNull();
-  });
+  it(
+    "schrumpft ohne Maus auf die Aufgabe und zeigt alles bei Hover",
+    { timeout: 8000 },
+    async () => {
+      const user = userEvent.setup();
+      const i = steps.findIndex((s) => s.task && s.text);
+      const step = steps[i];
+      useSettings.setState({ tutorialProgress: i });
+      render(card);
+      const karte = screen.getByRole("region", { name: "Tutorial" });
+      expect(screen.getByText(step?.text ?? "").closest("[inert]")).toBeNull();
+      await user.hover(karte);
+      await user.unhover(karte);
+      const text = screen.getByText(step?.text ?? "");
+      await waitFor(
+        () => {
+          expect(text.closest("[inert]")).not.toBeNull();
+        },
+        { timeout: 4000 },
+      );
+      expect(screen.getByText(step?.task ?? "").closest("[inert]")).toBeNull();
+      await user.hover(karte);
+      expect(text.closest("[inert]")).toBeNull();
+    },
+  );
 
   it("Schließen behält den Fortschritt", async () => {
     const user = userEvent.setup();

@@ -48,7 +48,7 @@ export function TutorialCard() {
     else
       zu.current = window.setTimeout(() => {
         setOffen(false);
-      }, 600);
+      }, 3000);
   };
   useEffect(
     () => () => {

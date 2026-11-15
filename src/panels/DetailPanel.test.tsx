@@ -379,6 +379,26 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(useUi.getState().selection).toBeUndefined();
   });
 
+  it("L-9: Gelenkpunkte zurücksetzen nur mit Gelenkpunkten, ein Undo-Schritt", async () => {
+    const user = userEvent.setup();
+    render(<DetailPanel />);
+    select("edge", "e1");
+    const name = "Gelenkpunkte zurücksetzen";
+    expect(screen.queryByRole("button", { name })).toBeNull();
+    act(() => {
+      useTopology.getState().setWaypoints("e1", [{ x: 5, y: 6 }]);
+    });
+    const before = useTopology.getState().past.length;
+    await user.click(screen.getByRole("button", { name }));
+    expect(useTopology.getState().topology.edges[0]?.waypoints).toBeUndefined();
+    expect(useTopology.getState().past.length).toBe(before + 1);
+    expect(screen.queryByRole("button", { name })).toBeNull();
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(useTopology.getState().topology.edges[0]?.waypoints).toHaveLength(1);
+  });
+
   it("T-712e: Verbindung trennen, wiederherstellen und löschen", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);

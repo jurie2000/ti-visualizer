@@ -10,13 +10,17 @@ export function Actions({
   kind,
   id,
   fault,
+  routed = false,
 }: {
   kind: "node" | "edge";
   id: string;
   fault: boolean;
+  /** Verbindung hat Gelenkpunkte (L-9). */
+  routed?: boolean;
 }) {
   const locked = simLocked(useSim((s) => s.sim));
-  const { toggleFault, removeNode, removeEdge } = useTopology.getState();
+  const { toggleFault, removeNode, removeEdge, setWaypoints } =
+    useTopology.getState();
   const node = kind === "node";
   return (
     <div className="tiv-dactions">
@@ -33,6 +37,15 @@ export function Actions({
             ? "Verbindung wiederherstellen"
             : "Verbindung trennen"}
       </Button>
+      {routed && (
+        <Button
+          onClick={() => {
+            setWaypoints(id, []);
+          }}
+        >
+          Gelenkpunkte zurücksetzen
+        </Button>
+      )}
       <Button
         disabled={locked}
         onClick={() => {

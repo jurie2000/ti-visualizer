@@ -320,7 +320,14 @@ function Body({ sel }: { sel: Selection }) {
         kicker: "Verbindung",
       };
       violations = violated((f) => f.edges.includes(edge.id));
-      actions = <Actions kind="edge" id={edge.id} fault={edge.fault} />;
+      actions = (
+        <Actions
+          kind="edge"
+          id={edge.id}
+          fault={edge.fault}
+          routed={!!edge.waypoints?.length}
+        />
+      );
       content = (
         <EdgeDetail edge={edge} topology={topology} catalog={catalog} />
       );

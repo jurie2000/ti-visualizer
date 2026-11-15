@@ -879,6 +879,11 @@ folgt in eigenen Issues).
 | L-6 | Die gewählte Verbindung zeigt zwischen je zwei Punkten bzw. Endpunkten einen Einfüge-Griff in der Abschnittsmitte. Ziehen fügt dort einen Punkt ein (ein Rückgängig-Schritt beim Loslassen); Eingabetaste legt ihn auf dem Griff an, Pfeiltasten legen ihn um 10 versetzt an. Ziehen an der Linie selbst fügt im nächsten Abschnitt ein und folgt der Maus. Erst ab 4 Pixeln Mausbewegung zählt es als Ziehen, ein Klick legt nichts an (L-4). Die Trefferfläche der Griffe ist größer als ihre Darstellung. Danach hat der neue Punkt den Fokus. |
 | L-7 | Ein Gelenkpunkt wird per Doppelklick oder Entf/Rücktaste bei Fokus entfernt (ein Rückgängig-Schritt). Fällt der letzte Punkt weg, läuft die Linie wieder automatisch (L-2). |
 | L-8 | Bei 20 Gelenkpunkten (L-1) gibt es keine Einfüge-Griffe mehr. |
+| L-9 | Hauptbedienung: Die Detailansicht einer Verbindung mit Gelenkpunkten zeigt den Knopf „Gelenkpunkte zurücksetzen“, ergänzend bietet das Kontextmenü „Linienführung zurücksetzen“. Beides entfernt alle Gelenkpunkte in einem Rückgängig-Schritt; die Linie läuft wieder automatisch (L-2). Ohne Gelenkpunkte fehlen Knopf und Eintrag (kein deaktivierter Knopf). |
+| L-10 | Das Zurücksetzen ist per Tastatur erreichbar: Menütaste oder Umschalt+F10 an der fokussierten Verbindung öffnet das Kontextmenü (D10). Der Knopf im Detail ist per Tab erreichbar. Ein eigenes Kürzel gibt es nicht. |
+| L-11 | Der Export (Datei) enthält die Gelenkpunkte und damit die angepasste Linienführung; beim Öffnen laufen die Linien wieder so. Ein Bildexport existiert nicht. |
+
+Auslegung (2026-11-15, Issue #165): Kein eigenes Tastenkürzel zum Zurücksetzen. Einzelbuchstaben wären gegen WCAG 2.1.4 riskant, Strg+Umschalt+R ist im Browser belegt; das per Tastatur erreichbare Kontextmenü genügt (D10). Die Tastaturbedienung der Griffe (Auswählen per Tab, Pfeiltasten, Einfügen, Entfernen) ist mit L-5 bis L-7 bereits umgesetzt. Quelle: `quellen.md` enthält keine Vorgabe zur Linienführung; Orientierung ist Issue #137/#165.
 
 Auslegung (2026-11-14, Issue #168): Der Fokus wandert nach Einfügen auf den neuen Punkt, nach Entfernen auf den Nachbarpunkt (ohne Punkte auf den Einfüge-Griff), damit die Tastaturbedienung nicht abreißt. Quelle: `quellen.md` enthält keine Vorgabe zur Linienführung; Orientierung ist die Anforderung in Issue #137/#168.
 

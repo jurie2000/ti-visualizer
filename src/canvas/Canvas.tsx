@@ -25,6 +25,7 @@ import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { PortPicker } from "../dialogs/PortPicker";
 import { ConnectionEdge } from "./ConnectionEdge";
 import { DeviceNode } from "./DeviceNode";
+import { UndoTools } from "./UndoTools";
 import { ZoneTools } from "./ZoneTools";
 import { ZoneNode } from "./ZoneNode";
 import { SecurityBadge } from "./SecurityBadge";
@@ -314,6 +315,7 @@ export function Canvas() {
         <Background />
         {!reduceMotion && <SimPacket hop={hop} onHop={setHop} />}
         <ZoneTools />
+        <UndoTools />
         <ZoomBar />
         <SecurityBadge />
         {view.minimap && (

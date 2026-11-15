@@ -149,6 +149,12 @@
     :is(.tiv-drawbar, .tiv-security) {
     margin-right: calc(344px + 15px);
   }
+  /* Das aufgeklappte, nicht angeheftete linke Panel überdeckt die Fläche: Rückgängig-Leiste rückt daneben (#173) */
+  .tiv-side--left[data-open="true"]:not([data-pinned="true"])
+    ~ .tiv-canvas
+    .tiv-undobar {
+    margin-left: 282px;
+  }
   .tiv-side--right > aside {
     right: 56px;
     transform: translateX(100%);

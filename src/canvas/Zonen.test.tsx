@@ -66,6 +66,17 @@ describe("FR-15 Zonen auf der Canvas", () => {
     ).toBeInTheDocument();
   });
 
+  it("#172: der Titel klappt die Formen per Klick auf und zu", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    const titel = screen.getByRole("button", { name: "Zone zeichnen" });
+    expect(titel).toHaveAttribute("aria-expanded", "false");
+    await user.click(titel);
+    expect(titel).toHaveAttribute("aria-expanded", "true");
+    await user.click(titel);
+    expect(titel).toHaveAttribute("aria-expanded", "false");
+  });
+
   describe("T-715 Zonen-Werkzeug", () => {
     const flaeche = () => {
       const el = document.querySelector(".tiv-zonedraw");

@@ -32,6 +32,8 @@ export function ZoneTools() {
   const addZone = useTopology((s) => s.addZone);
   const toast = useToast();
   const [drag, setDrag] = useState<Drag>();
+  // Klick/Tippen klappt auf, wo es kein Hover gibt (Touch, Tastatur)
+  const [open, setOpen] = useState(false);
 
   // Startet die Simulation, ist die Fläche gesperrt: das Werkzeug fällt zurück
   useEffect(() => {
@@ -82,13 +84,22 @@ export function ZoneTools() {
 
   return (
     <>
-      <Panel position="top-left" className="tiv-drawbar">
+      <Panel position="top-right" className="tiv-drawbar">
         <div
           role="group"
           aria-label="Zone zeichnen"
-          className="tiv-drawbar__bar"
+          className={`tiv-drawbar__bar${open || active ? " is-open" : ""}`}
         >
-          <span className="tiv-drawbar__title">Zone zeichnen</span>
+          <button
+            type="button"
+            className="tiv-drawbar__title"
+            aria-expanded={open || active}
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            Zone zeichnen
+          </button>
           {TOOLS.map(({ shape, label, Icon }) => (
             <button
               key={shape}

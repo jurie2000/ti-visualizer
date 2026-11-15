@@ -46,7 +46,7 @@ export function useContextMenu() {
       return [
         fault(e?.fault ? "Verbindung wiederherstellen" : "Verbindung trennen"),
         // L-9: nur mit Gelenkpunkten, ein Rückgängig-Schritt
-        ...(e?.waypoints
+        ...(e?.waypoints?.length
           ? [
               {
                 id: "reset-route",

@@ -325,7 +325,7 @@ function Body({ sel }: { sel: Selection }) {
           kind="edge"
           id={edge.id}
           fault={edge.fault}
-          routed={!!edge.waypoints}
+          routed={!!edge.waypoints?.length}
         />
       );
       content = (

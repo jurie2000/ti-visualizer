@@ -898,3 +898,14 @@ Auslegung (2026-11-14): `waypoints` ist ein optionales Feld, daher bleibt
 ältere Programmstände verwerfen das Feld beim Öffnen. Die Koordinaten
 unterliegen demselben Limit wie Geräte (`LIMITS.coord`). `spec.md` und
 `plan.md` liegen nicht im Repo; die Anforderung steht hier und im Issue #137.
+
+## 15. Rückgängig-Leiste (Issue #173)
+
+Neu 2026-11-15. Die Schritte-Historie (D25) hat ein eigenes Bedienfeld.
+
+| ID | Regel |
+|---|---|
+| U-1 | Oben links auf der Fläche liegt die Leiste „Rückgängig“ mit den Knöpfen „Einen Schritt zurück“ und „Einen Schritt vor“. Aufbau, Optik und Auf-/Zuklappen (Hover, Fokus, Klick auf den Titel) wie die Zonenleiste. |
+| U-2 | Gibt es keinen Schritt zurück bzw. vor, ist der jeweilige Knopf deaktiviert. Während die Simulation die Fläche sperrt, sind beide deaktiviert. |
+
+Auslegung (2026-11-15): Kein neues Tastenkürzel (siehe Auslegung zu L-10).

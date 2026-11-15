@@ -223,7 +223,7 @@ export function bindFlow(
 
 export type Tempo = number;
 export const TEMPO_MIN = 0.1;
-export const TEMPO_MAX = 4;
+export const TEMPO_MAX = 0.5;
 export type SimStatus = "idle" | "running" | "paused" | "done" | "cancelled";
 export interface Sim {
   status: SimStatus;
@@ -234,7 +234,7 @@ export interface Sim {
 export type SimEvent =
   "start" | "pause" | "resume" | "next" | "prev" | "cancel" | { tempo: Tempo };
 
-export const IDLE: Sim = { status: "idle", step: 0, tempo: 1 };
+export const IDLE: Sim = { status: "idle", step: 0, tempo: TEMPO_MAX };
 
 /** Verweildauer je Schritt beim Abspielen. */
 export const stepDelayMs = (tempo: Tempo) => 2000 / tempo;

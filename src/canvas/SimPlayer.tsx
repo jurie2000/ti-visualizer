@@ -1,5 +1,5 @@
 import { Check, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 import {
   bindFlow,
   stepDelayMs,
@@ -46,8 +46,6 @@ export function SimPlayer() {
   const catalog = useCatalog((s) => s.catalog);
   const ref = useRef<HTMLDivElement>(null);
   const locked = simLocked(sim);
-  // Eingabefeld darf beim Tippen ungültig sein; der Store bekommt nur gültige Werte.
-  const [tempoDraft, setTempoDraft] = useState<string | undefined>();
 
   // Neue Aktion ersetzt eine laufende Simulation.
   useEffect(() => {
@@ -229,29 +227,9 @@ export function SimPlayer() {
               value={sim.tempo}
               aria-valuetext={`${String(sim.tempo)}×`}
               onChange={(e) => {
-                setTempoDraft(undefined);
                 send({ tempo: Number(e.target.value) });
               }}
             />
-          </label>
-          <label className="tiv-sim__tempo-value">
-            <span className="tiv-sr-only">Tempo als Zahl</span>
-            <input
-              type="number"
-              min={TEMPO_MIN}
-              max={TEMPO_MAX}
-              step={0.05}
-              value={tempoDraft ?? String(sim.tempo)}
-              onChange={(e) => {
-                setTempoDraft(e.target.value);
-                const v = e.target.valueAsNumber;
-                if (v >= TEMPO_MIN && v <= TEMPO_MAX) send({ tempo: v });
-              }}
-              onBlur={() => {
-                setTempoDraft(undefined);
-              }}
-            />
-            <span aria-hidden="true">×</span>
           </label>
           {locked ? (
             <Button

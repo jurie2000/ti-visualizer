@@ -99,6 +99,13 @@ export function pasteClip(
           id: freeId("e", next),
           fault: false,
           ...(e.label !== undefined && { label: e.label }),
+          // L-13: Gelenkpunkte wandern mit der versetzten Kopie
+          ...(e.waypoints?.length && {
+            waypoints: e.waypoints.map((p) => ({
+              x: clamp(p.x + OFFSET * step),
+              y: clamp(p.y + OFFSET * step),
+            })),
+          }),
           ends: [
             { node: a, port: e.ends[0].port },
             { node: b, port: e.ends[1].port },

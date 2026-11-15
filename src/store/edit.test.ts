@@ -51,6 +51,28 @@ describe("Editor-Hilfen: Einfügen (FR-16, T-508)", () => {
     expect(r.topology.nodes[2]?.position).toEqual({ x: 50, y: 60 });
   });
 
+  it("L-13 Gelenkpunkte bleiben erhalten und wandern mit dem Versatz", () => {
+    const pc = add("pc");
+    const sw = add("switch");
+    connect(pc, sw);
+    const eid = s().topology.edges[0]?.id ?? "";
+    s().setWaypoints(eid, [
+      { x: 100, y: 50 },
+      { x: LIMITS.coord, y: -LIMITS.coord },
+    ]);
+    const r = paste(s().topology, [pc, sw]);
+    expect(r.topology.edges[1]?.waypoints).toEqual([
+      { x: 140, y: 90 },
+      { x: LIMITS.coord, y: -LIMITS.coord + 40 },
+    ]);
+    // Original unverändert, Kante ohne Punkte bleibt ohne
+    expect(r.topology.edges[0]?.waypoints).toHaveLength(2);
+    s().setWaypoints(eid, []);
+    expect(paste(s().topology, [pc, sw]).topology.edges[1]).not.toHaveProperty(
+      "waypoints",
+    );
+  });
+
   it("FR-16 ungültige Kanten werden nicht eingefügt", () => {
     const a = add("pc");
     const b = add("pc");

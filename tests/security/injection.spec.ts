@@ -289,7 +289,8 @@ test.describe("injection", { tag: "@security" }, () => {
     const w = await wache(page);
     await page.goto("./");
     await page.getByRole("button", { name: /Leer starten/ }).click();
-    // Zone mit der Maus aufziehen (Zeichenleiste links oben)
+    // Zone mit der Maus aufziehen (Zeichenleiste oben rechts, Formen zugeklappt)
+    await page.getByRole("button", { name: /^Zone zeichnen/ }).click();
     await page.getByRole("button", { name: /^Rechteck/ }).click();
     const fl = await page.locator(".react-flow").boundingBox();
     if (!fl) throw new Error("Fläche fehlt");

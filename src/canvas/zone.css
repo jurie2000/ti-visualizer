@@ -71,6 +71,8 @@
 .tiv-drawbar__bar:not(:hover, :focus-within, .is-open)
   > :not(.tiv-drawbar__title) {
   display: none;
+  /* Einklappen erst nach 0,6 s, damit die Leiste beim Wegzeigen nicht sofort verschwindet (#182) */
+  transition: display 0s linear 0.6s allow-discrete;
 }
 /* Sicherheits-Knopf teilt sich die Ecke: unter die Zonenleiste */
 .tiv-security {

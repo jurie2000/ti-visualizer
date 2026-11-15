@@ -46,7 +46,7 @@ describe("T-711 Seitenleiste (FR-22)", () => {
     expect(wrap()).toHaveAttribute("data-open", "true");
   });
 
-  it("öffnet bei Hover nach 150 ms und schließt nach 280 ms", () => {
+  it("öffnet bei Hover nach 150 ms und schließt nach 600 ms", () => {
     render(view());
     expect(wrap()).toHaveAttribute("data-open", "false");
     fireEvent.mouseEnter(wrap());
@@ -55,7 +55,7 @@ describe("T-711 Seitenleiste (FR-22)", () => {
     wait(1);
     expect(wrap()).toHaveAttribute("data-open", "true");
     fireEvent.mouseLeave(wrap());
-    wait(279);
+    wait(599);
     expect(wrap()).toHaveAttribute("data-open", "true");
     wait(1);
     expect(wrap()).toHaveAttribute("data-open", "false");

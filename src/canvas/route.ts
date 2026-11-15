@@ -49,6 +49,28 @@ export function polyline(
   ];
 }
 
+/** Index des Abschnitts des Linienzugs, der `p` am nächsten liegt. */
+export function nearestSegment(line: readonly Point[], p: Point): number {
+  let best = 0;
+  let bestD = Infinity;
+  for (let i = 0; i < line.length - 1; i++) {
+    const s = line[i] as Point;
+    const e = line[i + 1] as Point;
+    const dx = e.x - s.x;
+    const dy = e.y - s.y;
+    const len = dx * dx + dy * dy;
+    const t = len
+      ? Math.max(0, Math.min(1, ((p.x - s.x) * dx + (p.y - s.y) * dy) / len))
+      : 0;
+    const d = Math.hypot(p.x - (s.x + t * dx), p.y - (s.y + t * dy));
+    if (d < bestD) {
+      bestD = d;
+      best = i;
+    }
+  }
+  return best;
+}
+
 /**
  * Weg einer Kante zwischen den Seitenmitten zweier Geräte (Mockup `edgePath`):
  * `curve` als Kurve, `ortho` rechtwinklig. Bei `ortho` laufen alle Kanten eines

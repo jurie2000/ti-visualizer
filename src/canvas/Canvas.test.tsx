@@ -407,4 +407,34 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     });
     expect(screen.queryByRole("button", { name: /einfügen/ })).toBeNull();
   });
+
+  it("Ziehen an der Linie fügt im nächsten Abschnitt einen Punkt ein, kleine Bewegung nicht (L-4, L-6)", async () => {
+    await select(2);
+    const line = document.querySelector<SVGElement>(".tiv-edge-grab");
+    expect(line).not.toBeNull();
+    const el = line as unknown as HTMLElement;
+    el.setPointerCapture = () => undefined;
+    const before = useTopology.getState().past.length;
+    fireEvent.pointerDown(el, { clientX: 10, clientY: 10, pointerId: 1 });
+    fireEvent.pointerMove(el, { clientX: 12, clientY: 11, pointerId: 1 });
+    fireEvent.pointerUp(el, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(2);
+    fireEvent.pointerDown(el, { clientX: 10, clientY: 10, pointerId: 1 });
+    fireEvent.pointerMove(el, { clientX: 40, clientY: 50, pointerId: 1 });
+    fireEvent.pointerUp(el, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(3);
+    expect(useTopology.getState().past.length).toBe(before + 1);
+  });
+
+  it("Ziehen an der Linie ohne Gelenkpunkte legt den ersten Punkt an", async () => {
+    await select(0);
+    const el = document.querySelector(
+      ".tiv-edge-grab",
+    ) as unknown as HTMLElement;
+    el.setPointerCapture = () => undefined;
+    fireEvent.pointerDown(el, { clientX: 10, clientY: 10, pointerId: 1 });
+    fireEvent.pointerMove(el, { clientX: 40, clientY: 50, pointerId: 1 });
+    fireEvent.pointerUp(el, { pointerId: 1 });
+    expect(waypoints()).toHaveLength(1);
+  });
 });

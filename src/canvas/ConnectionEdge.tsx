@@ -8,7 +8,6 @@ import {
 } from "@xyflow/react";
 import {
   useEffect,
-  useRef,
   useState,
   type KeyboardEvent,
   type PointerEvent,
@@ -16,7 +15,7 @@ import {
 import { LIMITS, type Point } from "../schema";
 import { useTopology, useUi } from "../store";
 import { NODE_SIZE } from "./deviceStyle";
-import { polyline, routePath, type Box } from "./route";
+import { nearestSegment, polyline, routePath, type Box } from "./route";
 import type { ConnectionFlowEdge } from "./toFlow";
 
 export const boxOf = (n: InternalNode): Box => {
@@ -31,6 +30,8 @@ export const boxOf = (n: InternalNode): Box => {
 };
 
 const STEP = 10;
+/** Erst ab so vielen Pixeln Mausbewegung zählt es als Ziehen (L-4). */
+const DRAG_THRESHOLD = 4;
 const clamp = (v: number) => Math.max(-LIMITS.coord, Math.min(LIMITS.coord, v));
 /** Stelle `p` an Index `i`: `add` fügt ein, sonst ersetzt es den Punkt dort. */
 const withPoint = (pts: Point[], add: boolean, i: number, p: Point) =>
@@ -61,7 +62,12 @@ export function ConnectionEdge({
   const labels = useUi((s) => s.view.labels);
   const setWaypoints = useTopology((s) => s.setWaypoints);
   const { screenToFlowPosition } = useReactFlow();
-  const pressed = useRef(false);
+  const [press, setPress] = useState<{
+    x: number;
+    y: number;
+    add: boolean;
+    i: number;
+  } | null>(null);
   const [drag, setDrag] = useState<{
     add: boolean;
     i: number;
@@ -115,6 +121,29 @@ export function ConnectionEdge({
       p: { x: clamp(Math.round(p.x)), y: clamp(Math.round(p.y)) },
     });
   };
+  const down = (e: PointerEvent, add: boolean, i: number) => {
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setPress({ x: e.clientX, y: e.clientY, add, i });
+  };
+  const move = (e: PointerEvent) => {
+    if (!press) return;
+    if (
+      !drag &&
+      Math.hypot(e.clientX - press.x, e.clientY - press.y) < DRAG_THRESHOLD
+    )
+      return;
+    place(e, press.add, press.i);
+  };
+  const up = () => {
+    setPress(null);
+    if (drag) commit(drag.add, drag.i, drag.p);
+    setDrag(null);
+  };
+  const cancel = () => {
+    setPress(null);
+    setDrag(null);
+  };
   const commit = (add: boolean, i: number, p: Point) => {
     setFocus({ key: `p${String(i)}` });
     setWaypoints(id, withPoint(base, add, i, p));
@@ -155,19 +184,32 @@ export function ConnectionEdge({
           strokeDasharray: `var(--tiv-edge-${data.kind}-dash)`,
         }}
       />
+      {selected && (
+        // Ziehen an der Linie selbst fügt im nächsten Abschnitt einen Punkt ein
+        <path
+          d={path}
+          className="tiv-edge-grab nodrag nopan"
+          onPointerDown={(e) => {
+            const f = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+            down(e, true, line ? nearestSegment(line, f) : 0);
+          }}
+          onPointerMove={move}
+          onPointerUp={up}
+          onPointerCancel={cancel}
+        />
+      )}
       {selected &&
         handles.map((h) => {
           const key = `${h.add ? "a" : "p"}${String(h.i)}`;
           const dragged = drag?.add === h.add && drag.i === h.i;
           const at = dragged ? drag.p : h.p;
           return (
-            <circle
+            // Größere unsichtbare Trefferfläche, der sichtbare Griff bleibt klein
+            <g
               key={key}
               data-handle={`${id}:${key}`}
               className={`tiv-waypoint nodrag nopan${h.add ? " is-add" : ""}`}
-              cx={at.x}
-              cy={at.y}
-              r={h.add ? 5 : 7}
+              transform={`translate(${String(at.x)} ${String(at.y)})`}
               tabIndex={0}
               role="button"
               aria-label={
@@ -176,22 +218,11 @@ export function ConnectionEdge({
                   : `Gelenkpunkt ${String(h.i + 1)} von ${String(base.length)}, mit den Pfeiltasten verschieben, Entf entfernt ihn`
               }
               onPointerDown={(e) => {
-                e.stopPropagation();
-                e.currentTarget.setPointerCapture(e.pointerId);
-                pressed.current = true;
+                down(e, h.add, h.i);
               }}
-              onPointerMove={(e) => {
-                if (pressed.current) place(e, h.add, h.i);
-              }}
-              onPointerUp={() => {
-                pressed.current = false;
-                if (drag) commit(drag.add, drag.i, drag.p);
-                setDrag(null);
-              }}
-              onPointerCancel={() => {
-                pressed.current = false;
-                setDrag(null);
-              }}
+              onPointerMove={move}
+              onPointerUp={up}
+              onPointerCancel={cancel}
               onDoubleClick={(e) => {
                 e.stopPropagation();
                 if (!h.add) remove(h.i);
@@ -199,7 +230,10 @@ export function ConnectionEdge({
               onKeyDown={(e) => {
                 onKey(e, h.add, h.i, h.p);
               }}
-            />
+            >
+              <circle className="tiv-waypoint__hit" r={12} />
+              <circle className="tiv-waypoint__dot" r={h.add ? 5 : 7} />
+            </g>
           );
         })}
       <EdgeLabelRenderer>

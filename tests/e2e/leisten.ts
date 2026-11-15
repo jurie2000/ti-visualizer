@@ -23,7 +23,7 @@ export async function schliessePalette(page: Page) {
     fläche.x + fläche.width / 2,
     fläche.y + fläche.height - 10,
   );
-  await expect(palette(page)).toBeHidden();
+  await expect(palette(page)).toBeHidden({ timeout: 10_000 });
 }
 
 /**

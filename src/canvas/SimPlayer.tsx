@@ -1,10 +1,11 @@
 import { Check, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import {
   bindFlow,
   stepDelayMs,
+  TEMPO_MAX,
+  TEMPO_MIN,
   type BoundStep,
-  type Tempo,
 } from "../engine/simulation";
 import {
   simLocked,
@@ -15,8 +16,6 @@ import {
   useUi,
 } from "../store";
 import { Button } from "../ui/Button";
-
-const TEMPOS: Tempo[] = [0.5, 1, 2];
 
 function problemText(step: BoundStep, nameOf: (id: string) => string) {
   switch (step.problem?.kind) {
@@ -47,6 +46,8 @@ export function SimPlayer() {
   const catalog = useCatalog((s) => s.catalog);
   const ref = useRef<HTMLDivElement>(null);
   const locked = simLocked(sim);
+  // Eingabefeld darf beim Tippen ungültig sein; der Store bekommt nur gültige Werte.
+  const [tempoDraft, setTempoDraft] = useState<string | undefined>();
 
   // Neue Aktion ersetzt eine laufende Simulation.
   useEffect(() => {
@@ -222,16 +223,35 @@ export function SimPlayer() {
             Tempo
             <input
               type="range"
-              min={0}
-              max={TEMPOS.length - 1}
-              step={1}
-              value={TEMPOS.indexOf(sim.tempo)}
+              min={TEMPO_MIN}
+              max={TEMPO_MAX}
+              step={0.1}
+              value={sim.tempo}
               aria-valuetext={`${String(sim.tempo)}×`}
               onChange={(e) => {
-                send({ tempo: TEMPOS[Number(e.target.value)] ?? 1 });
+                setTempoDraft(undefined);
+                send({ tempo: Number(e.target.value) });
               }}
             />
-            <span aria-hidden="true">{sim.tempo}×</span>
+          </label>
+          <label className="tiv-sim__tempo-value">
+            <span className="tiv-sr-only">Tempo als Zahl</span>
+            <input
+              type="number"
+              min={TEMPO_MIN}
+              max={TEMPO_MAX}
+              step={0.05}
+              value={tempoDraft ?? String(sim.tempo)}
+              onChange={(e) => {
+                setTempoDraft(e.target.value);
+                const v = e.target.valueAsNumber;
+                if (v >= TEMPO_MIN && v <= TEMPO_MAX) send({ tempo: v });
+              }}
+              onBlur={() => {
+                setTempoDraft(undefined);
+              }}
+            />
+            <span aria-hidden="true">×</span>
           </label>
           {locked ? (
             <Button

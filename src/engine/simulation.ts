@@ -221,7 +221,9 @@ export function bindFlow(
 
 // Zustandsautomat (Regelwerk 7, FR-9, FR-10)
 
-export type Tempo = 0.5 | 1 | 2;
+export type Tempo = number;
+export const TEMPO_MIN = 0.1;
+export const TEMPO_MAX = 4;
 export type SimStatus = "idle" | "running" | "paused" | "done" | "cancelled";
 export interface Sim {
   status: SimStatus;

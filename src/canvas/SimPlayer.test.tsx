@@ -209,14 +209,22 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(live()).toHaveTextContent("Ablauf beendet");
   });
 
-  it("stellt das Tempo per Regler ein", () => {
+  it("stellt das Tempo per Regler in 0,1-Schritten und per Zahl ein", () => {
     render(<Canvas />, { wrapper });
     start();
     const slider = screen.getByRole("slider", { name: "Tempo" });
+    expect(slider).toHaveAttribute("step", "0.1");
     expect(slider).toHaveAttribute("aria-valuetext", "1×");
-    fireEvent.change(slider, { target: { value: "2" } });
-    expect(useSim.getState().sim.tempo).toBe(2);
-    expect(slider).toHaveAttribute("aria-valuetext", "2×");
+    fireEvent.change(slider, { target: { value: "0.3" } });
+    expect(useSim.getState().sim.tempo).toBe(0.3);
+    const num = screen.getByRole("spinbutton", { name: "Tempo als Zahl" });
+    fireEvent.change(num, { target: { value: "0.75" } });
+    expect(useSim.getState().sim.tempo).toBe(0.75);
+    expect(slider).toHaveAttribute("aria-valuetext", "0.75×");
+    fireEvent.change(num, { target: { value: "0.05" } });
+    expect(useSim.getState().sim.tempo).toBe(0.75);
+    fireEvent.change(num, { target: { value: "9" } });
+    expect(useSim.getState().sim.tempo).toBe(0.75);
   });
 
   it("Palette und Drop fügen während der Simulation nichts hinzu", async () => {

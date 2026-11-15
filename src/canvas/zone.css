@@ -43,7 +43,7 @@
   justify-content: center;
   padding-top: 8%;
 }
-/* Zonen-Werkzeug (T-715, Mockup `drawBar`): Leiste oben links, Fläche zum Aufziehen */
+/* Zonen-Werkzeug (T-715, Mockup `drawBar`): Leiste oben rechts, Formen nur bei Hover/Fokus/aktivem Werkzeug, Fläche zum Aufziehen */
 .tiv-drawbar__bar {
   display: flex;
   align-items: center;
@@ -61,7 +61,20 @@
   white-space: nowrap;
 }
 .tiv-drawbar__title {
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: inherit;
   font-weight: 700;
+  cursor: pointer;
+}
+.tiv-drawbar__bar:not(:hover, :focus-within, .is-open)
+  > :not(.tiv-drawbar__title) {
+  display: none;
+}
+/* Sicherheits-Knopf teilt sich die Ecke: unter die Zonenleiste */
+.tiv-security {
+  margin-top: 70px;
 }
 .tiv-drawbar__btn {
   display: inline-flex;

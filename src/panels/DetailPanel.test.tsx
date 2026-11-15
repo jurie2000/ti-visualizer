@@ -146,7 +146,8 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(document.querySelector("h3 b")).toBeNull();
     expect(screen.getByRole("list", { name: "Quellen" })).toBeInTheDocument();
     select("node", "kon1");
-    expect(screen.getByText("Ausgefallen")).toBeInTheDocument();
+    expect(screen.queryByText("Gerätetyp")).toBeNull();
+    expect(screen.queryByText("Position")).toBeNull();
   });
 
   it("zeigt eine Zone", () => {

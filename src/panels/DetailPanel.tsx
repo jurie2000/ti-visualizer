@@ -136,28 +136,9 @@ function DeviceDetail({
 }) {
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   const advanced = useSettings((s) => s.mode) === "advanced";
-  const category = catalog.categories.find((c) => c.id === type?.category);
-  const connections = topology.edges.filter((e) =>
-    e.ends.some((x) => x.node === node.id),
-  ).length;
   return (
     <>
       {type?.description && <p className="tiv-dbody">{type.description}</p>}
-      <dl className="tiv-detail__facts">
-        {type && <Row name="Gerätetyp">{`${type.name} (${type.abbr})`}</Row>}
-        {category && <Row name="Kategorie">{category.name}</Row>}
-        <Row name="Verbindungen">{String(connections)}</Row>
-        <Row name="Position">
-          {`x ${String(Math.round(node.position.x))} · y ${String(Math.round(node.position.y))}`}
-        </Row>
-        <Row name="Betrieb">{node.fault ? "Ausgefallen" : "In Betrieb"}</Row>
-        {type && !advanced && (
-          <Row name="Anschlüsse">
-            {type.ports.map((p) => p.name).join(", ") || "keine"}
-          </Row>
-        )}
-        {type && <Row name="Status">{type.status}</Row>}
-      </dl>
       {advanced && (
         <PortList node={node} topology={topology} catalog={catalog} />
       )}

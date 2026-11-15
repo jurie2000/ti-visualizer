@@ -606,12 +606,29 @@
   font-variant-numeric: tabular-nums;
 }
 
+.tiv-edge-grab {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16px;
+  pointer-events: stroke;
+  cursor: copy;
+}
 .tiv-waypoint {
+  cursor: grab;
+}
+.tiv-waypoint__hit {
+  fill: transparent;
+  pointer-events: all;
+}
+.tiv-waypoint__dot {
   fill: var(--color-surface);
   stroke: var(--tiv-focus);
   stroke-width: 3px;
-  cursor: grab;
-  pointer-events: all;
+  pointer-events: none;
+}
+.tiv-waypoint.is-add .tiv-waypoint__dot {
+  stroke-dasharray: 3 2;
+  stroke-width: 2px;
 }
 .tiv-waypoint:focus-visible {
   outline: var(--tiv-focus-width) solid var(--tiv-focus);

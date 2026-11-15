@@ -32,6 +32,8 @@ export const boxOf = (n: InternalNode): Box => {
 const STEP = 10;
 /** Erst ab so vielen Pixeln Mausbewegung zählt es als Ziehen (L-4). */
 const DRAG_THRESHOLD = 4;
+/** Bei gewählter Verbindung sitzt das Label über der Mitte, damit der Mittengriff frei bleibt. */
+const LABEL_LIFT = 30;
 const clamp = (v: number) => Math.max(-LIMITS.coord, Math.min(LIMITS.coord, v));
 /** Stelle `p` an Index `i`: `add` fügt ein, sonst ersetzt es den Punkt dort. */
 const withPoint = (pts: Point[], add: boolean, i: number, p: Point) =>
@@ -241,7 +243,7 @@ export function ConnectionEdge({
           <div
             className={`tiv-edge-label nodrag nopan${data.fault ? " is-fault" : ""}${selected ? " is-selected" : ""}`}
             style={{
-              transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(y)}px)`,
+              transform: `translate(-50%, -50%) translate(${String(x)}px, ${String(selected ? y - LABEL_LIFT : y)}px)`,
             }}
           >
             {data.label}

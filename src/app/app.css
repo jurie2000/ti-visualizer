@@ -144,6 +144,11 @@
     :is(.tiv-tutorial, .tiv-tutorial-mini) {
     left: 282px;
   }
+  /* Das aufgeklappte, nicht angeheftete Detail-Panel überdeckt die Fläche: Zonenleiste und Sicherheits-Knopf rücken daneben (#172) */
+  .tiv-main:has(.tiv-side--right[data-open="true"]:not([data-pinned="true"]))
+    :is(.tiv-drawbar, .tiv-security) {
+    margin-right: calc(344px + 15px);
+  }
   .tiv-side--right > aside {
     right: 56px;
     transform: translateX(100%);

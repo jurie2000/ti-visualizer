@@ -127,22 +127,28 @@ describe("T-711 Seitenleiste (FR-22)", () => {
     );
   });
 
-  it("öffnet bei neuer Auswahl und klappt von selbst wieder ein", () => {
-    const { rerender } = render(view());
-    rerender(view({ kind: "node", id: "n1" }));
+  it("#181: öffnet bei Auswahl und bleibt offen, auch nach Mauszeiger-Austritt; Klick auf die Fläche schließt", () => {
+    const pane = <div className="react-flow__pane">Fläche</div>;
+    const { rerender } = render(
+      <>
+        {view()}
+        {pane}
+      </>,
+    );
+    rerender(
+      <>
+        {view({ kind: "node", id: "n1" })}
+        {pane}
+      </>,
+    );
     wait(150);
     expect(wrap()).toHaveAttribute("data-open", "true");
-    wait(3000);
-    expect(wrap()).toHaveAttribute("data-open", "false");
-  });
-
-  it("klappt bei Auswahl nicht ein, solange der Mauszeiger darauf steht", () => {
-    const { rerender } = render(view());
-    rerender(view({ kind: "node", id: "n1" }));
-    wait(150);
     fireEvent.mouseEnter(wrap());
+    fireEvent.mouseLeave(wrap());
     wait(5000);
     expect(wrap()).toHaveAttribute("data-open", "true");
+    fireEvent.pointerDown(screen.getByText("Fläche"));
+    expect(wrap()).toHaveAttribute("data-open", "false");
   });
 
   it("Escape ohne vorherigen Schienen-Fokus setzt den Fokus auf das erste Symbol", () => {

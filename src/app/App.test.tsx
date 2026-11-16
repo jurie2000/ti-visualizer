@@ -37,6 +37,20 @@ describe("App-Shell", () => {
     expect(useTopology.getState().topology.nodes).toHaveLength(0);
   });
 
+  it("Issue #184: laufendes Tutorial macht das Tutorial-Feld zum Fortsetzen-Feld, kein zweiter Button", async () => {
+    const user = userEvent.setup();
+    act(() => {
+      useSettings.getState().set({ tutorialProgress: 2 });
+    });
+    render(<App />);
+    const fortsetzen = screen.getByRole("button", {
+      name: /Tutorial fortsetzen \(Schritt 3 von/,
+    });
+    expect(screen.queryByText(/Grundlagen: Frau Hoffmanns/)).toBeNull();
+    await user.click(fortsetzen);
+    expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
+  });
+
   it("Issue #151: Startfelder in der Reihenfolge Öffnen, Tutorial, Fortgeschritten; Öffnen-Feld öffnet den Dialog; keine Herausforderungen", async () => {
     const user = userEvent.setup();
     render(<App />);

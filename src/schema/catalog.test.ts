@@ -164,6 +164,7 @@ const valid = {
   ],
   tutorial: { personas: [], steps: [] },
   glossary: [{ term: "TI", text: "Telematikinfrastruktur", ...base }],
+  lexicon: [],
   sources: [{ id: "arch", title: "Arch", url: "https://gemspec.gematik.de/" }],
 };
 

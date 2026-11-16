@@ -283,6 +283,20 @@ export const glossary = z.array(
   z.strictObject({ term: Text, text: Text, ...sourced }),
 );
 
+/** Lexikon-Eintrag je Gerätetyp (`id` ist die Gerätetyp-ID). */
+export const lexicon = z.array(
+  z.strictObject({
+    id: Id,
+    short: Text,
+    purpose: Text,
+    where: Text,
+    connected: Text,
+    fault: Text,
+    confusion: Text,
+    ...sourced,
+  }),
+);
+
 export const sources = z.array(
   z.strictObject({ id: Id, title: Text, url: z.url({ protocol: /^https$/ }) }),
 );
@@ -305,6 +319,7 @@ export const catalogSchema = z.strictObject({
   presets,
   tutorial,
   glossary,
+  lexicon,
   sources,
 });
 export type Catalog = z.infer<typeof catalogSchema>;
@@ -380,6 +395,7 @@ export function checkReferences(c: Catalog): string[] {
     ["Presets", c.presets],
     ["Tutorial-Personas", c.tutorial.personas],
     ["Tutorial-Schritte", c.tutorial.steps],
+    ["Lexikon", c.lexicon],
     ["Quellen", c.sources],
   ];
   for (const [what, xs] of lists)
@@ -394,6 +410,7 @@ export function checkReferences(c: Catalog): string[] {
       ref(w, p.kind, kinds, "Anschlussart");
     });
   }
+  for (const e of c.lexicon) ref(`Lexikon ${e.id}`, e.id, types, "Gerätetyp");
   for (const p of c.portKinds.compatible) {
     const w = `Verträglichkeit ${p.a}/${p.b}`;
     ref(w, p.a, kinds, "Anschlussart");
@@ -489,6 +506,7 @@ export function checkReferences(c: Catalog): string[] {
   withSource("Preset", c.presets);
   withSource("Tutorial-Schritt", c.tutorial.steps);
   withSource("Glossar", c.glossary);
+  withSource("Lexikon", c.lexicon);
 
   return errors;
 }

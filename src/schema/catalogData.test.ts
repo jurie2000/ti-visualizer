@@ -18,6 +18,12 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
     expect(checkReferences(catalog)).toEqual([]);
   });
 
+  it("jeder Gerätetyp hat genau einen Lexikon-Eintrag (#189)", () => {
+    expect(catalog.lexicon.map((e) => e.id).sort()).toEqual(
+      catalog.deviceTypes.map((t) => t.id).sort(),
+    );
+  });
+
   it("Anschlussarten sind genau die aus Regelwerk 2.1", () => {
     expect([...kinds].sort()).toEqual(
       [

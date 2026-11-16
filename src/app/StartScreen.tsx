@@ -8,7 +8,6 @@ import {
   useSettings,
   useUi,
 } from "../store";
-import { Button } from "../ui/Button";
 import { AutosaveHint } from "./AutosaveHint";
 import { PresetCard } from "./PresetCard";
 
@@ -21,6 +20,7 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
   const presets = useCatalog((s) => s.catalog.presets);
   const steps = useCatalog((s) => s.catalog.tutorial.steps.length);
   const progress = useSettings((s) => s.tutorialProgress);
+  const resumable = progress > 0 && progress < steps;
   const open = (t: Topology) => {
     openTopology(t);
   };
@@ -51,12 +51,18 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
             </span>
           </span>
         </button>
-        <button type="button" className="tiv-mode" onClick={startTutorial}>
+        <button
+          type="button"
+          className="tiv-mode"
+          onClick={resumable ? onResume : startTutorial}
+        >
           <PlayIcon />
           <span>
             <span className="tiv-mode__kicker">Tutorial · Einsteiger</span>
             <span className="tiv-mode__title">
-              Grundlagen: Frau Hoffmanns E-Rezept
+              {resumable
+                ? `Tutorial fortsetzen (Schritt ${String(progress + 1)} von ${String(steps)})`
+                : "Grundlagen: Frau Hoffmanns E-Rezept"}
             </span>
             <span className="tiv-mode__text">
               Begleite Marta Hoffmann vom Arztbesuch bis in die Apotheke. Du
@@ -81,11 +87,6 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
           </span>
         </button>
       </div>
-      {progress > 0 && progress < steps && (
-        <Button onClick={onResume}>
-          Tutorial fortsetzen (Schritt {progress + 1} von {steps})
-        </Button>
-      )}
       <ul className="tiv-start__list">
         <PresetCard
           topology={{

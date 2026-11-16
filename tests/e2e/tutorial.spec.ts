@@ -209,7 +209,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
       .click();
     await page
       .getByRole("button", {
-        name: /^Tutorial fortsetzen \(Schritt 2 von 16\)/,
+        name: /Tutorial fortsetzen \(Schritt 2 von 16\)/,
       })
       .click();
     await expect(karte(page)).toContainText(" 2/16");

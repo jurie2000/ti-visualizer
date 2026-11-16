@@ -26,7 +26,7 @@ import { ViewPanel } from "./ViewPanel";
 import { ZoneForm } from "./ZoneForm";
 
 /** Quellen mit Link (nur https laut Schema), Texte nie als HTML (D10). */
-function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
+export function Sources({ ids, catalog }: { ids: string[]; catalog: Catalog }) {
   return (
     <ul className="tiv-detail__list" aria-label="Quellen">
       {ids.map((id) => {

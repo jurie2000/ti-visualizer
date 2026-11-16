@@ -8,6 +8,7 @@ import { OpenDialog } from "../dialogs/OpenDialog";
 import { SaveDialog } from "../dialogs/SaveDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { SecurityDialog } from "../dialogs/SecurityDialog";
+import { LexiconDialog } from "../dialogs/LexiconDialog";
 import { ShortcutsDialog } from "../dialogs/ShortcutsDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
@@ -120,6 +121,13 @@ export function App() {
               <SaveControls />
             </span>
             {started && <ModeSwitch />}
+            <Button
+              onClick={() => {
+                useUi.getState().openDialog("lexicon");
+              }}
+            >
+              Lexikon
+            </Button>
             <ThemeToggle />
           </div>
         </header>
@@ -228,6 +236,7 @@ export function App() {
         <UnsavedGuardDialog />
         <ImportFindingsDialog />
         <SecurityDialog />
+        <LexiconDialog />
         <AutosaveDialog
           onRestored={() => {
             setStarted(true);

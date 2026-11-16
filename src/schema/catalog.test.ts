@@ -164,7 +164,18 @@ const valid = {
   ],
   tutorial: { personas: [], steps: [] },
   glossary: [{ term: "TI", text: "Telematikinfrastruktur", ...base }],
-  lexicon: [],
+  lexicon: [
+    {
+      id: "pvs",
+      short: "x",
+      purpose: "x",
+      where: "x",
+      connected: "x",
+      fault: "x",
+      confusion: "x",
+      ...base,
+    },
+  ],
   sources: [{ id: "arch", title: "Arch", url: "https://gemspec.gematik.de/" }],
 };
 
@@ -199,6 +210,7 @@ describe("Katalog-Schema (D5, D13)", () => {
     ["Kategorie ohne Dunkelfarbe", "categories.0.colorDark", undefined],
     ["Gerätetyp ohne Kurzname", "deviceTypes.0.abbr", undefined],
     ["Quellen-URL ohne https", "sources.0.url", "http://x.de"],
+    ["Lexikon-Eintrag ohne Störung", "lexicon.0.fault", undefined],
   ])("lehnt ab: %s", (_, path, value) => {
     expect(() => parse(patch(path, value))).toThrow();
   });
@@ -206,6 +218,18 @@ describe("Katalog-Schema (D5, D13)", () => {
 
 describe("Referenzen (D5)", () => {
   it.each([
+    [
+      "Lexikon-Eintrag mit unbekanntem Gerätetyp",
+      "lexicon.0.id",
+      "nix",
+      "„nix“",
+    ],
+    [
+      "Lexikon-Eintrag mit unbekannter Quelle",
+      "lexicon.0.source",
+      ["nix"],
+      "Quelle",
+    ],
     [
       "Regel mit unbekanntem Gerätetyp",
       "connectionRules.0.a",

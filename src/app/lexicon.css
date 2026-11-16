@@ -1,0 +1,26 @@
+.tiv-page {
+  grid-row: 3;
+  overflow-y: auto;
+  padding: 24px 16px;
+  width: min(100%, 60rem);
+  justify-self: center;
+}
+.tiv-lexicon {
+  margin-bottom: 20px;
+}
+.tiv-lexicon dl > div {
+  margin: 4px 0;
+}
+.tiv-lexicon dt {
+  font-weight: 600;
+}
+.tiv-lexicon dd {
+  margin: 0;
+}
+/* Baukasten bleibt gemountet, solange das Lexikon offen ist (Canvas, Auswahl) */
+.tiv-view {
+  display: contents;
+}
+.tiv-view[hidden] {
+  display: none;
+}

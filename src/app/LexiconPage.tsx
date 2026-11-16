@@ -1,6 +1,6 @@
+import { useEffect, useRef } from "react";
 import { Sources } from "../panels/DetailPanel";
-import { useCatalog, useUi } from "../store";
-import { Dialog } from "../ui/Dialog";
+import { useCatalog } from "../store";
 import "./lexicon.css";
 
 const FIELDS = [
@@ -11,26 +11,23 @@ const FIELDS = [
   ["confusion", "Nicht verwechseln mit"],
 ] as const;
 
-/** Lexikon (#188): ein Eintrag je Gerätetyp, geöffnet über die Kopfleiste. */
-export function LexiconDialog() {
-  const open = useUi((s) => s.dialog === "lexicon");
-  return (
-    <Dialog
-      open={open}
-      title="Lexikon"
-      onClose={() => {
-        useUi.getState().openDialog(undefined);
-      }}
-    >
-      <Eintraege />
-    </Dialog>
-  );
-}
+/** Adresse der Lexikon-Seite (#188); der Baukasten bleibt dahinter erhalten. */
+export const LEXICON_HASH = "#/lexikon";
 
-function Eintraege() {
+/** Lexikon (#188): ein Eintrag je Gerätetyp. */
+export function LexiconPage() {
   const catalog = useCatalog((s) => s.catalog);
+  const ref = useRef<HTMLElement>(null);
+  // Fokus auf die neue Seite, damit Screenreader den Wechsel bemerken (D10)
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
   return (
-    <>
+    <main ref={ref} tabIndex={-1} className="tiv-page">
+      <h2>Lexikon</h2>
+      <p>
+        <a href="#/">Zurück zum Baukasten</a>
+      </p>
       {catalog.lexicon.map((e) => {
         const type = catalog.deviceTypes.find((t) => t.id === e.id);
         return (
@@ -52,6 +49,6 @@ function Eintraege() {
           </article>
         );
       })}
-    </>
+    </main>
   );
 }

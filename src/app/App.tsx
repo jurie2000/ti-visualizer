@@ -1,6 +1,6 @@
 import { ReactFlowProvider } from "@xyflow/react";
 import { Eye, Info, Network, ShieldCheck } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Canvas } from "../canvas/Canvas";
 import { AutosaveDialog } from "../dialogs/AutosaveDialog";
 import { ImportFindingsDialog } from "../dialogs/ImportFindingsDialog";
@@ -8,7 +8,6 @@ import { OpenDialog } from "../dialogs/OpenDialog";
 import { SaveDialog } from "../dialogs/SaveDialog";
 import { UnsavedGuardDialog } from "../dialogs/UnsavedGuardDialog";
 import { SecurityDialog } from "../dialogs/SecurityDialog";
-import { LexiconDialog } from "../dialogs/LexiconDialog";
 import { ShortcutsDialog } from "../dialogs/ShortcutsDialog";
 import { PlugCardDialog } from "../dialogs/PlugCardDialog";
 import { ImpressumDialog } from "../dialogs/ImpressumDialog";
@@ -19,6 +18,7 @@ import { initAutosave, useOpen, useSettings, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { EditShortcuts } from "./EditShortcuts";
+import { LEXICON_HASH, LexiconPage } from "./LexiconPage";
 import { ModeSwitch } from "./ModeSwitch";
 import { SidePanel } from "./SidePanel";
 import { SaveControls } from "./SaveControls";
@@ -26,8 +26,17 @@ import { StartScreen } from "./StartScreen";
 import { ThemeToggle } from "./ThemeToggle";
 import "./app.css";
 
+const onHash = (cb: () => void) => {
+  window.addEventListener("hashchange", cb);
+  return () => {
+    window.removeEventListener("hashchange", cb);
+  };
+};
+
 export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
+  const lexicon =
+    useSyncExternalStore(onHash, () => location.hash) === LEXICON_HASH;
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
   const selection = useUi((s) => s.selection);
@@ -105,6 +114,7 @@ export function App() {
               aria-label="TI Visualizer, zur Startansicht"
               title="Zur Startansicht"
               onClick={() => {
+                if (lexicon) location.hash = "";
                 setStarted(false);
               }}
             >
@@ -121,13 +131,9 @@ export function App() {
               <SaveControls />
             </span>
             {started && <ModeSwitch />}
-            <Button
-              onClick={() => {
-                useUi.getState().openDialog("lexicon");
-              }}
-            >
+            <a className="tiv-btn tiv-btn--ghost" href={LEXICON_HASH}>
               Lexikon
-            </Button>
+            </a>
             <ThemeToggle />
           </div>
         </header>
@@ -135,91 +141,94 @@ export function App() {
           Der Baukasten ist für größere Bildschirme gedacht. Presets und Dateien
           lassen sich trotzdem ansehen und abspielen.
         </p>
-        <ReactFlowProvider>
-          {!started ? (
-            <main
-              ref={mainRef}
-              tabIndex={-1}
-              className="tiv-main tiv-main--start"
-            >
-              <StartScreen
-                onResume={() => {
-                  // Switch und Konnektor stehen nur im Modus Erweitert in der Palette
-                  useSettings.getState().set({ mode: "advanced" });
-                  useUi.getState().setTutorial(true);
-                  setStarted(true);
-                }}
-              />
-            </main>
-          ) : (
-            <main ref={mainRef} tabIndex={-1} className="tiv-main">
-              <SidePanel
-                side="left"
-                id="palette"
-                label="Palette"
-                overlayOpen={overlay === "palette"}
-                rail={paletteRail}
+        {lexicon && <LexiconPage />}
+        <div className="tiv-view" hidden={lexicon}>
+          <ReactFlowProvider>
+            {!started ? (
+              <main
+                ref={mainRef}
+                tabIndex={-1}
+                className="tiv-main tiv-main--start"
               >
-                <PalettePanel
-                  reveal={reveal}
-                  onAdded={() => {
-                    setOverlay(null);
+                <StartScreen
+                  onResume={() => {
+                    // Switch und Konnektor stehen nur im Modus Erweitert in der Palette
+                    useSettings.getState().set({ mode: "advanced" });
+                    useUi.getState().setTutorial(true);
+                    setStarted(true);
                   }}
                 />
-              </SidePanel>
-              <section className="tiv-canvas" aria-label="Canvas">
-                <div className="tiv-overlaybar">
-                  {(["palette", "detail"] as const).map((k) => (
-                    <Button
-                      key={k}
-                      aria-expanded={overlay === k}
-                      onClick={() => {
-                        setOverlay(overlay === k ? null : k);
-                      }}
-                    >
-                      {k === "palette" ? "Palette" : "Details"}
-                    </Button>
-                  ))}
-                </div>
-                {tutorial && <TutorialCard />}
-                <Canvas />
-              </section>
-              <SidePanel
-                side="right"
-                id="detail"
-                label="Detailpanel"
-                overlayOpen={overlay === "detail"}
-                autoOpen={selection}
-                hold={plugging}
-                rail={[
-                  {
-                    label: selection ? "Details" : "Legende",
-                    icon: Info,
-                    active: !!selection,
-                    onClick: () => undefined,
-                  },
-                  {
-                    label: "Ansicht",
-                    icon: Eye,
-                    onClick: () => {
-                      useUi.getState().select(undefined);
+              </main>
+            ) : (
+              <main ref={mainRef} tabIndex={-1} className="tiv-main">
+                <SidePanel
+                  side="left"
+                  id="palette"
+                  label="Palette"
+                  overlayOpen={overlay === "palette"}
+                  rail={paletteRail}
+                >
+                  <PalettePanel
+                    reveal={reveal}
+                    onAdded={() => {
+                      setOverlay(null);
+                    }}
+                  />
+                </SidePanel>
+                <section className="tiv-canvas" aria-label="Canvas">
+                  <div className="tiv-overlaybar">
+                    {(["palette", "detail"] as const).map((k) => (
+                      <Button
+                        key={k}
+                        aria-expanded={overlay === k}
+                        onClick={() => {
+                          setOverlay(overlay === k ? null : k);
+                        }}
+                      >
+                        {k === "palette" ? "Palette" : "Details"}
+                      </Button>
+                    ))}
+                  </div>
+                  {tutorial && <TutorialCard />}
+                  <Canvas />
+                </section>
+                <SidePanel
+                  side="right"
+                  id="detail"
+                  label="Detailpanel"
+                  overlayOpen={overlay === "detail"}
+                  autoOpen={selection}
+                  hold={plugging}
+                  rail={[
+                    {
+                      label: selection ? "Details" : "Legende",
+                      icon: Info,
+                      active: !!selection,
+                      onClick: () => undefined,
                     },
-                  },
-                  {
-                    label: "Sicherheit prüfen",
-                    icon: ShieldCheck,
-                    keepClosed: true,
-                    onClick: () => {
-                      useUi.getState().openDialog("security");
+                    {
+                      label: "Ansicht",
+                      icon: Eye,
+                      onClick: () => {
+                        useUi.getState().select(undefined);
+                      },
                     },
-                  },
-                ]}
-              >
-                <DetailPanel />
-              </SidePanel>
-            </main>
-          )}
-        </ReactFlowProvider>
+                    {
+                      label: "Sicherheit prüfen",
+                      icon: ShieldCheck,
+                      keepClosed: true,
+                      onClick: () => {
+                        useUi.getState().openDialog("security");
+                      },
+                    },
+                  ]}
+                >
+                  <DetailPanel />
+                </SidePanel>
+              </main>
+            )}
+          </ReactFlowProvider>
+        </div>
         <footer className="tiv-footer">
           <Button
             onClick={() => {
@@ -236,7 +245,6 @@ export function App() {
         <UnsavedGuardDialog />
         <ImportFindingsDialog />
         <SecurityDialog />
-        <LexiconDialog />
         <AutosaveDialog
           onRestored={() => {
             setStarted(true);

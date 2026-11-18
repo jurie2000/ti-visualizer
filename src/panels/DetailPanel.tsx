@@ -18,6 +18,7 @@ import {
   useUi,
   type Selection,
 } from "../store";
+import { LEXICON_HASH } from "../app/LexiconPage";
 import { Actions } from "./Actions";
 import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
@@ -139,6 +140,16 @@ function DeviceDetail({
   return (
     <>
       {type?.description && <p className="tiv-dbody">{type.description}</p>}
+      {type && (
+        <div className="tiv-dactions">
+          <a
+            className="tiv-btn tiv-btn--ghost"
+            href={`${LEXICON_HASH}/${type.id}`}
+          >
+            Im Lexikon nachlesen
+          </a>
+        </div>
+      )}
       {advanced && (
         <PortList node={node} topology={topology} catalog={catalog} />
       )}

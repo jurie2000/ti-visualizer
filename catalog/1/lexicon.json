@@ -7,6 +7,7 @@
     "connected": "Arbeitsplatz-PC, Server oder Cloud-Server (läuft auf), Zugang (Konnektor, Highspeed-Konnektor oder TI-Gateway), KIM-Clientmodul, mobiles Kartenterminal (Datenübergabe).",
     "fault": "„Konnektor nicht erreichbar“, wenn Netz oder Zertifikat des Konnektors nicht stimmen, oder wenn der Arbeitsplatz keinem Kartenterminal zugeordnet ist.",
     "confusion": "KIS (gleiche Rolle im Krankenhaus, läuft zentral auf einem Server) und AVS (gleiche Rolle in der Apotheke).",
+    "related": ["kis", "avs"],
     "source": ["gemILF_PS"],
     "status": "plausibel"
   },
@@ -18,6 +19,7 @@
     "connected": "Server, PC oder Cloud-Server (läuft auf), Zugang, KIM-Clientmodul, mobiles Kartenterminal, RIS und LIS (Schnittstelle nach HL7, einem Standard für den Datenaustausch im Gesundheitswesen).",
     "fault": "Fällt der Server mit dem KIS aus, steht das ganze Haus; Aufträge von RIS und LIS kommen nicht mehr an.",
     "confusion": "PVS (gleiche Rolle in der Praxis, läuft auf dem Arbeitsplatz-PC). RIS und LIS sind Subsysteme des KIS, kein Ersatz.",
+    "related": ["pvs", "ris", "lis"],
     "source": ["gemILF_PS", "KH"],
     "status": "plausibel"
   },
@@ -29,6 +31,7 @@
     "connected": "Arbeitsplatz-PC, Server oder Cloud-Server (läuft auf), Zugang, KIM-Clientmodul, mobiles Kartenterminal.",
     "fault": "Rezept lässt sich nicht abrufen, wenn die SMC-B der Apotheke nicht freigeschaltet ist oder der E-Rezept-Fachdienst nicht erreichbar ist.",
     "confusion": "PVS (Praxis stellt Rezepte aus, Apotheke löst sie ein).",
+    "related": ["pvs"],
     "source": ["gemILF_PS", "gemF_eRp_Autorisierung_Apo"],
     "status": "plausibel"
   },
@@ -40,6 +43,7 @@
     "connected": "Arbeitsplatz-PC, Server oder Cloud-Server (läuft auf), Zugang, KIM-Clientmodul, mobiles Kartenterminal.",
     "fault": "Kein Zugriff auf die ePA, wenn die Einrichtung für diese Akte keine Befugnis hat.",
     "confusion": "PVS (Praxis). Die Pflege nutzt weniger Anwendungen, aber dieselbe Anbindung.",
+    "related": ["pvs"],
     "source": ["Pflege-FAQ"],
     "status": "plausibel"
   },
@@ -51,6 +55,7 @@
     "connected": "KIS (Schnittstelle), Server, PC oder Cloud-Server (läuft auf).",
     "fault": "Befunde erreichen das KIS nicht, wenn die HL7-Schnittstelle gestört ist.",
     "confusion": "LIS (Labor statt Radiologie) und KIS (das führende System).",
+    "related": ["lis", "kis"],
     "source": ["KH"],
     "status": "plausibel"
   },
@@ -62,6 +67,7 @@
     "connected": "KIS (Schnittstelle), Server, PC oder Cloud-Server (läuft auf).",
     "fault": "Laborwerte fehlen im KIS, wenn die Schnittstelle oder der Server ausfällt.",
     "confusion": "RIS (Radiologie statt Labor).",
+    "related": ["ris"],
     "source": ["KH"],
     "status": "plausibel"
   },
@@ -73,6 +79,7 @@
     "connected": "PVS, KIS, AVS oder Pflege-Software (Anwendung), Zugang (Signatur und Entschlüsselung), lokales Netz (LAN).",
     "fault": "Mails kommen nicht an, wenn das Adressbuch (Verzeichnisdienst) die Zieladresse nicht kennt oder die SMC-B nicht freigeschaltet ist.",
     "confusion": "KIM-Fachdienst (der Mailserver des Anbieters) und TI-Messenger-Client (Chat statt E-Mail).",
+    "related": ["kim", "timc"],
     "source": ["gemSpec_CM_KOMLE"],
     "status": "plausibel"
   },
@@ -84,6 +91,7 @@
     "connected": "Internet, TI-Messenger-Fachdienst (im Modell direkt, in Wirklichkeit über das Internet).",
     "fault": "Empfänger nicht gefunden, wenn die Organisation nicht im Verzeichnisdienst steht.",
     "confusion": "KIM-Clientmodul (E-Mail statt Chat).",
+    "related": ["kimcm"],
     "source": ["gemSpec_TI-M_Basis"],
     "status": "plausibel"
   },
@@ -95,6 +103,7 @@
     "connected": "Switch oder Router (Ethernet), Software (läuft auf), mobiles Kartenterminal (USB), Cloud-Server (Internet-Zugriff).",
     "fault": "Keine TI-Aktion möglich, wenn der PC nicht im selben Netz wie der Konnektor liegt oder sein Arbeitsplatz keinem Kartenterminal zugeordnet ist.",
     "confusion": "Server (zentrale Software für viele Arbeitsplätze) und Visite-Tablet (mobil, per WLAN).",
+    "related": ["server", "tab"],
     "source": ["gemILF_PS"],
     "status": "plausibel"
   },
@@ -106,6 +115,7 @@
     "connected": "Switch oder Router (Ethernet, zwei Anschlüsse), Software (läuft auf).",
     "fault": "Fällt der Server aus, steht die ganze Einrichtung, nicht nur ein Arbeitsplatz.",
     "confusion": "Cloud-Server (SaaS), der im Internet steht.",
+    "related": ["cloud"],
     "source": ["gemILF_PS", "DVO"],
     "status": "plausibel"
   },
@@ -117,6 +127,7 @@
     "connected": "Arbeitsplatz-PC (Internet-Zugriff), Software (läuft auf).",
     "fault": "Software nicht erreichbar, wenn der Internet-Anschluss der Praxis ausfällt.",
     "confusion": "Server (steht in der Einrichtung) und Fachdienst (zentraler Dienst der TI, kein Primärsystem).",
+    "related": ["server"],
     "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
     "status": "plausibel"
   },
@@ -128,6 +139,7 @@
     "connected": "WLAN Access Point oder Router-WLAN (Funk).",
     "fault": "Warnung, wenn das WLAN im selben Netzsegment liegt wie Kartenterminal oder Konnektor; das Tablet gehört in ein eigenes Segment.",
     "confusion": "Arbeitsplatz-PC (fest, per Kabel) und Versicherten-Apps (laufen auf dem Smartphone der Versicherten).",
+    "related": ["pc"],
     "source": ["gemILF_PS", "KH"],
     "status": "plausibel"
   },
@@ -139,6 +151,7 @@
     "connected": "eHealth-Kartenterminal oder mobiles Kartenterminal (Stecken), eHealth-CardLink, E-Rezept-App und ePA-App (kontaktlos per NFC, ohne PIN, mit der auf der Karte gedruckten CAN).",
     "fault": "Karte abgelaufen oder gesperrt, dann schlägt die Prüfung fehl.",
     "confusion": "HBA und SMC-B (Ausweise der Leistungserbringer, nicht der Versicherten).",
+    "related": ["hba", "smcb"],
     "source": ["gemSpec_eGK_ObjSys_G2_1"],
     "status": "plausibel"
   },
@@ -150,6 +163,7 @@
     "connected": "eHealth-Kartenterminal oder mobiles Kartenterminal (Stecken). Nicht über CardLink lesbar.",
     "fault": "PIN nicht eingegeben oder Karte abgelaufen; dann kann nicht signiert werden und das E-Rezept bleibt unsigniert liegen.",
     "confusion": "SMC-B (Ausweis der Einrichtung, nicht der Person) und eGK (Karte der Versicherten).",
+    "related": ["smcb", "egk"],
     "source": ["gemSpec_HBA_ObjSys"],
     "status": "plausibel"
   },
@@ -161,6 +175,7 @@
     "connected": "eHealth-Kartenterminal oder mobiles Kartenterminal (Stecken). Nicht über CardLink lesbar.",
     "fault": "Zertifikat abgelaufen oder PIN nicht freigeschaltet; die Karte muss rechtzeitig getauscht werden.",
     "confusion": "HBA (persönlicher Ausweis einer Person, nicht der Einrichtung).",
+    "related": ["hba"],
     "source": ["gemSpec_SMC-B_ObjSys_G2_1"],
     "status": "plausibel"
   },
@@ -172,6 +187,7 @@
     "connected": "Zugang, Switch oder Router (Ethernet); gesteckte Karten.",
     "fault": "Terminal nicht gepairt oder Konnektor nicht erreichbar; dann sind die gesteckten Karten unsichtbar.",
     "confusion": "Mobiles Kartenterminal (offline, per USB) und eHealth-CardLink (ohne Kartenschlitz, liest per Smartphone).",
+    "related": ["mkt", "cardlink"],
     "source": ["gemSpec_KT"],
     "status": "plausibel"
   },
@@ -183,6 +199,7 @@
     "connected": "Arbeitsplatz-PC (USB); PVS, KIS, AVS oder Pflege-Software (Datenübergabe).",
     "fault": "Nachträgliches Übergeben vergessen; Daten gehen verloren oder sind veraltet.",
     "confusion": "eHealth-Kartenterminal (stationär, am Netz).",
+    "related": ["kt"],
     "source": ["gemSpec_MobKT"],
     "status": "plausibel"
   },
@@ -194,6 +211,7 @@
     "connected": "Zugang (über das Internet, Pairing wie ein Kartenterminal), Internet; eGK per NFC.",
     "fault": "Es wird nur die eGK gelesen, ohne PIN. PIN-pflichtige Aktionen und HBA oder SMC-B gehen über CardLink nicht.",
     "confusion": "eHealth-Kartenterminal (Gerät mit Kartenschlitz in der Praxis) und E-Rezept-App (Zugriff der Versicherten selbst).",
+    "related": ["kt", "erpapp"],
     "source": ["gemSpec_eHealth-CardLink", "FP_eHealth-CardLink"],
     "status": "plausibel"
   },
@@ -205,6 +223,7 @@
     "connected": "PC, Server, eHealth-Kartenterminal, KIM-Clientmodul, Zugang, weiterer Switch, Router, WLAN Access Point, Firewall (je ein Ethernet-Port, acht Ports im Modell).",
     "fault": "Kabel am falschen Port oder defekter Port; dann ist das Gerät nicht erreichbar.",
     "confusion": "Router (verbindet mit dem Internet; nur er führt hinaus).",
+    "related": ["router"],
     "source": ["DVO"],
     "status": "plausibel"
   },
@@ -216,6 +235,7 @@
     "connected": "Internet (WAN), Switch, Firewall, Zugang (dessen WAN-Seite), PC, Server, Kartenterminal (LAN-Ports), Visite-Tablet (WLAN).",
     "fault": "Die Router-Firewall blockiert IPsec (das Protokoll des VPN-Tunnels), deshalb kommt kein Tunnel zustande.",
     "confusion": "Konnektor (baut den Tunnel, führt aber nicht selbst ins Internet) und Switch (nur Verteiler).",
+    "related": ["kon", "switch"],
     "source": ["Betriebsarten", "gemSpec_Kon"],
     "status": "plausibel"
   },
@@ -227,6 +247,7 @@
     "connected": "Switch (LAN, PoE), Visite-Tablet (WLAN).",
     "fault": "Warnung, wenn das WLAN im selben Segment liegt wie Kartenterminal oder Konnektor; ein Access Point führt nie selbst ins Internet.",
     "confusion": "Router mit WLAN (führt zusätzlich ins Internet).",
+    "related": ["router"],
     "source": ["DVO"],
     "status": "plausibel"
   },
@@ -238,6 +259,7 @@
     "connected": "Router oder Switch (LAN-Seite), Zugang (WAN-Seite).",
     "fault": "Zu strenge Regeln blockieren den VPN-Aufbau des Konnektors; im Parallelbetrieb ohne Firewall warnt die Prüfung.",
     "confusion": "Konnektor (bringt eigene Sicherheitsfunktionen mit, ersetzt aber im Parallelbetrieb nicht die Firewall).",
+    "related": ["kon"],
     "source": ["Betriebsarten"],
     "status": "plausibel"
   },
@@ -249,6 +271,7 @@
     "connected": "LAN-Seite: PVS, KIS, AVS, Pflege-Software, eHealth-Kartenterminal, KIM-Clientmodul, Switch, Firewall, eHealth-CardLink. WAN-Seite: Router. VPN: VPN-Zugangsdienst.",
     "fault": "Zertifikat der gSMC-K abgelaufen, kritisches Update nicht eingespielt, Zeitabweichung über eine Stunde oder Router blockiert IPsec; in allen Fällen steht der VPN-Tunnel nicht.",
     "confusion": "TI-Gateway (zentrale Variante im Rechenzentrum, ersetzt den Konnektor) und Router (führt ins Internet, baut keinen TI-Tunnel).",
+    "related": ["gateway", "router", "hskon"],
     "source": ["gemSpec_Kon"],
     "status": "plausibel"
   },
@@ -260,6 +283,7 @@
     "connected": "LAN-Seite (zwei Anschlüsse): PVS, KIS, AVS, Pflege-Software, Kartenterminal, KIM-Clientmodul, Switch, Firewall, CardLink. WAN-Seite: Router. VPN: VPN-Zugangsdienst.",
     "fault": "Wie beim Konnektor: Update, Uhrzeit oder Tunnelaufbau. Fällt er aus, betrifft das viele Arbeitsplätze auf einmal.",
     "confusion": "Konnektor (Einzelgerät für die Praxis) und TI-Gateway (nutzt eine Highspeed-Konnektor-Instanz im Rechenzentrum des Anbieters).",
+    "related": ["kon", "gateway"],
     "source": ["gemF_Highspeed-Konnektor"],
     "status": "plausibel"
   },
@@ -271,6 +295,7 @@
     "connected": "LAN-Seite: PVS, KIS, AVS, Pflege-Software, Kartenterminal, KIM-Clientmodul, Switch, Firewall, CardLink. WAN-Seite: Router. VPN: VPN-Zugangsdienst.",
     "fault": "Kein Weg ins Internet (weder Router noch VPN-Zugangsdienst erreichbar); dann ist die TI nicht erreichbar. Eine gSMC-K hat das TI-Gateway nicht.",
     "confusion": "Konnektor und Highspeed-Konnektor (stehen in der Einrichtung).",
+    "related": ["kon", "hskon"],
     "source": ["gemF_TI-Gateway"],
     "status": "plausibel"
   },
@@ -282,6 +307,7 @@
     "connected": "Zugang (Tunnel), Internet (Eingang), Zentrales Netz der TI (Ausgang); im Modell auch direkt mit VSDM, E-Rezept, KIM, ePA und IDP (Vereinfachung).",
     "fault": "Konnektor kann den Tunnel nicht aufbauen, wenn der Zugangsdienst nicht erreichbar ist oder IPsec unterwegs blockiert wird.",
     "confusion": "Normalem Firmen-VPN; hier gilt es nur für die TI.",
+    "related": ["kon", "zentral"],
     "source": ["Arch", "gemSpec_VPN_ZugD"],
     "status": "plausibel"
   },
@@ -293,6 +319,7 @@
     "connected": "Router (WAN), VPN-Zugangsdienst, eHealth-CardLink, TI-Messenger-Client, E-Rezept-Fachdienst, ePA-Aktensystem, IDP, Sektoraler IDP, PoPP-Service, TI-Messenger-Fachdienst, E-Rezept-App, ePA-App.",
     "fault": "Internet-Ausfall in der Praxis; dann steht auch der TI-Tunnel nicht.",
     "confusion": "Zentrales Netz der TI (geschlossen, nur über den Tunnel erreichbar).",
+    "related": ["zentral"],
     "source": ["Arch"],
     "status": "plausibel"
   },
@@ -304,6 +331,7 @@
     "connected": "VPN-Zugangsdienst, Namensdienst, Zeitdienst, Verzeichnisdienst, TSL-Dienst, IDP, VSDM-Fachdienst, E-Rezept-Fachdienst, KIM-Fachdienst, ePA-Aktensystem.",
     "fault": "Ein Client in der Praxis hat keine Route in das zentrale Netz (im Parallelbetrieb muss der Weg über den Konnektor eingetragen sein).",
     "confusion": "Internet (öffentlich) und lokalem Netz der Praxis.",
+    "related": ["internet"],
     "source": ["Arch", "gemSpec_Net"],
     "status": "plausibel"
   },
@@ -315,6 +343,7 @@
     "connected": "Zentrales Netz der TI; im Modell auch direkt mit dem VPN-Zugangsdienst (Vereinfachung).",
     "fault": "Prüfung schlägt fehl, wenn die eGK abgelaufen ist, die SMC-B nicht freigeschaltet ist oder der Dienst nicht erreichbar ist.",
     "confusion": "Krankenkasse als KIM-Empfänger (bekommt die eAU, prüft keine Karten).",
+    "related": ["kk", "popp"],
     "source": ["gemSysL_VSDM", "gemSpec_VSDM_2"],
     "status": "plausibel"
   },
@@ -326,6 +355,7 @@
     "connected": "Zentrales Netz der TI, VPN-Zugangsdienst (direkt, Vereinfachung), Internet, E-Rezept-App.",
     "fault": "Rezept nicht abrufbar, wenn Berechtigung oder Token fehlen.",
     "confusion": "E-Rezept-App (Zugriff für Versicherte, nicht der Speicher).",
+    "related": ["erpapp"],
     "source": ["gemSpec_FD_eRp"],
     "status": "plausibel"
   },
@@ -337,6 +367,7 @@
     "connected": "Zentrales Netz der TI, VPN-Zugangsdienst (direkt, Vereinfachung), Krankenkasse.",
     "fault": "Mail wird nicht zugestellt, wenn die Empfängeradresse nicht im Verzeichnisdienst steht.",
     "confusion": "KIM-Clientmodul (das Programm in der Praxis) und TI-Messenger (Chat statt E-Mail).",
+    "related": ["kimcm", "tim"],
     "source": ["gemSpec_FD_KOMLE"],
     "status": "plausibel"
   },
@@ -348,6 +379,7 @@
     "connected": "Internet, TI-Messenger-Client (direkt, Vereinfachung).",
     "fault": "Nachricht an eine andere Organisation kommt nicht an, wenn deren Server nicht im Verzeichnisdienst gelistet ist.",
     "confusion": "KIM-Fachdienst (E-Mail, über den TI-Tunnel).",
+    "related": ["kim"],
     "source": ["gemSpec_TI-M_Basis"],
     "status": "plausibel"
   },
@@ -359,6 +391,7 @@
     "connected": "Zentrales Netz der TI, VPN-Zugangsdienst (direkt, Vereinfachung), Internet, ePA-App.",
     "fault": "Kein Zugriff, wenn die Einrichtung für diese Akte nicht befugt ist oder die Befugnis abgelaufen ist.",
     "confusion": "ePA-App (Oberfläche für Versicherte, nicht das Aktensystem).",
+    "related": ["epaapp"],
     "source": ["gemSpec_Aktensystem_ePAfueralle"],
     "status": "plausibel"
   },
@@ -370,6 +403,7 @@
     "connected": "Internet. Keine direkte Verbindung zum Primärsystem.",
     "fault": "Ohne PoPP-Token ist ein VSDM-2.0-Abruf nicht möglich.",
     "confusion": "VSDM-Fachdienst (prüft die Karte; PoPP belegt die Anwesenheit) und IDP (weist die Person oder Einrichtung aus, nicht die Behandlung).",
+    "related": ["vsdm", "idp"],
     "source": ["gemSpec_PoPP_Service"],
     "status": "plausibel"
   },
@@ -381,6 +415,7 @@
     "connected": "Zentrales Netz der TI.",
     "fault": "Dienst „nicht gefunden“, obwohl er läuft, wenn die Namensauflösung nicht funktioniert oder ein Client nicht den Konnektor als DNS eingetragen hat.",
     "confusion": "Öffentlichem DNS im Internet und Verzeichnisdienst (sucht Personen und Einrichtungen, nicht Dienste).",
+    "related": ["vzd"],
     "source": ["gemSpec_Net"],
     "status": "plausibel"
   },
@@ -392,6 +427,7 @@
     "connected": "Zentrales Netz der TI.",
     "fault": "Weicht die Uhr des Konnektors über 3600 Sekunden ab, geht er in den Fehlerzustand; ohne Abgleich seit 30 Tagen gibt es eine Warnung, seit 50 Tagen einen Fehler.",
     "confusion": "Öffentlichen Zeitservern im Internet.",
+    "related": ["kon"],
     "source": ["gemSpec_Net"],
     "status": "plausibel"
   },
@@ -403,6 +439,7 @@
     "connected": "Zentrales Netz der TI.",
     "fault": "Mail oder Chat kommt nicht an, wenn der Empfänger nicht oder mit alter Adresse eingetragen ist.",
     "confusion": "Namensdienst (sucht Dienste-Adressen, nicht Personen) und TSL-Dienst (sucht Vertrauen, nicht Adressen).",
+    "related": ["dns", "tsl"],
     "source": ["gemSpec_VZD", "gemSpec_VZD_FHIR_Directory"],
     "status": "plausibel"
   },
@@ -414,6 +451,7 @@
     "connected": "Zentrales Netz der TI. Konnektor und Dienste nutzen ihn zum Prüfen.",
     "fault": "Konnektor kann Zertifikate nicht prüfen, wenn die TSL veraltet ist; dann gelten Karten als ungültig.",
     "confusion": "Verzeichnisdienst (sucht Adressen, nicht Vertrauen).",
+    "related": ["vzd"],
     "source": ["gemSpec_TSL", "gemSpec_PKI"],
     "status": "plausibel"
   },
@@ -425,6 +463,7 @@
     "connected": "Zentrales Netz der TI, VPN-Zugangsdienst (direkt, Vereinfachung), Internet, E-Rezept-App.",
     "fault": "Kein Token, keine Anmeldung: Fachdienste lehnen den Zugriff ab, wenn der IDP nicht erreichbar ist oder die Karte nicht freigeschaltet ist.",
     "confusion": "Sektoraler IDP (Anmeldung der Versicherten über ihre Krankenkasse) und PoPP-Service (belegt Anwesenheit, nicht Identität).",
+    "related": ["idpsek", "popp"],
     "source": ["gemSpec_IDP_FD", "gemSpec_FD_eRp"],
     "status": "plausibel"
   },
@@ -436,6 +475,7 @@
     "connected": "Internet, E-Rezept-App, ePA-App.",
     "fault": "Anmeldung in der App schlägt fehl, wenn die GesundheitsID noch nicht eingerichtet ist.",
     "confusion": "Zentraler IDP (Anmeldung der Einrichtungen mit SMC-B und HBA).",
+    "related": ["idp"],
     "source": ["gemSpec_IDP_Sek"],
     "status": "plausibel"
   },
@@ -447,6 +487,7 @@
     "connected": "KIM-Fachdienst.",
     "fault": "eAU geht nicht durch, wenn die KIM-Adresse der Kasse nicht auflösbar ist.",
     "confusion": "VSDM-Fachdienst (Versichertenstammdaten, nicht die Kasse selbst) und sektoraler IDP (Anmeldedienst der Kasse).",
+    "related": ["vsdm", "idpsek"],
     "source": ["PM_eAU", "KIM-DK"],
     "status": "plausibel"
   },
@@ -458,6 +499,7 @@
     "connected": "Internet, E-Rezept-Fachdienst (direkt, Vereinfachung), Sektoraler IDP; eGK per NFC.",
     "fault": "Anmeldung schlägt fehl, wenn die Versicherten-Identität nicht bestätigt ist.",
     "confusion": "E-Rezept-Fachdienst (der Speicher im Rechenzentrum).",
+    "related": ["erp"],
     "source": ["gemSpec_eRp_FdV"],
     "status": "plausibel"
   },
@@ -469,6 +511,7 @@
     "connected": "Internet, ePA-Aktensystem (direkt, Vereinfachung), Sektoraler IDP; eGK per NFC.",
     "fault": "Keine Anmeldung, wenn die GesundheitsID fehlt.",
     "confusion": "ePA-Aktensystem (der Speicher) und E-Rezept-App (Rezepte statt Akte).",
+    "related": ["epa", "erpapp"],
     "source": ["gemSpec_Aktensystem_ePAfueralle"],
     "status": "plausibel"
   }

@@ -1,1 +1,302 @@
-[]
+[
+  {
+    "term": "AMTS",
+    "text": "Arzneimitteltherapiesicherheit (Anwendung rund um den Medikationsplan)",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "AVS",
+    "text": "Apothekenverwaltungssystem",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "CAN",
+    "text": "Card Access Number, auf der eGK gedruckte Nummer für das kontaktlose Lesen",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "DNS",
+    "text": "Domain Name System, Namensdienst",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "eArztbrief",
+    "text": "elektronischer Arztbrief",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "eAU",
+    "text": "elektronische Arbeitsunfähigkeitsbescheinigung",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "eGK",
+    "text": "elektronische Gesundheitskarte",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "eMP",
+    "text": "elektronischer Medikationsplan",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "ePA",
+    "text": "elektronische Patientenakte",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "FHIR",
+    "text": "Fast Healthcare Interoperability Resources, Datenformat im Gesundheitswesen",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "gematik",
+    "text": "Nationale Agentur für Digitale Medizin, legt die TI fest",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "gSMC-K",
+    "text": "Sicherheitsmodul-Karte im Konnektor",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "gSMC-KT",
+    "text": "Sicherheitsmodul-Karte im Kartenterminal",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "HBA",
+    "text": "Heilberufsausweis",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "HL7",
+    "text": "Health Level 7, Standard für den Datenaustausch zwischen Klinik-Systemen",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "HSK",
+    "text": "Highspeed-Konnektor",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "HSM-B",
+    "text": "Hardware-Sicherheitsmodul im Highspeed-Konnektor",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "IAG",
+    "text": "Internet Access Gateway, der Internet-Router",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "IDP",
+    "text": "Identity Provider, Anmeldedienst",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "IPsec",
+    "text": "Internet Protocol Security, Protokoll des VPN-Tunnels",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "KIM",
+    "text": "Kommunikation im Medizinwesen, sicherer E-Mail-Dienst",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "KIS",
+    "text": "Krankenhausinformationssystem",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "KOM-LE",
+    "text": "Kommunikation Leistungserbringer, älterer Name für KIM",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "KT",
+    "text": "Kartenterminal",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "LAN",
+    "text": "Local Area Network, lokales Netz",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "LIS",
+    "text": "Labor-Informationssystem",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "NFC",
+    "text": "Near Field Communication, kontaktloses Lesen per Nahfunk",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "NFDM",
+    "text": "Notfalldatenmanagement",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "NTP",
+    "text": "Network Time Protocol, Zeitdienst",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "OCSP",
+    "text": "Online Certificate Status Protocol, Prüfung, ob ein Zertifikat gesperrt ist",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PC",
+    "text": "Personal Computer, Arbeitsplatzrechner",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PIN",
+    "text": "Persönliche Identifikationsnummer",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PKI",
+    "text": "Public-Key-Infrastruktur, System aus Zertifikaten und Vertrauensstellen",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PoE",
+    "text": "Power over Ethernet, Stromversorgung über das Netzkabel",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PoPP",
+    "text": "Proof of Patient Presence, Nachweis der Anwesenheit der versicherten Person",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "PVS",
+    "text": "Praxisverwaltungssystem",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "QES",
+    "text": "qualifizierte elektronische Signatur",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "RIS",
+    "text": "Radiologie-Informationssystem",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "SaaS",
+    "text": "Software as a Service, Software als Dienst aus dem Internet",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "SMC-B",
+    "text": "Security Module Card Typ B, Institutionskarte",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "TI",
+    "text": "Telematikinfrastruktur",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "TIM",
+    "text": "TI-Messenger",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "TSL",
+    "text": "Trust Service Status List, Liste vertrauenswürdiger Zertifikatsaussteller",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "USB",
+    "text": "Universal Serial Bus, Steckverbindung für Zubehör",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "VPN",
+    "text": "Virtual Private Network, verschlüsselter Tunnel durch das Internet",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "VSDM",
+    "text": "Versichertenstammdatenmanagement",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "VZD",
+    "text": "Verzeichnisdienst",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "WAN",
+    "text": "Wide Area Network, die Seite zum Internet",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "WLAN",
+    "text": "Wireless LAN, drahtloses lokales Netz",
+    "source": ["FP"],
+    "status": "plausibel"
+  },
+  {
+    "term": "ZETA",
+    "text": "Zero-Trust-Architektur der TI 2.0",
+    "source": ["FP"],
+    "status": "plausibel"
+  }
+]

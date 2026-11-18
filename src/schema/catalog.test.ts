@@ -173,6 +173,7 @@ const valid = {
       connected: "x",
       fault: "x",
       confusion: "x",
+      related: [],
       ...base,
     },
   ],
@@ -211,6 +212,7 @@ describe("Katalog-Schema (D5, D13)", () => {
     ["Gerätetyp ohne Kurzname", "deviceTypes.0.abbr", undefined],
     ["Quellen-URL ohne https", "sources.0.url", "http://x.de"],
     ["Lexikon-Eintrag ohne Störung", "lexicon.0.fault", undefined],
+    ["Lexikon-Eintrag ohne Verweise", "lexicon.0.related", undefined],
   ])("lehnt ab: %s", (_, path, value) => {
     expect(() => parse(patch(path, value))).toThrow();
   });
@@ -229,6 +231,12 @@ describe("Referenzen (D5)", () => {
       "lexicon.0.source",
       ["nix"],
       "Quelle",
+    ],
+    [
+      "Lexikon-Verweis auf unbekannten Gerätetyp",
+      "lexicon.0.related",
+      ["nix"],
+      "„nix“",
     ],
     [
       "Regel mit unbekanntem Gerätetyp",

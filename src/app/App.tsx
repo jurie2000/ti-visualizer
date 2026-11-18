@@ -35,8 +35,8 @@ const onHash = (cb: () => void) => {
 
 export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
-  const lexicon =
-    useSyncExternalStore(onHash, () => location.hash) === LEXICON_HASH;
+  const hash = useSyncExternalStore(onHash, () => location.hash);
+  const lexicon = hash === LEXICON_HASH || hash.startsWith(`${LEXICON_HASH}/`);
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
   const selection = useUi((s) => s.selection);
@@ -141,7 +141,7 @@ export function App() {
           Der Baukasten ist für größere Bildschirme gedacht. Presets und Dateien
           lassen sich trotzdem ansehen und abspielen.
         </p>
-        {lexicon && <LexiconPage />}
+        {lexicon && <LexiconPage entry={hash.slice(LEXICON_HASH.length + 1)} />}
         <div className="tiv-view" hidden={lexicon}>
           <ReactFlowProvider>
             {!started ? (

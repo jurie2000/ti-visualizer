@@ -293,6 +293,8 @@ export const lexicon = z.array(
     connected: Text,
     fault: Text,
     confusion: Text,
+    /** Gerätetypen, auf die „Nicht verwechseln mit“ verweist. */
+    related: z.array(Id),
     ...sourced,
   }),
 );
@@ -410,7 +412,12 @@ export function checkReferences(c: Catalog): string[] {
       ref(w, p.kind, kinds, "Anschlussart");
     });
   }
-  for (const e of c.lexicon) ref(`Lexikon ${e.id}`, e.id, types, "Gerätetyp");
+  for (const e of c.lexicon) {
+    ref(`Lexikon ${e.id}`, e.id, types, "Gerätetyp");
+    e.related.forEach((r) => {
+      ref(`Lexikon ${e.id}`, r, types, "Gerätetyp");
+    });
+  }
   for (const p of c.portKinds.compatible) {
     const w = `Verträglichkeit ${p.a}/${p.b}`;
     ref(w, p.a, kinds, "Anschlussart");

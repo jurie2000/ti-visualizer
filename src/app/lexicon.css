@@ -1,13 +1,35 @@
-/* Lexikon-Seite nach dem Mockup „TI-Lexikon“ (#188). Eigene Palette, nur hell. */
+/* Lexikon-Seite nach dem Mockup „TI-Lexikon“ (#188). Eigene Palette, hell und dunkel. */
 .tiv-lex {
   --lex-body: "DM Sans", system-ui, sans-serif;
   --lex-head: "Fraunces", Georgia, serif;
   --lex-mono: "IBM Plex Mono", monospace;
+  --lex-bg: #f5f1e8;
+  --lex-text: #2b2a23;
+  --lex-text2: #4a4839;
+  --lex-text3: #3b3a30;
+  --lex-muted: #5f5b4a;
+  --lex-card: #fff;
+  --lex-line: #e2dacb;
+  --lex-line2: #ece5d7;
+  --lex-green: #4f6b3a;
+  --lex-green-hover: #33482a;
+  --lex-chip-bg: #e7eddc;
+  --lex-chip-bd: #c9d6b4;
+  --lex-nav-on: #2f3e2e;
+  --lex-hero: #2f3e2e;
+  --lex-field: #fff;
+  --lex-placeholder: #7a7563;
+  --lex-empty-bd: #cfc5b0;
+  --lex-fault-bg: #f6e3d6;
+  --lex-fault-bd: #e8c3a8;
+  --lex-fault-icon: #9a4a25;
+  --lex-fault-title: #7a3618;
+  --lex-fault-text: #552612;
   grid-row: 3;
   min-height: 0;
   overflow-y: auto;
-  background: #f5f1e8;
-  color: #2b2a23;
+  background: var(--lex-bg);
+  color: var(--lex-text);
   font-family: var(--lex-body);
 }
 .tiv-lex h2,
@@ -17,20 +39,20 @@
   margin: 0;
 }
 .tiv-lex a {
-  color: #4f6b3a;
+  color: var(--lex-green);
 }
 .tiv-lex a:hover {
-  color: #33482a;
+  color: var(--lex-green-hover);
 }
 .tiv-lex :focus-visible {
-  outline: 3px solid #4f6b3a;
+  outline: 3px solid var(--lex-green);
   outline-offset: 2px;
 }
 .tiv-lex__hero {
   position: relative;
   overflow: hidden;
   border-radius: 0 0 48px 48px;
-  background: #2f3e2e;
+  background: var(--lex-hero);
   color: #fff;
 }
 .tiv-lex__hero :focus-visible {
@@ -73,10 +95,6 @@
   flex-direction: column;
   gap: 10px;
   flex: 1 1 420px;
-}
-.tiv-lex .tiv-lex__back {
-  font-size: 13px;
-  color: #c9d1b8;
 }
 .tiv-lex__kicker {
   display: flex;
@@ -130,11 +148,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #fff;
+  background: var(--lex-field);
   border-radius: 16px;
   padding: 0 14px;
   height: 48px;
-  color: #5f5b4a;
+  color: var(--lex-muted);
 }
 .tiv-lex__search input {
   flex: 1;
@@ -142,7 +160,7 @@
   outline: none;
   font: inherit;
   font-size: 16px;
-  color: #2b2a23;
+  color: var(--lex-text);
   background: transparent;
   min-width: 0;
   height: 44px;
@@ -152,7 +170,7 @@
   outline-offset: 2px;
 }
 .tiv-lex input::placeholder {
-  color: #7a7563;
+  color: var(--lex-placeholder);
 }
 .tiv-lex__layout {
   max-width: 1360px;
@@ -175,7 +193,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5f5b4a;
+  color: var(--lex-muted);
 }
 .tiv-lex__label--nav {
   padding: 0 12px 8px;
@@ -194,13 +212,13 @@
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
-  color: #3b3a30;
+  color: var(--lex-text3);
   font-weight: 400;
 }
 .tiv-lex__nav[aria-current] {
-  border-color: #c9d6b4;
-  background: #fff;
-  color: #2f3e2e;
+  border-color: var(--lex-chip-bd);
+  background: var(--lex-card);
+  color: var(--lex-nav-on);
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(47, 62, 46, 0.1);
 }
@@ -213,7 +231,7 @@
   gap: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #4a4839;
+  color: var(--lex-text2);
 }
 .tiv-lex__dot {
   width: 10px;
@@ -224,14 +242,14 @@
 .tiv-lex__count {
   font-family: var(--lex-mono);
   font-size: 12px;
-  color: #5f5b4a;
+  color: var(--lex-muted);
 }
 .tiv-lex__terms {
   margin-top: 20px;
   padding: 16px;
   border-radius: 20px;
-  background: #fff;
-  border: 1px solid #e2dacb;
+  background: var(--lex-card);
+  border: 1px solid var(--lex-line);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -247,7 +265,7 @@
 .tiv-lex__terms span:not(.tiv-lex__label) {
   font-size: 13px;
   line-height: 1.5;
-  color: #4a4839;
+  color: var(--lex-text2);
 }
 .tiv-lex__main {
   flex: 999 1 640px;
@@ -257,14 +275,14 @@
   gap: 20px;
 }
 .tiv-lex__glossary {
-  background: #fff;
-  border: 1px solid #e2dacb;
+  background: var(--lex-card);
+  border: 1px solid var(--lex-line);
   border-radius: 24px;
   overflow: hidden;
 }
 .tiv-lex__glosshead {
   padding: 20px 24px;
-  border-bottom: 1px solid #e2dacb;
+  border-bottom: 1px solid var(--lex-line);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -279,7 +297,7 @@
 .tiv-lex__glosshead span,
 .tiv-lex__listhead span {
   font-size: 13px;
-  color: #5f5b4a;
+  color: var(--lex-muted);
 }
 .tiv-lex__scroll {
   overflow-x: auto;
@@ -290,7 +308,7 @@
   font-size: 14px;
 }
 .tiv-lex thead tr {
-  background: #f5f1e8;
+  background: var(--lex-bg);
   text-align: left;
 }
 .tiv-lex th {
@@ -301,17 +319,17 @@
   width: 140px;
 }
 .tiv-lex tbody tr {
-  border-top: 1px solid #ece5d7;
+  border-top: 1px solid var(--lex-line2);
 }
 .tiv-lex td {
   padding: 10px 24px;
   line-height: 1.5;
-  color: #3b3a30;
+  color: var(--lex-text3);
 }
 .tiv-lex td:first-child {
   font-family: var(--lex-mono);
   font-weight: 500;
-  color: #4f6b3a;
+  color: var(--lex-green);
 }
 .tiv-lex__entries {
   display: flex;
@@ -347,15 +365,15 @@
   padding: 14px 16px;
   border-radius: 20px;
   cursor: pointer;
-  border: 1px solid #e2dacb;
-  background: #fff;
+  border: 1px solid var(--lex-line);
+  background: var(--lex-card);
   font-size: 13px;
   line-height: 1.45;
-  color: #4a4839;
+  color: var(--lex-text2);
 }
 .tiv-lex__item[aria-current] {
-  border-color: #4f6b3a;
-  box-shadow: inset 4px 0 0 #4f6b3a;
+  border-color: var(--lex-green);
+  box-shadow: inset 4px 0 0 var(--lex-green);
 }
 .tiv-lex__itemhead {
   display: flex;
@@ -366,7 +384,7 @@
 .tiv-lex__itemhead strong {
   font-size: 15px;
   font-weight: 600;
-  color: #2b2a23;
+  color: var(--lex-text);
 }
 .tiv-lex__abbr {
   font-family: var(--lex-mono);
@@ -374,22 +392,22 @@
   font-weight: 500;
   padding: 2px 7px;
   border-radius: 6px;
-  background: #e7eddc;
-  color: #4f6b3a;
+  background: var(--lex-chip-bg);
+  color: var(--lex-green);
 }
 .tiv-lex__empty {
   padding: 28px 20px;
   text-align: center;
-  border: 1px dashed #cfc5b0;
+  border: 1px dashed var(--lex-empty-bd);
   border-radius: 20px;
-  color: #4a4839;
+  color: var(--lex-text2);
   font-size: 14px;
 }
 .tiv-lex__detail {
   flex: 1.5 1 440px;
   min-width: 0;
-  background: #fff;
-  border: 1px solid #e2dacb;
+  background: var(--lex-card);
+  border: 1px solid var(--lex-line);
   border-radius: 28px;
   padding: 28px;
   display: flex;
@@ -410,7 +428,7 @@
 .tiv-lex__title p {
   font-size: 17px;
   line-height: 1.5;
-  color: #3b3a30;
+  color: var(--lex-text3);
 }
 .tiv-lex__facts {
   display: grid;
@@ -435,13 +453,13 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #5f5b4a;
+  color: var(--lex-muted);
 }
 .tiv-lex__facts p,
 .tiv-lex__confusion p {
   font-size: 14px;
   line-height: 1.6;
-  color: #3b3a30;
+  color: var(--lex-text3);
 }
 .tiv-lex__facts .tiv-lex__wide p {
   font-size: 15px;
@@ -452,9 +470,9 @@
   gap: 14px;
   padding: 16px 18px;
   border-radius: 20px;
-  background: #f6e3d6;
-  border: 1px solid #e8c3a8;
-  color: #9a4a25;
+  background: var(--lex-fault-bg);
+  border: 1px solid var(--lex-fault-bd);
+  color: var(--lex-fault-icon);
 }
 .tiv-lex__fault svg {
   flex: none;
@@ -469,12 +487,12 @@
   font-size: 14px;
   letter-spacing: 0;
   text-transform: none;
-  color: #7a3618;
+  color: var(--lex-fault-title);
 }
 .tiv-lex__fault p {
   font-size: 14px;
   line-height: 1.55;
-  color: #552612;
+  color: var(--lex-fault-text);
 }
 .tiv-lex__related {
   display: flex;
@@ -486,9 +504,9 @@
   font: inherit;
   font-size: 13px;
   font-weight: 500;
-  color: #4f6b3a;
-  background: #e7eddc;
-  border: 1px solid #c9d6b4;
+  color: var(--lex-green);
+  background: var(--lex-chip-bg);
+  border: 1px solid var(--lex-chip-bd);
   border-radius: 999px;
   padding: 0 14px;
   min-height: 36px;
@@ -499,7 +517,7 @@
   align-items: center;
   gap: 10px;
   padding-top: 16px;
-  border-top: 1px solid #ece5d7;
+  border-top: 1px solid var(--lex-line2);
   flex-wrap: wrap;
 }
 .tiv-lex__sources a,
@@ -508,14 +526,14 @@
   font-size: 12px;
   padding: 3px 8px;
   border-radius: 6px;
-  background: #f5f1e8;
-  border: 1px solid #e2dacb;
-  color: #3b3a30;
+  background: var(--lex-bg);
+  border: 1px solid var(--lex-line);
+  color: var(--lex-text3);
   text-decoration: none;
 }
 .tiv-lex__sources a:hover {
-  color: #3b3a30;
-  border-color: #4f6b3a;
+  color: var(--lex-text3);
+  border-color: var(--lex-green);
 }
 /* Baukasten bleibt gemountet, solange das Lexikon offen ist (Canvas, Auswahl) */
 .tiv-view {
@@ -523,4 +541,29 @@
 }
 .tiv-view[hidden] {
   display: none;
+}
+
+:root[data-theme="dark"] .tiv-lex {
+  --lex-bg: #1b1e19;
+  --lex-text: #ece9df;
+  --lex-text2: #c9c6b4;
+  --lex-text3: #d6d3c3;
+  --lex-muted: #aaa793;
+  --lex-card: #252922;
+  --lex-line: #3a3f35;
+  --lex-line2: #30352c;
+  --lex-green: #a9c98a;
+  --lex-green-hover: #c4dfa8;
+  --lex-chip-bg: #2f3a27;
+  --lex-chip-bd: #475a38;
+  --lex-nav-on: #e3efd3;
+  --lex-hero: #222b21;
+  --lex-field: #2c3128;
+  --lex-placeholder: #a3a08d;
+  --lex-empty-bd: #4a5042;
+  --lex-fault-bg: #3a2418;
+  --lex-fault-bd: #6b3f27;
+  --lex-fault-icon: #f0a37a;
+  --lex-fault-title: #f3b895;
+  --lex-fault-text: #f0d2c0;
 }

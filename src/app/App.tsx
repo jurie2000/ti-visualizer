@@ -131,8 +131,11 @@ export function App() {
               <SaveControls />
             </span>
             {started && <ModeSwitch />}
-            <a className="tiv-btn tiv-btn--ghost" href={LEXICON_HASH}>
-              Lexikon
+            <a
+              className="tiv-btn tiv-btn--ghost"
+              href={lexicon ? "#/" : LEXICON_HASH}
+            >
+              {lexicon ? "Baukasten" : "Lexikon"}
             </a>
             <ThemeToggle />
           </div>

@@ -82,9 +82,6 @@ export function LexiconPage({ entry }: { entry?: string }) {
         <div className="tiv-lex__blob tiv-lex__blob--b" aria-hidden />
         <div className="tiv-lex__herobody">
           <div className="tiv-lex__intro">
-            <a className="tiv-lex__back" href="#/">
-              ← Zurück zum Baukasten
-            </a>
             <div className="tiv-lex__kicker">
               <span className="tiv-lex__badge" aria-hidden>
                 TI
@@ -119,7 +116,7 @@ export function LexiconPage({ entry }: { entry?: string }) {
       <div className="tiv-lex__layout">
         <nav aria-label="Kategorien" className="tiv-lex__cats">
           <span className="tiv-lex__label tiv-lex__label--nav">Kategorien</span>
-          {navItem("all", "Alle Komponenten", hits.length, "#5F5B4A")}
+          {navItem("all", "Alle Komponenten", hits.length, "var(--lex-muted)")}
           {categories.map((c) =>
             navItem(
               c.id,
@@ -128,7 +125,12 @@ export function LexiconPage({ entry }: { entry?: string }) {
               DOT[c.id] ?? c.color,
             ),
           )}
-          {navItem(GLOSSARY, "Abkürzungsglossar", glossary.length, "#2B2A23")}
+          {navItem(
+            GLOSSARY,
+            "Abkürzungsglossar",
+            glossary.length,
+            "var(--lex-text)",
+          )}
           <div className="tiv-lex__terms">
             <span className="tiv-lex__label">Zwei Begriffe vorab</span>
             <div>
@@ -213,7 +215,9 @@ export function LexiconPage({ entry }: { entry?: string }) {
                 <article className="tiv-lex__detail">
                   <div className="tiv-lex__title">
                     <span className="tiv-lex__navlabel">
-                      <Dot color={DOT[selCat?.id ?? ""] ?? "#5F5B4A"} />
+                      <Dot
+                        color={DOT[selCat?.id ?? ""] ?? "var(--lex-muted)"}
+                      />
                       {selCat?.name}
                     </span>
                     <h3>

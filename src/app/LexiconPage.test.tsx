@@ -34,6 +34,11 @@ describe("Lexikon-Seite (#188)", () => {
     const heading = await screen.findByRole("heading", { name: "TI-Lexikon" });
     const page = heading.closest("main");
     expect(page).toHaveFocus();
+    expect(screen.queryByRole("link", { name: "Lexikon" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Baukasten" })).toHaveAttribute(
+      "href",
+      "#/",
+    );
     expect(
       screen.getByRole("heading", { level: 3, name: "Konnektor" }),
     ).toBeVisible();
@@ -86,10 +91,11 @@ describe("Lexikon-Seite (#188)", () => {
     );
   });
 
-  it("Zurück zum Baukasten blendet die Seite wieder aus", async () => {
+  it("der Link „Baukasten“ blendet die Seite wieder aus und heißt wieder „Lexikon“", async () => {
     await open();
     go("");
     await screen.findByRole("heading", { name: /Womit/ });
     expect(screen.queryByRole("heading", { name: "TI-Lexikon" })).toBeNull();
+    expect(screen.getByRole("link", { name: "Lexikon" })).toBeVisible();
   });
 });

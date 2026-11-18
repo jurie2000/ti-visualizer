@@ -150,6 +150,19 @@ describe("T-406 Detailpanel (FR-11)", () => {
     expect(screen.queryByText("Position")).toBeNull();
   });
 
+  it("verlinkt ein Gerät auf seinen Lexikon-Eintrag, die Quelle bleibt (#191)", () => {
+    render(<DetailPanel />);
+    select("node", "kon1");
+    expect(
+      screen.getByRole("link", { name: "Im Lexikon nachlesen" }),
+    ).toHaveAttribute("href", "#/lexikon/kon");
+    expect(screen.getByRole("list", { name: "Quellen" })).toBeInTheDocument();
+    select("edge", "e2");
+    expect(
+      screen.queryByRole("link", { name: "Im Lexikon nachlesen" }),
+    ).toBeNull();
+  });
+
   it("zeigt eine Zone", () => {
     render(<DetailPanel />);
     select("zone", "z1");

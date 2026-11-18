@@ -18,6 +18,7 @@ import {
   useUi,
   type Selection,
 } from "../store";
+import { LEXICON_HASH } from "../app/LexiconPage";
 import { Actions } from "./Actions";
 import { CardSlots } from "./CardSlots";
 import { ConfigForm } from "./ConfigForm";
@@ -144,7 +145,14 @@ function DeviceDetail({
       )}
       <CardSlots node={node} catalog={catalog} />
       {advanced && <ConfigForm node={node} />}
-      {type && <Sources ids={type.source} catalog={catalog} />}
+      {type && (
+        <>
+          <p className="tiv-dbody">
+            <a href={`${LEXICON_HASH}/${type.id}`}>Im Lexikon nachlesen</a>
+          </p>
+          <Sources ids={type.source} catalog={catalog} />
+        </>
+      )}
     </>
   );
 }

@@ -140,19 +140,22 @@ function DeviceDetail({
   return (
     <>
       {type?.description && <p className="tiv-dbody">{type.description}</p>}
+      {type && (
+        <div className="tiv-dactions">
+          <a
+            className="tiv-btn tiv-btn--ghost"
+            href={`${LEXICON_HASH}/${type.id}`}
+          >
+            Im Lexikon nachlesen
+          </a>
+        </div>
+      )}
       {advanced && (
         <PortList node={node} topology={topology} catalog={catalog} />
       )}
       <CardSlots node={node} catalog={catalog} />
       {advanced && <ConfigForm node={node} />}
-      {type && (
-        <>
-          <p className="tiv-dbody">
-            <a href={`${LEXICON_HASH}/${type.id}`}>Im Lexikon nachlesen</a>
-          </p>
-          <Sources ids={type.source} catalog={catalog} />
-        </>
-      )}
+      {type && <Sources ids={type.source} catalog={catalog} />}
     </>
   );
 }

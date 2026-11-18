@@ -398,7 +398,7 @@ a {
   background: var(--tiv-btn-bg);
   white-space: nowrap;
 }
-.tiv-header__actions > a.tiv-btn {
+a.tiv-btn {
   display: inline-flex;
   align-items: center;
   color: inherit;

@@ -102,8 +102,9 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
         .sort();
     expect(owners("cardSlots")).toEqual(["kt", "mkt"]);
     expect(owners("nfcCard")).toEqual(["cardlink", "epaapp", "erpapp"]);
-    expect(owners("zugang")).toEqual(["gateway", "hskon", "kon"]);
-    expect(owners("netConfig:konnektor")).toEqual(["gateway", "hskon", "kon"]);
+    expect(owners("zugang")).toEqual(["gateway", "kon"]);
+    expect(owners("zugangTi2")).toEqual(["gateway"]);
+    expect(owners("netConfig:konnektor")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:terminal")).toEqual(["cardlink", "kt"]);
     expect(owners("netConfig:router")).toEqual(["router"]);
     expect(owners("netConfig:infra")).toEqual(["ap", "fw", "switch"]);
@@ -194,9 +195,9 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     ]);
   });
 
-  it("[X-1] schließt Konnektor/Highspeed-Konnektor und TI-Gateway gegeneinander aus", () => {
+  it("[X-1] schließt Konnektor und TI-Gateway gegeneinander aus", () => {
     const [a, b] = catalog.exclusionRules[0]?.exclusive ?? [];
-    expect([...members(a as Selector)].sort()).toEqual(["hskon", "kon"]);
+    expect([...members(a as Selector)].sort()).toEqual(["kon"]);
     expect([...members(b as Selector)]).toEqual(["gateway"]);
   });
 
@@ -216,7 +217,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
     }
   });
 
-  it("Protokolle: sieben Verbindungsarten und die 13 Zeilen aus Regelwerk 3", () => {
+  it("Protokolle: sieben Verbindungsarten und die 14 Zeilen aus Regelwerk 3", () => {
     expect(catalog.protocols.connectionKinds.map((k) => k.id)).toEqual([
       "phys",
       "tcp",
@@ -226,7 +227,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "usb",
       "host",
     ]);
-    expect(catalog.protocols.protocols).toHaveLength(13);
+    expect(catalog.protocols.protocols).toHaveLength(14);
     const byId = (id: string) =>
       catalog.protocols.protocols.find((p) => p.id === id);
     expect(byId("prot-kt-zugang")).toMatchObject({
@@ -246,6 +247,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "prot-kt-zugang",
       "prot-ps-zugang",
       "prot-zugang-vpn",
+      "prot-switch-gateway",
       "prot-timc-tim",
     ]);
     expect(byId("prot-mkt-ps")?.b).toEqual({

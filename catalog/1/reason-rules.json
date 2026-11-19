@@ -135,7 +135,7 @@
   {
     "id": "V-10",
     "a": {
-      "types": ["kon", "hskon"]
+      "types": ["kon"]
     },
     "b": {
       "types": ["gateway"]
@@ -179,7 +179,6 @@
         "ap",
         "fw",
         "kon",
-        "hskon",
         "gateway",
         "vpn",
         "internet",
@@ -206,7 +205,6 @@
         "ris",
         "lis",
         "kon",
-        "hskon",
         "gateway"
       ]
     },
@@ -237,7 +235,7 @@
     "except": [
       {
         "a": {
-          "types": ["kon", "hskon"]
+          "types": ["kon"]
         },
         "b": {
           "types": ["gateway"]

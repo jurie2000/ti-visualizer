@@ -35,11 +35,11 @@ Spalte **Bezug**: Komponente, Anwendung oder Regel-ID im Regelwerk.
 
 | Quelle | Inhalt | Bezug |
 |---|---|---|
-| [Fachportal: Konnektor / TI-Gateway](https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/konnektor) | Konnektor, Highspeed-Konnektor, TI-Gateway | `kon`, `hskon`, `gateway`, X-1 |
+| [Fachportal: Konnektor / TI-Gateway](https://fachportal.gematik.de/hersteller-anbieter/komponenten-dienste/konnektor) | Konnektor, TI-Gateway | `kon`, `gateway`, X-1 |
 | [Spezifikation Konnektor (gemSpec_Kon)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_Kon/latest/) | Konnektor inkl. Anbindungsmodus (InReihe/Parallel), SIS, Infomodell, Kartenterminal-Verwaltung | `kon`, 8, P-17 bis P-20, P-29, P-30 |
 | [Feature TI-Gateway (gemF_TI-Gateway)](https://gemspec.gematik.de/docs/gemF/gemF_TI-Gateway/gemF_TI-Gateway_V1.7.0/index.html) | Zugangsmodul, virtuelle HSK-Instanz je Nutzer, Zugang nur über VPN | `gateway` |
-| [Feature Highspeed-Konnektor (gemF_Highspeed-Konnektor)](https://gemspec.gematik.de/docs/gemF/gemF_Highspeed-Konnektor/gemF_Highspeed-Konnektor_V1.2.0/) | Highspeed-Konnektor, Integration ins TI-Gateway | `hskon` |
-| [Produkttypsteckbrief Highspeed-Konnektor](https://gemspec.gematik.de/docs/gemProdT/gemProdT_Kon_Highspeed/latest/) | verbindliche Dokumente und Versionen des HSK | `hskon` |
+| [Feature Highspeed-Konnektor (gemF_Highspeed-Konnektor)](https://gemspec.gematik.de/docs/gemF/gemF_Highspeed-Konnektor/gemF_Highspeed-Konnektor_V1.2.0/) | Highspeed-Konnektor (HSK), Integration ins TI-Gateway. Kein eigenes Gerät mehr (Issue #211) | `gateway` |
+| [Produkttypsteckbrief Highspeed-Konnektor](https://gemspec.gematik.de/docs/gemProdT/gemProdT_Kon_Highspeed/latest/) | verbindliche Dokumente und Versionen des HSK, der zum TI-Gateway gehört (Issue #211) | `gateway` |
 | [Produkttypsteckbrief Konnektor](https://gemspec.gematik.de/docs/gemProdT/gemProdT_Kon_PTV6/latest/index.html) | verbindliche Dokumente des Konnektors inkl. Fachmodule NFDM/AMTS | `kon` |
 | [Übergreifende Spezifikation Netzwerk (gemSpec_Net)](https://gemspec.gematik.de/docs/gemSpec/gemSpec_Net/latest/) | Netz der TI, Adressräume, Namensdienst (DNS), Zeitdienst (NTP) | zentrale Dienste, P-17, P-27, P-28 |
 | [Systemprozesse der dezentralen TI](https://gemspec.gematik.de/downloads/gemSpec/gemSpec_Systemprozesse_dezTI/gemSpec_Systemprozesse_dezTI_V1.0.0.html) | Prozesse in der Einrichtung (Konnektor, Terminals) | 8 |

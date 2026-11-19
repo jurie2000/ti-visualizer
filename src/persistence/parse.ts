@@ -36,6 +36,7 @@ export interface Finding {
     | "unbekanntesFeld"
     | "doppelteId"
     | "unbekannterTyp"
+    | "typErsetzt"
     | "verweis"
     | "anschluss"
     | "karte"
@@ -307,13 +308,49 @@ type NodeT = z.infer<typeof Node>;
 type EdgeT = z.infer<typeof Edge>;
 type ZoneT = z.infer<typeof Zone>;
 
+/**
+ * Den Highspeed-Konnektor gibt es nicht mehr (Issue #211): Knoten werden zu
+ * TI-Gateways, deren Kantenenden an `lan0`/`lan1` zu `lan`. `replacedAt`
+ * hält die Listenpositionen, damit der Hinweis nur für angenommene Knoten kommt.
+ */
+function replaceHskon(raw: Record<string, unknown>): {
+  raw: Record<string, unknown>;
+  replacedAt: Set<number>;
+} {
+  const old = new Set<string>();
+  const replacedAt = new Set<number>();
+  const nodes = (raw.nodes as unknown[]).map((n, i) => {
+    if (!isObject(n) || n.type !== "hskon") return n;
+    if (typeof n.id === "string") old.add(n.id);
+    replacedAt.add(i);
+    return { ...n, type: "gateway" };
+  });
+  const edges = (raw.edges as unknown[]).map((e) =>
+    isObject(e) && Array.isArray(e.ends)
+      ? {
+          ...e,
+          ends: e.ends.map((end: unknown) =>
+            isObject(end) &&
+            typeof end.node === "string" &&
+            old.has(end.node) &&
+            (end.port === "lan0" || end.port === "lan1")
+              ? { ...end, port: "lan" }
+              : end,
+          ),
+        }
+      : e,
+  );
+  return { raw: { ...raw, nodes, edges }, replacedAt };
+}
+
 /** Elementweise Prüfung mit Katalog. Gibt eine bereinigte Topologie zurück (noch nicht als Ganzes geprüft). */
 function build(
-  raw: Record<string, unknown>,
+  rawIn: Record<string, unknown>,
   meta: { name: string; description: string; simDate: string },
   catalog: Catalog,
   add: (f: Finding) => void,
 ): Topology {
+  const { raw, replacedAt } = replaceHskon(rawIn);
   const ids = new Set<string>();
   const types = new Map(catalog.deviceTypes.map((t) => [t.id, t]));
 
@@ -355,18 +392,31 @@ function build(
     return out;
   };
 
-  const nodes = take<NodeT>(raw.nodes, Node, "Node", "topology.nodes", (n) => {
-    const device = types.get(n.type);
-    if (!device?.placeable) {
-      add({
-        severity: "Fehler",
-        code: "unbekannterTyp",
-        message: `Gerät „${n.id}“ hat den unbekannten Typ „${n.type}“ und wurde nicht übernommen.`,
-      });
-      return false;
-    }
-    return true;
-  }).map((n) => checkConfig(n, types, add));
+  const nodes = take<NodeT>(
+    raw.nodes,
+    Node,
+    "Node",
+    "topology.nodes",
+    (n, i) => {
+      const device = types.get(n.type);
+      if (!device?.placeable) {
+        add({
+          severity: "Fehler",
+          code: "unbekannterTyp",
+          message: `Gerät „${n.id}“ hat den unbekannten Typ „${n.type}“ und wurde nicht übernommen.`,
+        });
+        return false;
+      }
+      if (replacedAt.has(i))
+        add({
+          severity: "Hinweis",
+          code: "typErsetzt",
+          message: `Gerät „${n.id}“ war ein Highspeed-Konnektor und ist jetzt ein TI-Gateway.`,
+          ref: n.id,
+        });
+      return true;
+    },
+  ).map((n) => checkConfig(n, types, add));
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
   // Belegung je Anschluss: Schema-Prüfung nach Regelwerk 2.2 (`multi`), keine Regel-ID

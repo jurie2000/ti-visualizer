@@ -3,7 +3,7 @@
     "id": "X-1",
     "exclusive": [
       {
-        "types": ["kon", "hskon"]
+        "types": ["kon"]
       },
       {
         "types": ["gateway"]

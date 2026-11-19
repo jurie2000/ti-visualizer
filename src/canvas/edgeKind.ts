@@ -70,6 +70,7 @@ export function describeEdge(
   const both = (k: string) => ends.every((e) => e.kind === k);
 
   const [a, b] = ends;
+  const types = ends.map((e) => e.type);
   const kind: EdgeKind = both("host")
     ? "host"
     : both("web")
@@ -78,15 +79,17 @@ export function describeEdge(
         ? "wlan"
         : both("tun")
           ? "vpn"
-          : has("net")
-            ? "inet"
-            : both("ti") || both("app")
-              ? "tcp"
-              : has("usb")
-                ? "usb"
-                : a && b && carriesTls([a.type, b.type], catalog)
-                  ? "tcp"
-                  : "phys";
+          : types.includes("switch") && types.includes("gateway")
+            ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway)
+            : has("net")
+              ? "inet"
+              : both("ti") || both("app")
+                ? "tcp"
+                : has("usb")
+                  ? "usb"
+                  : a && b && carriesTls([a.type, b.type], catalog)
+                    ? "tcp"
+                    : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

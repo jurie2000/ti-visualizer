@@ -1071,7 +1071,7 @@
     "id": "klinikum",
     "topology": {
       "name": "Klinikum St. Anna",
-      "description": "Ein zentrales KIS für alle Abteilungen, RIS und LIS als Subsysteme auf eigenen Servern, PCs am Switch, WLAN-Visite, Router und Highspeed-Konnektor.",
+      "description": "Ein zentrales KIS für alle Abteilungen, RIS und LIS als Subsysteme auf eigenen Servern, PCs am Switch, WLAN-Visite, Router und TI-Gateway.",
       "simDate": "2026-11-01",
       "nodes": [
         {
@@ -1291,8 +1291,8 @@
           "fault": false
         },
         {
-          "id": "hskon1",
-          "type": "hskon",
+          "id": "gw1",
+          "type": "gateway",
           "position": {
             "x": 1104,
             "y": 944
@@ -1704,24 +1704,24 @@
           "fault": false
         },
         {
-          "id": "e-core-hskon1",
+          "id": "e-core-gw1",
           "ends": [
             {
               "node": "core",
               "port": "p7"
             },
             {
-              "node": "hskon1",
-              "port": "lan0"
+              "node": "gw1",
+              "port": "lan"
             }
           ],
           "fault": false
         },
         {
-          "id": "e-hskon1-rt1",
+          "id": "e-gw1-rt1",
           "ends": [
             {
-              "node": "hskon1",
+              "node": "gw1",
               "port": "wan"
             },
             {
@@ -1732,10 +1732,10 @@
           "fault": false
         },
         {
-          "id": "e-hskon1-vpn1",
+          "id": "e-gw1-vpn1",
           "ends": [
             {
-              "node": "hskon1",
+              "node": "gw1",
               "port": "vpn"
             },
             {

@@ -136,8 +136,8 @@ export function LexiconPage({ entry }: { entry?: string }) {
             <div>
               <strong>Zugang</strong>
               <span>
-                Das Gerät, das eine Einrichtung mit der TI verbindet: Konnektor,
-                Highspeed-Konnektor oder TI-Gateway.
+                Das Gerät, das eine Einrichtung mit der TI verbindet: Konnektor
+                oder TI-Gateway.
               </span>
             </div>
             <div>

@@ -9,8 +9,8 @@ import {
 type Config = NonNullable<Node["config"]>;
 
 const NET = "192.168.10.";
-// Regelwerk 8: TI-Gateway und Highspeed-Konnektor haben kein SIS.
-const WITHOUT_SIS = new Set(["gateway", "hskon"]);
+// Regelwerk 8: das TI-Gateway hat kein SIS.
+const WITHOUT_SIS = new Set(["gateway"]);
 
 const lastOctet = (ip: string | undefined) =>
   ip?.startsWith(NET) ? Number(ip.slice(NET.length)) : NaN;

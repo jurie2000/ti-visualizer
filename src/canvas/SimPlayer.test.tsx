@@ -308,8 +308,9 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     const t = praxis(terminals);
     useTopology.getState().reset({
       ...t,
+      // TI 2.0 braucht ein TI-Gateway (Regelwerk 6.1)
       nodes: [
-        ...t.nodes,
+        ...t.nodes.map((n) => (n.id === "kon" ? { ...n, type: "gateway" } : n)),
         ...services.map((id) => ({
           id,
           type: id,

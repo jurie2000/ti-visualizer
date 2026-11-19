@@ -149,7 +149,7 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
       [
         ["kt", "kt"],
         ["k1", "kon"],
-        ["k2", "hskon"],
+        ["k2", "kon"],
         ["pv", "pvs"],
       ],
       [["e1", "kt", "lan0", "k1", "lan"]],
@@ -271,8 +271,8 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
     rejected("V-16", "dns", "switch");
   });
 
-  it("[V-17] kon an hskon wird mit der Regelmeldung abgelehnt", () => {
-    rejected("V-17", "kon", "hskon");
+  it("[V-17] kon an kon wird mit der Regelmeldung abgelehnt", () => {
+    rejected("V-17", "kon", "kon");
   });
 
   it("[V-18] kt an mkt wird mit der Regelmeldung abgelehnt", () => {
@@ -294,7 +294,7 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
   });
 
   it("[V-17] Konnektor an Gateway gehört zu V-10, nicht zu V-17", () => {
-    expect(check(pair("hskon", "gateway"), "x", "y").ruleId).toBe("V-10");
+    expect(check(pair("kon", "gateway"), "x", "y").ruleId).toBe("V-10");
   });
 
   it("ohne Begründungsregel nennt die Meldung die erlaubten Partner", () => {
@@ -410,7 +410,7 @@ describe("Regel-Engine: Anschlussarten der Erlaubnisliste (T-105)", () => {
   it("Zugang verbindet mit seinem WAN-Anschluss und dem Router-LAN", () => {
     expect(go("kon", "wan", "router", "lan1").ok).toBe(true);
     expect(go("kon", "lan", "router", "lan1").ok).toBe(false);
-    expect(go("router", "lan1", "hskon", "wan").ok).toBe(true);
+    expect(go("router", "lan1", "gateway", "wan").ok).toBe(true);
     expect(go("kon", "wan", "router", "wan").ok).toBe(false);
   });
 

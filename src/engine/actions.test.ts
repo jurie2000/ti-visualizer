@@ -634,6 +634,11 @@ describe("TI-2.0-Aktionen (#204)", () => {
     expect(
       state(without(t, "vsdm2"), "pvs", "vsdm2-pruefen")?.disabledReason,
     ).toContain("fehlt in der Topologie");
+    // Verbindung unterbrochen: ZETA Guard ausgefallen
+    expect(state(faulty(t, "zeta"), "pvs", "vsdm2-pruefen")).toMatchObject({
+      enabled: false,
+      disabledReason: expect.stringContaining("ausgefallen") as string,
+    });
     // Tageswechsel: wieder eine ZETA-Anmeldung nötig
     expect(
       state({ ...t, simDate: "2026-11-02" }, "pvs", "vsdm2-pruefen")

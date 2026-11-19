@@ -614,15 +614,14 @@ describe("TI-2.0-Aktionen (#204)", () => {
   });
 
   it("Konnektor: alle drei TI-2.0-Aktionen gesperrt, mit TI-Gateway frei (#211)", () => {
-    const kon = ready();
-    kon.nodes = full().nodes;
     const gw = ready();
+    const kon: Topology = { ...gw, nodes: full().nodes };
     for (const id of [
       "zeta-anmelden",
       "popp-token-beantragen",
       "vsdm2-pruefen",
     ]) {
-      expect(state({ ...kon, tokens: gw.tokens }, "pvs", id)).toMatchObject({
+      expect(state(kon, "pvs", id)).toMatchObject({
         enabled: false,
         disabledReason:
           "Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.",

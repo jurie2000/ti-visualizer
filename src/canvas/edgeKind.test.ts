@@ -69,4 +69,7 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
     expect(kindOf(["switch", "p1"], ["gateway", "lan"])).toBe("vpn");
     expect(kindOf(["gateway", "lan"], ["switch", "p1"])).toBe("vpn");
   });
+  it("[#211] TI-Gateway am Router bleibt Kabel, Regel 2a gilt nur für den Switch", () => {
+    expect(kindOf(["gateway", "wan"], ["router", "lan1"])).toBe("phys");
+  });
 });

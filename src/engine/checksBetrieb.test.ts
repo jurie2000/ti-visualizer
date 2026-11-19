@@ -283,10 +283,13 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
     expect(hits(ohneKt, "P-29")).toEqual([]);
   });
 
-  it("[P-34] Terminal ohne Rechner am Arbeitsplatz meldet; passend, Standard, ohne Rechner und im Modus Einfach nicht", () => {
-    const ohnePc = praxis({ kt: { workplace: "AP-2" } });
-    expect(hits(ohnePc, "P-34").map((f) => f.nodes)).toEqual([["kt"]]);
-    expect(run(ohnePc, "simple").map((f) => f.id)).not.toContain("P-34");
+  it("[P-34] Terminal ohne Rechner am Arbeitsplatz meldet", () => {
+    expect(
+      hits(praxis({ kt: { workplace: "AP-2" } }), "P-34").map((f) => f.nodes),
+    ).toEqual([["kt"]]);
+  });
+
+  it("[P-34] Terminal am Arbeitsplatz des Rechners oder am Standardplatz meldet nicht", () => {
     expect(
       hits(
         praxis({ pc: { workplace: "AP-2" }, kt: { workplace: "AP-2" } }),
@@ -294,9 +297,31 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
       ),
     ).toEqual([]);
     expect(hits(praxis(), "P-34")).toEqual([]);
-    const ohneRechner = praxis({ kt: { workplace: "AP-2" } });
-    ohneRechner.nodes = ohneRechner.nodes.filter((n) => n.id !== "pc");
-    expect(hits(ohneRechner, "P-34")).toEqual([]);
+  });
+
+  it("[P-34] ohne Arbeitsplatz-Rechner und im Modus Einfach keine Meldung", () => {
+    const ohnePc = praxis({ kt: { workplace: "AP-2" } });
+    expect(run(ohnePc, "simple").map((f) => f.id)).not.toContain("P-34");
+    ohnePc.nodes = ohnePc.nodes.filter((n) => n.id !== "pc");
+    expect(hits(ohnePc, "P-34")).toEqual([]);
+  });
+
+  it("[P-34] bei zwei Terminals meldet nur das nicht passende", () => {
+    const t = praxis({ pc: { workplace: "AP-2" }, kt: { workplace: "AP-2" } });
+    t.nodes.push(node("kt2", "kt", { config: { workplace: "AP-9" } }));
+    expect(hits(t, "P-34").map((f) => f.nodes)).toEqual([["kt2"]]);
+  });
+
+  it("[P-34] ein Tablet zählt als Arbeitsplatz-Rechner", () => {
+    const t = praxis({ kt: { workplace: "AP-2" } });
+    t.nodes.push(node("tab", "tab", { config: { workplace: "AP-2" } }));
+    expect(hits(t, "P-34")).toEqual([]);
+  });
+
+  it("[P-34] ein mobiles Kartenterminal wird nicht geprüft (arbeitet offline)", () => {
+    const t = praxis();
+    t.nodes.push(node("mkt", "mkt", { config: { workplace: "AP-9" } }));
+    expect(hits(t, "P-34").map((f) => f.nodes)).toEqual([]);
   });
 
   it("[P-30] nicht gepairt meldet, gepairt und ungesetzt nicht", () => {

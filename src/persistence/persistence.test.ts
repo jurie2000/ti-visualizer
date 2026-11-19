@@ -329,6 +329,47 @@ describe("Importbefunde", () => {
     expect(r.findings[0]).toMatchObject({ severity: "Hinweis", ref: "h" });
   });
 
+  it("[#211] Highspeed-Konnektor: Kanten an lan0 und lan1 enden beide an lan", () => {
+    const e = (id: string, port: string) => ({
+      id,
+      fault: false,
+      ends: [
+        { node: "sw", port: id === "e1" ? "p1" : "p2" },
+        { node: "h", port },
+      ],
+    });
+    const r = ok(
+      file({
+        ...base(),
+        nodes: [node("sw", "switch"), node("h", "hskon")],
+        edges: [e("e1", "lan0"), e("e2", "lan1")],
+      }),
+    );
+    expect(r.topology.edges.map((x) => x.ends[1].port)).toEqual(["lan", "lan"]);
+    expect(r.findings.map((f) => f.code)).toEqual(["typErsetzt"]);
+  });
+
+  it("[#211] Highspeed-Konnektor ohne Kanten lädt als TI-Gateway", () => {
+    const r = ok(file({ ...base(), nodes: [node("h", "hskon")] }));
+    expect(r.topology.nodes[0]?.type).toBe("gateway");
+    expect(r.findings.map((f) => f.code)).toEqual(["typErsetzt"]);
+  });
+
+  it("[#211] ungültiger oder doppelter Highspeed-Konnektor wird verworfen, ohne Hinweis", () => {
+    const r = ok(
+      file({
+        ...base(),
+        nodes: [node("h", "hskon"), node("h", "hskon"), { type: "hskon" }],
+      }),
+    );
+    expect(r.topology.nodes.map((n) => n.id)).toEqual(["h"]);
+    expect(r.findings.map((f) => f.code)).toEqual([
+      "typErsetzt",
+      "doppelteId",
+      "ungueltig",
+    ]);
+  });
+
   it("[#203] der Token-Zustand bleibt beim Laden erhalten, Altdateien laden ohne Tokens", () => {
     const tokens = { zeta: "2026-11-01", popp: ["egk-1"] };
     const r = ok(file({ ...base(), tokens }));

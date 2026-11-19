@@ -46,6 +46,15 @@ describe("Presets (Regelwerk 13)", () => {
     const types = klinikum?.topology.nodes.map((n) => n.type) ?? [];
     expect(types).toContain("gateway");
     expect(types).not.toContain("kon");
+    const ports = (klinikum?.topology.edges ?? [])
+      .flatMap((e) => e.ends)
+      .filter((x) => x.node === "gw1")
+      .map((x) => x.port)
+      .sort();
+    expect(ports).toEqual(["lan", "vpn", "wan"]);
+  });
+
+  it("[P-34] kein Preset löst P-34 aus", () => {
     for (const { id, topology } of catalog.presets) {
       const found = runChecks(topology, "advanced", catalog).map((f) => f.id);
       expect(found, id).not.toContain("P-34");

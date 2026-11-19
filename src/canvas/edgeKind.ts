@@ -80,7 +80,7 @@ export function describeEdge(
         : both("tun")
           ? "vpn"
           : types.includes("switch") && types.includes("gateway")
-            ? "vpn" // Regelwerk 3: Switch ↔ TI-Gateway ist ein VPN
+            ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway)
             : has("net")
               ? "inet"
               : both("ti") || both("app")

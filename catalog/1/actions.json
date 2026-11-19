@@ -414,5 +414,48 @@
     "flow": "appEpa",
     "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
+  },
+  {
+    "id": "zeta-anmelden",
+    "name": "ZETA-Anmeldung (SMC-B)",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "card": "smcb", "unlocked": true },
+        { "service": "zeta" }
+      ]
+    },
+    "flow": "zeta",
+    "issues": "zeta",
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "popp-token-beantragen",
+    "name": "PoPP-Token beantragen (eGK)",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [{ "need": "zugang" }, { "card": "egk" }, { "service": "popp" }]
+    },
+    "flow": "popp",
+    "issues": "popp",
+    "source": ["gemSpec_PoPP_Service", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "vsdm2-pruefen",
+    "name": "VSDM-2.0-Prüfung",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zetaToken" },
+        { "need": "poppToken" },
+        { "service": "vsdm2" }
+      ]
+    },
+    "flow": "vsdm2",
+    "source": ["gemSpec_VSDM_2", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
   }
 ]

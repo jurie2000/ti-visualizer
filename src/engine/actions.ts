@@ -340,3 +340,52 @@ export function availableActions(
       };
     });
 }
+
+/**
+ * Topologie nach einem Ablauf, der einen Token ausstellt (Regelwerk 6.2): ZETA am
+ * `simDate`, PoPP für die eGK des Auslösers oder Terminals (ohne `id` bekommt sie eine).
+ */
+export function issueToken(
+  issues: NonNullable<Catalog["actions"][number]["issues"]>,
+  trigger: Node,
+  topology: Topology,
+  catalog: Cat,
+  terminal?: string,
+): Topology {
+  if (issues === "zeta")
+    return {
+      ...topology,
+      tokens: { ...topology.tokens, zeta: topology.simDate },
+    };
+  const choice = terminalFor(topology, trigger.id, catalog);
+  const holders = [
+    trigger.id,
+    terminal ?? (choice.status === "one" ? choice.terminal : undefined),
+  ];
+  const holder = topology.nodes.find(
+    (n) => holders.includes(n.id) && cardState(topology, n.id, "egk").plugged,
+  );
+  const egk = holder?.cards?.find((c) => c.kind === "egk");
+  if (!holder || !egk) return topology;
+  let id = egk.id;
+  if (id === undefined) {
+    const used = new Set(
+      topology.nodes.flatMap((n) => n.cards ?? []).map((c) => c.id),
+    );
+    let n = 1;
+    while (used.has(`egk-${String(n)}`)) n++;
+    id = `egk-${String(n)}`;
+  }
+  return {
+    ...topology,
+    nodes: topology.nodes.map((x) =>
+      x === holder
+        ? { ...x, cards: x.cards?.map((c) => (c === egk ? { ...c, id } : c)) }
+        : x,
+    ),
+    tokens: {
+      ...topology.tokens,
+      popp: [...new Set([...(topology.tokens?.popp ?? []), id])],
+    },
+  };
+}

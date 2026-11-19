@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { AnyCard, Node, Topology } from "../schema";
 import { loadCatalog } from "../schema/loadCatalog";
-import { availableActions } from "./actions";
+import { availableActions, issueToken } from "./actions";
 import { MESSAGES } from "./cards";
 import { bindFlow } from "./simulation";
 
@@ -37,6 +37,8 @@ const TYPES: Record<string, string> = {
   tim: "tim",
   epa: "epa",
   popp: "popp",
+  zeta: "zeta",
+  vsdm2: "vsdm2",
   erpapp: "erpapp",
   epaapp: "epaapp",
 };
@@ -88,9 +90,10 @@ const links: [string, string, true?][] = [
   ...["vsdm", "erp", "idp", "idpsek", "kim", "epa", "popp"].map(
     (s): [string, string] => ["zn", s],
   ),
-  ...["erp", "idp", "idpsek", "epa", "tim", "popp"].map(
+  ...["erp", "idp", "idpsek", "epa", "tim", "popp", "zeta"].map(
     (s): [string, string] => ["net", s],
   ),
+  ["zeta", "vsdm2"],
 ];
 const full = (): Topology => ({
   name: "t",
@@ -188,6 +191,18 @@ const cases: [
     / Oder: /,
   ],
   [
+    "zeta-anmelden",
+    "pvs",
+    (t) => without(t, "zeta"),
+    "ZETA Guard fehlt in der Topologie.",
+  ],
+  [
+    "popp-token-beantragen",
+    "pvs",
+    (t) => drop(t, "kt", "egk"),
+    "Keine eGK gesteckt.",
+  ],
+  [
     "notfalldaten-schreiben",
     "kt",
     (t) => drop(t, "kt", "egk"),
@@ -273,8 +288,12 @@ const cases: [
 
 describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
   it("deckt jede Katalogaktion ab", () => {
+    // `vsdm2-pruefen` braucht Token und hat eigene Tests unten
     expect(cases.map((c) => c[0]).sort()).toEqual(
-      catalog.actions.map((a) => a.id).sort(),
+      catalog.actions
+        .map((a) => a.id)
+        .filter((id) => id !== "vsdm2-pruefen")
+        .sort(),
     );
   });
 
@@ -567,5 +586,163 @@ describe("Token-Bausteine (#203)", () => {
     expect(stateOf(withTokens({ popp: ["egk-1"] }), "poppToken")?.enabled).toBe(
       false,
     );
+  });
+});
+
+describe("TI-2.0-Aktionen (#204)", () => {
+  const pvs = (t: Topology) => t.nodes.find((n) => n.id === "pvs") as Node;
+  const action = (id: string) =>
+    catalog.actions.find(
+      (a) => a.id === id,
+    ) as (typeof catalog.actions)[number];
+  const noTokens = (t: Topology): Topology => ({ ...t, tokens: {} });
+  // Beide Token für die eGK im Terminal (id vergeben)
+  const ready = (): Topology => ({
+    ...cards(full(), "kt", (c) =>
+      c.map((x) => (x.kind === "egk" ? { ...x, id: "egk-1" } : x)),
+    ),
+    tokens: { zeta: "2026-11-01", popp: ["egk-1"] },
+  });
+
+  it("ZETA-Anmeldung: nur mit freigeschalteter SMC-B", () => {
+    const locked = cards(full(), "kt", (c) =>
+      c.map((x) => (x.kind === "smcb" ? { ...x, unlocked: false } : x)),
+    );
+    expect(state(locked, "pvs", "zeta-anmelden")).toMatchObject({
+      enabled: false,
+      disabledReason: "SMC-B ist nicht freigeschaltet.",
+    });
+  });
+
+  it("PoPP-Token: nur mit erreichbarem PoPP-Service", () => {
+    expect(
+      state(without(full(), "popp"), "pvs", "popp-token-beantragen")?.enabled,
+    ).toBe(false);
+  });
+
+  it("VSDM 2.0: nennt die erste fehlende Bedingung; vsdm bleibt daneben wählbar", () => {
+    const t = ready();
+    expect(
+      state(noTokens(t), "pvs", "vsdm2-pruefen")?.disabledReason,
+    ).toContain("ZETA-Token");
+    const zeta = { ...t, tokens: { zeta: t.simDate } };
+    expect(state(zeta, "pvs", "vsdm2-pruefen")?.disabledReason).toContain(
+      "PoPP-Token",
+    );
+    expect(state(t, "pvs", "vsdm2-pruefen")?.enabled).toBe(true);
+    expect(state(t, "pvs", "vsdm-pruefen")?.enabled).toBe(true);
+    expect(
+      state(without(t, "vsdm2"), "pvs", "vsdm2-pruefen")?.disabledReason,
+    ).toContain("fehlt in der Topologie");
+    // Verbindung unterbrochen: ZETA Guard ausgefallen
+    expect(state(faulty(t, "zeta"), "pvs", "vsdm2-pruefen")).toMatchObject({
+      enabled: false,
+      disabledReason: expect.stringContaining("ausgefallen") as string,
+    });
+    // Tageswechsel: wieder eine ZETA-Anmeldung nötig
+    expect(
+      state({ ...t, simDate: "2026-11-02" }, "pvs", "vsdm2-pruefen")
+        ?.disabledReason,
+    ).toContain("ZETA-Token");
+  });
+
+  it("stellt Token aus: ZETA am simDate, PoPP mit freier eGK-id", () => {
+    const t = noTokens(full());
+    const zeta = issueToken("zeta", pvs(t), t, catalog);
+    expect(zeta.tokens?.zeta).toBe(t.simDate);
+    const popp = issueToken("popp", pvs(t), t, catalog);
+    expect(popp.tokens?.popp).toEqual(["egk-1"]);
+    // eGK ohne id bekommt eine freie
+    const ohneId = cards(t, "kt", (c) =>
+      c.map((x) =>
+        x.kind === "egk" ? { kind: x.kind, expires: x.expires } : x,
+      ),
+    );
+    const neu = issueToken("popp", pvs(t), ohneId, catalog);
+    const egk = neu.nodes
+      .find((n) => n.id === "kt")
+      ?.cards?.find((c) => c.kind === "egk");
+    expect(egk?.id).toBe("egk-1");
+    expect(neu.tokens?.popp).toEqual(["egk-1"]);
+  });
+
+  it("läuft das PVS auf einem PC, startet der PC alle drei Aktionen", () => {
+    const base = noTokens(full());
+    const t: Topology = {
+      ...base,
+      nodes: [
+        ...base.nodes,
+        { id: "pc", type: "pc", position: { x: 0, y: 0 }, fault: false },
+      ],
+      edges: [
+        ...base.edges.filter((e) => e.ends.every((x) => x.node !== "pvs")),
+        {
+          id: "sw-pc",
+          fault: false,
+          ends: [
+            { node: "sw", port: "p" },
+            { node: "pc", port: "p" },
+          ],
+        },
+        {
+          id: "pc-pvs",
+          fault: false,
+          ends: [
+            { node: "pc", port: "soft" },
+            { node: "pvs", port: "host" },
+          ],
+        },
+      ],
+    };
+    // Die Software löst nichts selbst aus
+    expect(state(t, "pvs", "zeta-anmelden")).toBeUndefined();
+    for (const id of ["zeta-anmelden", "popp-token-beantragen"])
+      expect(state(t, "pc", id)?.enabled, id).toBe(true);
+    expect(state(t, "pc", "vsdm2-pruefen")?.disabledReason).toContain(
+      "ZETA-Token",
+    );
+    const pc = t.nodes.find((n) => n.id === "pc") as Node;
+    for (const id of [
+      "zeta-anmelden",
+      "popp-token-beantragen",
+      "vsdm2-pruefen",
+    ]) {
+      const flow = catalog.flows.find((f) => f.id === action(id).flow);
+      const steps = bindFlow(flow as NonNullable<typeof flow>, pc, t, catalog);
+      for (const s of steps) expect(s.problem, id).toBeUndefined();
+      // Der Weg der Software führt über den Rechner
+      expect(
+        steps.flatMap((s) => s.nodes),
+        id,
+      ).toContain("pc");
+    }
+    const mit = issueToken("popp", pc, t, catalog);
+    expect(mit.tokens?.popp).toEqual(["egk-1"]);
+    expect(
+      state(
+        { ...mit, tokens: { zeta: t.simDate, popp: ["egk-1"] } },
+        "pc",
+        "vsdm2-pruefen",
+      )?.enabled,
+    ).toBe(true);
+  });
+
+  it("jeder Ablauf bindet seine Stationen", () => {
+    for (const id of [
+      "zeta-anmelden",
+      "popp-token-beantragen",
+      "vsdm2-pruefen",
+    ]) {
+      const flow = catalog.flows.find((f) => f.id === action(id).flow);
+      const t = full();
+      const steps = bindFlow(
+        flow as NonNullable<typeof flow>,
+        pvs(t),
+        t,
+        catalog,
+      );
+      expect(steps.length).toBe(5);
+      for (const s of steps) expect(s.problem, id).toBeUndefined();
+    }
   });
 });

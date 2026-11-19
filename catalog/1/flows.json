@@ -520,5 +520,119 @@
     ],
     "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
+  },
+  {
+    "id": "zeta",
+    "name": "ZETA-Anmeldung (SMC-B)",
+    "steps": [
+      {
+        "from": "P",
+        "to": "T",
+        "label": "Authentisierung mit der SMC-B",
+        "text": "Das Primärsystem fordert vom Kartenterminal die Authentisierung mit der SMC-B an."
+      },
+      {
+        "from": "T",
+        "to": "K",
+        "label": "SMC-B bestätigt (SICCT)",
+        "text": "Das Kartenterminal bestätigt die Authentisierung gegenüber dem Zugang."
+      },
+      {
+        "from": "K",
+        "to": "zeta",
+        "label": "Anmeldung (über das Internet)",
+        "text": "Der Zugang meldet die Praxis über das Internet beim ZETA Guard an."
+      },
+      {
+        "from": "zeta",
+        "to": "K",
+        "label": "Access Token",
+        "text": "Der ZETA Guard prüft die Anmeldung und stellt einen Access Token aus."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Access Token",
+        "text": "Das Primärsystem erhält den Access Token. Er gilt bis Tagesende."
+      }
+    ],
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "popp",
+    "name": "PoPP-Token beantragen (eGK)",
+    "steps": [
+      {
+        "from": "T",
+        "to": "P",
+        "label": "eGK-Daten (über K)",
+        "text": "Das Kartenterminal liefert die Daten der eGK an das Primärsystem."
+      },
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Token-Antrag",
+        "text": "Das Primärsystem reicht den Antrag auf einen PoPP-Token beim Zugang ein."
+      },
+      {
+        "from": "K",
+        "to": "popp",
+        "label": "Token anfordern (über das Internet)",
+        "text": "Der Zugang leitet den Antrag über das Internet an den PoPP-Service weiter."
+      },
+      {
+        "from": "popp",
+        "to": "K",
+        "label": "PoPP-Token",
+        "text": "Der PoPP-Service bestätigt den Behandlungsfall und stellt den PoPP-Token aus."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "PoPP-Token",
+        "text": "Der Token läuft über denselben Weg zurück zum Primärsystem."
+      }
+    ],
+    "source": ["gemSpec_PoPP_Service", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "vsdm2",
+    "name": "VSDM-2.0-Prüfung",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Authentisierung mit PoPP-Token",
+        "text": "Das Primärsystem weist sich mit dem PoPP-Token aus und übergibt ihn dem Zugang."
+      },
+      {
+        "from": "K",
+        "to": "zeta",
+        "label": "Zugriff (über das Internet)",
+        "text": "Der Zugang schickt die Anfrage mit Access Token und PoPP-Token an den ZETA Guard."
+      },
+      {
+        "from": "zeta",
+        "to": "vsdm2",
+        "label": "Abfrage",
+        "text": "Der ZETA Guard prüft beide Token und lässt die Anfrage zum VSDM-2.0-Dienst durch."
+      },
+      {
+        "from": "vsdm2",
+        "to": "K",
+        "label": "Versichertenstammdaten",
+        "text": "Der VSDM-2.0-Dienst antwortet mit den Versichertenstammdaten."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Versichertenstammdaten",
+        "text": "Das Primärsystem erhält die aktuellen Stammdaten."
+      }
+    ],
+    "source": ["gemSpec_VSDM_2", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
   }
 ]

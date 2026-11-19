@@ -1,5 +1,6 @@
 import { Check, Pause, Play, SkipBack, SkipForward, X } from "lucide-react";
 import { useEffect, useRef, type KeyboardEvent } from "react";
+import { issueToken } from "../engine/actions";
 import {
   bindFlow,
   stepDelayMs,
@@ -15,7 +16,10 @@ import {
   useTopology,
   useUi,
 } from "../store";
+import type { Catalog, Node } from "../schema";
 import { Button } from "../ui/Button";
+
+type Issues = NonNullable<Catalog["actions"][number]["issues"]>;
 
 function problemText(step: BoundStep, nameOf: (id: string) => string) {
   switch (step.problem?.kind) {
@@ -46,6 +50,13 @@ export function SimPlayer() {
   const catalog = useCatalog((s) => s.catalog);
   const ref = useRef<HTMLDivElement>(null);
   const locked = simLocked(sim);
+  // Aktion der laufenden Simulation; die Token-Ausstellung am Ende bricht sie nicht ab.
+  const run = useRef<{
+    issues: Issues;
+    node: Node;
+    terminal: string | undefined;
+  }>(undefined);
+  const issuing = useRef(false);
 
   // Neue Aktion ersetzt eine laufende Simulation.
   useEffect(() => {
@@ -55,6 +66,9 @@ export function SimPlayer() {
     const action = catalog.actions.find((a) => a.id === pending.actionId);
     const flow = catalog.flows.find((f) => f.id === action?.flow);
     if (!node || !action || !flow) return;
+    run.current = action.issues
+      ? { issues: action.issues, node, terminal: pending.terminal }
+      : undefined;
     begin(
       action.name,
       node.id,
@@ -85,7 +99,7 @@ export function SimPlayer() {
       send("cancel");
     };
     const offTopology = useTopology.subscribe((s, p) => {
-      if (s.topology !== p.topology) cancel();
+      if (s.topology !== p.topology && !issuing.current) cancel();
     });
     const offMode = useSettings.subscribe((s, p) => {
       if (s.mode !== p.mode) cancel();
@@ -95,6 +109,33 @@ export function SimPlayer() {
       offMode();
     };
   }, [live, send]);
+
+  // Token entsteht erst, wenn der Ablauf ohne Problem durchlief (Regelwerk 6.2).
+  useEffect(
+    () =>
+      useSim.subscribe((s, prev) => {
+        if (s.sim.status !== "done" || prev.sim.status === "done") return;
+        if (!run.current || s.steps.some((b) => b.problem)) return;
+        const { issues, node, terminal } = run.current;
+        run.current = undefined; // einmal je Lauf, auch nach „Zurück“ und „Weiter“
+        const t = useTopology.getState();
+        issuing.current = true;
+        try {
+          t.replace(
+            issueToken(
+              issues,
+              node,
+              t.topology,
+              useCatalog.getState().catalog,
+              terminal,
+            ),
+          );
+        } finally {
+          issuing.current = false;
+        }
+      }),
+    [],
+  );
 
   // Canvas verschwindet (Startansicht): nichts bleibt hängen.
   useEffect(

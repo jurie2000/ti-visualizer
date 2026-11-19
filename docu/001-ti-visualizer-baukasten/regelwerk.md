@@ -541,7 +541,7 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
-| **PoPP-Token** | Für eine eGK im Terminal des Zugangs oder im Auslöser wurde ein PoPP-Token ausgestellt (Vereinfachung: irgendeine dieser eGK genügt). Er gilt für den Behandlungsfall dieser eGK und hängt an ihrer `id`. Stand in der Topologie: `tokens.popp` (eGK-IDs), eine eGK ohne `id` kann keinen Token tragen | gemSpec_PoPP_Service, gemSpec_VSDM_2 (plausibel) |
+| **PoPP-Token** | Für eine eGK im Terminal des Zugangs oder im Auslöser wurde ein PoPP-Token ausgestellt (Vereinfachung: irgendeine dieser eGK genügt). Er gilt für den Behandlungsfall dieser eGK und hängt an ihrer `id`. Stand in der Topologie: `tokens.popp` (eGK-IDs), eine eGK ohne `id` trägt erst nach der Ausstellung einen Token (Auslegung TI-2.0-Aktionen, 6.2) | gemSpec_PoPP_Service, gemSpec_VSDM_2 (plausibel) |
 | **Befugnis (ePA)** | Prüfungsnachweis oder PoPP-Token. Dauer: 90 Tage in Praxis und Krankenhaus, 3 Tage in der Apotheke | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Praxen, gematik ePA für alle Apotheken (plausibel, Stand 2026 prüfen) |
 
 Die erste nicht erfüllte Bedingung liefert die Begründung im
@@ -592,6 +592,21 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan erstellen/aktualisieren | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemILF_PS_AMTS, gemSysL_AMTS_A |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
+| ZETA-Anmeldung (SMC-B) | Zugang, SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| PoPP-Token beantragen (eGK) | Zugang, eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
+| VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+
+**Auslegung (2026-11-19, TI-2.0-Aktionen):** (a) Die Token werden am Ende
+des Ablaufs ausgestellt, nicht beim Start, und nur, wenn kein Schritt ein
+Problem hat; ein abgebrochener Ablauf stellt nichts aus. Die Ausstellung
+ist ein Schritt für Rückgängig. (b) `vsdm` (VPN, VSDM 1.0) bleibt
+unverändert und steht neben VSDM 2.0; beide sind einzeln wählbar (X-1
+bleibt). (c) Eine eGK ohne `id` bekommt bei der PoPP-Ausstellung eine freie
+`id`, damit der Token an ihr hängen kann. (d) Beide Aktionen mit Karte
+nutzen den Baustein „Zugang“, weil der Ablauf über den Zugang läuft.
+(e) Der Schritt ZETA Guard→VSDM 2.0 im Ablauf `vsdm2` folgt der direkten
+Verbindung (Regelwerk 4.2), weil die Pfadregel nur Wege vom Auslöser kennt.
+Status: plausibel.
 
 **Aktionen starten am Rechner:** PC, Tablet und Server bieten die
 Aktionen der Software an, die auf ihnen läuft; ein Arbeitsplatz (PC, Tablet)
@@ -667,6 +682,9 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 |---|---|---|---|
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→IDP Token holen (OAuth 2.0, über K→V) · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | bestätigt | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
+| `zeta` | P→T Authentisierung mit der SMC-B anfordern · T→K SMC-B bestätigt (SICCT) · K→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→K Access Token · K→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `popp` | T→P eGK-Daten (über K) · P→K Token-Antrag · K→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→K PoPP-Token · K→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `vsdm2` | P→K Authentisierung mit PoPP-Token · K→ZETA Guard Zugriff (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→K Versichertenstammdaten · K→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur mit HBA (QES) über T · CM→K Verschlüsselung mit der SMC-B · CM→KIM (mTLS, über K→V) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |

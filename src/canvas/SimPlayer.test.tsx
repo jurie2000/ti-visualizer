@@ -303,6 +303,112 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(useSim.getState().sim.status).toBe("cancelled");
   });
 
+  // Praxis mit TI-2.0-Diensten am Internet
+  const ti2 = (terminals: string[], services: string[]) => {
+    const t = praxis(terminals);
+    useTopology.getState().reset({
+      ...t,
+      nodes: [
+        ...t.nodes,
+        ...services.map((id) => ({
+          id,
+          type: id,
+          position: { x: 0, y: 400 },
+          fault: false,
+        })),
+      ],
+      edges: [
+        ...t.edges,
+        ...services.map((id): Topology["edges"][number] => ({
+          id: `net-${id}`,
+          fault: false,
+          ends: [
+            { node: "net", port: "p" },
+            { node: id, port: "p" },
+          ],
+        })),
+      ],
+    });
+  };
+  const nexts = (n: number) => {
+    for (let i = 0; i < n; i++)
+      act(() => {
+        useSim.getState().send("next");
+      });
+  };
+
+  it("ZETA-Anmeldung stellt den Token nach dem Ende einmal aus, ohne abzubrechen (#204)", () => {
+    ti2(["kt"], ["zeta"]);
+    render(<Canvas />, { wrapper });
+    act(() => {
+      useUi
+        .getState()
+        .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
+    });
+    nexts(4);
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+    nexts(1);
+    expect(useSim.getState().sim.status).toBe("done");
+    expect(useTopology.getState().topology.tokens?.zeta).toBe("2026-11-01");
+    expect(live()).toHaveTextContent("Ablauf beendet");
+    // „Zurück“ und „Weiter“ stellen nicht erneut aus
+    const steps = useTopology.getState().past.length;
+    act(() => {
+      useSim.getState().send("prev");
+    });
+    nexts(1);
+    expect(useTopology.getState().past.length).toBe(steps);
+    // ein Schritt für Rückgängig
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+  });
+
+  it("Abbruch vor dem Ende und ein Ablauf mit Problem stellen keinen Token aus (#204)", () => {
+    ti2(["kt"], ["zeta"]);
+    render(<Canvas />, { wrapper });
+    act(() => {
+      useUi
+        .getState()
+        .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
+    });
+    nexts(2);
+    act(() => {
+      useSim.getState().send("cancel");
+    });
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+    // Der ZETA Guard fehlt erst nach dem Start: der Schritt hat kein Ziel
+    ti2(["kt"], []);
+    act(() => {
+      useUi
+        .getState()
+        .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
+    });
+    nexts(5);
+    expect(useSim.getState().sim.status).toBe("done");
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+  });
+
+  it("PoPP-Token: die eGK im gewählten Terminal bekommt id und Token (#204)", () => {
+    ti2(["kt", "kt2"], ["popp"]);
+    render(<Canvas />, { wrapper });
+    act(() => {
+      useUi.getState().startAction({
+        nodeId: "pvs",
+        actionId: "popp-token-beantragen",
+        terminal: "kt2",
+      });
+    });
+    nexts(5);
+    const t = useTopology.getState().topology;
+    expect(t.tokens?.popp).toEqual(["egk-1"]);
+    const egkOf = (id: string) =>
+      t.nodes.find((n) => n.id === id)?.cards?.find((c) => c.kind === "egk");
+    expect(egkOf("kt2")?.id).toBe("egk-1");
+    expect(egkOf("kt")?.id).toBeUndefined();
+  });
+
   it("zeigt „Terminal wählen“, wenn mehrere Terminals passen und keines gewählt ist", async () => {
     const user = userEvent.setup();
     useTopology.getState().reset(praxis(["kt", "kt2"]));

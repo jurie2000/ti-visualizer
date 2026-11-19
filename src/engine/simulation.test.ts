@@ -21,6 +21,7 @@ const TYPES = [
   ...["pvs", "avs", "kimcm", "kt", "kon", "mkt", "cardlink", "timc"],
   ...["erpapp", "epaapp", "switch", "router", "internet", "vpn", "zentral"],
   ...["vsdm", "erp", "idp", "idpsek", "kim", "epa", "tim", "vzd", "kk"],
+  ...["popp", "zeta", "vsdm2"],
 ];
 const LINKS: [string, string][] = [
   ...["pvs", "avs", "kimcm", "kt", "kon"].map((n): [string, string] => [
@@ -40,6 +41,9 @@ const LINKS: [string, string][] = [
   ["internet", "tim"],
   ["internet", "erp"],
   ["internet", "idpsek"],
+  ["internet", "popp"],
+  ["internet", "zeta"],
+  ["zeta", "vsdm2"],
   ["internet", "epa"],
   ...["vsdm", "erp", "idp", "kim", "epa", "vzd", "kk"].map(
     (s): [string, string] => ["zentral", s],

@@ -50,15 +50,15 @@ Dateien verweisen, die im Repo liegen. Den Diff aus drei Blickwinkeln prüfen.
 
 ## Schweregrade
 
-Jeder Befund trägt eine Schwere. Sie entscheidet, ob er den Merge aufhält:
+Jeder Befund trägt eine Schwere. Sie entscheidet, ob er vor dem PR behoben wird:
 
 - **Hoch:** Verstoß gegen Issue oder Regelwerk, falsches Verhalten, fehlende
-  Prüfung beim Öffnen. Blockt den Merge, wird im selben PR behoben.
+  Prüfung beim Öffnen. Gehört nicht in den PR, wird vorher behoben.
 - **Mittel:** fachliche Abweichung mit begrenzter Wirkung, Änderung außerhalb
-  des Issues, deutliches Overengineering. Kann vertretbar vertagt werden.
-  Blockt nicht.
+  des Issues, deutliches Overengineering. Kann vertretbar vertagt werden,
+  dann im PR-Text nennen.
 - **Niedrig / Hinweis:** kleine Unstimmigkeit oder Vormerkung für einen
-  Folge-Issue. Blockt nicht.
+  Folge-Issue.
 
 ## Nicht Aufgabe der Prüfung
 

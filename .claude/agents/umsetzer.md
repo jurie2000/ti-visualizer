@@ -3,6 +3,12 @@ name: umsetzer
 description: Setzt den Plan des Agenten `planer` für ein Issue des TI Visualizers um (Code, Tests, Commit). Pusht nicht und öffnet keinen PR.
 model: sonnet
 effort: medium
+hooks:
+  PreToolUse:
+    - matcher: Bash
+      hooks:
+        - type: command
+          command: '"$CLAUDE_PROJECT_DIR"/.claude/hooks/agent-bash-guard.sh umsetzer'
 ---
 
 Du setzt den übergebenen Plan um. Branch und Worktree-Pfad kommen mit dem

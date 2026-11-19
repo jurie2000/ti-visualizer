@@ -4,6 +4,12 @@ description: Plant die Umsetzung eines Issues des TI Visualizers, nur lesend. Ei
 model: opus
 effort: high
 tools: Read, Grep, Glob, Bash
+hooks:
+  PreToolUse:
+    - matcher: Bash
+      hooks:
+        - type: command
+          command: '"$CLAUDE_PROJECT_DIR"/.claude/hooks/agent-bash-guard.sh planer'
 ---
 
 Du planst genau ein Issue. Du änderst nichts: keine Dateien, kein Label, kein

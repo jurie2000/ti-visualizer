@@ -34,12 +34,6 @@ Gestalte ein hochwertiges, klickbares UI-Mockup für den **TI Visualizer**, eine
 - Klare Typografie (z. B. Inter), großzügige Abstände, dezente Schatten, abgerundete Ecken.
 - Hell- und Dunkelmodus.
 
-## Barrierefreiheit (verbindlich)
-- **Rot-Grün-Schwäche:** Zustände wie gültig/ungültig, aktiv/ausgegraut, läuft/fertig dürfen nie allein über Farbe unterschieden werden. Immer zusätzlich Icon (Haken, Kreuz, Warndreieck), Muster oder Linienstil und Text. Farbpalette farbenblind-sicher (z. B. Okabe-Ito), keine Rot/Grün-Kombination als Bedeutungsträger.
-- Kontrast mindestens WCAG AA für Text und Symbole.
-- **Tastatur:** Sichtbarer, kräftiger Fokusrahmen an allen Elementen. Zeige in einer Ansicht die Tastaturhinweise (Shortcut-Übersicht: Enter fügt Gerät hinzu, Pfeiltasten verschieben, Menütaste/Shift+F10 öffnet das Kontextmenü, Leertaste Play/Pause, Esc bricht ab).
-- Erklärtexte der Simulation in einem gut lesbaren Bereich (Live-Region), Mindestschriftgröße 14 px.
-
 ## Ergebnis
 - Klickbares Mockup der oben genannten Zustände, ein durchgängiges Designsystem (Farben als Tokens, Typografie, Abstände, Icons, Kantenstile, Komponenten wie Knoten, Menü, Panel, Player, Dialog).
 - Am Ende eine kurze Übersicht der Design-Tokens (Farbwerte hell und dunkel, Kontrastverhältnisse), damit sie später ins Frontend übernommen werden können.

@@ -22,11 +22,6 @@ Closes #
 
 <!-- Vorher/Nachher einfügen oder „keine UI-Änderung“ -->
 
-## Barrierefreiheit (bei UI-Änderung)
-
-- [ ] Zustände nie nur über Farbe angezeigt
-- [ ] Alles per Tastatur bedienbar
-
 ## Sicherheitsrelevanz
 
 - [ ] Keine Sicherheitsrelevanz

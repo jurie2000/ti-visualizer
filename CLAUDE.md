@@ -26,9 +26,20 @@ Regel-ID oder Stichwort, dann den Abschnitt.
   (ohne Tests und Katalog-JSON). Ist das Issue größer, vor dem Programmieren
   in kleinere Issues teilen.
 - Fachliche Auslegungsfragen nach `quellen.md` selbst entscheiden und als
-  „Auslegung (Datum)“ im Regelwerk oder PR festhalten.
-- Skill `fix-issue` für Issues. Umsetzung über den Agenten `umsetzer`
-  (Sonnet).
+  „Auslegung (Datum)“ im Regelwerk oder PR festhalten, zusätzlich als
+  „Entscheidung:“ melden.
+- Alles Übrige (Statusdatei, Review, PR, CI, Abschlussbericht) regelt der
+  globale Workflow.
+
+## Agenten
+
+Geplant wird mit dem Agenten `planer` (Opus, nur lesend), umgesetzt mit dem
+Agenten `umsetzer` (Sonnet). Der `planer` arbeitet zu, der Hauptagent
+verantwortet den Plan, legt den Branch an und gibt dem `umsetzer` Plan,
+Branch und Worktree-Pfad. Dessen Bericht ist die Rückgabe. Beide Agenten
+können den Nutzer nicht fragen, Fragen gehen an den Hauptagenten. Review-
+Befunde setzt der Hauptagent um. Aus dem Bericht baut er den
+Abschlussbericht für den Nutzer.
 
 ## Code
 
@@ -45,7 +56,7 @@ Erst das Problem verstehen, dann beim ersten Punkt anhalten, der trägt:
 - Bugfix behebt die Ursache in der gemeinsamen Funktion, nicht das
   Symptom an einem Aufrufer.
 - Nicht sparen bei: Prüfung geöffneter Dateien, Texte nie als HTML,
-  Barrierefreiheit, Fehlerbehandlung gegen Datenverlust.
+  Fehlerbehandlung gegen Datenverlust.
 
 ## Kommentare
 

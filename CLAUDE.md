@@ -26,7 +26,7 @@ Regel-ID oder Stichwort, dann den Abschnitt.
   (ohne Tests und Katalog-JSON). Ist das Issue größer, vor dem Programmieren
   in kleinere Issues teilen.
 - Fachliche Auslegungsfragen nach `quellen.md` selbst entscheiden und als
-  „Auslegung (Datum)“ im Regelwerk oder PR festhalten und als
+  „Auslegung (Datum)“ im Regelwerk oder PR festhalten, zusätzlich als
   „Entscheidung:“ melden.
 - Alles Übrige (Statusdatei, Review, PR, CI, Abschlussbericht) regelt der
   globale Workflow.
@@ -34,16 +34,12 @@ Regel-ID oder Stichwort, dann den Abschnitt.
 ## Agenten
 
 Geplant wird mit dem Agenten `planer` (Opus, nur lesend), umgesetzt mit dem
-Agenten `umsetzer` (Sonnet). Beide kennen nur diese Datei und ihren Auftrag,
-nicht das Gespräch.
-
-- **Übergabe an `umsetzer`:** Issue-Nummer und der Plan des `planer`: Ziel,
-  Dateien, Schritte, „Fertig, wenn“, `Annahme:`, `Entscheidung:`, Risiken.
-- **Rückgabe:** Bericht mit Geändert, Tests, Checks, `Annahme:`,
-  `Entscheidung:`, Offen. Der Hauptagent baut daraus den Abschlussbericht für
-  den Nutzer.
-- Beide können den Nutzer nicht fragen. Fragen gehen an den Hauptagenten.
-- Der `umsetzer` committet nur. Push, PR und CI macht der Hauptagent.
+Agenten `umsetzer` (Sonnet). Der `planer` arbeitet zu, der Hauptagent
+verantwortet den Plan, legt den Branch an und gibt dem `umsetzer` Plan,
+Branch und Worktree-Pfad. Dessen Bericht ist die Rückgabe. Beide Agenten
+können den Nutzer nicht fragen, Fragen gehen an den Hauptagenten. Review-
+Befunde setzt der Hauptagent um. Aus dem Bericht baut er den
+Abschlussbericht für den Nutzer.
 
 ## Code
 

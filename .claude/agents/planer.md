@@ -9,7 +9,7 @@ hooks:
     - matcher: Bash
       hooks:
         - type: command
-          command: '"$CLAUDE_PROJECT_DIR"/.claude/hooks/agent-bash-guard.sh planer'
+          command: 'f="$CLAUDE_PROJECT_DIR/.claude/hooks/agent-bash-guard.sh"; [ -x "$f" ] || exit 2; "$f" planer'
 ---
 
 Du planst genau ein Issue. Du änderst nichts: keine Dateien, kein Label, kein

@@ -8,7 +8,7 @@ hooks:
     - matcher: Bash
       hooks:
         - type: command
-          command: '"$CLAUDE_PROJECT_DIR"/.claude/hooks/agent-bash-guard.sh umsetzer'
+          command: 'f="$CLAUDE_PROJECT_DIR/.claude/hooks/agent-bash-guard.sh"; [ -x "$f" ] || exit 2; "$f" umsetzer'
 ---
 
 Du setzt den übergebenen Plan um. Branch und Worktree-Pfad kommen mit dem

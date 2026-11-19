@@ -240,6 +240,13 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
     rejected("V-8", "switch", "internet");
   });
 
+  it.each(["pvs", "pc", "kt", "mkt", "switch", "router", "fw"])(
+    "[V-21] %s direkt an ZETA, PoPP oder VSDM 2.0 wird mit der Regelmeldung abgelehnt",
+    (local) => {
+      for (const svc of ["zeta", "popp", "vsdm2"]) rejected("V-21", local, svc);
+    },
+  );
+
   it("[V-9] erp an kim wird mit der Regelmeldung abgelehnt", () => {
     rejected("V-9", "erp", "kim");
   });
@@ -486,5 +493,39 @@ describe("WLAN-Erkennung (A-4)", () => {
   it("[A-4] Kabel- und unbekannte Verbindungen sind keine", () => {
     expect(isWlan(edge("c"), t, catalog)).toBe(false);
     expect(isWlan(edge("u"), t, catalog)).toBe(false);
+  });
+});
+
+describe("TI 2.0: ZETA Guard, PoPP, VSDM 2.0 (#202)", () => {
+  it.each([
+    ["internet", "zeta"],
+    ["internet", "popp"],
+    ["zeta", "vsdm2"],
+  ])("%s und %s lassen sich verbinden", (a, b) => {
+    for (const [x, y] of [
+      [a, b],
+      [b, a],
+    ] as const)
+      expect(check(pair(x, y), "x", "y").ok, `${x} → ${y}`).toBe(true);
+  });
+
+  it.each([
+    ["zeta", "popp"],
+    ["internet", "vsdm2"],
+    ["vsdm2", "popp"],
+    ["vsdm", "zeta"],
+    ["zeta", "zeta"],
+    ["kon", "zeta"],
+    ["vpn", "vsdm2"],
+    ["zentral", "popp"],
+  ])("%s und %s sind nicht erlaubt", (a, b) => {
+    expect(check(pair(a, b), "x", "y").ok).toBe(false);
+  });
+
+  it("zeta, popp und vsdm2 stehen in der Kategorie TI 2.0, vsdm bleibt bei den Fachdiensten", () => {
+    const cat = (id: string) =>
+      catalog.deviceTypes.find((t) => t.id === id)?.category;
+    expect(["zeta", "popp", "vsdm2"].map(cat)).toEqual(["ti2", "ti2", "ti2"]);
+    expect(cat("vsdm")).toBe("service");
   });
 });

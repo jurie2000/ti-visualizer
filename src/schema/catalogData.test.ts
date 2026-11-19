@@ -166,6 +166,7 @@ describe("Echter Katalog: Verbindungsregeln und Protokolle (T-104)", () => {
       "V-18",
       "V-19",
       "V-20",
+      "V-21",
       "X-1",
     ]);
   });

@@ -22,7 +22,6 @@
         "kim",
         "tim",
         "epa",
-        "popp",
         "dns",
         "ntp",
         "vzd",
@@ -41,7 +40,7 @@
       "types": ["kt", "mkt", "cardlink"]
     },
     "b": {
-      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+      "types": ["vsdm", "erp", "kim", "tim", "epa"]
     },
     "message": "Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor.",
     "source": ["gemSpec_KT", "Arch"],
@@ -103,7 +102,7 @@
       "types": ["switch", "router", "ap", "fw"]
     },
     "b": {
-      "types": ["vsdm", "erp", "kim", "tim", "epa", "popp"]
+      "types": ["vsdm", "erp", "kim", "tim", "epa"]
     },
     "message": "Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst.",
     "source": ["Arch"],
@@ -284,5 +283,35 @@
     "message": "Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch.",
     "source": ["DVO"],
     "status": "Vereinfachung"
+  },
+  {
+    "id": "V-21",
+    "a": {
+      "types": [
+        "pvs",
+        "kis",
+        "avs",
+        "pflege",
+        "pc",
+        "server",
+        "cloud",
+        "tab",
+        "ris",
+        "lis",
+        "kt",
+        "mkt",
+        "cardlink",
+        "switch",
+        "router",
+        "ap",
+        "fw"
+      ]
+    },
+    "b": {
+      "types": ["zeta", "popp", "vsdm2"]
+    },
+    "message": "Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard.",
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP", "gemSpec_PoPP_Service"],
+    "status": "plausibel"
   }
 ]

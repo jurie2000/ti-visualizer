@@ -157,7 +157,7 @@
   display: none;
 }
 
-/* Formen der Kategorien (Katalog `shape`): abgerundet, Kapsel, Kerbe, Kasten, Sechseck, Raute, Sprechblase. */
+/* Formen der Kategorien (Katalog `shape`): abgerundet, Kapsel, Kerbe, Kasten, Sechseck, Raute, Sprechblase, Parallelogramm. */
 .tiv-shape-round {
   --radius: 24px;
 }
@@ -183,6 +183,10 @@
     12px 100%,
     0 50%
   );
+}
+.tiv-shape-slant {
+  --radius: 0;
+  --shape: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
 }
 .tiv-shape-diamond {
   --radius: 0;

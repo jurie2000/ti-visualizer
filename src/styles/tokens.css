@@ -87,6 +87,8 @@
   --tiv-cat-network-shape: box;
   --tiv-cat-service: #2c6fa8;
   --tiv-cat-service-shape: hex;
+  --tiv-cat-ti2: #6a3fb5;
+  --tiv-cat-ti2-shape: slant;
   /* Neu, Okabe-Ito (Vermillion, Gelb); hell abgedunkelt auf >= 3:1 gegen surface. */
   --tiv-cat-central: #b04a00;
   --tiv-cat-central-shape: tab;
@@ -185,6 +187,7 @@
   --tiv-cat-lan: #b6c77a;
   --tiv-cat-network: #44d7ac;
   --tiv-cat-service: #7cbdea;
+  --tiv-cat-ti2: #b9a0f2;
   --tiv-cat-central: #e8743b;
   --tiv-cat-insured: #f0e442;
   --tiv-edge-phys: #cec5b5;

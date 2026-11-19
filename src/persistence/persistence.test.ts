@@ -306,6 +306,41 @@ describe("Importbefunde", () => {
     expect(r.findings[0]?.message).toContain("gibt-es-nicht");
   });
 
+  it("[#202] popp bleibt gültig, die neuen TI-2.0-Typen werden ohne Befund geladen", () => {
+    const r = ok(
+      file({
+        ...base(),
+        nodes: [
+          node("i", "internet"),
+          node("p", "popp"),
+          node("z", "zeta"),
+          node("v", "vsdm2"),
+        ],
+        edges: [
+          {
+            id: "e1",
+            fault: false,
+            ends: [
+              { node: "i", port: "netz" },
+              { node: "p", port: "net" },
+            ],
+          },
+          {
+            id: "e2",
+            fault: false,
+            ends: [
+              { node: "z", port: "net" },
+              { node: "v", port: "net" },
+            ],
+          },
+        ],
+      }),
+    );
+    expect(r.findings).toEqual([]);
+    expect(r.topology.nodes).toHaveLength(4);
+    expect(r.topology.edges).toHaveLength(2);
+  });
+
   it("Karten sind keine Geräte", () => {
     const card = catalog.deviceTypes.find((t) => !t.placeable);
     if (!card) return;

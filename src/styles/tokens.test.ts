@@ -51,6 +51,7 @@ const cats = [
   "lan",
   "network",
   "service",
+  "ti2",
   "central",
   "insured",
 ].map((c) => `--tiv-cat-${c}`);

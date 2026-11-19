@@ -120,7 +120,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
     await prüfe("Fachdienste", async () => {
       await hinzufügen(page, /^IDP /);
       await hinzufügen(page, /^E-Rezept /);
-      await hinzufügen(page, /^VSDM /);
+      await hinzufügen(page, /^VSDM VSDM-Fachdienst /);
       for (const d of ["idp-1", "erp-1", "vsdm-1"])
         await verbinde(page, "vpn-1", d);
     });

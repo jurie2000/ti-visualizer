@@ -103,6 +103,10 @@ describe("Editor-Hilfen: Einfügen (FR-16, T-508)", () => {
     expect(
       r.topology.nodes.map((n) => n.config?.workplace).filter(Boolean),
     ).toEqual(["AP-1", "AP-2"]);
+    expect(r.topology.nodes.map((n) => n.label)).toEqual([
+      "Arbeitsplatz-PC AP-1",
+      "Arbeitsplatz-PC AP-2",
+    ]);
   });
 
   it("FR-16 Kopie ohne IP und Kopplung, mit Arbeitsplatz und frischer ID", () => {

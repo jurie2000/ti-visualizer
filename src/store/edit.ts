@@ -1,4 +1,4 @@
-import { hasCapability, nextWorkplace } from "../engine/config";
+import { hasCapability, nextWorkplace, workplaceLabel } from "../engine/config";
 import { validateConnection } from "../engine/rules";
 import {
   LIMITS,
@@ -75,7 +75,9 @@ export function pasteClip(
             y: clamp(n.position.y + OFFSET * step),
           },
           fault: false,
-          ...(n.label !== undefined && { label: n.label }),
+          ...(own
+            ? { label: workplaceLabel(n.type, catalog, config?.workplace) }
+            : n.label !== undefined && { label: n.label }),
           ...(config && { config }),
         },
       ],

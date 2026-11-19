@@ -116,7 +116,7 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
       within(select)
         .getAllByRole("option")
         .map((o) => o.textContent),
-    ).toEqual(["keiner", "AP-2 – pc-1"]);
+    ).toEqual(["keiner", "Arbeitsplatz-PC AP-2"]);
     await user.selectOptions(select, "AP-2");
     expect(nodeOf("kt-1")?.config?.workplace).toBe("AP-2");
     expect(nodeOf("kt-1")?.label).toBe("eHealth-Kartenterminal AP-2");
@@ -141,7 +141,12 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
       within(screen.getByLabelText("Arbeitsplatz"))
         .getAllByRole("option")
         .map((o) => o.textContent),
-    ).toEqual(["keiner", "Empfang", "AP-2 – tab-1", "AP-10 – pc-1"]);
+    ).toEqual([
+      "keiner",
+      "Empfang",
+      "Visite-Tablet (KIS-Client per WLAN) AP-2",
+      "Arbeitsplatz-PC AP-10",
+    ]);
   });
 
   it("[Regelwerk 8] gültige IP wird beim Verlassen übernommen", async () => {

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { create } from "zustand";
 import { NODE_SIZE } from "../canvas/deviceStyle";
-import { defaultConfig, isTerminal, terminalLabel } from "../engine/config";
+import { defaultConfig, workplaceLabel } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
 import { autoPorts, validateConnection } from "../engine/rules";
 import { containedNodes } from "../engine/zones";
@@ -140,7 +140,7 @@ export const useTopology = create<TopologyState>((set, get) => {
         );
       const id = freeId(type, t);
       const config = defaultConfig(type, t, catalog());
-      const label = terminalLabel(type, catalog(), config?.workplace);
+      const label = workplaceLabel(type, catalog(), config?.workplace);
       commit({
         ...t,
         nodes: [
@@ -415,9 +415,9 @@ export const useTopology = create<TopologyState>((set, get) => {
         )
       )
         return fail(`${label("pairedWith")}: Das ist kein Zugang.`);
-      // Auswahl überschreibt den Namen des Kartenterminals (Regelwerk 8).
-      const follow = isTerminal(node.type, c) && "workplace" in patch;
-      const name = terminalLabel(
+      // Der Name folgt dem Arbeitsplatz und überschreibt einen eigenen Namen (Regelwerk 8).
+      const follow = "workplace" in patch;
+      const name = workplaceLabel(
         node.type,
         c,
         config["workplace"] as string | undefined,

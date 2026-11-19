@@ -117,14 +117,16 @@ export function defaultConfig(
   return config;
 }
 
-/** Name des Kartenterminals trägt seinen Arbeitsplatz; sonst `undefined` (Standardname). */
-export function terminalLabel(
+/** Name von PC, Tablet und Kartenterminal trägt den Arbeitsplatz; sonst `undefined` (Standardname). */
+export function workplaceLabel(
   type: string,
   catalog: Catalog,
   workplace: string | undefined,
 ) {
   const name = catalog.deviceTypes.find((d) => d.id === type)?.name;
-  return workplace && name && isTerminal(type, catalog)
+  return workplace &&
+    name &&
+    (isTerminal(type, catalog) || hasCapability(type, catalog, "workplace"))
     ? `${name} ${workplace}`
     : undefined;
 }

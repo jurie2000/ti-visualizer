@@ -259,7 +259,7 @@ function WorkplaceField({
         )}
         {places.map((p) => (
           <option key={p.wp} value={p.wp}>
-            {p.wp} – {p.name}
+            {p.name.includes(p.wp) ? p.name : `${p.wp} – ${p.name}`}
           </option>
         ))}
       </select>

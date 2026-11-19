@@ -755,14 +755,15 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 
 Auslegung (2026-11-19, #213): Jeder Rechner mit Fähigkeit `workplace` (PC,
 Tablet) hat seine eigene feste ID „AP-n“. Vergeben wird die höchste
-vorhandene Nummer + 1, die ID ist nur lesbar. Das Kartenterminal wählt
+vorhandene Nummer + 1, die ID ist nur lesbar. Der Name von PC und Tablet
+trägt die ID („Typname AP-n“). Das Kartenterminal wählt
 seinen Arbeitsplatz per Auswahlliste („keiner“ oder „AP-n – Rechnername“)
 und übernimmt die ID in seinen Namen („Typname AP-n“; leer entfernt den
 Namen). Die Auswahl überschreibt einen eigenen Namen. Ein neues Terminal
 bekommt den kleinsten Arbeitsplatz ohne Terminal.
 Server, KIM-Clientmodul, CardLink und mobiles KT haben keinen Arbeitsplatz.
-Ein kopierter PC bekommt eine neue ID, ein kopiertes Terminal behält
-Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine
+Ein kopierter PC bekommt eine neue ID samt Namen, ein kopiertes Terminal
+behält Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine
 Migration alter Dateien.
 
 Das TI-Gateway nutzt die KonnektorConfig. Felder,

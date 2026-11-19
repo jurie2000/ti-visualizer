@@ -234,7 +234,7 @@ describe("Arbeitsplatz des Kartenterminals (Regelwerk 8, #213)", () => {
     const kt = add("kt");
     expect(node(kt)?.config?.workplace).toBe("AP-1");
     expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
-    expect(node("pc-1")).not.toHaveProperty("label");
+    expect(node("pc-1")?.label).toBe("Arbeitsplatz-PC AP-1");
   });
 
   it("Auswahl führt den Namen im selben Schritt mit, ein Rückgängig stellt beides her", () => {

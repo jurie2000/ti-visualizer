@@ -172,7 +172,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-1"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-1"
         }
       ],
       "edges": [
@@ -498,7 +499,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-1"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-1"
         }
       ],
       "edges": [
@@ -679,7 +681,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-1"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-1"
         },
         {
           "id": "kt1",
@@ -724,7 +727,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-2"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-2"
         },
         {
           "id": "kt2",
@@ -1134,7 +1138,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-1"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-1"
         },
         {
           "id": "na_kt",
@@ -1188,7 +1193,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-2"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-2"
         },
         {
           "id": "st_kt",
@@ -1233,7 +1239,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-3"
-          }
+          },
+          "label": "Visite-Tablet (KIS-Client per WLAN) AP-3"
         },
         {
           "id": "st_sw",
@@ -1263,7 +1270,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-4"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-4"
         },
         {
           "id": "rad_ris",
@@ -1293,7 +1301,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-5"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-5"
         },
         {
           "id": "lab_lis",
@@ -1323,7 +1332,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-6"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-6"
         },
         {
           "id": "pa_kt",
@@ -1395,7 +1405,8 @@
           "fault": false,
           "config": {
             "workplace": "AP-7"
-          }
+          },
+          "label": "Arbeitsplatz-PC AP-7"
         },
         {
           "id": "gw1",

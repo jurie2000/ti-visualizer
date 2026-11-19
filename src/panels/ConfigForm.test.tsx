@@ -125,6 +125,25 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     expect(nodeOf("kt-1")?.label).toBeUndefined();
   });
 
+  it("[#213] Einfach: Tablet zeigt seine ID, das Dropdown sortiert nach Nummer und führt Altwerte mit", () => {
+    useSettings.setState({ mode: "simple" });
+    const st = useTopology.getState();
+    st.setConfig("pc-1", { workplace: "AP-10" });
+    st.addNode("tab", { x: 0, y: 0 });
+    st.setConfig("tab-1", { workplace: "AP-2" });
+    st.setConfig("kt-1", { workplace: "Empfang" });
+    render(<DetailPanel />);
+    open("tab-1");
+    expect(screen.getByText("AP-2")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).toBeNull();
+    open("kt-1");
+    expect(
+      within(screen.getByLabelText("Arbeitsplatz"))
+        .getAllByRole("option")
+        .map((o) => o.textContent),
+    ).toEqual(["keiner", "Empfang", "AP-2 – tab-1", "AP-10 – pc-1"]);
+  });
+
   it("[Regelwerk 8] gültige IP wird beim Verlassen übernommen", async () => {
     const user = userEvent.setup();
     render(<DetailPanel />);

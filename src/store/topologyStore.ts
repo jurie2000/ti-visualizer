@@ -140,9 +140,7 @@ export const useTopology = create<TopologyState>((set, get) => {
         );
       const id = freeId(type, t);
       const config = defaultConfig(type, t, catalog());
-      const label = isTerminal(type, catalog())
-        ? terminalLabel(type, catalog(), config?.workplace)
-        : undefined;
+      const label = terminalLabel(type, catalog(), config?.workplace);
       commit({
         ...t,
         nodes: [
@@ -417,7 +415,7 @@ export const useTopology = create<TopologyState>((set, get) => {
         )
       )
         return fail(`${label("pairedWith")}: Das ist kein Zugang.`);
-      // Das Kartenterminal trägt seinen Arbeitsplatz im Namen, im selben Schritt.
+      // Auswahl überschreibt den Namen des Kartenterminals (Regelwerk 8).
       const follow = isTerminal(node.type, c) && "workplace" in patch;
       const name = terminalLabel(
         node.type,

@@ -254,6 +254,30 @@ describe("Arbeitsplatz des Kartenterminals (Regelwerk 8, #213)", () => {
     expect(node(kt)?.config?.workplace).toBe("AP-1");
   });
 
+  it("ID bleibt bei Verschieben und Löschen anderer PCs, gelöschte Nummer wird nicht neu vergeben", () => {
+    add("pc");
+    add("pc");
+    s().moveNodes({ "pc-2": { x: 50, y: 50 } });
+    s().removeNode("pc-1");
+    expect(node("pc-2")?.config?.workplace).toBe("AP-2");
+    expect(node(add("pc"))?.config?.workplace).toBe("AP-3");
+  });
+
+  it("Auswahl überschreibt einen eigenen Namen des Kartenterminals", () => {
+    add("pc");
+    const kt = add("kt");
+    useTopology.setState((st) => ({
+      topology: {
+        ...st.topology,
+        nodes: st.topology.nodes.map((n) =>
+          n.id === kt ? { ...n, label: "Rezeption" } : n,
+        ),
+      },
+    }));
+    s().setConfig(kt, { workplace: "AP-1" });
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
+  });
+
   it("andere Einstellungen lassen den Namen unberührt", () => {
     add("pc");
     const kt = add("kt");

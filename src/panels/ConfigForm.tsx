@@ -5,7 +5,7 @@ import {
   type Catalog,
   type Node,
 } from "../schema";
-import { isTerminal } from "../engine/config";
+import { apNumber, hasCapability, isTerminal } from "../engine/config";
 import {
   simLocked,
   useCatalog,
@@ -211,9 +211,6 @@ function RadioField({
   );
 }
 
-const apNumber = (id: string) => Number(id.slice(3));
-
-/** PC und Tablet zeigen ihre feste Arbeitsplatz-ID, das Kartenterminal wählt seinen Arbeitsplatz (Regelwerk 8, #213). */
 function WorkplaceField({
   node,
   entry,
@@ -240,10 +237,7 @@ function WorkplaceField({
   const places = topology.nodes
     .flatMap((n) => {
       const wp = n.config?.workplace;
-      return wp &&
-        catalog.deviceTypes
-          .find((d) => d.id === n.type)
-          ?.capabilities.includes("workplace")
+      return wp && hasCapability(n.type, catalog, "workplace")
         ? [{ wp, name: n.label ?? n.id }]
         : [];
     })
@@ -260,6 +254,9 @@ function WorkplaceField({
         }}
       >
         <option value="">keiner</option>
+        {current && !places.some((p) => p.wp === current) && (
+          <option value={String(current)}>{String(current)}</option>
+        )}
         {places.map((p) => (
           <option key={p.wp} value={p.wp}>
             {p.wp} – {p.name}
@@ -283,7 +280,7 @@ export function ConfigForm({ node }: { node: Node }) {
   const variant = type && configVariantOf(type.capabilities);
   if (!variant) return null;
   const terminal = isTerminal(node.type, catalog);
-  const hasWorkplace = type.capabilities.includes("workplace");
+  const hasWorkplace = hasCapability(node.type, catalog, "workplace");
   const fields = Object.keys(configVariants[variant].shape).filter(
     (f) =>
       (advanced || f === "workplace") &&

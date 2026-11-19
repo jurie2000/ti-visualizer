@@ -747,22 +747,23 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 | VLAN | `vlan` | „TI“ | Geräte müssen im selben Segment wie der Zugang liegen | Vereinfachung | DVO |
 | Arbeitsplatz | `workplace` (Client, Terminal) | PC und Tablet: nächste freie ID (höchste vergebene AP-Nummer + 1). Kartenterminal: kleinster Arbeitsplatz ohne Terminal, sonst ungesetzt | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet. Das Terminal wählt seinen Arbeitsplatz aus der Liste, sein Name trägt die ID | bestätigt | gemILF_PS |
 
-Auslegung (2026-11-19, #213): Jeder Rechner mit Fähigkeit `workplace` (PC,
-Tablet) hat seine eigene feste ID „AP-n“. Vergeben wird die höchste
-vorhandene Nummer + 1, die ID ist nur lesbar. Das Kartenterminal wählt
-seinen Arbeitsplatz per Auswahlliste („keiner“ oder „AP-n – Rechnername“)
-und übernimmt die ID in seinen Namen („Typname AP-n“; leer entfernt den
-Namen). Ein neues Terminal bekommt den kleinsten Arbeitsplatz ohne Terminal.
-Server, KIM-Clientmodul, CardLink und mobiles KT haben keinen Arbeitsplatz.
-Ein kopierter PC bekommt eine neue ID, ein kopiertes Terminal behält
-Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine
-Migration alter Dateien.
 | Pairing | `paired`, `pairedWith` (TerminalConfig) | ja, mit dem verbundenen Zugang | ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus | bestätigt | gemSpec_KT |
 | Zertifikat gSMC-K | `certExpires` (KonnektorConfig) | 31.03.2029 | geprüft gegen `simDate` | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
 | Zeitabweichung | `timeOffset` (KonnektorConfig) | 0 s | Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s | bestätigt | gemSpec_Kon |
 | Letzte Zeitsynchronisation | `lastTimeSync` (KonnektorConfig) | gleich `simDate` | Warnung nach 30 Tagen, kritisch nach 50 Tagen | bestätigt | gemSpec_Kon (NTP_WARN_PERIOD, NTP_GRACE_PERIOD) |
 | Kritisches Update | `updateOk` (KonnektorConfig) | ja | fehlt es nach Frist, baut der Zugang keinen VPN-Tunnel mehr auf | bestätigt | Arch |
 | IPsec an der Router-Firewall | `ipsecAllowed` (RouterConfig) | erlaubt | UDP 500/4500 für den VPN-Tunnel | plausibel | gemSpec_VPN_ZugD |
+
+Auslegung (2026-11-19, #213): Jeder Rechner mit Fähigkeit `workplace` (PC,
+Tablet) hat seine eigene feste ID „AP-n“. Vergeben wird die höchste
+vorhandene Nummer + 1, die ID ist nur lesbar. Das Kartenterminal wählt
+seinen Arbeitsplatz per Auswahlliste („keiner“ oder „AP-n – Rechnername“)
+und übernimmt die ID in seinen Namen („Typname AP-n“; leer entfernt den
+Namen). Die Auswahl überschreibt einen eigenen Namen. Ein neues Terminal bekommt den kleinsten Arbeitsplatz ohne Terminal.
+Server, KIM-Clientmodul, CardLink und mobiles KT haben keinen Arbeitsplatz.
+Ein kopierter PC bekommt eine neue ID, ein kopiertes Terminal behält
+Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine
+Migration alter Dateien.
 
 Das TI-Gateway nutzt die KonnektorConfig. Felder,
 die für sie nicht gelten (z. B. `sis`), bleiben leer.

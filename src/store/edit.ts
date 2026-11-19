@@ -1,4 +1,4 @@
-import { nextWorkplace } from "../engine/config";
+import { hasCapability, nextWorkplace } from "../engine/config";
 import { validateConnection } from "../engine/rules";
 import {
   LIMITS,
@@ -56,9 +56,7 @@ export function pasteClip(
   for (const n of clip.nodes) {
     const id = freeId(n.type, next);
     ids.set(n.id, id);
-    const own = catalog.deviceTypes
-      .find((d) => d.id === n.type)
-      ?.capabilities.includes("workplace");
+    const own = hasCapability(n.type, catalog, "workplace");
     const kept = n.config
       ? (Object.fromEntries(
           Object.entries(n.config).filter(([k]) => !NOT_COPIED.includes(k)),

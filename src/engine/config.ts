@@ -24,7 +24,11 @@ function freeIp(variant: string, topology: Topology) {
   return undefined;
 }
 
-const hasCapability = (type: string, catalog: Catalog, capability: string) =>
+export const hasCapability = (
+  type: string,
+  catalog: Catalog,
+  capability: string,
+) =>
   catalog.deviceTypes
     .find((d) => d.id === type)
     ?.capabilities.includes(capability) ?? false;
@@ -33,7 +37,7 @@ export const isTerminal = (type: string, catalog: Catalog) =>
   hasCapability(type, catalog, "cardSlots") &&
   hasCapability(type, catalog, "netConfig:terminal");
 
-const apNumber = (id: string | undefined) => {
+export const apNumber = (id: string | undefined) => {
   const m = /^AP-(\d+)$/.exec(id ?? "");
   return m ? Number(m[1]) : 0;
 };
@@ -56,8 +60,11 @@ function freeWorkplace(topology: Topology, catalog: Catalog) {
   );
   return topology.nodes
     .filter((n) => hasCapability(n.type, catalog, "workplace"))
-    .flatMap((n) => (n.config?.workplace ? [n.config.workplace] : []))
-    .filter((id) => !taken.has(id))
+    .flatMap((n) =>
+      n.config?.workplace && !taken.has(n.config.workplace)
+        ? [n.config.workplace]
+        : [],
+    )
     .sort((a, b) => apNumber(a) - apNumber(b))[0];
 }
 
@@ -110,12 +117,14 @@ export function defaultConfig(
   return config;
 }
 
-/** Name des Kartenterminals trägt seinen Arbeitsplatz; ohne Arbeitsplatz `undefined` (Standardname). */
+/** Name des Kartenterminals trägt seinen Arbeitsplatz; sonst `undefined` (Standardname). */
 export function terminalLabel(
   type: string,
   catalog: Catalog,
   workplace: string | undefined,
 ) {
   const name = catalog.deviceTypes.find((d) => d.id === type)?.name;
-  return workplace && name ? `${name} ${workplace}` : undefined;
+  return workplace && name && isTerminal(type, catalog)
+    ? `${name} ${workplace}`
+    : undefined;
 }

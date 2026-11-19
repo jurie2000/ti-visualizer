@@ -1,7 +1,6 @@
 # TI Visualizer: Regeln für KI-Agenten
 
-Gilt für jeden Agenten in diesem Repo: lokal beim Planen und Umsetzen,
-im CI beim KI-Review.
+Gilt für jeden Agenten in diesem Repo beim Planen und Umsetzen.
 
 ## Quellen
 

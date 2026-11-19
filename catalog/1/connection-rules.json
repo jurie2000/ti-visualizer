@@ -318,6 +318,28 @@
     "status": "bestätigt"
   },
   {
+    "id": "erl-internet-zeta",
+    "a": {
+      "types": ["internet"]
+    },
+    "b": {
+      "types": ["zeta"]
+    },
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "erl-zeta-vsdm2",
+    "a": {
+      "types": ["zeta"]
+    },
+    "b": {
+      "types": ["vsdm2"]
+    },
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP", "gemSpec_VSDM_2"],
+    "status": "plausibel"
+  },
+  {
     "id": "erl-erpapp-erp",
     "a": {
       "types": ["erpapp"]

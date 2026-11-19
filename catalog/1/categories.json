@@ -56,12 +56,20 @@
     "order": 7
   },
   {
+    "id": "ti2",
+    "name": "TI 2.0",
+    "color": "#6A3FB5",
+    "colorDark": "#B9A0F2",
+    "shape": "slant",
+    "order": 8
+  },
+  {
     "id": "zentral",
     "name": "Zentrale Dienste",
     "color": "#B34E00",
     "colorDark": "#F08A4B",
     "shape": "diamond",
-    "order": 8
+    "order": 9
   },
   {
     "id": "versicherte",
@@ -69,6 +77,6 @@
     "color": "#7A6D00",
     "colorDark": "#F0E442",
     "shape": "bubble",
-    "order": 9
+    "order": 10
   }
 ]

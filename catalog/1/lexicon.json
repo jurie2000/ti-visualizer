@@ -396,6 +396,30 @@
     "status": "plausibel"
   },
   {
+    "id": "zeta",
+    "short": "Der Zugangspunkt der TI 2.0 (Zero Trust Access).",
+    "purpose": "Nimmt Anfragen aus dem Internet entgegen und prüft Identität und Gerät, bevor ein TI-2.0-Dienst wie VSDM 2.0 erreicht wird. Es gibt keinen VPN-Tunnel und keinen Konnektor auf diesem Weg.",
+    "where": "Zentral, vor den Diensten der TI 2.0.",
+    "connected": "Internet und die dahinterliegenden Dienste wie VSDM 2.0. Keine direkte Verbindung zu Primärsystem, Kartenterminal oder lokalem Netz.",
+    "fault": "Ohne ZETA Guard erreicht das Primärsystem keinen TI-2.0-Dienst.",
+    "confusion": "VPN-Zugangsdienst (Tunnel in die TI 1.0, aufgebaut vom Konnektor) und Konnektor (Gerät in der Einrichtung).",
+    "related": ["vsdm2", "popp", "vpn"],
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "vsdm2",
+    "short": "Der Versichertenstammdaten-Dienst der TI 2.0.",
+    "purpose": "Liefert die Versichertenstammdaten ohne Prüfungsnachweis auf der Karte. Der Abruf braucht einen PoPP-Token und läuft über ZETA Guard.",
+    "where": "Zentral, betrieben von den Krankenkassen.",
+    "connected": "ZETA Guard. Keine direkte Verbindung zum Primärsystem.",
+    "fault": "Ohne PoPP-Token oder ZETA Guard ist kein Abruf möglich.",
+    "confusion": "VSDM-Fachdienst (VSDM 1.0, hängt am Zentralen Netz und wird über den Konnektor erreicht).",
+    "related": ["zeta", "popp", "vsdm"],
+    "source": ["gemSpec_VSDM_2", "gemSpec_ZETA"],
+    "status": "plausibel"
+  },
+  {
     "id": "popp",
     "short": "Der Dienst, der den Behandlungskontext nachweist (PoPP: Proof of Patient Presence).",
     "purpose": "Stellt einen PoPP-Token aus, wenn die versicherte Person in der Einrichtung anwesend ist. Dieser Token ersetzt künftig den VSDM-Prüfungsnachweis als Beleg für VSDM 2.0, ePA und E-Rezept. Gehört zur neuen Zero-Trust-Architektur (ZETA, TI 2.0) und ist über Router und Internet erreichbar, nicht über den Konnektor.",

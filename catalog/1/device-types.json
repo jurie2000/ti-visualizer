@@ -1183,10 +1183,32 @@
     "status": "bestätigt"
   },
   {
+    "id": "zeta",
+    "abbr": "ZETA",
+    "name": "ZETA Guard",
+    "description": "ZETA Guard ist der Zugangspunkt der TI 2.0. Er prüft jede Anfrage aus dem Internet (Zero Trust), bevor sie einen Fachdienst erreicht.",
+    "category": "ti2",
+    "icon": "gate",
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "net",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
     "id": "popp",
     "abbr": "PoPP",
     "name": "PoPP-Service",
-    "category": "service",
+    "category": "ti2",
     "icon": "shield",
     "placeable": true,
     "capabilities": [],
@@ -1216,6 +1238,28 @@
     ],
     "source": ["gemSpec_PoPP_Service"],
     "status": "bestätigt"
+  },
+  {
+    "id": "vsdm2",
+    "abbr": "VSDM 2.0",
+    "name": "VSDM-2.0-Dienst",
+    "description": "Der VSDM-2.0-Dienst liefert die Versichertenstammdaten. Er ist nur über ZETA Guard erreichbar und verlangt einen PoPP-Token.",
+    "category": "ti2",
+    "icon": "server",
+    "placeable": true,
+    "capabilities": [],
+    "ports": [
+      {
+        "id": "net",
+        "name": "ZETA-Anbindung",
+        "kind": "net",
+        "multi": true,
+        "source": ["gemSpec_VSDM_2", "gemSpec_ZETA"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemSpec_VSDM_2", "gemSpec_ZETA"],
+    "status": "plausibel"
   },
   {
     "id": "kk",

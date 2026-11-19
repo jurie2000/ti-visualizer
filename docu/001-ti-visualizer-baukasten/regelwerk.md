@@ -126,7 +126,6 @@ gemF_Highspeed-Konnektor.
 | `kim` | KIM-Fachdienst | bestätigt | gemSpec_FD_KOMLE |
 | `tim` | TI-Messenger-Fachdienst | bestätigt | gemSpec_TI-M_Basis |
 | `epa` | ePA-Aktensystem | bestätigt | gemSpec_Aktensystem_ePAfueralle |
-| `popp` | PoPP-Service, neu | bestätigt | gemSpec_PoPP_Service |
 
 ### 1.8 Versicherte und Gegenstellen (neu)
 
@@ -156,6 +155,19 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
+
+### 1.10 TI 2.0 (neu)
+
+Eigene Kategorie „TI 2.0“ (Palette und Katalog), Farbe Violett und Form
+Parallelogramm, damit sie sich von den anderen Kategorien abhebt (Farbe
+nie allein). VSDM 2.0 ist der bisher einzige TI-2.0-Dienst. `vsdm`
+(VSDM 1.0) bleibt in 1.7.
+
+| Schlüssel | Name | Status | Quelle |
+|---|---|---|---|
+| `zeta` | ZETA Guard (Zugangspunkt der TI 2.0) | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `popp` | PoPP-Service (von 1.7 hierher verschoben) | bestätigt | gemSpec_PoPP_Service |
+| `vsdm2` | VSDM-2.0-Dienst | plausibel | gemSpec_VSDM_2, gemSpec_ZETA |
 
 ## 2. Anschlüsse
 
@@ -211,6 +223,8 @@ Abschnitt 5.
 | Zentrale Dienste, Fachdienste, Krankenkasse | TI-Zugang (`ti`, mehrfach) | bestätigt | Arch, gemSpec_Net |
 | E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | zusätzlich Internet (`net`, mehrfach) | bestätigt | gemSpec_eRp_FdV, gemSpec_Aktensystem_ePAfueralle, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
 | E-Rezept-App, ePA-App | Internet (`net`, mehrfach) | bestätigt | gemSpec_eRp_FdV |
+| ZETA Guard | Internet (`net`, mehrfach) | Vereinfachung | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| VSDM 2.0 | ZETA-Anbindung (`net`, mehrfach) | Vereinfachung | gemSpec_VSDM_2, gemSpec_ZETA |
 
 ### 2.3 Verträglichkeit
 
@@ -258,6 +272,11 @@ eigene Regel-ID):
    eHealth-KT ↔ Zugang, Primärsystem ↔ Zugang, Primärsystem ↔
    KIM-Clientmodul
 7. sonst `phys`
+
+Auslegung (2026-11-19): Verbindungen zu ZETA Guard und PoPP laufen über
+das Internet und haben Art `inet` (Regel 3). Die Strecke ZETA Guard ↔
+VSDM 2.0 liegt in Wirklichkeit hinter dem Zugangspunkt; sie zeigt
+ebenfalls `inet`, weil das Modell keine eigene Art dafür führt.
 
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
@@ -397,6 +416,20 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | ePA-App | ePA (direkt) | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_Aktensystem_ePAfueralle |
 | E-Rezept-App, ePA-App | Internet, sektoraler IDP | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
 
+**TI 2.0**
+
+| Von | Nach | Status | Quelle |
+|---|---|---|---|
+| Internet | ZETA Guard | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| ZETA Guard | VSDM 2.0 | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2 |
+
+Internet ↔ PoPP steht schon in der Zeile der Dienste mit Internetzugang
+(oben). Auslegung (2026-11-19): ZETA Guard und PoPP sind ohne VPN über
+das Internet erreichbar (gemSpec_ZETA, gemSpec_PoPP_Service,
+Infoveranstaltung VSDM 2.0 vom 16.09.2025). Daher brauchen sie keinen
+Zugang und kein Zentrales Netz. Das Detail steht nur in Entwurfsständen
+und Folien, darum „plausibel“.
+
 Der PoPP-Service hat keine direkte Verbindung zum Primärsystem. Er ist
 über Router und Internet erreichbar (ZETA, TI 2.0). In v1 hat er keinen
 eigenen Ablauf.
@@ -423,6 +456,7 @@ und K-6 in Abschnitt 5.
 | V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 | V-19 | TI-Messenger-FD an VPN-Zugangsdienst oder Zentrales Netz | Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst. | plausibel | gemSpec_TI-M_Basis |
 | V-20 | Router an Router | Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch. | Vereinfachung | DVO |
+| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über das Internet und ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
 
 ### 4.4 Ausschlüsse
 

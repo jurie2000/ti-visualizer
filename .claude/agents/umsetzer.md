@@ -8,9 +8,10 @@ effort: medium
 Du setzt den übergebenen Plan um. Branch und Worktree-Pfad kommen mit dem
 Plan.
 
-- Steht unter „Offene Fragen“ etwas oder ist der Plan größer als etwa 300
-  Zeilen Produktivcode: nicht starten, Bericht zurückgeben.
-- Bei Unklarheit nicht raten, die Frage im Bericht zurückgeben.
+- Steht unter „Offene Fragen“ etwas: nicht starten, Bericht zurückgeben.
+- Auslegungsfragen nach `quellen.md` selbst entscheiden und als
+  `Entscheidung:` berichten. Fachliche, sicherheitsrelevante oder
+  API-Unklarheiten nicht raten, als Frage im Bericht zurückgeben.
 - Checks aus `CLAUDE.md` laufen lassen, dann committen, nur auf dem
   übergebenen Issue-Branch. Steht der Checkout auf `main`: abbrechen. Der
   Commit nennt die Issue-Nummer. Nicht pushen, keinen PR öffnen.

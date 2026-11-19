@@ -346,18 +346,17 @@ export function availableActions(
  * `simDate`, PoPP für die eGK des Auslösers oder Terminals (ohne `id` bekommt sie eine).
  */
 export function issueToken(
-  action: Pick<Catalog["actions"][number], "issues">,
+  issues: NonNullable<Catalog["actions"][number]["issues"]>,
   trigger: Node,
   topology: Topology,
   catalog: Cat,
   terminal?: string,
 ): Topology {
-  if (action.issues === "zeta")
+  if (issues === "zeta")
     return {
       ...topology,
       tokens: { ...topology.tokens, zeta: topology.simDate },
     };
-  if (action.issues !== "popp") return topology;
   const choice = terminalFor(topology, trigger.id, catalog);
   const holders = [
     trigger.id,
@@ -368,12 +367,15 @@ export function issueToken(
   );
   const egk = holder?.cards?.find((c) => c.kind === "egk");
   if (!holder || !egk) return topology;
-  const used = new Set(
-    topology.nodes.flatMap((n) => n.cards ?? []).map((c) => c.id),
-  );
-  let n = 1;
-  while (used.has(`egk-${String(n)}`)) n++;
-  const id = egk.id ?? `egk-${String(n)}`;
+  let id = egk.id;
+  if (id === undefined) {
+    const used = new Set(
+      topology.nodes.flatMap((n) => n.cards ?? []).map((c) => c.id),
+    );
+    let n = 1;
+    while (used.has(`egk-${String(n)}`)) n++;
+    id = `egk-${String(n)}`;
+  }
   return {
     ...topology,
     nodes: topology.nodes.map((x) =>

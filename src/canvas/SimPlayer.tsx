@@ -19,7 +19,7 @@ import {
 import type { Catalog, Node } from "../schema";
 import { Button } from "../ui/Button";
 
-type Action = Catalog["actions"][number];
+type Issues = NonNullable<Catalog["actions"][number]["issues"]>;
 
 function problemText(step: BoundStep, nameOf: (id: string) => string) {
   switch (step.problem?.kind) {
@@ -52,7 +52,7 @@ export function SimPlayer() {
   const locked = simLocked(sim);
   // Aktion der laufenden Simulation; die Token-Ausstellung am Ende bricht sie nicht ab.
   const run = useRef<{
-    action: Action;
+    issues: Issues;
     node: Node;
     terminal: string | undefined;
   }>(undefined);
@@ -66,7 +66,9 @@ export function SimPlayer() {
     const action = catalog.actions.find((a) => a.id === pending.actionId);
     const flow = catalog.flows.find((f) => f.id === action?.flow);
     if (!node || !action || !flow) return;
-    run.current = { action, node, terminal: pending.terminal };
+    run.current = action.issues
+      ? { issues: action.issues, node, terminal: pending.terminal }
+      : undefined;
     begin(
       action.name,
       node.id,
@@ -114,19 +116,23 @@ export function SimPlayer() {
       useSim.subscribe((s, prev) => {
         if (s.sim.status !== "done" || prev.sim.status === "done") return;
         if (!run.current || s.steps.some((b) => b.problem)) return;
-        const { action, node, terminal } = run.current;
+        const { issues, node, terminal } = run.current;
+        run.current = undefined; // einmal je Lauf, auch nach „Zurück“ und „Weiter“
         const t = useTopology.getState();
         issuing.current = true;
-        t.replace(
-          issueToken(
-            action,
-            node,
-            t.topology,
-            useCatalog.getState().catalog,
-            terminal,
-          ),
-        );
-        issuing.current = false;
+        try {
+          t.replace(
+            issueToken(
+              issues,
+              node,
+              t.topology,
+              useCatalog.getState().catalog,
+              terminal,
+            ),
+          );
+        } finally {
+          issuing.current = false;
+        }
       }),
     [],
   );

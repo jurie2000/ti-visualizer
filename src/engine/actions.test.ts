@@ -643,14 +643,9 @@ describe("TI-2.0-Aktionen (#204)", () => {
 
   it("stellt Token aus: ZETA am simDate, PoPP mit freier eGK-id", () => {
     const t = noTokens(full());
-    const zeta = issueToken(action("zeta-anmelden"), pvs(t), t, catalog);
+    const zeta = issueToken("zeta", pvs(t), t, catalog);
     expect(zeta.tokens?.zeta).toBe(t.simDate);
-    const popp = issueToken(
-      action("popp-token-beantragen"),
-      pvs(t),
-      t,
-      catalog,
-    );
+    const popp = issueToken("popp", pvs(t), t, catalog);
     expect(popp.tokens?.popp).toEqual(["egk-1"]);
     // eGK ohne id bekommt eine freie
     const ohneId = cards(t, "kt", (c) =>
@@ -658,18 +653,12 @@ describe("TI-2.0-Aktionen (#204)", () => {
         x.kind === "egk" ? { kind: x.kind, expires: x.expires } : x,
       ),
     );
-    const neu = issueToken(
-      action("popp-token-beantragen"),
-      pvs(t),
-      ohneId,
-      catalog,
-    );
+    const neu = issueToken("popp", pvs(t), ohneId, catalog);
     const egk = neu.nodes
       .find((n) => n.id === "kt")
       ?.cards?.find((c) => c.kind === "egk");
     expect(egk?.id).toBe("egk-1");
     expect(neu.tokens?.popp).toEqual(["egk-1"]);
-    expect(issueToken(action("vsdm2-pruefen"), pvs(t), t, catalog)).toBe(t);
   });
 
   it("jeder Ablauf bindet seine Stationen", () => {

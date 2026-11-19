@@ -55,12 +55,15 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    container: mcr.microsoft.com/playwright:v1.65.1-noble
+    env:
+      HOME: /root
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/playwright
+      - uses: ./.github/actions/playwright-version
       - name: Smoke-Test gegen die öffentliche Adresse
         env:
           PAGE_URL: ${{ needs.deploy.outputs.page_url }}

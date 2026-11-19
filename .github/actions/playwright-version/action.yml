@@ -1,0 +1,15 @@
+name: Playwright-Version abgleichen
+description: Bricht ab, wenn das Playwright-Container-Image in den Workflows nicht zur installierten Version von `@playwright/test` passt.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        installiert=$(pnpm exec playwright --version | awk '{print $2}')
+        images=$(grep -rhoE 'playwright:v[0-9.]+-noble' .github/workflows | sort -u)
+        for image in $images; do
+          if [ "$image" != "playwright:v${installiert}-noble" ]; then
+            echo "::error::Image $image passt nicht zu @playwright/test $installiert. Image-Tag in .github/workflows anpassen."
+            exit 1
+          fi
+        done

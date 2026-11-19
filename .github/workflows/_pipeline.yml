@@ -134,26 +134,27 @@ jobs:
   e2e:
     name: e2e
     needs: build
-    # ubuntu-latest (ab ubuntu26) liefert libicu78; Playwrights webkit-Binary ist
-    # gegen libicu74 gelinkt (libicudata.so.74) und startet dort nicht. 24.04 hat
-    # libicu74. Wieder auf ubuntu-latest, sobald Playwright webkit für neuere ICU
-    # ausliefert.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    # Browser und Systemlibs liegen im Image. Der Tag muss zu @playwright/test
+    # passen (Schritt „Playwright-Version abgleichen“).
+    container: mcr.microsoft.com/playwright:v1.65.1-noble
     timeout-minutes: 20
     env:
       E2E_SKIP_BUILD: "1"
+      # Firefox braucht im Container ein beschreibbares HOME.
+      HOME: /root
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Workspace für git freigeben (Container-Nutzer weicht ab)
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: ./.github/actions/setup
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: dist
           path: dist/
-      - uses: ./.github/actions/playwright
-        with:
-          alle: "true"
+      - uses: ./.github/actions/playwright-version
       - run: pnpm e2e
       - name: Bericht, Trace und Video bei Fehlern
         if: failure()

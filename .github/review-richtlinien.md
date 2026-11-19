@@ -1,12 +1,12 @@
-# Review-Richtlinien (KI-Review)
+# Review-Richtlinien
 
-Der Review konzentriert sich auf das, was Sonar und Tests nicht sehen. Über
-den Merge entscheidet ein Mensch, der Review ist kein Pflicht-Check.
+Checkliste für die Selbstprüfung des eigenen Diffs vor dem PR. Sie
+konzentriert sich auf das, was Sonar und Tests nicht sehen.
 
 ## Vorgehen
 
-Erst `gh pr diff`, dann das verknüpfte Issue (`issue-bilder/issue.md` und die
-Bilder daneben: Beschreibung, „Fertig, wenn“), dann nur die geänderten Dateien. Fachliche Fragen
+Erst `git diff main`, dann das verknüpfte Issue (Beschreibung, „Fertig, wenn“,
+Bilder), dann nur die geänderten Dateien. Fachliche Fragen
 per `grep` im Regelwerk (`docu/001-ti-visualizer-baukasten/regelwerk.md`)
 nach Regel-ID oder Stichwort klären, nicht das ganze Regelwerk lesen. Nur auf
 Dateien verweisen, die im Repo liegen. Den Diff aus drei Blickwinkeln prüfen.
@@ -60,33 +60,7 @@ Jeder Befund trägt eine Schwere. Sie entscheidet, ob er den Merge aufhält:
 - **Niedrig / Hinweis:** kleine Unstimmigkeit oder Vormerkung für einen
   Folge-Issue. Blockt nicht.
 
-## Merge-Disziplin
-
-Der Review ist kein Pflicht-Check und muss nicht null Befunde haben. Vor dem
-Merge braucht aber **jeder Befund eine Disposition**, keine offen-ignorierten
-Punkte:
-
-- **Fix** — im selben PR behoben (bei Hoch Pflicht).
-- **Vertagt** — mit Verweis auf ein Folge-Issue (z. B. „geht in #150“).
-- **Wontfix** — mit einem Satz Begründung.
-
-Nie mergen, ohne den Review gelesen zu haben. Ist jeder Befund disponiert und
-kein Hoch-Befund offen, darf gemergt werden — die finale Abnahme bleibt beim
-Menschen.
-
-Ein erneuter Review nach Fixes läuft nicht automatisch, sondern über das
-Label `ki-review` am PR. Er ist nur nach einem Hoch-Befund vorgesehen, um den
-Fix zu prüfen, und dann höchstens einmal. Mittel und Niedrig werden
-disponiert und im PR festgehalten, ohne neuen Lauf.
-
-## Nicht Aufgabe des Reviews
+## Nicht Aufgabe der Prüfung
 
 Stil, Formatierung, Benennung und Lint-Regeln. Das erledigen ESLint,
 Prettier und Sonar.
-
-## Ausgabe
-
-- Ein zusammenfassender PR-Kommentar plus Inline-Kommentare, auf Deutsch.
-- Der PR-Kommentar beginnt mit `## Überblick` (höchstens 6 Stichpunkte):
-  Issue-Nummer, Soll laut Issue, Ist laut Diff, Abweichung.
-- Danach `## Befunde`, nach Schwere sortiert, je Befund der Blickwinkel.

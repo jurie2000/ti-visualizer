@@ -33,7 +33,5 @@ argument-hint: <issue-nummer>
    `.github/review-richtlinien.md` prüfen und Treffer beheben. Lokale
    Checks laufen lassen, PR mit Vorlage öffnen, im Text
    `Closes #$ARGUMENTS` nennen.
-7. KI-Review abwarten, jeden Befund disponieren (neuer Lauf nur nach Hoch,
-   höchstens einmal, Label `ki-review`; `.github/review-richtlinien.md`).
-   Mergen nur, wenn der Nutzer das freigegeben hat; sonst den PR zur
+7. Mergen nur, wenn der Nutzer das freigegeben hat; sonst den PR zur
    Abnahme übergeben.

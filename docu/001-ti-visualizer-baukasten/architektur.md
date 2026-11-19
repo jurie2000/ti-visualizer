@@ -57,7 +57,7 @@ flowchart LR
 [Datei → 3 Datenmodell](#3-datenmodell) ·
 [Browser-Speicher → 4 Speichern und Öffnen](#4-speichern-und-öffnen) ·
 [CI/CD-Pipeline → 5 CI/CD-Pipeline](#5-cicd-pipeline) (dort auch
-SonarQube Cloud, KI-Review und Sicherheitsprüfungen) ·
+SonarQube Cloud und Sicherheitsprüfungen) ·
 [GitHub Pages → 8 Verteilung](#8-verteilung)
 
 Die Klick-Verweise im Diagramm funktionieren in Werkzeugen, die Mermaid
@@ -489,9 +489,6 @@ flowchart LR
     subgraph s3["3 Sonar"]
         sonar["SonarQube Cloud<br/>Quality Gate"]
     end
-    subgraph s3b["3b KI-Review (nur PR)"]
-        ai["Claude Code Action<br/>Spec- und Regelwerk-Treue"]
-    end
     subgraph s4["4 Build-Test"]
         build["vite build · CSP<br/>Bundle-Größe"]
     end
@@ -505,10 +502,8 @@ flowchart LR
     trigger --> lint
     trigger --> unit
     trigger --> build
-    trigger --> ai
     lint --> gate
     unit -- "lcov.info" --> sonar
-    ai -. "nur Kommentar,<br/>kein Pflicht-Check" .-> pr
     build -- "dist/" --> e2e
     sonar --> gate{"alle grün<br/>und main?"}
     e2e --> gate

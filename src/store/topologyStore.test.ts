@@ -254,7 +254,7 @@ describe("Arbeitsplatz des Kartenterminals (Regelwerk 8, #213)", () => {
     expect(node(kt)?.config?.workplace).toBe("AP-1");
   });
 
-  it("ID bleibt bei Verschieben und Löschen anderer PCs, gelöschte Nummer wird nicht neu vergeben", () => {
+  it("ID bleibt bei Verschieben und Löschen anderer PCs, neuer PC bekommt höchste + 1", () => {
     add("pc");
     add("pc");
     s().moveNodes({ "pc-2": { x: 50, y: 50 } });

@@ -746,7 +746,6 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 | DHCP-Server | `dhcpServer` (KonnektorConfig, RouterConfig) | aus | Zugang oder Router kann DHCP-Server sein | plausibel | gemSpec_Kon |
 | VLAN | `vlan` | „TI“ | Geräte müssen im selben Segment wie der Zugang liegen | Vereinfachung | DVO |
 | Arbeitsplatz | `workplace` (Client, Terminal) | PC und Tablet: nächste freie ID (höchste vergebene AP-Nummer + 1). Kartenterminal: kleinster Arbeitsplatz ohne Terminal, sonst ungesetzt | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet. Das Terminal wählt seinen Arbeitsplatz aus der Liste, sein Name trägt die ID | bestätigt | gemILF_PS |
-
 | Pairing | `paired`, `pairedWith` (TerminalConfig) | ja, mit dem verbundenen Zugang | ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus | bestätigt | gemSpec_KT |
 | Zertifikat gSMC-K | `certExpires` (KonnektorConfig) | 31.03.2029 | geprüft gegen `simDate` | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
 | Zeitabweichung | `timeOffset` (KonnektorConfig) | 0 s | Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s | bestätigt | gemSpec_Kon |
@@ -759,7 +758,8 @@ Tablet) hat seine eigene feste ID „AP-n“. Vergeben wird die höchste
 vorhandene Nummer + 1, die ID ist nur lesbar. Das Kartenterminal wählt
 seinen Arbeitsplatz per Auswahlliste („keiner“ oder „AP-n – Rechnername“)
 und übernimmt die ID in seinen Namen („Typname AP-n“; leer entfernt den
-Namen). Die Auswahl überschreibt einen eigenen Namen. Ein neues Terminal bekommt den kleinsten Arbeitsplatz ohne Terminal.
+Namen). Die Auswahl überschreibt einen eigenen Namen. Ein neues Terminal
+bekommt den kleinsten Arbeitsplatz ohne Terminal.
 Server, KIM-Clientmodul, CardLink und mobiles KT haben keinen Arbeitsplatz.
 Ein kopierter PC bekommt eine neue ID, ein kopiertes Terminal behält
 Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine

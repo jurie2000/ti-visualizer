@@ -7,6 +7,7 @@ import {
   Node,
   Settings,
   TivFile,
+  Tokens,
   Topology,
   Zone,
   configVariantOf,
@@ -39,6 +40,7 @@ export interface Finding {
     | "anschluss"
     | "karte"
     | "konfiguration"
+    | "tokens"
     | "regel"
     | "katalogversion"
     | "einstellungen"
@@ -178,11 +180,24 @@ export function parseData(data: unknown, catalog: Catalog): ParseResult {
   );
   known(
     raw,
-    ["name", "description", "simDate", "nodes", "edges", "zones"],
+    ["name", "description", "simDate", "tokens", "nodes", "edges", "zones"],
     "topology",
   );
 
   const topology = build(raw, meta.data, catalog, add);
+  if (raw.tokens !== undefined) {
+    const tokens = Tokens.safeParse(raw.tokens);
+    if (tokens.success) {
+      dropped(raw.tokens, tokens.data, "topology.tokens", add);
+      topology.tokens = tokens.data;
+    } else
+      add({
+        severity: "Warnung",
+        code: "tokens",
+        message:
+          "Der Token-Zustand in der Datei ist ungültig und wurde nicht übernommen.",
+      });
+  }
   if (header.data.catalogVersion !== catalog.meta.version) {
     add({
       severity: "Hinweis",

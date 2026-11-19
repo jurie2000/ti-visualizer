@@ -177,6 +177,7 @@ classDiagram
         name: string
         description: string
         simDate: date
+        tokens?: zeta (Ausstellungstag), popp (eGK-IDs)
     }
     TivFile *-- "0..1" Settings : settings
     TivFile *-- "1" Topology : topology

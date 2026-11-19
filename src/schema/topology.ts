@@ -136,11 +136,18 @@ export const Zone = Element.extend({
   description: text(LIMITS.description).optional(),
 });
 
+/** Token-Zustand der Simulation (Regelwerk 6.1): ZETA-Token mit Ausstellungstag, PoPP-Token je eGK-ID. */
+export const Tokens = z.object({
+  zeta: date.optional(),
+  popp: z.array(key).max(LIMITS.nodes).optional(),
+});
+
 export const Topology = z
   .object({
     name: text(LIMITS.name),
     description: text(LIMITS.description),
     simDate: date,
+    tokens: Tokens.optional(),
     nodes: z.array(Node).max(LIMITS.nodes),
     edges: z.array(Edge).max(LIMITS.edges),
     zones: z.array(Zone).max(LIMITS.zones),
@@ -186,6 +193,7 @@ export const Topology = z
     });
   });
 
+export type Tokens = z.infer<typeof Tokens>;
 export type Point = z.infer<typeof Point>;
 export type Rect = z.infer<typeof Rect>;
 export type Tone = z.infer<typeof Tone>;

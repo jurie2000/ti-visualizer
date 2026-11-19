@@ -510,3 +510,62 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     );
   });
 });
+
+describe("Token-Bausteine (#203)", () => {
+  const tokenCatalog = (need: "zetaToken" | "poppToken") => ({
+    ...catalog,
+    actions: [
+      {
+        id: "x",
+        name: "X",
+        offeredBy: { types: ["pvs"] },
+        requires: { need },
+        flow: "erezept",
+        source: ["arch"],
+        status: "bestätigt" as const,
+      },
+    ],
+  });
+  const stateOf = (t: Topology, need: "zetaToken" | "poppToken") =>
+    availableActions(
+      t.nodes.find((n) => n.id === "pvs") as Node,
+      t,
+      tokenCatalog(need),
+    )[0];
+  const withTokens = (tokens: Topology["tokens"]): Topology => ({
+    ...full(),
+    ...(tokens && { tokens }),
+  });
+
+  it("ZETA-Token ist am Ausstellungstag erfüllt, am Folgetag und ohne Token nicht", () => {
+    expect(
+      stateOf(withTokens({ zeta: "2026-11-01" }), "zetaToken")?.enabled,
+    ).toBe(true);
+    const nextDay = {
+      ...withTokens({ zeta: "2026-11-01" }),
+      simDate: "2026-11-02",
+    };
+    const s = stateOf(nextDay, "zetaToken");
+    expect(s?.enabled).toBe(false);
+    expect(s?.disabledReason).toContain("ZETA-Token");
+    for (const tokens of [undefined, {}, { zeta: "2026-11-02" }])
+      expect(stateOf(withTokens(tokens), "zetaToken")?.enabled).toBe(false);
+  });
+
+  it("PoPP-Token ist für die ausgestellte eGK erfüllt, sonst nicht", () => {
+    const mitId = (id: string): Topology =>
+      cards(withTokens({ popp: ["egk-1"] }), "kt", (c) =>
+        c.map((x) => (x.kind === "egk" ? { ...x, id } : x)),
+      );
+    expect(stateOf(mitId("egk-1"), "poppToken")?.enabled).toBe(true);
+    const other = stateOf(mitId("egk-2"), "poppToken");
+    expect(other?.enabled).toBe(false);
+    expect(other?.disabledReason).toContain("PoPP-Token");
+    for (const tokens of [undefined, {}, { popp: [] }])
+      expect(stateOf(withTokens(tokens), "poppToken")?.enabled).toBe(false);
+    // eGK ohne id kann keinen Token tragen
+    expect(stateOf(withTokens({ popp: ["egk-1"] }), "poppToken")?.enabled).toBe(
+      false,
+    );
+  });
+});

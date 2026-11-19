@@ -200,6 +200,23 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
             : undefined)
         );
       }
+      case "zetaToken":
+        // Regelwerk 6.1
+        return ctx.topology.tokens?.zeta === ctx.topology.simDate
+          ? undefined
+          : "Kein gültiger ZETA-Token für diesen Simulationstag.";
+      case "poppToken": {
+        // Regelwerk 6.1: irgendeine eGK am Auslöser oder Terminal genügt
+        const issued = ctx.topology.tokens?.popp ?? [];
+        return [ctx.trigger, ...ctx.terminals].some((n) =>
+          n.cards?.some(
+            (c) =>
+              c.kind === "egk" && c.id !== undefined && issued.includes(c.id),
+          ),
+        )
+          ? undefined
+          : "Kein PoPP-Token für diese eGK ausgestellt.";
+      }
       case "pruefungsnachweis":
         return unmet(ctx, {
           all: [

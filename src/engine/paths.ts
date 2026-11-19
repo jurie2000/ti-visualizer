@@ -2,6 +2,7 @@ import type { Catalog, Node, Topology } from "../schema";
 
 // Pfadregel nach Regelwerk 6.0:
 // Auslöser → LAN → Zugang → Router/Internet → VPN → Zentrales Netz → Dienst.
+// TI 2.0: Auslöser → LAN → Zugang → Router/Internet → ZETA Guard → VSDM 2.0.
 // Die Suche läuft als Breitensuche über (Knoten, Phase). Die Phase erzwingt die
 // Rollenfolge, deshalb kann kein Weg den Zugang oder das VPN auslassen.
 
@@ -38,14 +39,22 @@ const POST = 1; // hinter dem Zugang: Router und Internet
 const VPN = 2; // am VPN-Zugangsdienst
 const ZENTRAL = 3; // im Zentralen Netz
 const INET = 4; // reiner Internet-Weg ohne Zugang
+const ZETA = 5; // am ZETA Guard (TI 2.0), nur mit Zugang erreichbar
 
-type Role = "local" | "net" | "zugang" | "internet" | "vpn" | "zentral" | "end";
+type Role =
+  "local" | "net" | "zugang" | "internet" | "vpn" | "zentral" | "zeta" | "end";
 
 function roleOf(node: Node, catalog: Catalogue): Role {
   const t = catalog.deviceTypes.find((d) => d.id === node.type);
   if (!t) return "end";
   if (t.capabilities.includes("zugang")) return "zugang";
-  if (t.id === "internet" || t.id === "vpn" || t.id === "zentral") return t.id;
+  if (
+    t.id === "internet" ||
+    t.id === "vpn" ||
+    t.id === "zentral" ||
+    t.id === "zeta"
+  )
+    return t.id;
   if (t.category === "lan") return "net";
   return t.category === "primary" || t.category === "computer"
     ? "local"
@@ -132,10 +141,13 @@ function search(
         return phase === POST ? VPN : -1;
       case "zentral":
         return phase === VPN ? ZENTRAL : -1;
+      case "zeta":
+        // Der Zugang trägt die Kartenauthentisierung: ohne ihn kein ZETA-Pfad.
+        return phase === POST ? ZETA : -1;
       case "end":
         if (!isGoal) return -1;
         if (kind === "local") return phase === POST ? phase : -1;
-        if (phase === VPN || phase === ZENTRAL) return phase;
+        if (phase === VPN || phase === ZENTRAL || phase === ZETA) return phase;
         // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
         // ist die Vereinfachung aus Regelwerk 4.2 (z. B. E-Rezept-App ↔ E-Rezept-FD).
         if (!internetOnly) return -1;

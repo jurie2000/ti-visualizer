@@ -306,6 +306,37 @@ describe("Importbefunde", () => {
     expect(r.findings[0]?.message).toContain("gibt-es-nicht");
   });
 
+  it("[#203] der Token-Zustand bleibt beim Laden erhalten, Altdateien laden ohne Tokens", () => {
+    const tokens = { zeta: "2026-11-01", popp: ["egk-1"] };
+    const r = ok(file({ ...base(), tokens }));
+    expect(r.topology.tokens).toEqual(tokens);
+    expect(r.findings).toEqual([]);
+    const alt = ok(file(base()));
+    expect(alt.topology.tokens).toBeUndefined();
+    expect(alt.findings).toEqual([]);
+  });
+
+  it("[#203] der Token-Zustand übersteht Speichern und Laden", () => {
+    const t = { ...base(), tokens: { zeta: "2026-11-01", popp: ["egk-1"] } };
+    expect(ok(JSON.parse(serialize(t, catalog))).topology).toEqual(t);
+  });
+
+  it.each([
+    ["ungültiges Datum", { zeta: "gestern" }],
+    ["popp kein Array", { zeta: "2026-11-01", popp: "x" }],
+    ["ungültige eGK-ID", { popp: ["a b!"] }],
+  ])("[#203] Token-Zustand mit %s wird mit Warnung verworfen", (_, tokens) => {
+    const r = ok(file({ ...base(), tokens }));
+    expect(r.topology.tokens).toBeUndefined();
+    expect(r.findings.map((f) => f.code)).toEqual(["tokens"]);
+  });
+
+  it("[#203] unbekannte Felder im Token-Zustand werden gemeldet", () => {
+    const r = ok(file({ ...base(), tokens: { zeta: "2026-11-01", x: 1 } }));
+    expect(r.topology.tokens).toEqual({ zeta: "2026-11-01" });
+    expect(r.findings.map((f) => f.code)).toEqual(["unbekanntesFeld"]);
+  });
+
   it("[#202] popp bleibt gültig, die neuen TI-2.0-Typen werden ohne Befund geladen", () => {
     const r = ok(
       file({

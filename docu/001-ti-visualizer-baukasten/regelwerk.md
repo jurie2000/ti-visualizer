@@ -495,8 +495,15 @@ Auslöser → lokale Netzgeräte und Arbeitsplatz (beliebig viele) → **Zugang*
 → Router und Internet (beliebig viele) → **VPN-Zugangsdienst** →
 Zentrales Netz (optional) → **Dienst**
 
-- Wege, die den Zugang oder den VPN-Zugangsdienst auslassen, zählen
-  nicht als TI-Pfad, auch wenn sie über das Internet zum Dienst führen.
+**TI-2.0-Pfad** (VSDM 2.0): Auslöser → lokale Netzgeräte und Arbeitsplatz
+(beliebig viele) → **Zugang** → Router und Internet (beliebig viele) →
+**ZETA Guard** → **VSDM 2.0**. Ohne VPN-Zugangsdienst und ohne Zentrales
+Netz. Der Zugang bleibt Pflicht, weil er die Kartenauthentisierung trägt.
+Der VPN-Pfad oben gilt unverändert.
+
+- Wege, die den Zugang oder den VPN-Zugangsdienst (beim TI-2.0-Pfad den
+  ZETA Guard) auslassen, zählen nicht als TI-Pfad, auch wenn sie über das
+  Internet zum Dienst führen.
 - Wege nur über das Internet gelten ausschließlich für
   Versicherten-Apps, TI-Messenger, CardLink und PoPP, und zwar nur für
   diese Paare (Vereinfachung, abgeleitet aus 4.2):
@@ -514,6 +521,13 @@ Zentrales Netz (optional) → **Dienst**
   Arbeitsplatz des Auslösers zugeordnet ist (P-29). Gibt es keine
   Zuordnung, fragt die App, welches Terminal genutzt wird.
 
+Auslegung (2026-11-19): ZETA Guard und VSDM 2.0 sind ein TI-Pfad mit
+Zugang, kein reiner Internet-Weg. PoPP bleibt in der Paarliste. Das Pfadziel
+hinter dem ZETA Guard ist nicht auf VSDM 2.0 beschränkt, die
+Erlaubnisliste (4.2) legt es fest.
+Status: plausibel (Entwurfsstände und Folien, Quellen: gemSpec_ZETA,
+Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2).
+
 Status: Vereinfachung nach Arch und gemILF_PS.
 
 ### 6.1 Bausteine der Voraussetzungen
@@ -526,10 +540,21 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
+| **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
+| **PoPP-Token** | Für eine eGK im Terminal des Zugangs oder im Auslöser wurde ein PoPP-Token ausgestellt (Vereinfachung: irgendeine dieser eGK genügt). Er gilt für den Behandlungsfall dieser eGK und hängt an ihrer `id`. Stand in der Topologie: `tokens.popp` (eGK-IDs), eine eGK ohne `id` kann keinen Token tragen | gemSpec_PoPP_Service, gemSpec_VSDM_2 (plausibel) |
 | **Befugnis (ePA)** | Prüfungsnachweis oder PoPP-Token. Dauer: 90 Tage in Praxis und Krankenhaus, 3 Tage in der Apotheke | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Praxen, gematik ePA für alle Apotheken (plausibel, Stand 2026 prüfen) |
 
 Die erste nicht erfüllte Bedingung liefert die Begründung im
 ausgegrauten Menüeintrag.
+
+**Auslegung (2026-11-19, Token):** „Einmal am Tag“ wird zu „bis Tagesende
+von `simDate`“ vereinfacht; der ZETA-Token ist nur erfüllt, wenn
+`tokens.zeta` gleich `simDate` ist (auch ein zurückgestelltes Datum macht
+ihn ungültig). Es gibt einen ZETA-Token je Topologie, nicht je Gerät. Die
+interne Ausstellung (DPoP, Client-Attestation) ist nicht modelliert. Beide
+Token erscheinen nur als Bedingung im ausgegrauten Menüeintrag, nicht am
+Gerät. Der Zustand steht in der Datei; Altdateien ohne `tokens` laden ohne
+Token. Status: Vereinfachung.
 
 **Auslegung (2026-11-10):** (a) „Gerät vorhanden“ ist bewusst nur
 ein Existenztest, Status `Vereinfachung` (Quellen nennen keine feste

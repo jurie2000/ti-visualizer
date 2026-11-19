@@ -306,6 +306,22 @@ describe("Importbefunde", () => {
     expect(r.findings[0]?.message).toContain("gibt-es-nicht");
   });
 
+  it("[#203] der Token-Zustand bleibt beim Laden erhalten, Altdateien laden ohne Tokens", () => {
+    const tokens = { zeta: "2026-11-01", popp: ["egk-1"] };
+    const r = ok(file({ ...base(), tokens }));
+    expect(r.topology.tokens).toEqual(tokens);
+    expect(r.findings).toEqual([]);
+    const alt = ok(file(base()));
+    expect(alt.topology.tokens).toBeUndefined();
+    expect(alt.findings).toEqual([]);
+  });
+
+  it("[#203] ungültiger Token-Zustand wird mit Warnung verworfen", () => {
+    const r = ok(file({ ...base(), tokens: { zeta: "gestern" } }));
+    expect(r.topology.tokens).toBeUndefined();
+    expect(r.findings.map((f) => f.code)).toEqual(["tokens"]);
+  });
+
   it("[#202] popp bleibt gültig, die neuen TI-2.0-Typen werden ohne Befund geladen", () => {
     const r = ok(
       file({

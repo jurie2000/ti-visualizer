@@ -30,7 +30,9 @@ const catalog = {
     dt("zentral", "network"),
     dt("erp", "service"),
     dt("tim", "service"),
-    dt("popp", "service"),
+    dt("popp", "ti2"),
+    dt("zeta", "ti2"),
+    dt("vsdm2", "ti2"),
     dt("dns", "zentral"),
     dt("erpapp", "versicherte", ["nfcCard"]),
   ],
@@ -626,5 +628,74 @@ describe("Terminal und Zugang 6.0", () => {
       [["pvs", "m"]],
     );
     expect(terminalFor(t, "pvs", catalog)).toEqual({ status: "none" });
+  });
+
+  describe("TI 2.0: ZETA Guard (#203)", () => {
+    const nodes: N[] = [
+      ["pvs", "pvs"],
+      ["rt", "router"],
+      ["net", "internet"],
+      ["z", "zeta"],
+      ["v", "vsdm2"],
+    ];
+    const kette: [string, string][] = [
+      ["rt", "net"],
+      ["net", "z"],
+      ["z", "v"],
+    ];
+
+    it("Zugang → Router → Internet → ZETA → VSDM 2.0 ist ein TI-Pfad", () => {
+      const t = topo(
+        [...nodes, ["kon", "kon"]],
+        [["pvs", "kon"], ["kon", "rt"], ...kette],
+      );
+      const r = resolvePath(t, "pvs", "v", catalog);
+      expect(r).toMatchObject({
+        ok: true,
+        nodes: ["pvs", "kon", "rt", "net", "z", "v"],
+        zugang: "kon",
+      });
+    });
+
+    it("ein Weg ohne Zugang gilt nicht als TI-Pfad", () => {
+      const t = topo(nodes, [["pvs", "rt"], ...kette]);
+      expect(resolvePath(t, "pvs", "v", catalog).ok).toBe(false);
+    });
+
+    it("VSDM 2.0 ohne ZETA Guard auf dem Weg ist nicht erreichbar", () => {
+      const t = topo(
+        [...nodes, ["kon", "kon"]],
+        [
+          ["pvs", "kon"],
+          ["kon", "rt"],
+          ["rt", "net"],
+          ["net", "v"],
+        ],
+      );
+      expect(resolvePath(t, "pvs", "v", catalog).ok).toBe(false);
+    });
+
+    it("der VPN-Pfad gilt unverändert", () => {
+      const t = topo(
+        [
+          ["pvs", "pvs"],
+          ["kon", "kon"],
+          ["rt", "router"],
+          ["net", "internet"],
+          ["vpn", "vpn"],
+          ["zn", "zentral"],
+          ["erp", "erp"],
+        ],
+        [
+          ["pvs", "kon"],
+          ["kon", "rt"],
+          ["rt", "net"],
+          ["net", "vpn"],
+          ["vpn", "zn"],
+          ["zn", "erp"],
+        ],
+      );
+      expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(true);
+    });
   });
 });

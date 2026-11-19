@@ -207,6 +207,8 @@ export const actions = z.array(
     offeredBy: Selector,
     requires: Expr,
     flow: Id,
+    /** Token, den die Aktion nach dem Ablauf ausstellt (Regelwerk 6.2). */
+    issues: z.enum(["zeta", "popp"]).optional(),
     ...sourced,
   }),
 );

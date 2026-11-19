@@ -303,6 +303,55 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     expect(useSim.getState().sim.status).toBe("cancelled");
   });
 
+  it("ZETA-Anmeldung stellt den Token nach dem Ende aus, ohne abzubrechen (#204)", () => {
+    const t = praxis(["kt"]);
+    useTopology.getState().reset({
+      ...t,
+      nodes: [
+        ...t.nodes,
+        {
+          id: "zeta",
+          type: "zeta",
+          position: { x: 0, y: 400 },
+          fault: false,
+        },
+      ],
+      edges: [
+        ...t.edges,
+        {
+          id: "net-zeta",
+          fault: false,
+          ends: [
+            { node: "net", port: "p" },
+            { node: "zeta", port: "p" },
+          ],
+        },
+      ],
+    });
+    render(<Canvas />, { wrapper });
+    act(() => {
+      useUi
+        .getState()
+        .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
+    });
+    for (let i = 0; i < 4; i++)
+      act(() => {
+        useSim.getState().send("next");
+      });
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+    act(() => {
+      useSim.getState().send("next");
+    });
+    expect(useSim.getState().sim.status).toBe("done");
+    expect(useTopology.getState().topology.tokens?.zeta).toBe("2026-11-01");
+    expect(live()).toHaveTextContent("Ablauf beendet");
+    // ein Schritt für Rückgängig
+    act(() => {
+      useTopology.getState().undo();
+    });
+    expect(useTopology.getState().topology.tokens).toBeUndefined();
+  });
+
   it("zeigt „Terminal wählen“, wenn mehrere Terminals passen und keines gewählt ist", async () => {
     const user = userEvent.setup();
     useTopology.getState().reset(praxis(["kt", "kt2"]));

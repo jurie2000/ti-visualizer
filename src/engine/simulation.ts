@@ -28,10 +28,11 @@ const caps = (c: Cat, n: Node) =>
 
 type Path = { nodes: string[]; edges: string[] };
 
-// Spiegelt die Ausnahmen in connection-rules.json (erl-mkt-ps, kim ↔ kk).
+// Spiegelt die Ausnahmen in connection-rules.json (erl-mkt-ps, kim ↔ kk, ZETA Guard ↔ VSDM 2.0).
 const DIRECT: Record<string, string[]> = {
   mkt: ["pvs", "kis", "avs", "pflege", "pc"],
   kim: ["kk"],
+  zeta: ["vsdm2"],
 };
 
 /** Der Teil des Wegs bis zur Störung: Gerät bis einschließlich, bei einer Kante bis zu ihr. */

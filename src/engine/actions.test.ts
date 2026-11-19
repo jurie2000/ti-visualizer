@@ -661,6 +661,67 @@ describe("TI-2.0-Aktionen (#204)", () => {
     expect(neu.tokens?.popp).toEqual(["egk-1"]);
   });
 
+  it("läuft das PVS auf einem PC, startet der PC alle drei Aktionen", () => {
+    const base = noTokens(full());
+    const t: Topology = {
+      ...base,
+      nodes: [
+        ...base.nodes,
+        { id: "pc", type: "pc", position: { x: 0, y: 0 }, fault: false },
+      ],
+      edges: [
+        ...base.edges.filter((e) => e.ends.every((x) => x.node !== "pvs")),
+        {
+          id: "sw-pc",
+          fault: false,
+          ends: [
+            { node: "sw", port: "p" },
+            { node: "pc", port: "p" },
+          ],
+        },
+        {
+          id: "pc-pvs",
+          fault: false,
+          ends: [
+            { node: "pc", port: "soft" },
+            { node: "pvs", port: "host" },
+          ],
+        },
+      ],
+    };
+    // Die Software löst nichts selbst aus
+    expect(state(t, "pvs", "zeta-anmelden")).toBeUndefined();
+    for (const id of ["zeta-anmelden", "popp-token-beantragen"])
+      expect(state(t, "pc", id)?.enabled, id).toBe(true);
+    expect(state(t, "pc", "vsdm2-pruefen")?.disabledReason).toContain(
+      "ZETA-Token",
+    );
+    const pc = t.nodes.find((n) => n.id === "pc") as Node;
+    for (const id of [
+      "zeta-anmelden",
+      "popp-token-beantragen",
+      "vsdm2-pruefen",
+    ]) {
+      const flow = catalog.flows.find((f) => f.id === action(id).flow);
+      const steps = bindFlow(flow as NonNullable<typeof flow>, pc, t, catalog);
+      for (const s of steps) expect(s.problem, id).toBeUndefined();
+      // Der Weg der Software führt über den Rechner
+      expect(
+        steps.flatMap((s) => s.nodes),
+        id,
+      ).toContain("pc");
+    }
+    const mit = issueToken("popp", pc, t, catalog);
+    expect(mit.tokens?.popp).toEqual(["egk-1"]);
+    expect(
+      state(
+        { ...mit, tokens: { zeta: t.simDate, popp: ["egk-1"] } },
+        "pc",
+        "vsdm2-pruefen",
+      )?.enabled,
+    ).toBe(true);
+  });
+
   it("jeder Ablauf bindet seine Stationen", () => {
     for (const id of [
       "zeta-anmelden",

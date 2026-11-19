@@ -548,7 +548,8 @@ describe("Token-Bausteine (#203)", () => {
     const s = stateOf(nextDay, "zetaToken");
     expect(s?.enabled).toBe(false);
     expect(s?.disabledReason).toContain("ZETA-Token");
-    expect(stateOf(withTokens(undefined), "zetaToken")?.enabled).toBe(false);
+    for (const tokens of [undefined, {}, { zeta: "2026-11-02" }])
+      expect(stateOf(withTokens(tokens), "zetaToken")?.enabled).toBe(false);
   });
 
   it("PoPP-Token ist für die ausgestellte eGK erfüllt, sonst nicht", () => {
@@ -560,6 +561,11 @@ describe("Token-Bausteine (#203)", () => {
     const other = stateOf(mitId("egk-2"), "poppToken");
     expect(other?.enabled).toBe(false);
     expect(other?.disabledReason).toContain("PoPP-Token");
-    expect(stateOf(withTokens(undefined), "poppToken")?.enabled).toBe(false);
+    for (const tokens of [undefined, {}, { popp: [] }])
+      expect(stateOf(withTokens(tokens), "poppToken")?.enabled).toBe(false);
+    // eGK ohne id kann keinen Token tragen
+    expect(stateOf(withTokens({ popp: ["egk-1"] }), "poppToken")?.enabled).toBe(
+      false,
+    );
   });
 });

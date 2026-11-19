@@ -675,27 +675,17 @@ describe("Terminal und Zugang 6.0", () => {
       expect(resolvePath(t, "pvs", "v", catalog).ok).toBe(false);
     });
 
-    it("der VPN-Pfad gilt unverändert", () => {
+    it("ein Internet-Auslöser ohne Zugang erreicht ZETA und VSDM 2.0 nicht", () => {
       const t = topo(
+        [["app", "erpapp"], ...nodes.slice(2)],
         [
-          ["pvs", "pvs"],
-          ["kon", "kon"],
-          ["rt", "router"],
-          ["net", "internet"],
-          ["vpn", "vpn"],
-          ["zn", "zentral"],
-          ["erp", "erp"],
-        ],
-        [
-          ["pvs", "kon"],
-          ["kon", "rt"],
-          ["rt", "net"],
-          ["net", "vpn"],
-          ["vpn", "zn"],
-          ["zn", "erp"],
+          ["app", "net"],
+          ["net", "z"],
+          ["z", "v"],
         ],
       );
-      expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(true);
+      expect(resolvePath(t, "app", "v", catalog).ok).toBe(false);
+      expect(resolvePath(t, "app", "z", catalog).ok).toBe(false);
     });
   });
 });

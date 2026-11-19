@@ -201,12 +201,12 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
         );
       }
       case "zetaToken":
-        // Gilt bis Tagesende des Ausstellungstags (Regelwerk 6.1).
+        // Regelwerk 6.1
         return ctx.topology.tokens?.zeta === ctx.topology.simDate
           ? undefined
           : "Kein gültiger ZETA-Token für diesen Simulationstag.";
       case "poppToken": {
-        // Token gilt für den Behandlungsfall der eGK (Regelwerk 6.1).
+        // Regelwerk 6.1: irgendeine eGK am Auslöser oder Terminal genügt
         const issued = ctx.topology.tokens?.popp ?? [];
         return [ctx.trigger, ...ctx.terminals].some((n) =>
           n.cards?.some(

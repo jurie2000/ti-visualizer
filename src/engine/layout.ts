@@ -102,7 +102,7 @@ export function arrange(
   const root =
     rest.find((n) => n.type === "vpn") ??
     rest.find((n) => n.type === "gateway") ??
-    rest.find((n) => n.type === "kon" || n.type === "hskon") ??
+    rest.find((n) => n.type === "kon") ??
     [...rest].sort((a, b) => deg(b.id) - deg(a.id))[0];
 
   const depth = new Map<string, number>();

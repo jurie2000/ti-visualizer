@@ -262,6 +262,19 @@ export const BETRIEB: Record<string, Rule> = {
     terminals
       .filter((k) => k.config?.paired === false)
       .map((k) => ({ subject: k.id, nodes: [k.id] })),
+
+  // Gegenstück zu P-29; nur wenn es überhaupt einen Arbeitsplatz-Rechner gibt.
+  "P-34": ({ t, c, terminals }) => {
+    const wp = (n: Node) => n.config?.workplace ?? standard(c, "workplace");
+    const plaetze = new Set(
+      t.nodes.filter((n) => has(c, n, "workplace")).map(wp),
+    );
+    return plaetze.size === 0
+      ? []
+      : terminals
+          .filter((k) => !plaetze.has(wp(k)))
+          .map((k) => ({ subject: k.id, nodes: [k.id] }));
+  },
 };
 
 function gatewayHits(t: Topology, c: Catalog, id: "P-25" | "P-26") {

@@ -370,7 +370,7 @@ Welche Felder ein Knoten haben darf, hängt von seinem Gerätetyp ab
 | `pvs` (Praxisverwaltungssystem) | `netConfig:client` | `config` als ClientConfig |
 | `router` | `netConfig:router` | `config` als RouterConfig |
 | `switch`, `ap`, `fw` (Switch, Access Point, Firewall) | `netConfig:infra` | `config` als InfraConfig, nur die Grundfelder aus NetConfig |
-| `hskon`, `gateway` | `netConfig:konnektor` | `config` als KonnektorConfig |
+| `gateway` | `netConfig:konnektor` | `config` als KonnektorConfig |
 | `erp` (E-Rezept-Fachdienst) | keine | keine Zusatzfelder, nur `id`, `label`, `type`, `position`, `fault` |
 
 **Beispiel:** dieselben Knoten wie in 3.2, jetzt mit ihren Zusatzfeldern

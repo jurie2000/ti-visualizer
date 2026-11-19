@@ -178,6 +178,14 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
     switch (e.need) {
       case "zugang":
         return needZugang(ctx);
+      case "zugangTi2": {
+        const r = needZugang(ctx);
+        if (r || !ctx.zugang) return r;
+        const z = ctx.topology.nodes.find((n) => n.id === ctx.zugang);
+        return z && caps(ctx.catalog, z).includes("zugangTi2")
+          ? undefined
+          : "Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.";
+      }
       case "ti": {
         const r = needZugang(ctx);
         if (r || !ctx.zugang) return r;

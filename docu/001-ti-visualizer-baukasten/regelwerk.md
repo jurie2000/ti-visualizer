@@ -75,8 +75,7 @@ Tabelle nennt die Kartenarten.
 
 Technische Karten sind ebenfalls keine Knoten, sondern Eigenschaften:
 gSMC-KT im Kartenterminal, gSMC-K im Konnektor (Zertifikat, siehe
-P-18), HSM-B im Highspeed-Konnektor. Quelle: Arch, gemSpec_KT,
-gemF_Highspeed-Konnektor.
+P-18). Quelle: Arch, gemSpec_KT.
 
 ### 1.3 Kartenterminals
 
@@ -100,11 +99,16 @@ gemF_Highspeed-Konnektor.
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
 | `kon` | Konnektor | bestätigt | gemSpec_Kon |
-| `hskon` | Highspeed-Konnektor | bestätigt | gemF_Highspeed-Konnektor |
 | `gateway` | TI-Gateway (Zugangsmodul + HSK-Instanz) | bestätigt | gemF_TI-Gateway |
 | `vpn` | VPN-Zugangsdienst | bestätigt | Arch, gemSpec_VPN_ZugD |
 | `internet` | Internet (Transportnetz), neu | bestätigt | Arch |
 | `zentral` | Zentrales Netz der TI, neu | bestätigt | Arch, gemSpec_Net |
+
+Auslegung (2026-11-19, Issue #211): Den Highspeed-Konnektor (`hskon`) gibt
+es im Katalog nicht mehr. Die HSK ist Teil des TI-Gateways (gemF_TI-Gateway)
+und kein eigenes Gerät. Alte Dateien laden `hskon` als `gateway`
+(Anschluss `lan0`/`lan1` wird `lan`), der Import meldet das als Hinweis.
+Status: Vereinfachung.
 
 ### 1.6 Zentrale Dienste (neu)
 
@@ -147,14 +151,15 @@ Regel-Engine und das Dateischema prüfen dagegen.
 |---|---|---|
 | `cardSlots` | nimmt gesteckte Karten auf | `kt`, `mkt` |
 | `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp` |
-| `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `hskon`, `gateway` |
+| `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `gateway` |
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
 | `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software) | `pc`, `server`, `tab`, `kimcm` |
 | `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an | `pc`, `tab` |
 | `trigger` | startet die Aktionen der Software, die auf ihm läuft (der Cloud-Server hat sie nicht) | `pc`, `server`, `tab` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
-| `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `hskon`, `gateway` |
+| `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `gateway` |
+| `zugangTi2` | taugt als Zugang für die TI-2.0-Aktionen (Baustein „TI-2.0-Zugang“, 6.1) | `gateway` |
 
 ### 1.10 TI 2.0 (neu)
 
@@ -216,7 +221,6 @@ Abschnitt 5.
 | Access Point | LAN (PoE), WLAN (mehrfach) | Mockup, plausibel | DVO |
 | Firewall | LAN, WAN | plausibel | Betriebsarten |
 | Konnektor, TI-Gateway | LAN (mehrfach), WAN, VPN (`tun`, logisch) | Vereinfachung: physisch hat der Konnektor einen LAN-Anschluss hinter einem Switch. Im Modell trägt er mehrere, damit im Modus Einfach Primärsystem, Kartenterminal und KIM-Clientmodul direkt daran hängen können | gemSpec_Kon, Betriebsarten |
-| Highspeed-Konnektor | LAN0, LAN1 (mehrfach), WAN, VPN (`tun`, logisch) | Vereinfachung wie Konnektor | gemF_Highspeed-Konnektor |
 | VPN-Zugangsdienst | Zugangspunkt (`tun`, mehrfach), Zentrales Netz (`ti`, mehrfach), Internet (`net`) | bestätigt | Arch |
 | Internet | Netz (`net`, mehrfach) | Vereinfachung | Arch |
 | Zentrales Netz | Netz (`ti`, mehrfach) | Vereinfachung | Arch |
@@ -263,6 +267,7 @@ eigene Regel-ID):
 0. beide Enden `host`: `host`
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
+2a. Switch ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -277,6 +282,11 @@ Auslegung (2026-11-19): Verbindungen zu ZETA Guard und PoPP laufen über
 das Internet und haben Art `inet` (Regel 3). Die Strecke ZETA Guard ↔
 VSDM 2.0 liegt in Wirklichkeit hinter dem Zugangspunkt; sie zeigt
 ebenfalls `inet`, weil das Modell keine eigene Art dafür führt.
+
+Auslegung (2026-11-19, Issue #211): Das TI-Gateway öffnet den Tunnel
+zur TI hinter dem Praxisnetz. Eine Kante zwischen Switch und TI-Gateway
+zeigt daher den Tunnel (`vpn`, Regel 2a) und nicht das Kabel. Eine Kante
+Switch ↔ Konnektor bleibt `phys`. Status: plausibel.
 
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
@@ -295,6 +305,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Primärsystem ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
 | Mobiles KT ↔ Primärsystem oder PC | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |
+| Switch ↔ TI-Gateway | IPsec (IKEv2) vom TI-Gateway über das Praxisnetz | UDP 500 und 4500 | nein (IPsec) | plausibel | gemF_TI-Gateway |
 | Primärsystem ↔ KIM-Clientmodul | SMTP und POP3 | offen | ja | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul ↔ KIM-Fachdienst | SMTP und POP3, über die Route des Zugangs | offen | ja (mTLS) | bestätigt | gemSpec_CM_KOMLE |
 | TI-Messenger-Client ↔ TI-Messenger-FD | Matrix (Client-Server-API), JSON | 443 | ja | bestätigt (Netzport plausibel) | gemSpec_TI-M_Basis |
@@ -306,8 +317,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 
 ## 4. Verbindungsregeln
 
-**Zugang** steht in diesem Abschnitt für Konnektor, Highspeed-Konnektor
-und TI-Gateway (Fähigkeit `zugang`). Gültig ist jede erlaubte Verbindung
+**Zugang** steht in diesem Abschnitt für Konnektor und TI-Gateway (Fähigkeit `zugang`). Gültig ist jede erlaubte Verbindung
 in beiden Modi.
 
 ### 4.0 Prüflogik (entschieden 2026-11-03)
@@ -376,7 +386,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
-| PVS, KIS, AVS, Pflege | Zugang | bestätigt | gemILF_PS, gemF_Highspeed-Konnektor, KH |
+| PVS, KIS, AVS, Pflege | Zugang | bestätigt | gemILF_PS, KH |
 | PC, Server | Switch, Router-LAN | plausibel | DVO |
 | PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung | gemILF_PS |
 | PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung | gemILF_PS |
@@ -462,7 +472,7 @@ und K-6 in Abschnitt 5.
 
 | ID | Regel | Status | Quelle |
 |---|---|---|---|
-| X-1 | Konnektor/Highspeed-Konnektor und TI-Gateway nicht in derselben Topologie. Eine Topologie bildet in v1 eine Einrichtung ab. Topologien mit mehreren Einrichtungen und unterschiedlichem Zugang sind nicht vorgesehen | Vereinfachung: die gematik beschreibt das TI-Gateway als Alternative zum Konnektor, ein Verbot beider nebeneinander steht dort nicht | FP Konnektor/TI-Gateway, gemF_TI-Gateway |
+| X-1 | Konnektor und TI-Gateway nicht in derselben Topologie. Eine Topologie bildet in v1 eine Einrichtung ab. Topologien mit mehreren Einrichtungen und unterschiedlichem Zugang sind nicht vorgesehen | Vereinfachung: die gematik beschreibt das TI-Gateway als Alternative zum Konnektor, ein Verbot beider nebeneinander steht dort nicht | FP Konnektor/TI-Gateway, gemF_TI-Gateway |
 
 ## 5. Karten
 
@@ -535,6 +545,7 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 | Baustein | Bedingung | Quelle |
 |---|---|---|
 | **Zugang** | Ein Zugang ist vom Auslöser aus nach 6.0 erreichbar und nicht ausgefallen | Arch |
+| **TI-2.0-Zugang** | Der Zugang hat die Fähigkeit `zugangTi2` (TI-Gateway). Ein Konnektor genügt nicht: Meldung „Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.“ Setzt den Baustein „Zugang“ voraus | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet) | Arch |
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
@@ -546,6 +557,13 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 
 Die erste nicht erfüllte Bedingung liefert die Begründung im
 ausgegrauten Menüeintrag.
+
+**Auslegung (2026-11-19, Issue #211):** TI 2.0 (ZETA-Anmeldung,
+PoPP-Token, VSDM-2.0-Prüfung) läuft nur über ein TI-Gateway
+(Zero-Trust-Architektur, gemF_TI-Gateway); der Konnektor kann das nicht.
+Der Baustein „TI-2.0-Zugang“ prüft zuerst „Zugang“ und danach die Fähigkeit
+`zugangTi2`. Konnektor und TI-Gateway schließen sich weiter aus (X-1);
+VSDM 1.0 mit dem Konnektor bleibt unberührt. Status: plausibel.
 
 **Auslegung (2026-11-19, Token):** „Einmal am Tag“ wird zu „bis Tagesende
 von `simDate`“ vereinfacht; der ZETA-Token ist nur erfüllt, wenn
@@ -592,9 +610,9 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan erstellen/aktualisieren | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemILF_PS_AMTS, gemSysL_AMTS_A |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
-| ZETA-Anmeldung (SMC-B) | Zugang, SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
-| PoPP-Token beantragen (eGK) | Zugang, eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
-| VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ZETA-Anmeldung (SMC-B) | TI-2.0-Zugang, SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| PoPP-Token beantragen (eGK) | TI-2.0-Zugang, eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
+| VSDM-2.0-Prüfung | TI-2.0-Zugang, ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 
 **Auslegung (2026-11-19, TI-2.0-Aktionen):** (a) Die Token werden am Ende
 des Ablaufs ausgestellt, nicht beim Start, und nur, wenn kein Schritt ein
@@ -602,8 +620,8 @@ Problem hat; ein abgebrochener Ablauf stellt nichts aus. Die Ausstellung
 ist ein Schritt für Rückgängig. (b) `vsdm` (VPN, VSDM 1.0) bleibt
 unverändert und steht neben VSDM 2.0; beide sind einzeln wählbar (X-1
 bleibt). (c) Eine eGK ohne `id` bekommt bei der PoPP-Ausstellung eine freie
-`id`, damit der Token an ihr hängen kann. (d) Beide Aktionen mit Karte
-nutzen den Baustein „Zugang“, weil der Ablauf über den Zugang läuft.
+`id`, damit der Token an ihr hängen kann. (d) Alle drei Aktionen nutzen den Baustein „TI-2.0-Zugang“
+(Auslegung 2026-11-19, Issue #211, siehe 6.1).
 (e) Der Schritt ZETA Guard→VSDM 2.0 im Ablauf `vsdm2` folgt der direkten
 Verbindung (Regelwerk 4.2), weil die Pfadregel nur Wege vom Auslöser kennt.
 Status: plausibel.
@@ -735,7 +753,7 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 | Kritisches Update | `updateOk` (KonnektorConfig) | ja | fehlt es nach Frist, baut der Zugang keinen VPN-Tunnel mehr auf | bestätigt | Arch |
 | IPsec an der Router-Firewall | `ipsecAllowed` (RouterConfig) | erlaubt | UDP 500/4500 für den VPN-Tunnel | plausibel | gemSpec_VPN_ZugD |
 
-TI-Gateway und Highspeed-Konnektor nutzen die KonnektorConfig. Felder,
+Das TI-Gateway nutzt die KonnektorConfig. Felder,
 die für sie nicht gelten (z. B. `sis`), bleiben leer.
 
 Hostnamen der Dienste aus dem Mockup (`*.splitdns.ti-dienste.de` u. a.)
@@ -756,7 +774,7 @@ dort einstellbar sind. Alle anderen gelten in beiden Modi.
 | P-1 | Gerät ist ausgefallen | Node `fault` | Fehler | Vereinfachung | keine (Simulation) |
 | P-2 | Verbindung ist unterbrochen | Edge `fault` | Fehler | Vereinfachung | keine (Simulation) |
 | P-3 | Gesteckte Karte ist abgelaufen | Card `expires`, `simDate` | Fehler | bestätigt | gemSpec_PKI |
-| P-4 | Kein Zugang (Konnektor, HSK, TI-Gateway) | Node `type` | Warnung | bestätigt | Arch |
+| P-4 | Kein Zugang (Konnektor, TI-Gateway) | Node `type` | Warnung | bestätigt | Arch |
 | P-5 | Kartenterminal erreicht seinen Zugang nicht (6.0) | Kanten, `pairedWith` | Warnung | bestätigt | gemSpec_KT |
 | P-6 | WLAN im selben Segment wie Kartenterminal oder Zugang | Kanten, `vlan` | Warnung | plausibel | DVO |
 | P-7 | Gerät ist mit nichts verbunden | Kanten | Hinweis | Vereinfachung | keine |
@@ -788,7 +806,7 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
   Das Preset Klinikum meldet sie daher (Access Point im Standard-VLAN).
 - P-7: eine unterbrochene Kante zählt als Verbindung, eine Kante zu einem
   unbekannten Knoten nicht.
-- P-18: Konnektor und Highspeed-Konnektor. Das TI-Gateway hat keine gSMC-K.
+- P-18: nur der Konnektor. Das TI-Gateway hat keine gSMC-K.
 - P-31: gepairt heißt `pairedWith` plus jede direkte Verbindung zu einem
   Zugang. Mehr als ein verschiedener Zugang ergibt den Fehler.
 - P-32: ein Befund für die ganze Topologie, mit allen Zugängen beider
@@ -849,6 +867,15 @@ mit Konfiguration wird geprüft.
 | P-28 | DNS eines Clients ist nicht der Zugang | `dns` | Warnung | plausibel, wegen C_12389 neu zu prüfen | gemILF_PS |
 | P-29 | Arbeitsplatz eines Rechners (Fähigkeit `workplace`) keinem Kartenterminal zugeordnet | `workplace` | Fehler | bestätigt | gemILF_PS |
 | P-30 | Kartenterminal nicht gepairt, Karten darin sind unsichtbar | `paired` | Fehler | bestätigt | gemSpec_KT |
+| P-34 | Kartenterminal keinem Arbeitsplatz-Rechner (Fähigkeit `workplace`) zugeordnet | `workplace` | Fehler | plausibel | gemILF_PS |
+
+Auslegung (2026-11-19, Issue #211): P-34 spiegelt P-29. Es meldet jedes
+Kartenterminal, dessen Arbeitsplatz (ungesetzt „AP-1“) kein Rechner mit
+Fähigkeit `workplace` führt. Mehrere PCs an einem Arbeitsplatz sind
+mehrere Rechner mit gleichem `workplace`, das Datenmodell bleibt
+unverändert. Ohne einen solchen Rechner in der Topologie gibt es keinen
+Befund (sonst fehlt nur das Gerät). Nur im Modus Erweitert. Status:
+plausibel.
 
 **Geändert gegenüber dem Mockup:** P-16 (statt „Firmware älter als 5“),
 P-17 (3600 s statt 5 Minuten), P-19 (SIS im Parallelbetrieb ist erlaubt,
@@ -873,7 +900,7 @@ Entschieden 2026-11-04, geändert 2026-11-13 (siehe unten).
 | **Verbindungen** | alle einzeln | alle einzeln |
 | **Palette** | alle Gerätetypen | alle Gerätetypen |
 | **Anschlüsse und Einstellungen** | Anschlüsse wählt das System (A-3), keine Geräteeinstellungen | Anschlussauswahl beim Verbinden und Geräteeinstellungen (IP-Konfiguration, Abschnitt 8) |
-| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Prüfregeln „nur Erweitert“ (Adressierung P-8 bis P-15, Betrieb P-16 bis P-30), die die Geräteeinstellungen auswerten |
+| **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Prüfregeln „nur Erweitert“ (Adressierung P-8 bis P-15, Betrieb P-16 bis P-30 und P-34), die die Geräteeinstellungen auswerten |
 | **Vereinfachte Direktverbindungen** | erlaubt | erlaubt, die Sicherheitsprüfung weist mit einem Hinweis auf den realen Weg hin |
 
 Entschieden 2026-11-13 (ersetzt die Entscheidung vom 2026-11-04): Beide Modi zeigen alle Geräte
@@ -937,7 +964,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS, 2 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
 | Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: IDP, **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
 | Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B. KT 2: HBA | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1) |
-| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 Highspeed-Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | Router nicht direkt am VPN-Zugangsdienst: der Highspeed-Konnektor hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt |
+| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt |
 
 Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.

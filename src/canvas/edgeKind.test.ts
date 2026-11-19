@@ -63,5 +63,10 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   });
   it("Kabel zum Switch bleibt Kabel", () => {
     expect(kindOf(["pvs", "eth0"], ["switch", "p1"])).toBe("phys");
+    expect(kindOf(["kon", "lan"], ["switch", "p1"])).toBe("phys");
+  });
+  it("[#211] Switch zum TI-Gateway ergibt VPN, in beide Richtungen", () => {
+    expect(kindOf(["switch", "p1"], ["gateway", "lan"])).toBe("vpn");
+    expect(kindOf(["gateway", "lan"], ["switch", "p1"])).toBe("vpn");
   });
 });

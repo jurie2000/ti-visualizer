@@ -270,7 +270,7 @@ describe("P-5 Kartenterminal erreicht Zugang nicht", () => {
   it("[P-5] positiv: zwei Zugänge, Terminal ohne Pairing und ohne direkte Kante", () => {
     const t = healthy();
     patch(t, "kt", { config: {} });
-    t.nodes.push(node("kon2", "hskon"));
+    t.nodes.push(node("kon2", "kon"));
     t.edges.push(edge("e9", "kon2", "rt"));
     expect(ids(run(t))).toContain("P-5");
   });
@@ -279,7 +279,7 @@ describe("P-5 Kartenterminal erreicht Zugang nicht", () => {
   });
   it("[P-5] negativ: mehrere Zugänge, Terminal erreicht den gepairten", () => {
     const t = healthy();
-    t.nodes.push(node("kon2", "hskon"));
+    t.nodes.push(node("kon2", "kon"));
     t.edges.push(edge("e9", "kon2", "rt"));
     expect(ids(run(t))).not.toContain("P-5");
   });
@@ -436,7 +436,7 @@ describe("P-22 HBA oder SMC-B nicht freigeschaltet", () => {
 describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
   const twoDirect = () => {
     const t = healthy();
-    t.nodes.push(node("kon2", "hskon"));
+    t.nodes.push(node("kon2", "kon"));
     t.edges.push(edge("e8", "kt", "kon"), edge("e9", "kt", "kon2"));
     return t;
   };
@@ -447,7 +447,7 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
   });
   it("[P-31] positiv: gepairt mit A, direkt verbunden mit B", () => {
     const t = healthy();
-    t.nodes.push(node("kon2", "hskon"));
+    t.nodes.push(node("kon2", "kon"));
     t.edges.push(edge("e9", "kt", "kon2"));
     expect(ids(run(t))).toContain("P-31");
   });
@@ -458,7 +458,7 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
   });
   it("[P-31] negativ: zwei Zugänge im Netz, Terminal nur mit einem gepairt", () => {
     const t = healthy();
-    t.nodes.push(node("kon2", "hskon"));
+    t.nodes.push(node("kon2", "kon"));
     t.edges.push(edge("e9", "kon2", "rt"));
     expect(ids(run(t))).not.toContain("P-31");
   });
@@ -466,17 +466,15 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
 
 describe("P-32 Konnektor und TI-Gateway", () => {
   it("[P-32] positiv: beide Arten, ein Befund mit allen Zugängen", () => {
-    for (const k of ["kon", "hskon"]) {
-      const t = topo([node("k", k), node("g", "gateway")]);
-      const f = run(t).filter((x) => x.id === "P-32");
-      expect(f).toHaveLength(1);
-      expect(f[0]?.nodes).toEqual(["g", "k"]);
-    }
+    const t = topo([node("k", "kon"), node("g", "gateway")]);
+    const f = run(t).filter((x) => x.id === "P-32");
+    expect(f).toHaveLength(1);
+    expect(f[0]?.nodes).toEqual(["g", "k"]);
   });
   it("[P-32] negativ: nur Konnektor oder nur Gateway, auch mehrere gleicher Art", () => {
-    expect(
-      ids(run(topo([node("k", "kon"), node("k2", "hskon")]))),
-    ).not.toContain("P-32");
+    expect(ids(run(topo([node("k", "kon"), node("k2", "kon")])))).not.toContain(
+      "P-32",
+    );
     expect(ids(run(topo([node("g", "gateway")])))).not.toContain("P-32");
   });
 });
@@ -522,7 +520,7 @@ describe("P-33 Zugang ohne Weg ins Internet", () => {
   it("[P-33] je Zugang einzeln: zweiter Zugang ohne Weg wird genannt", () => {
     const t = zugang(
       [["kon", "rt"]],
-      [node("rt", "router"), node("k2", "hskon")],
+      [node("rt", "router"), node("k2", "kon")],
     );
     expect(
       run(t)

@@ -36,6 +36,7 @@ export interface Finding {
     | "unbekanntesFeld"
     | "doppelteId"
     | "unbekannterTyp"
+    | "typErsetzt"
     | "verweis"
     | "anschluss"
     | "karte"
@@ -307,6 +308,46 @@ type NodeT = z.infer<typeof Node>;
 type EdgeT = z.infer<typeof Edge>;
 type ZoneT = z.infer<typeof Zone>;
 
+/**
+ * Den Highspeed-Konnektor gibt es nicht mehr (Issue #211): Knoten werden zu
+ * TI-Gateways, deren Kantenenden an `lan0`/`lan1` zu `lan`.
+ */
+function replaceHskon(
+  raw: Record<string, unknown>,
+  add: (f: Finding) => void,
+): { nodes: unknown[]; edges: unknown[] } {
+  const old = new Set<string>();
+  const nodes = (raw.nodes as unknown[]).map((n) => {
+    if (!isObject(n) || n.type !== "hskon") return n;
+    if (typeof n.id === "string") {
+      old.add(n.id);
+      add({
+        severity: "Hinweis",
+        code: "typErsetzt",
+        message: `Gerät „${safe(n.id)}“ war ein Highspeed-Konnektor und ist jetzt ein TI-Gateway.`,
+        ref: n.id,
+      });
+    }
+    return { ...n, type: "gateway" };
+  });
+  const edges = (raw.edges as unknown[]).map((e) =>
+    isObject(e) && Array.isArray(e.ends)
+      ? {
+          ...e,
+          ends: e.ends.map((end: unknown) =>
+            isObject(end) &&
+            typeof end.node === "string" &&
+            old.has(end.node) &&
+            (end.port === "lan0" || end.port === "lan1")
+              ? { ...end, port: "lan" }
+              : end,
+          ),
+        }
+      : e,
+  );
+  return { nodes, edges };
+}
+
 /** Elementweise Prüfung mit Katalog. Gibt eine bereinigte Topologie zurück (noch nicht als Ganzes geprüft). */
 function build(
   raw: Record<string, unknown>,
@@ -355,55 +396,69 @@ function build(
     return out;
   };
 
-  const nodes = take<NodeT>(raw.nodes, Node, "Node", "topology.nodes", (n) => {
-    const device = types.get(n.type);
-    if (!device?.placeable) {
-      add({
-        severity: "Fehler",
-        code: "unbekannterTyp",
-        message: `Gerät „${n.id}“ hat den unbekannten Typ „${n.type}“ und wurde nicht übernommen.`,
-      });
-      return false;
-    }
-    return true;
-  }).map((n) => checkConfig(n, types, add));
+  const replaced = replaceHskon(raw, add);
+  const nodes = take<NodeT>(
+    replaced.nodes,
+    Node,
+    "Node",
+    "topology.nodes",
+    (n) => {
+      const device = types.get(n.type);
+      if (!device?.placeable) {
+        add({
+          severity: "Fehler",
+          code: "unbekannterTyp",
+          message: `Gerät „${n.id}“ hat den unbekannten Typ „${n.type}“ und wurde nicht übernommen.`,
+        });
+        return false;
+      }
+      return true;
+    },
+  ).map((n) => checkConfig(n, types, add));
   const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
   // Belegung je Anschluss: Schema-Prüfung nach Regelwerk 2.2 (`multi`), keine Regel-ID
   const load = new Map<string, number>();
-  const edges = take<EdgeT>(raw.edges, Edge, "Edge", "topology.edges", (e) => {
-    const refuse = (code: Finding["code"], why: string) => {
-      add({
-        severity: "Fehler",
-        code,
-        message: `Verbindung „${e.id}“ wurde nicht übernommen: ${why}`,
-      });
-      return false;
-    };
-    const keys: string[] = [];
-    for (const [j, end] of e.ends.entries()) {
-      const node = nodeById.get(end.node);
-      if (!node)
-        return refuse("verweis", `Gerät „${end.node}“ fehlt in der Datei.`);
-      const port = types.get(node.type)?.ports.find((p) => p.id === end.port);
-      if (!port)
-        return refuse(
-          "anschluss",
-          `Anschluss „${end.port}“ gibt es bei Gerät „${end.node}“ nicht.`,
-        );
-      const key = `${end.node}/${end.port}`;
-      // zweites Ende am selben Anschluss zählt wie eine zweite Kante
-      const taken = (load.get(key) ?? 0) + (j === 1 && keys[0] === key ? 1 : 0);
-      if (!port.multi && taken >= 1)
-        return refuse(
-          "anschluss",
-          `Anschluss „${end.port}“ von Gerät „${end.node}“ ist schon belegt.`,
-        );
-      keys.push(key);
-    }
-    for (const key of keys) load.set(key, (load.get(key) ?? 0) + 1);
-    return true;
-  });
+  const edges = take<EdgeT>(
+    replaced.edges,
+    Edge,
+    "Edge",
+    "topology.edges",
+    (e) => {
+      const refuse = (code: Finding["code"], why: string) => {
+        add({
+          severity: "Fehler",
+          code,
+          message: `Verbindung „${e.id}“ wurde nicht übernommen: ${why}`,
+        });
+        return false;
+      };
+      const keys: string[] = [];
+      for (const [j, end] of e.ends.entries()) {
+        const node = nodeById.get(end.node);
+        if (!node)
+          return refuse("verweis", `Gerät „${end.node}“ fehlt in der Datei.`);
+        const port = types.get(node.type)?.ports.find((p) => p.id === end.port);
+        if (!port)
+          return refuse(
+            "anschluss",
+            `Anschluss „${end.port}“ gibt es bei Gerät „${end.node}“ nicht.`,
+          );
+        const key = `${end.node}/${end.port}`;
+        // zweites Ende am selben Anschluss zählt wie eine zweite Kante
+        const taken =
+          (load.get(key) ?? 0) + (j === 1 && keys[0] === key ? 1 : 0);
+        if (!port.multi && taken >= 1)
+          return refuse(
+            "anschluss",
+            `Anschluss „${end.port}“ von Gerät „${end.node}“ ist schon belegt.`,
+          );
+        keys.push(key);
+      }
+      for (const key of keys) load.set(key, (load.get(key) ?? 0) + 1);
+      return true;
+    },
+  );
 
   const zones = take<ZoneT>(
     raw.zones,

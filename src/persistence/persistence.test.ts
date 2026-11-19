@@ -306,6 +306,29 @@ describe("Importbefunde", () => {
     expect(r.findings[0]?.message).toContain("gibt-es-nicht");
   });
 
+  it("[#211] Highspeed-Konnektor lädt als TI-Gateway, Kantenenden lan0 werden lan", () => {
+    const r = ok(
+      file({
+        ...base(),
+        nodes: [node("sw", "switch"), node("h", "hskon")],
+        edges: [
+          {
+            id: "e1",
+            fault: false,
+            ends: [
+              { node: "sw", port: "p1" },
+              { node: "h", port: "lan0" },
+            ],
+          },
+        ],
+      }),
+    );
+    expect(r.topology.nodes.find((n) => n.id === "h")?.type).toBe("gateway");
+    expect(r.topology.edges[0]?.ends[1]?.port).toBe("lan");
+    expect(r.findings.map((f) => f.code)).toEqual(["typErsetzt"]);
+    expect(r.findings[0]).toMatchObject({ severity: "Hinweis", ref: "h" });
+  });
+
   it("[#203] der Token-Zustand bleibt beim Laden erhalten, Altdateien laden ohne Tokens", () => {
     const tokens = { zeta: "2026-11-01", popp: ["egk-1"] };
     const r = ok(file({ ...base(), tokens }));

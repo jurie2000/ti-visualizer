@@ -103,6 +103,18 @@
       "netPortStatus": "plausibel"
     },
     {
+      "id": "prot-switch-gateway",
+      "a": { "types": ["switch"] },
+      "b": { "types": ["gateway"] },
+      "label": "IPsec",
+      "protocol": "IPsec (IKEv2) vom TI-Gateway über das Praxisnetz",
+      "netPort": "UDP 500 und 4500",
+      "tls": false,
+      "source": ["gemF_TI-Gateway"],
+      "status": "plausibel",
+      "netPortStatus": "plausibel"
+    },
+    {
       "id": "prot-ps-kimcm",
       "a": { "types": ["pvs", "kis", "avs", "pflege"] },
       "b": { "types": ["kimcm"] },

@@ -421,7 +421,7 @@
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        { "need": "zugang" },
+        { "need": "zugangTi2" },
         { "card": "smcb", "unlocked": true },
         { "service": "zeta" }
       ]
@@ -436,7 +436,7 @@
     "name": "PoPP-Token beantragen (eGK)",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [{ "need": "zugang" }, { "card": "egk" }, { "service": "popp" }]
+      "all": [{ "need": "zugangTi2" }, { "card": "egk" }, { "service": "popp" }]
     },
     "flow": "popp",
     "issues": "popp",
@@ -449,6 +449,7 @@
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
+        { "need": "zugangTi2" },
         { "need": "zetaToken" },
         { "need": "poppToken" },
         { "service": "vsdm2" }

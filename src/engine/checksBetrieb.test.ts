@@ -283,6 +283,22 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
     expect(hits(ohneKt, "P-29")).toEqual([]);
   });
 
+  it("[P-34] Terminal ohne Rechner am Arbeitsplatz meldet; passend, Standard, ohne Rechner und im Modus Einfach nicht", () => {
+    const ohnePc = praxis({ kt: { workplace: "AP-2" } });
+    expect(hits(ohnePc, "P-34").map((f) => f.nodes)).toEqual([["kt"]]);
+    expect(run(ohnePc, "simple").map((f) => f.id)).not.toContain("P-34");
+    expect(
+      hits(
+        praxis({ pc: { workplace: "AP-2" }, kt: { workplace: "AP-2" } }),
+        "P-34",
+      ),
+    ).toEqual([]);
+    expect(hits(praxis(), "P-34")).toEqual([]);
+    const ohneRechner = praxis({ kt: { workplace: "AP-2" } });
+    ohneRechner.nodes = ohneRechner.nodes.filter((n) => n.id !== "pc");
+    expect(hits(ohneRechner, "P-34")).toEqual([]);
+  });
+
   it("[P-30] nicht gepairt meldet, gepairt und ungesetzt nicht", () => {
     expect(
       hits(praxis({ kt: { paired: false } }), "P-30").map((f) => f.nodes),

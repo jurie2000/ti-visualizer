@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { loadCatalog, type Selector, type Topology } from "../schema";
 import { plugCard } from "./cards";
+import { runChecks } from "./checks";
 import { autoPorts, validateConnection } from "./rules";
 
 const catalog = loadCatalog();
@@ -37,6 +38,17 @@ describe("Presets (Regelwerk 13)", () => {
         expect(res, `${id}: ${e.id}`).toMatchObject({ ok: true });
         built = { ...built, edges: [...built.edges, e] };
       }
+    }
+  });
+
+  it("[#211] Klinikum nutzt ein TI-Gateway statt Highspeed-Konnektor", () => {
+    const klinikum = catalog.presets.find((p) => p.id === "klinikum");
+    const types = klinikum?.topology.nodes.map((n) => n.type) ?? [];
+    expect(types).toContain("gateway");
+    expect(types).not.toContain("kon");
+    for (const { id, topology } of catalog.presets) {
+      const found = runChecks(topology, "advanced", catalog).map((f) => f.id);
+      expect(found, id).not.toContain("P-34");
     }
   });
 

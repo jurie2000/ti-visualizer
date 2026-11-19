@@ -58,6 +58,8 @@ jobs:
     container: mcr.microsoft.com/playwright:v1.65.1-noble
     env:
       HOME: /root
+      # Keine Git-Hooks in CI (git meldet im Container „dubious ownership“).
+      LEFTHOOK: "0"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

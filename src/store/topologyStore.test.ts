@@ -225,3 +225,39 @@ describe("Gelenkpunkte im Store (FR-23)", () => {
     expect(s().past).toHaveLength(before);
   });
 });
+
+describe("Arbeitsplatz des Kartenterminals (Regelwerk 8, #213)", () => {
+  const node = (id: string) => s().topology.nodes.find((n) => n.id === id);
+
+  it("neues Terminal trägt den ersten freien Arbeitsplatz im Namen", () => {
+    add("pc");
+    const kt = add("kt");
+    expect(node(kt)?.config?.workplace).toBe("AP-1");
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
+    expect(node("pc-1")).not.toHaveProperty("label");
+  });
+
+  it("Auswahl führt den Namen im selben Schritt mit, ein Rückgängig stellt beides her", () => {
+    add("pc");
+    add("pc");
+    const kt = add("kt");
+    const before = s().past.length;
+    s().setConfig(kt, { workplace: "AP-2" });
+    expect(s().past).toHaveLength(before + 1);
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-2");
+    s().setConfig(kt, { workplace: undefined });
+    expect(node(kt)).not.toHaveProperty("label");
+    s().undo();
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-2");
+    s().undo();
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
+    expect(node(kt)?.config?.workplace).toBe("AP-1");
+  });
+
+  it("andere Einstellungen lassen den Namen unberührt", () => {
+    add("pc");
+    const kt = add("kt");
+    s().setConfig(kt, { paired: false });
+    expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
+  });
+});

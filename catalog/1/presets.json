@@ -36,7 +36,11 @@
               "expires": "2031-03-31",
               "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "kt2",
@@ -53,7 +57,11 @@
               "expires": "2029-12-31",
               "pinActive": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "sw1",
@@ -161,7 +169,10 @@
             "x": 306,
             "y": 750
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-1"
+          }
         }
       ],
       "edges": [
@@ -390,7 +401,11 @@
               "expires": "2029-12-31",
               "pinActive": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "sw1",
@@ -480,7 +495,10 @@
             "x": 306,
             "y": 750
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-1"
+          }
         }
       ],
       "edges": [
@@ -656,16 +674,19 @@
           "type": "pc",
           "position": {
             "x": 40,
-            "y": 400
+            "y": 450
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "kt1",
           "type": "kt",
           "position": {
             "x": 40,
-            "y": 750
+            "y": 850
           },
           "fault": false,
           "cards": [
@@ -680,24 +701,37 @@
               "id": "kt1-smcb",
               "expires": "2030-06-30",
               "unlocked": true
+            },
+            {
+              "kind": "hba",
+              "id": "kt1-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "pc2",
           "type": "pc",
           "position": {
             "x": 40,
-            "y": 575
+            "y": 650
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-2"
+          }
         },
         {
           "id": "kt2",
           "type": "kt",
           "position": {
             "x": 40,
-            "y": 925
+            "y": 1050
           },
           "fault": false,
           "cards": [
@@ -706,15 +740,31 @@
               "id": "kt2-hba",
               "expires": "2031-03-31",
               "unlocked": true
+            },
+            {
+              "kind": "egk",
+              "id": "kt2-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "smcb",
+              "id": "kt2-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-2",
+          "config": {
+            "workplace": "AP-2"
+          }
         },
         {
           "id": "sw1",
           "type": "switch",
           "position": {
             "x": 306,
-            "y": 663
+            "y": 750
           },
           "fault": false
         },
@@ -723,7 +773,7 @@
           "type": "router",
           "position": {
             "x": 572,
-            "y": 225
+            "y": 250
           },
           "fault": false
         },
@@ -732,7 +782,7 @@
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 882
+            "y": 1000
           },
           "fault": false
         },
@@ -741,7 +791,7 @@
           "type": "kis",
           "position": {
             "x": 40,
-            "y": 1100
+            "y": 1250
           },
           "fault": false
         },
@@ -750,7 +800,7 @@
           "type": "gateway",
           "position": {
             "x": 838,
-            "y": 554
+            "y": 625
           },
           "fault": false
         },
@@ -759,7 +809,7 @@
           "type": "vpn",
           "position": {
             "x": 1104,
-            "y": 302
+            "y": 338
           },
           "fault": false
         },
@@ -777,7 +827,7 @@
           "type": "vsdm",
           "position": {
             "x": 1410,
-            "y": 127
+            "y": 138
           },
           "fault": false
         },
@@ -786,7 +836,7 @@
           "type": "erp",
           "position": {
             "x": 1638,
-            "y": 127
+            "y": 138
           },
           "fault": false
         },
@@ -795,7 +845,7 @@
           "type": "kim",
           "position": {
             "x": 1410,
-            "y": 302
+            "y": 338
           },
           "fault": false
         },
@@ -804,7 +854,7 @@
           "type": "tim",
           "position": {
             "x": 1638,
-            "y": 302
+            "y": 338
           },
           "fault": false
         },
@@ -813,7 +863,7 @@
           "type": "epa",
           "position": {
             "x": 1410,
-            "y": 477
+            "y": 538
           },
           "fault": false
         },
@@ -822,7 +872,7 @@
           "type": "timc",
           "position": {
             "x": 40,
-            "y": 1275
+            "y": 1450
           },
           "fault": false
         },
@@ -831,7 +881,7 @@
           "type": "server",
           "position": {
             "x": 306,
-            "y": 1100
+            "y": 1250
           },
           "fault": false
         }
@@ -1079,16 +1129,19 @@
           "type": "pc",
           "position": {
             "x": 306,
-            "y": 456
+            "y": 506
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "na_kt",
           "type": "kt",
           "position": {
             "x": 306,
-            "y": 631
+            "y": 706
           },
           "fault": false,
           "cards": [
@@ -1103,15 +1156,25 @@
               "id": "na_kt-hba",
               "expires": "2031-03-31",
               "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "id": "na_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "workplace": "AP-1"
+          }
         },
         {
           "id": "na_sw",
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 544
+            "y": 606
           },
           "fault": false
         },
@@ -1120,16 +1183,19 @@
           "type": "pc",
           "position": {
             "x": 306,
-            "y": 862
+            "y": 962
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-2"
+          }
         },
         {
           "id": "st_kt",
           "type": "kt",
           "position": {
             "x": 306,
-            "y": 1037
+            "y": 1162
           },
           "fault": false,
           "cards": [
@@ -1138,24 +1204,43 @@
               "id": "st_kt-hba",
               "expires": "2031-03-31",
               "unlocked": true
+            },
+            {
+              "kind": "egk",
+              "id": "st_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "smcb",
+              "id": "st_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-2",
+          "config": {
+            "workplace": "AP-2"
+          }
         },
         {
           "id": "st_tab",
           "type": "tab",
           "position": {
             "x": 40,
-            "y": 1212
+            "y": 1562
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-3"
+          }
         },
         {
           "id": "st_sw",
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 1037
+            "y": 1262
           },
           "fault": false
         },
@@ -1164,7 +1249,7 @@
           "type": "ap",
           "position": {
             "x": 306,
-            "y": 1212
+            "y": 1562
           },
           "fault": false
         },
@@ -1173,16 +1258,19 @@
           "type": "pc",
           "position": {
             "x": 306,
-            "y": 1443
+            "y": 1818
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-4"
+          }
         },
         {
           "id": "rad_ris",
           "type": "ris",
           "position": {
             "x": 40,
-            "y": 1618
+            "y": 2218
           },
           "fault": false
         },
@@ -1191,7 +1279,7 @@
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 1531
+            "y": 2018
           },
           "fault": false
         },
@@ -1200,16 +1288,19 @@
           "type": "pc",
           "position": {
             "x": 306,
-            "y": 1849
+            "y": 2474
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-5"
+          }
         },
         {
           "id": "lab_lis",
           "type": "lis",
           "position": {
             "x": 40,
-            "y": 2024
+            "y": 2874
           },
           "fault": false
         },
@@ -1218,7 +1309,7 @@
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 1937
+            "y": 2674
           },
           "fault": false
         },
@@ -1227,16 +1318,19 @@
           "type": "pc",
           "position": {
             "x": 306,
-            "y": 2430
+            "y": 3330
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-6"
+          }
         },
         {
           "id": "pa_kt",
           "type": "kt",
           "position": {
             "x": 306,
-            "y": 2605
+            "y": 3730
           },
           "fault": false,
           "cards": [
@@ -1251,15 +1345,25 @@
               "id": "pa_kt-smcb",
               "expires": "2030-06-30",
               "unlocked": true
+            },
+            {
+              "kind": "hba",
+              "id": "pa_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
             }
-          ]
+          ],
+          "label": "eHealth-Kartenterminal AP-6",
+          "config": {
+            "workplace": "AP-6"
+          }
         },
         {
           "id": "pa_sw",
           "type": "switch",
           "position": {
             "x": 572,
-            "y": 2518
+            "y": 3530
           },
           "fault": false
         },
@@ -1268,7 +1372,7 @@
           "type": "switch",
           "position": {
             "x": 838,
-            "y": 1662
+            "y": 2268
           },
           "fault": false
         },
@@ -1277,7 +1381,7 @@
           "type": "kis",
           "position": {
             "x": 306,
-            "y": 2780
+            "y": 3930
           },
           "fault": false
         },
@@ -1286,16 +1390,19 @@
           "type": "pc",
           "position": {
             "x": 572,
-            "y": 2255
+            "y": 3130
           },
-          "fault": false
+          "fault": false,
+          "config": {
+            "workplace": "AP-7"
+          }
         },
         {
           "id": "gw1",
           "type": "gateway",
           "position": {
             "x": 1104,
-            "y": 944
+            "y": 1259
           },
           "fault": false
         },
@@ -1304,7 +1411,7 @@
           "type": "router",
           "position": {
             "x": 838,
-            "y": 225
+            "y": 250
           },
           "fault": false
         },
@@ -1313,7 +1420,7 @@
           "type": "vpn",
           "position": {
             "x": 1370,
-            "y": 497
+            "y": 655
           },
           "fault": false
         },
@@ -1331,7 +1438,7 @@
           "type": "vsdm",
           "position": {
             "x": 1676,
-            "y": 322
+            "y": 455
           },
           "fault": false
         },
@@ -1340,7 +1447,7 @@
           "type": "erp",
           "position": {
             "x": 1904,
-            "y": 322
+            "y": 455
           },
           "fault": false
         },
@@ -1349,7 +1456,7 @@
           "type": "kim",
           "position": {
             "x": 1676,
-            "y": 497
+            "y": 655
           },
           "fault": false
         },
@@ -1358,7 +1465,7 @@
           "type": "tim",
           "position": {
             "x": 1904,
-            "y": 497
+            "y": 655
           },
           "fault": false
         },
@@ -1367,7 +1474,7 @@
           "type": "epa",
           "position": {
             "x": 1676,
-            "y": 672
+            "y": 855
           },
           "fault": false
         },
@@ -1376,7 +1483,7 @@
           "type": "timc",
           "position": {
             "x": 40,
-            "y": 2955
+            "y": 4130
           },
           "fault": false
         },
@@ -1385,7 +1492,7 @@
           "type": "server",
           "position": {
             "x": 572,
-            "y": 2780
+            "y": 3930
           },
           "fault": false
         },
@@ -1394,7 +1501,7 @@
           "type": "server",
           "position": {
             "x": 306,
-            "y": 1618
+            "y": 2218
           },
           "fault": false
         },
@@ -1403,9 +1510,141 @@
           "type": "server",
           "position": {
             "x": 306,
-            "y": 2024
+            "y": 2874
           },
           "fault": false
+        },
+        {
+          "id": "st_tab_kt",
+          "type": "kt",
+          "position": {
+            "x": 306,
+            "y": 1362
+          },
+          "fault": false,
+          "label": "eHealth-Kartenterminal AP-3",
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "st_tab_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "hba",
+              "id": "st_tab_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "id": "st_tab_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ],
+          "config": {
+            "workplace": "AP-3"
+          }
+        },
+        {
+          "id": "rad_kt",
+          "type": "kt",
+          "position": {
+            "x": 306,
+            "y": 2018
+          },
+          "fault": false,
+          "label": "eHealth-Kartenterminal AP-4",
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "rad_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "hba",
+              "id": "rad_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "id": "rad_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ],
+          "config": {
+            "workplace": "AP-4"
+          }
+        },
+        {
+          "id": "lab_kt",
+          "type": "kt",
+          "position": {
+            "x": 306,
+            "y": 2674
+          },
+          "fault": false,
+          "label": "eHealth-Kartenterminal AP-5",
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "lab_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "hba",
+              "id": "lab_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "id": "lab_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ],
+          "config": {
+            "workplace": "AP-5"
+          }
+        },
+        {
+          "id": "adm_kt",
+          "type": "kt",
+          "position": {
+            "x": 306,
+            "y": 3530
+          },
+          "fault": false,
+          "label": "eHealth-Kartenterminal AP-7",
+          "cards": [
+            {
+              "kind": "egk",
+              "id": "adm_kt-egk",
+              "expires": "2029-12-31",
+              "pinActive": true
+            },
+            {
+              "kind": "hba",
+              "id": "adm_kt-hba",
+              "expires": "2031-03-31",
+              "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "id": "adm_kt-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ],
+          "config": {
+            "workplace": "AP-7"
+          }
         }
       ],
       "edges": [
@@ -1870,6 +2109,62 @@
             }
           ],
           "fault": false
+        },
+        {
+          "id": "e-st_tab_kt-st_sw",
+          "ends": [
+            {
+              "node": "st_tab_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "st_sw",
+              "port": "p4"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-rad_kt-rad_sw",
+          "ends": [
+            {
+              "node": "rad_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "rad_sw",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-lab_kt-lab_sw",
+          "ends": [
+            {
+              "node": "lab_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "lab_sw",
+              "port": "p3"
+            }
+          ],
+          "fault": false
+        },
+        {
+          "id": "e-adm_kt-pa_sw",
+          "ends": [
+            {
+              "node": "adm_kt",
+              "port": "lan0"
+            },
+            {
+              "node": "pa_sw",
+              "port": "p3"
+            }
+          ],
+          "fault": false
         }
       ],
       "zones": [
@@ -1878,9 +2173,9 @@
           "label": "Notaufnahme",
           "area": {
             "x": 284,
-            "y": 422,
+            "y": 472,
             "w": 458,
-            "h": 376
+            "h": 426
           },
           "tone": "sage"
         },
@@ -1889,9 +2184,9 @@
           "label": "Station Innere (WLAN)",
           "area": {
             "x": 18,
-            "y": 828,
+            "y": 928,
             "w": 724,
-            "h": 505
+            "h": 755
           },
           "tone": "accent"
         },
@@ -1900,9 +2195,9 @@
           "label": "Radiologie",
           "area": {
             "x": 18,
-            "y": 1409,
+            "y": 1784,
             "w": 724,
-            "h": 330
+            "h": 555
           },
           "tone": "sage"
         },
@@ -1911,9 +2206,9 @@
           "label": "Labor",
           "area": {
             "x": 18,
-            "y": 1815,
+            "y": 2440,
             "w": 724,
-            "h": 330
+            "h": 555
           },
           "tone": "neutral"
         }

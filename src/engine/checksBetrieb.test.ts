@@ -99,7 +99,12 @@ describe("Betrieb: Grundlagen", () => {
     const ok = praxis({
       kon: { ip: "192.168.10.2", updateOk: true, timeOffset: 0, mode: "reihe" },
       rt: { ip: "192.168.10.1", ipsecAllowed: true },
-      pc: { gateway: "192.168.10.2", dns: "192.168.10.2", routeTI: true },
+      pc: {
+        gateway: "192.168.10.2",
+        dns: "192.168.10.2",
+        routeTI: true,
+        workplace: "AP-1",
+      },
       kt: { paired: true, workplace: "AP-1" },
     });
     expect(run(ok)).toEqual([]);
@@ -269,7 +274,7 @@ describe("P-25 bis P-28 Clients", () => {
 });
 
 describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
-  it("[P-29] Arbeitsplatz ohne Terminal meldet; passend, Standard oder ohne Terminal nicht", () => {
+  it("[P-29] Arbeitsplatz ohne Terminal meldet; passend oder ohne Terminal nicht", () => {
     expect(hits(praxis({ pc: { workplace: "AP-2" } }), "P-29")).toHaveLength(1);
     expect(
       hits(
@@ -277,10 +282,16 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
         "P-29",
       ),
     ).toEqual([]);
-    expect(hits(praxis(), "P-29")).toEqual([]);
     const ohneKt = praxis({ pc: { workplace: "AP-2" } });
     ohneKt.nodes = ohneKt.nodes.filter((n) => n.id !== "kt");
     expect(hits(ohneKt, "P-29")).toEqual([]);
+  });
+
+  it("[P-29] ungesetzter Arbeitsplatz passt zu keinem Terminal, auch nicht zu einem ungesetzten", () => {
+    expect(hits(praxis(), "P-29").map((f) => f.nodes)).toEqual([["pc"]]);
+    expect(
+      hits(praxis({ pc: { workplace: "AP-1" } }), "P-29").map((f) => f.nodes),
+    ).toEqual([["pc"]]);
   });
 
   it("[P-34] Terminal ohne Rechner am Arbeitsplatz meldet", () => {
@@ -289,14 +300,20 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
     ).toEqual([["kt"]]);
   });
 
-  it("[P-34] Terminal am Arbeitsplatz des Rechners oder am Standardplatz meldet nicht", () => {
+  it("[P-34] ungesetztes Terminal meldet, sobald ein Arbeitsplatz-Rechner existiert", () => {
+    expect(hits(praxis(), "P-34").map((f) => f.nodes)).toEqual([["kt"]]);
+    expect(
+      hits(praxis({ pc: { workplace: "AP-1" } }), "P-34").map((f) => f.nodes),
+    ).toEqual([["kt"]]);
+  });
+
+  it("[P-34] Terminal am Arbeitsplatz des Rechners meldet nicht", () => {
     expect(
       hits(
         praxis({ pc: { workplace: "AP-2" }, kt: { workplace: "AP-2" } }),
         "P-34",
       ),
     ).toEqual([]);
-    expect(hits(praxis(), "P-34")).toEqual([]);
   });
 
   it("[P-34] ohne Arbeitsplatz-Rechner und im Modus Einfach keine Meldung", () => {
@@ -319,7 +336,7 @@ describe("P-29, P-30 Arbeitsplatz und Pairing", () => {
   });
 
   it("[P-34] ein mobiles Kartenterminal wird nicht geprüft (arbeitet offline)", () => {
-    const t = praxis();
+    const t = praxis({ pc: { workplace: "AP-1" }, kt: { workplace: "AP-1" } });
     t.nodes.push(node("mkt", "mkt", { config: { workplace: "AP-9" } }));
     expect(hits(t, "P-34").map((f) => f.nodes)).toEqual([]);
   });

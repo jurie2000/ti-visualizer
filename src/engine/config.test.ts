@@ -7,7 +7,7 @@ import {
   type Node,
   type Topology as T,
 } from "../schema";
-import { defaultConfig } from "./config";
+import { defaultConfig, nextWorkplace } from "./config";
 
 const catalog = loadCatalog();
 const empty: T = {
@@ -129,5 +129,44 @@ describe("Geräteeinstellungen: Katalog und Standardwerte (T-502a, Regelwerk 8)"
         d.id,
       ).toBe(true);
     }
+  });
+});
+
+describe("Arbeitsplatz-ID (Regelwerk 8, #213)", () => {
+  it("PC und Tablet bekommen hochgezählte IDs, Server, KIM-CM und CardLink keine", () => {
+    expect(defaultConfig("pc", empty, catalog)).toMatchObject({
+      workplace: "AP-1",
+    });
+    const t = withNodes(node("a", "pc", { workplace: "AP-1" }));
+    expect(defaultConfig("tab", t, catalog)).toMatchObject({
+      workplace: "AP-2",
+    });
+    for (const type of ["server", "kimcm", "cardlink"])
+      expect(defaultConfig(type, t, catalog), type).not.toHaveProperty(
+        "workplace",
+      );
+  });
+
+  it("nach dem Löschen eines niedrigeren Platzes wird keine Nummer doppelt vergeben", () => {
+    const t = withNodes(node("b", "pc", { workplace: "AP-2" }));
+    expect(nextWorkplace(t)).toBe("AP-3");
+    expect(nextWorkplace(withNodes())).toBe("AP-1");
+  });
+
+  it("das erste Terminal bekommt den kleinsten Platz ohne Terminal, sonst keinen", () => {
+    const t = withNodes(
+      node("a", "pc", { workplace: "AP-1" }),
+      node("b", "pc", { workplace: "AP-2" }),
+      node("k", "kt", { workplace: "AP-1" }),
+    );
+    expect(defaultConfig("kt", t, catalog)).toMatchObject({
+      workplace: "AP-2",
+    });
+    const voll = withNodes(
+      node("a", "pc", { workplace: "AP-1" }),
+      node("k", "kt", { workplace: "AP-1" }),
+    );
+    expect(defaultConfig("kt", voll, catalog)).not.toHaveProperty("workplace");
+    expect(defaultConfig("kt", empty, catalog)).not.toHaveProperty("workplace");
   });
 });

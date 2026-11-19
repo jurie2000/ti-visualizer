@@ -107,7 +107,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       Object.defineProperty(
         HTMLElement.prototype,
         "offsetHeight",
-        fixed("h", 700),
+        fixed("h", 1000),
       );
     });
     afterEach(() => {
@@ -144,7 +144,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
           r.x * k + tx >= 0 &&
           r.y * k + ty >= 0 &&
           (r.x + r.w) * k + tx <= 1000 &&
-          (r.y + r.h) * k + ty <= 700,
+          (r.y + r.h) * k + ty <= 1000,
       );
     };
 

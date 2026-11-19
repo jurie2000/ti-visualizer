@@ -32,8 +32,6 @@ const sorted = (xs: Iterable<string>) =>
   [...xs].sort((a, b) => a.localeCompare(b));
 const standard = (c: Catalog, field: string) =>
   String(c.configDefaults.find((d) => d.field === field)?.default ?? "");
-const wp = (c: Catalog, n: Node) =>
-  n.config?.workplace ?? standard(c, "workplace");
 
 /**
  * Geräte im selben Segment wie `start`: über Switches und Access Points, mit
@@ -251,11 +249,15 @@ export const BETRIEB: Record<string, Rule> = {
 
   // Nur wenn es überhaupt ein Kartenterminal gibt, sonst fehlt nur das Gerät.
   "P-29": ({ t, c, terminals }) => {
-    const plaetze = new Set(terminals.map((k) => wp(c, k)));
+    const plaetze = new Set(terminals.map((k) => k.config?.workplace));
     return terminals.length === 0
       ? []
       : t.nodes
-          .filter((n) => has(c, n, "workplace") && !plaetze.has(wp(c, n)))
+          .filter(
+            (n) =>
+              has(c, n, "workplace") &&
+              !(n.config?.workplace && plaetze.has(n.config.workplace)),
+          )
           .map((n) => ({ subject: n.id, nodes: [n.id] }));
   },
 
@@ -266,13 +268,14 @@ export const BETRIEB: Record<string, Rule> = {
 
   // Gegenstück zu P-29; nur wenn es überhaupt einen Arbeitsplatz-Rechner gibt.
   "P-34": ({ t, c, terminals }) => {
-    const plaetze = new Set(
-      t.nodes.filter((n) => has(c, n, "workplace")).map((n) => wp(c, n)),
-    );
-    return plaetze.size === 0
+    const rechner = t.nodes.filter((n) => has(c, n, "workplace"));
+    const plaetze = new Set(rechner.map((n) => n.config?.workplace));
+    return rechner.length === 0
       ? []
       : terminals
-          .filter((k) => !plaetze.has(wp(c, k)))
+          .filter(
+            (k) => !(k.config?.workplace && plaetze.has(k.config.workplace)),
+          )
           .map((k) => ({ subject: k.id, nodes: [k.id] }));
   },
 };

@@ -745,7 +745,18 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 | DHCP-Client | `dhcp` | aus | bezieht die Adresse von einem DHCP-Server im Segment | Vereinfachung | gemSpec_Kon |
 | DHCP-Server | `dhcpServer` (KonnektorConfig, RouterConfig) | aus | Zugang oder Router kann DHCP-Server sein | plausibel | gemSpec_Kon |
 | VLAN | `vlan` | „TI“ | Geräte müssen im selben Segment wie der Zugang liegen | Vereinfachung | DVO |
-| Arbeitsplatz | `workplace` (Client, Terminal) | „AP-1“ | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet | bestätigt | gemILF_PS |
+| Arbeitsplatz | `workplace` (Client, Terminal) | PC und Tablet: nächste freie ID (höchste vergebene AP-Nummer + 1). Kartenterminal: kleinster Arbeitsplatz ohne Terminal, sonst ungesetzt | jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet. Das Terminal wählt seinen Arbeitsplatz aus der Liste, sein Name trägt die ID | bestätigt | gemILF_PS |
+
+Auslegung (2026-11-19, #213): Jeder Rechner mit Fähigkeit `workplace` (PC,
+Tablet) hat seine eigene feste ID „AP-n“. Vergeben wird die höchste
+vorhandene Nummer + 1, die ID ist nur lesbar. Das Kartenterminal wählt
+seinen Arbeitsplatz per Auswahlliste („keiner“ oder „AP-n – Rechnername“)
+und übernimmt die ID in seinen Namen („Typname AP-n“; leer entfernt den
+Namen). Ein neues Terminal bekommt den kleinsten Arbeitsplatz ohne Terminal.
+Server, KIM-Clientmodul, CardLink und mobiles KT haben keinen Arbeitsplatz.
+Ein kopierter PC bekommt eine neue ID, ein kopiertes Terminal behält
+Arbeitsplatz und Namen. Ungesetzt heißt „keinem zugeordnet“. Keine
+Migration alter Dateien.
 | Pairing | `paired`, `pairedWith` (TerminalConfig) | ja, mit dem verbundenen Zugang | ohne Pairing führt der Konnektor nur eingeschränkte Kommandos aus | bestätigt | gemSpec_KT |
 | Zertifikat gSMC-K | `certExpires` (KonnektorConfig) | 31.03.2029 | geprüft gegen `simDate` | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
 | Zeitabweichung | `timeOffset` (KonnektorConfig) | 0 s | Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s | bestätigt | gemSpec_Kon |
@@ -870,12 +881,12 @@ mit Konfiguration wird geprüft.
 | P-34 | Kartenterminal keinem Arbeitsplatz-Rechner (Fähigkeit `workplace`) zugeordnet | `workplace` | Fehler | plausibel | gemILF_PS |
 
 Auslegung (2026-11-19, Issue #211): P-34 spiegelt P-29. Es meldet jedes
-Kartenterminal, dessen Arbeitsplatz (ungesetzt „AP-1“) kein Rechner mit
-Fähigkeit `workplace` führt. Mehrere PCs an einem Arbeitsplatz sind
-mehrere Rechner mit gleichem `workplace`, das Datenmodell bleibt
-unverändert. Ohne einen solchen Rechner in der Topologie gibt es keinen
-Befund (sonst fehlt nur das Gerät). Nur im Modus Erweitert. Status:
-plausibel.
+Kartenterminal, dessen Arbeitsplatz (ungesetzt = keinem zugeordnet) kein
+Rechner mit Fähigkeit `workplace` führt. Ohne einen solchen Rechner in der
+Topologie gibt es keinen Befund (sonst fehlt nur das Gerät), egal welcher
+Wert gesetzt ist. P-29 meldet entsprechend jeden Rechner mit ungesetztem
+Arbeitsplatz, sobald es ein Kartenterminal gibt. Nur im Modus Erweitert.
+Status: plausibel.
 
 **Geändert gegenüber dem Mockup:** P-16 (statt „Firmware älter als 5“),
 P-17 (3600 s statt 5 Minuten), P-19 (SIS im Parallelbetrieb ist erlaubt,
@@ -899,7 +910,7 @@ Entschieden 2026-11-04, geändert 2026-11-13 (siehe unten).
 | **Geräte** | alle | alle |
 | **Verbindungen** | alle einzeln | alle einzeln |
 | **Palette** | alle Gerätetypen | alle Gerätetypen |
-| **Anschlüsse und Einstellungen** | Anschlüsse wählt das System (A-3), keine Geräteeinstellungen | Anschlussauswahl beim Verbinden und Geräteeinstellungen (IP-Konfiguration, Abschnitt 8) |
+| **Anschlüsse und Einstellungen** | Anschlüsse wählt das System (A-3), von den Geräteeinstellungen nur der Arbeitsplatz (PC, Tablet: ID lesen; Kartenterminal: wählen) | Anschlussauswahl beim Verbinden und Geräteeinstellungen (IP-Konfiguration, Abschnitt 8) |
 | **Prüfregeln** | Abschnitt 9 ohne „nur Erweitert“ | alle, auch die Prüfregeln „nur Erweitert“ (Adressierung P-8 bis P-15, Betrieb P-16 bis P-30 und P-34), die die Geräteeinstellungen auswerten |
 | **Vereinfachte Direktverbindungen** | erlaubt | erlaubt, die Sicherheitsprüfung weist mit einem Hinweis auf den realen Weg hin |
 
@@ -910,6 +921,10 @@ die Anschlussauswahl. Das Ausblenden von Geräten, die Sammelkanten und das
 Katalogfeld „In Einfach sichtbar“ sind entfallen. Der Modus
 gehört zu den Einstellungen, nicht zur Topologie; eine Datei lässt sich in
 jedem Modus öffnen.
+
+Auslegung (2026-11-19, #213): Das Feld Arbeitsplatz zeigt auch Einfach, weil
+sonst der Weg PC → Arbeitsplatz → Kartenterminal nicht erklärbar ist. Die
+Prüfregeln P-29 und P-34 bleiben nur Erweitert.
 
 ## 12. Offene Fragen
 
@@ -961,10 +976,10 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 
 | Preset | Name im Mockup | Geräte | Karten | Abweichung vom Mockup |
 |---|---|---|---|---|
-| Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS, 2 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
+| Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS (AP-1), 2 eHealth-KT (beide AP-1), 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK. Beide am Arbeitsplatz des PC | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
 | Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: IDP, **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
-| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs, 2 eHealth-KT, 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B. KT 2: HBA | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1) |
-| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet, 3 eHealth-KT, 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | KT: eGK, HBA · HBA · eGK, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt |
+| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
+| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 
 Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.

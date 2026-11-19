@@ -154,7 +154,7 @@ function DeviceDetail({
         <PortList node={node} topology={topology} catalog={catalog} />
       )}
       <CardSlots node={node} catalog={catalog} />
-      {advanced && <ConfigForm node={node} />}
+      <ConfigForm node={node} />
       {type && <Sources ids={type.source} catalog={catalog} />}
     </>
   );

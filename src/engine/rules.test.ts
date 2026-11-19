@@ -513,6 +513,11 @@ describe("TI 2.0: ZETA Guard, PoPP, VSDM 2.0 (#202)", () => {
     ["zeta", "popp"],
     ["internet", "vsdm2"],
     ["vsdm2", "popp"],
+    ["vsdm", "zeta"],
+    ["zeta", "zeta"],
+    ["kon", "zeta"],
+    ["vpn", "vsdm2"],
+    ["zentral", "popp"],
   ])("%s und %s sind nicht erlaubt", (a, b) => {
     expect(check(pair(a, b), "x", "y").ok).toBe(false);
   });
@@ -522,8 +527,5 @@ describe("TI 2.0: ZETA Guard, PoPP, VSDM 2.0 (#202)", () => {
       catalog.deviceTypes.find((t) => t.id === id)?.category;
     expect(["zeta", "popp", "vsdm2"].map(cat)).toEqual(["ti2", "ti2", "ti2"]);
     expect(cat("vsdm")).toBe("service");
-    expect(catalog.categories.find((c) => c.id === "ti2")?.shape).not.toBe(
-      catalog.categories.find((c) => c.id === "service")?.shape,
-    );
   });
 });

@@ -38,6 +38,11 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("T-724c: Zugriff auf einen Cloud-Server ergibt die Art Internet", () => {
     expect(kindOf(["pc", "web"], ["cloud", "web"])).toBe("inet");
   });
+  it("[#202] ZETA Guard, PoPP und VSDM 2.0 ergeben die Art Internet", () => {
+    expect(kindOf(["internet", "netz"], ["zeta", "net"])).toBe("inet");
+    expect(kindOf(["internet", "netz"], ["popp", "net"])).toBe("inet");
+    expect(kindOf(["zeta", "net"], ["vsdm2", "net"])).toBe("inet");
+  });
   it("USB-Anschluss ergibt USB", () => {
     expect(kindOf(["mkt", "usb0"], ["pvs", "usb0"])).toBe("usb");
   });

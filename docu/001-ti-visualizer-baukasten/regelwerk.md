@@ -456,7 +456,7 @@ und K-6 in Abschnitt 5.
 | V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 | V-19 | TI-Messenger-FD an VPN-Zugangsdienst oder Zentrales Netz | Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst. | plausibel | gemSpec_TI-M_Basis |
 | V-20 | Router an Router | Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch. | Vereinfachung | DVO |
-| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über das Internet und ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
+| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
 
 ### 4.4 Ausschlüsse
 

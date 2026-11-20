@@ -510,9 +510,9 @@ Zentrales Netz (optional) → **Dienst**
 Das Primärsystem spricht das Kartenterminal direkt über das LAN an, ein
 Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
 
-- Wege, die den Zugang oder den VPN-Zugangsdienst (beim TI-2.0-Pfad den
-  ZETA Guard) auslassen, zählen nicht als TI-Pfad, auch wenn sie über das
-  Internet zum Dienst führen.
+- Wege im VPN-Pfad, die den Zugang oder den VPN-Zugangsdienst auslassen,
+  zählen nicht als TI-Pfad, auch wenn sie über das Internet zum Dienst
+  führen. Im TI-2.0-Pfad ist der Zugang optional, der ZETA Guard nicht.
 - Wege nur über das Internet gelten ausschließlich für
   Versicherten-Apps, TI-Messenger, CardLink und PoPP, und zwar nur für
   diese Paare (Vereinfachung, abgeleitet aus 4.2):

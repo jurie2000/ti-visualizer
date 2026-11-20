@@ -356,3 +356,15 @@ export function softwareOn(
     }
   return found;
 }
+
+/** Terminal des Auslösers über den Zugang, sonst über das LAN (TI 2.0 ohne Zugang, #215). */
+export function terminalOf(
+  topology: Topology,
+  trigger: string,
+  catalog: Catalogue,
+): TerminalChoice {
+  const viaZugang = terminalFor(topology, trigger, catalog);
+  return viaZugang.status === "none"
+    ? terminalFor(topology, trigger, catalog, "lan")
+    : viaZugang;
+}

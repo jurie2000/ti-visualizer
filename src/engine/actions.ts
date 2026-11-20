@@ -6,6 +6,7 @@ import {
   resolvePath,
   softwareOn,
   terminalFor,
+  terminalOf,
   zugangOf,
   type PathResult,
 } from "./paths";
@@ -313,11 +314,11 @@ export function availableActions(
         : lan.status === "choose"
           ? lan.candidates
           : [];
-    if (lanIds.length > 0)
-      groups.set(undefined, [
-        ...(groups.get(undefined) ?? []),
-        ...topology.nodes.filter((n) => lanIds.includes(n.id)),
-      ]);
+    const have = groups.get(undefined) ?? [];
+    const extra = topology.nodes.filter(
+      (n) => lanIds.includes(n.id) && !have.some((h) => h.id === n.id),
+    );
+    if (extra.length > 0) groups.set(undefined, [...have, ...extra]);
   }
 
   return catalog.actions
@@ -373,7 +374,7 @@ export function issueToken(
       ...topology,
       tokens: { ...topology.tokens, zeta: topology.simDate },
     };
-  const choice = terminalFor(topology, trigger.id, catalog);
+  const choice = terminalOf(topology, trigger.id, catalog);
   const holders = [
     trigger.id,
     terminal ?? (choice.status === "one" ? choice.terminal : undefined),

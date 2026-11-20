@@ -664,6 +664,63 @@ describe("TI-2.0-Aktionen (#204)", () => {
     }
   });
 
+  it("ohne Zugang finden Ablauf und Token-Ausstellung das Terminal auch ohne Angabe (#215)", () => {
+    const t = noTokens(ohneZugang(ready()));
+    const flow = catalog.flows.find((f) => f.id === "zeta") as NonNullable<
+      (typeof catalog.flows)[number]
+    >;
+    for (const s of bindFlow(flow, pvs(t), t, catalog))
+      expect(s.problem).toBeUndefined();
+    expect(issueToken("popp", pvs(t), t, catalog).tokens?.popp).toContain(
+      "egk-1",
+    );
+  });
+
+  it("Router ausgefallen oder fehlt: TI 2.0 gesperrt (#215)", () => {
+    for (const t of [
+      faulty(ohneZugang(ready()), "rt"),
+      without(ohneZugang(ready()), "rt"),
+    ])
+      for (const id of ["zeta-anmelden", "popp-token-beantragen"])
+        expect(state(t, "pvs", id)?.enabled, id).toBe(false);
+  });
+
+  it("Konnektor ausgefallen: ein TI-1.0-Ablauf meldet weiter das Problem (#215)", () => {
+    const t = faulty(routerAmSwitch(ready()), "kon");
+    const flow = catalog.flows.find((f) => f.id === "vsdm") as NonNullable<
+      (typeof catalog.flows)[number]
+    >;
+    expect(
+      bindFlow(flow, pvs(t), t, catalog, "kt").some((s) => s.problem),
+    ).toBe(true);
+  });
+
+  it("zwei Netz-Terminals ohne Zugang: Terminal wählen (#215)", () => {
+    const base = ohneZugang(ready());
+    const kt2: Node = {
+      ...(base.nodes.find((n) => n.id === "kt") as Node),
+      id: "kt2",
+    };
+    const t: Topology = {
+      ...base,
+      nodes: [...base.nodes, kt2],
+      edges: [
+        ...base.edges,
+        {
+          id: "sw-kt2",
+          fault: false,
+          ends: [
+            { node: "sw", port: "p" },
+            { node: "kt2", port: "p" },
+          ],
+        },
+      ],
+    };
+    expect(state(t, "pvs", "zeta-anmelden")?.chooseTerminal).toEqual(
+      expect.arrayContaining(["kt", "kt2"]),
+    );
+  });
+
   it("ZETA-Anmeldung: nur mit freigeschalteter SMC-B", () => {
     const locked = cards(full(), "kt", (c) =>
       c.map((x) => (x.kind === "smcb" ? { ...x, unlocked: false } : x)),

@@ -691,6 +691,21 @@ describe("Terminal und Zugang 6.0", () => {
       expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(false);
     });
 
+    it("ein Internet-Auslöser erreicht ZETA weiterhin nicht (#215)", () => {
+      const t = topo(
+        [
+          ["app", "epaapp"],
+          ["net", "internet"],
+          ["z", "zeta"],
+        ],
+        [
+          ["app", "net"],
+          ["net", "z"],
+        ],
+      );
+      expect(resolvePath(t, "app", "z", catalog).ok).toBe(false);
+    });
+
     it("LAN-Weg zum Netz-Kartenterminal ohne Zugang (#215)", () => {
       const t = topo(
         [

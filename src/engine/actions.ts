@@ -306,7 +306,7 @@ export function availableActions(
   if (groups.size === 0) groups.set(undefined, []);
   // Ohne Zugang erreicht der Auslöser Netz-Kartenterminals über das LAN (TI 2.0, #215).
   // Die Gruppe kommt zuletzt, damit die Begründungen der anderen vorgehen.
-  if (!own) {
+  if (choice?.status === "none") {
     const lan = terminalFor(topology, node.id, catalog, "lan");
     const lanIds =
       lan.status === "one"

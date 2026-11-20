@@ -353,7 +353,23 @@
   border-top: 1px solid var(--color-divider);
   color: var(--color-text-muted);
 }
-.tiv-menu__title .tiv-menu__item,
+.tiv-menu__close {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.tiv-menu__close:hover,
+.tiv-menu__close:focus-visible {
+  background: var(--color-neutral-300);
+}
+.tiv-menu__close:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
+}
 .tiv-menu__foot .tiv-menu__item {
   width: auto;
   background: var(--color-neutral-100);
@@ -379,45 +395,10 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
-.tiv-menu__group,
-.tiv-menu__steps {
+.tiv-menu__group {
   margin: 0 0 12px;
   padding: 0;
   list-style: none;
-}
-/* Lokale Aktionen als Kacheln, wie im Mockup */
-.tiv-menu__col:last-child .tiv-menu__group {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 8px;
-}
-.tiv-menu__col:last-child .tiv-menu__group > .tiv-menu__head {
-  grid-column: 1 / -1;
-}
-.tiv-menu__col:last-child .tiv-menu__item {
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-sm);
-}
-.tiv-menu__steps {
-  padding: 8px;
-  background: var(--color-neutral-200);
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-sm);
-}
-.tiv-menu__steps li + li {
-  margin-top: 8px;
-}
-.tiv-menu__step {
-  display: inline-grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--color-neutral-100);
-  background: var(--color-text);
-  border-radius: 50%;
 }
 .tiv-menu__head {
   padding: 4px 8px;

@@ -1,4 +1,4 @@
-import { Lock } from "lucide-react";
+import { Lock, X } from "lucide-react";
 import { useEffect, useRef, type KeyboardEvent } from "react";
 
 export interface MenuEntry {
@@ -18,8 +18,6 @@ const SECTIONS = [
   ["online", "Online · über TI"],
   ["lokal", "Lokal · eGK & TI 2.0"],
 ] as const;
-// Die drei Schritte von VSDM 2.0 stehen nummeriert in einer Karte
-const STEPS = "TI 2.0";
 
 interface Props {
   x: number;
@@ -88,7 +86,7 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     entry.onSelect();
   };
 
-  const button = (entry: MenuEntry, step = 0) => (
+  const button = (entry: MenuEntry) => (
     <button
       key={entry.id}
       type="button"
@@ -100,20 +98,15 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
       }}
     >
       {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
-      {step > 0 && (
-        <span className="tiv-menu__step" aria-hidden="true">
-          {step}
-        </span>
-      )}
       {entry.label}
       {entry.disabledReason && (
         <span className="tiv-menu__why">{entry.disabledReason}</span>
       )}
     </button>
   );
-  const item = (entry: MenuEntry, step = 0) => (
+  const item = (entry: MenuEntry) => (
     <li key={entry.id} role="none">
-      {button(entry, step)}
+      {button(entry)}
     </li>
   );
 
@@ -153,7 +146,14 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
             <span>
               {free} von {actions.length} Aktionen verfügbar
             </span>
-            {head.map((e) => button(e))}
+            <button
+              type="button"
+              className="tiv-menu__close"
+              aria-label="Schließen"
+              onClick={onClose}
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
           </li>
         )}
         {!wide && head.map((e) => item(e))}
@@ -169,14 +169,12 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
                     key={name}
                     role="group"
                     aria-label={name}
-                    className={
-                      name === STEPS ? "tiv-menu__steps" : "tiv-menu__group"
-                    }
+                    className="tiv-menu__group"
                   >
                     <li role="none" className="tiv-menu__head">
                       {name}
                     </li>
-                    {list.map((e, i) => item(e, name === STEPS ? i + 1 : 0))}
+                    {list.map(item)}
                   </ul>
                 ))}
               </div>

@@ -47,7 +47,7 @@ describe("ContextMenu: Gruppen (#217)", () => {
       within(menu)
         .getAllByRole("menuitem")
         .map((i) => i.textContent),
-    ).toEqual(["Details", "A1", "A2", "B1", "Ausfall"]);
+    ).toEqual(["A1", "A2", "B1", "Ausfall"]);
   });
 
   it("verliert keinen ungruppierten Eintrag zwischen gruppierten", () => {
@@ -112,15 +112,20 @@ describe("ContextMenu: Gruppen (#217)", () => {
     ).toHaveTextContent("L1");
   });
 
-  it("nummeriert die Schritte der Gruppe TI 2.0", () => {
-    open([
-      entry("Details"),
-      { ...entry("Z", "TI 2.0"), section: "lokal" as const },
-      { ...entry("P", "TI 2.0"), section: "lokal" as const },
-    ]);
-    const steps = screen.getByRole("group", { name: "TI 2.0" });
-    expect(steps).toHaveTextContent("1Z");
-    expect(steps).toHaveTextContent("2P");
+  it("Fenster hat ein Schließen-Kreuz statt des Details-Knopfs", async () => {
+    const onClose = vi.fn();
+    render(
+      <ContextMenu
+        x={0}
+        y={0}
+        title="Gerät"
+        entries={[entry("Details"), entry("A1", "A")]}
+        onClose={onClose}
+      />,
+    );
+    expect(screen.queryByRole("menuitem", { name: "Details" })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "Schließen" }));
+    expect(onClose).toHaveBeenCalled();
   });
 
   it("hält das schmale Menü im Fenster", () => {

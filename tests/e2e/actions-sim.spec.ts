@@ -79,9 +79,11 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await page.keyboard.press("Shift+F10");
     const menü = page.getByRole("menu");
     await expect(menü).toBeVisible();
-    await expect(eintrag(page, "Details")).toBeFocused();
-    await page.keyboard.press("ArrowDown");
     await expect(eintrag(page, "E-Rezept ausstellen")).toBeFocused();
+    await page.keyboard.press("ArrowDown");
+    await expect(
+      eintrag(page, "eAU ausstellen und per KIM senden"),
+    ).toBeFocused();
     await page.keyboard.press("Escape");
     await expect(menü).toHaveCount(0);
     await expect(gerät(page, "pc1")).toBeFocused();
@@ -257,8 +259,7 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
   test("Detailpanel: nur die Überschrift ist live (FR-11, T-406)", async ({
     page,
   }) => {
-    await menüAn(page, "pc1");
-    await eintrag(page, "Details").click();
+    await gerät(page, "pc1").click();
     const panel = page.getByRole("complementary", { name: "Detailpanel" });
     const titel = panel.getByRole("heading", { level: 3 });
     await expect(titel).toContainText("Arbeitsplatz-PC");

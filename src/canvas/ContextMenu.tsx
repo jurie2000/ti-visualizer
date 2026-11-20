@@ -6,6 +6,8 @@ export interface MenuEntry {
   label: string;
   /** Gesetzt: Eintrag ist ausgegraut und nennt die Begründung (FR-7). */
   disabledReason?: string;
+  /** Kategorie: Einträge mit Kategorie stehen als Spalten nebeneinander (#217). */
+  group?: string;
   onSelect: () => void;
 }
 
@@ -16,8 +18,6 @@ interface Props {
   entries: MenuEntry[];
   onClose: () => void;
 }
-
-const WIDTH = 288;
 
 /**
  * Kontextmenü nach dem ARIA-Menümuster (D10): Pfeiltasten, Home/Ende, Enter
@@ -36,9 +36,11 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
 
   useEffect(() => {
     const menu = ref.current;
-    // Echte Höhe erst nach dem Zeichnen bekannt: im Fenster halten
-    if (menu)
+    // Echte Größe erst nach dem Zeichnen bekannt: im Fenster halten
+    if (menu) {
       menu.style.top = `${String(Math.max(0, Math.min(y, window.innerHeight - menu.offsetHeight)))}px`;
+      menu.style.left = `${String(Math.max(0, Math.min(x, window.innerWidth - menu.offsetWidth)))}px`;
+    }
     items()[0]?.focus();
     const back = opener.current;
     const away = (e: PointerEvent) => {
@@ -76,37 +78,57 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     entry.onSelect();
   };
 
+  const item = (entry: MenuEntry) => (
+    <li key={entry.id} role="none">
+      <button
+        type="button"
+        role="menuitem"
+        className="tiv-menu__item"
+        aria-disabled={entry.disabledReason ? true : undefined}
+        onClick={() => {
+          choose(entry);
+        }}
+      >
+        {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
+        {entry.label}
+        {entry.disabledReason && (
+          <span className="tiv-menu__why">{entry.disabledReason}</span>
+        )}
+      </button>
+    </li>
+  );
+
+  // Kategorien in Reihenfolge des ersten Auftretens, an der Stelle des ersten Eintrags
+  const groups = new Map<string, MenuEntry[]>();
+  for (const e of entries)
+    if (e.group) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
+  const firstGrouped = entries.findIndex((e) => e.group);
+
   return (
     <ul
       ref={ref}
       role="menu"
       aria-label={title}
-      className="tiv-menu nodrag nopan"
-      style={{
-        left: Math.max(0, Math.min(x, window.innerWidth - WIDTH)),
-        top: y,
-      }}
+      className={`tiv-menu nodrag nopan${groups.size > 0 ? " tiv-menu--wide" : ""}`}
+      style={{ left: x, top: y }}
       onKeyDown={onKeyDown}
     >
-      {entries.map((entry) => (
-        <li key={entry.id} role="none">
-          <button
-            type="button"
-            role="menuitem"
-            className="tiv-menu__item"
-            aria-disabled={entry.disabledReason ? true : undefined}
-            onClick={() => {
-              choose(entry);
-            }}
-          >
-            {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
-            {entry.label}
-            {entry.disabledReason && (
-              <span className="tiv-menu__why">{entry.disabledReason}</span>
-            )}
-          </button>
-        </li>
-      ))}
+      {entries.map((entry, i) => {
+        if (!entry.group) return item(entry);
+        if (i !== firstGrouped) return null;
+        return (
+          <li key="groups" role="none" className="tiv-menu__cols">
+            {[...groups].map(([name, list]) => (
+              <ul key={name} role="group" aria-label={name}>
+                <li role="none" className="tiv-menu__head">
+                  {name}
+                </li>
+                {list.map(item)}
+              </ul>
+            ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

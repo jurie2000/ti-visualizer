@@ -16,6 +16,7 @@ type Cat = Pick<Catalog, "deviceTypes" | "actions">;
 export interface ActionState {
   id: string;
   name: string;
+  category: string;
   enabled: boolean;
   /** Erste nicht erfüllte Bedingung (Regelwerk 6.1). */
   disabledReason?: string;
@@ -324,7 +325,7 @@ export function availableActions(
   return catalog.actions
     .filter((a) => types.some((t) => offers(a.offeredBy, catalog, t)))
     .map((a): ActionState => {
-      const base = { id: a.id, name: a.name };
+      const base = { id: a.id, name: a.name, category: a.category };
       const results = [...groups].map(([zugang, terminals]) => {
         const ctx: Ctx = {
           topology,

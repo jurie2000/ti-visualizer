@@ -127,6 +127,37 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     expect(items.at(-1)).toHaveFocus();
   });
 
+  it("ordnet Aktionen in Kategorie-Gruppen, Details und Ausfall bleiben außerhalb (#217)", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    node("pvs").focus();
+    await user.keyboard("{ContextMenu}");
+    const menu = screen.getByRole("menu");
+    const erp = within(menu).getByRole("group", { name: "E-Rezept" });
+    expect(
+      within(erp).getByRole("menuitem", { name: AKTION }),
+    ).toBeInTheDocument();
+    expect(
+      within(menu).getByRole("group", { name: "KIM" }),
+    ).toBeInTheDocument();
+    // Kategorien ohne Aktion an diesem Gerät fehlen
+    expect(
+      within(menu).queryByRole("group", { name: "TI-Messenger" }),
+    ).toBeNull();
+    const details = within(menu).getByRole("menuitem", { name: "Details" });
+    const ausfall = within(menu).getByRole("menuitem", {
+      name: "Ausfall simulieren",
+    });
+    expect(details.closest('[role="group"]')).toBeNull();
+    expect(ausfall.closest('[role="group"]')).toBeNull();
+    // Pfeiltasten laufen in Dokumentreihenfolge durch alle Gruppen
+    const items = within(menu).getAllByRole("menuitem");
+    expect(items[0]).toBe(details);
+    expect(items.at(-1)).toBe(ausfall);
+    await user.keyboard("{End}");
+    expect(ausfall).toHaveFocus();
+  });
+
   it("zeigt ausgegraute Einträge mit Schloss, Begründung und aria-disabled, ohne Wirkung", async () => {
     const user = userEvent.setup();
     useTopology.getState().reset(praxis([]));

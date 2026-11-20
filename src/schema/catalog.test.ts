@@ -93,6 +93,7 @@ const valid = {
     {
       id: "vsdm",
       name: "VSDM",
+      category: "VSDM",
       offeredBy: { types: ["pvs"] },
       requires: {
         all: [{ need: "zugang" }, { card: "egk" }, { service: "kon" }],
@@ -206,6 +207,7 @@ describe("Katalog-Schema (D5, D13)", () => {
     ["leere Anschlussarten", "connectionRules.0.kinds", { a: [] }],
     ["Tippfehler in kinds", "connectionRules.0.kinds", { c: ["eth"] }],
     ["Code statt Ausdruck", "actions.0.requires", "return true"],
+    ["Aktion ohne Kategorie (#217)", "actions.0.category", undefined],
     ["unbekanntes Feld", "categories.0.farbe", "rot"],
     ["Anschluss ohne Quelle", "deviceTypes.0.ports.0.source", undefined],
     ["Kategorie ohne Dunkelfarbe", "categories.0.colorDark", undefined],

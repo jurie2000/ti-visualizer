@@ -204,6 +204,8 @@ export const actions = z.array(
   z.strictObject({
     id: Id,
     name: Text,
+    /** Überschrift der Spalte im Kontextmenü (#217). */
+    category: Text,
     offeredBy: Selector,
     requires: Expr,
     flow: Id,

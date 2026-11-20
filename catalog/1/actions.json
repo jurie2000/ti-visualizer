@@ -2,6 +2,7 @@
   {
     "id": "erezept-ausstellen",
     "name": "E-Rezept ausstellen",
+    "category": "E-Rezept",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
@@ -20,6 +21,7 @@
   {
     "id": "eau-senden",
     "name": "eAU ausstellen und per KIM senden",
+    "category": "KIM",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
@@ -38,6 +40,7 @@
   {
     "id": "earztbrief-kim",
     "name": "eArztbrief per KIM senden",
+    "category": "KIM",
     "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
     "requires": {
       "all": [
@@ -56,6 +59,7 @@
   {
     "id": "kim-senden",
     "name": "KIM-Nachricht senden",
+    "category": "KIM",
     "offeredBy": { "types": ["pvs", "kis", "pflege"] },
     "requires": {
       "all": [
@@ -73,6 +77,7 @@
   {
     "id": "eau-epa-hochladen",
     "name": "eAU-Kopie in die ePA hochladen",
+    "category": "ePA",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
@@ -91,6 +96,7 @@
   {
     "id": "befund-epa-hochladen",
     "name": "Befund in die ePA hochladen",
+    "category": "ePA",
     "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
     "requires": {
       "all": [
@@ -109,6 +115,7 @@
   {
     "id": "epa-medikationsliste-einsehen",
     "name": "ePA-Medikationsliste einsehen",
+    "category": "ePA",
     "offeredBy": { "types": ["pvs", "kis", "avs"] },
     "requires": {
       "all": [
@@ -127,6 +134,7 @@
   {
     "id": "notfalldaten-schreiben",
     "name": "Notfalldatensatz schreiben",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -142,6 +150,7 @@
   {
     "id": "erklaerungen-schreiben",
     "name": "Persönliche Erklärungen schreiben",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -162,6 +171,7 @@
   {
     "id": "notfalldaten-lesen",
     "name": "Notfalldaten lesen",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -182,6 +192,7 @@
   {
     "id": "medikationsplan-schreiben",
     "name": "Medikationsplan erstellen oder aktualisieren",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -202,6 +213,7 @@
   {
     "id": "medikationsplan-lesen",
     "name": "Medikationsplan auslesen",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -222,6 +234,7 @@
   {
     "id": "medikationsplan-lesen-avs",
     "name": "Medikationsplan auslesen (AVS)",
+    "category": "Notfalldaten & Medikationsplan",
     "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
@@ -237,6 +250,7 @@
   {
     "id": "vsdm-pruefen",
     "name": "VSDM-Prüfung anstoßen",
+    "category": "VSDM",
     "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
@@ -259,6 +273,7 @@
   {
     "id": "erezept-einloesen-egk",
     "name": "E-Rezept einlösen (eGK einlesen)",
+    "category": "E-Rezept",
     "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
@@ -278,6 +293,7 @@
   {
     "id": "erezept-einloesen-code",
     "name": "E-Rezept einlösen (Rezeptcode scannen)",
+    "category": "E-Rezept",
     "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
@@ -295,6 +311,7 @@
   {
     "id": "erezept-cardlink-einloesen",
     "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
+    "category": "E-Rezept",
     "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
@@ -315,6 +332,7 @@
   {
     "id": "epa-dokument-pflege",
     "name": "Dokument in die ePA hochladen oder einsehen",
+    "category": "ePA",
     "offeredBy": { "types": ["pflege"] },
     "requires": {
       "all": [
@@ -333,6 +351,7 @@
   {
     "id": "mkt-egk-offline-einlesen",
     "name": "eGK offline einlesen (mobiles KT)",
+    "category": "Mobil & CardLink",
     "offeredBy": { "types": ["mkt"] },
     "requires": {
       "all": [
@@ -352,6 +371,7 @@
   {
     "id": "mkt-daten-uebergeben",
     "name": "Daten ans Primärsystem übergeben (mobiles KT)",
+    "category": "Mobil & CardLink",
     "offeredBy": { "types": ["mkt"] },
     "requires": {
       "any": [
@@ -368,6 +388,7 @@
   {
     "id": "cardlink-vsdm-pruefen",
     "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
+    "category": "Mobil & CardLink",
     "offeredBy": { "types": ["cardlink"] },
     "requires": {
       "all": [
@@ -386,6 +407,7 @@
   {
     "id": "tim-senden",
     "name": "TI-Messenger-Nachricht senden",
+    "category": "TI-Messenger",
     "offeredBy": { "types": ["timc"] },
     "requires": { "service": "tim" },
     "flow": "tim",
@@ -395,6 +417,7 @@
   {
     "id": "erezept-app-abrufen",
     "name": "E-Rezept-App: Rezepte abrufen",
+    "category": "E-Rezept",
     "offeredBy": { "types": ["erpapp"] },
     "requires": {
       "all": [
@@ -409,6 +432,7 @@
   {
     "id": "epa-app-ansehen",
     "name": "ePA-App: Akte ansehen und Befugnis verwalten",
+    "category": "ePA",
     "offeredBy": { "types": ["epaapp"] },
     "requires": { "all": [{ "service": "epa" }, { "service": "idpsek" }] },
     "flow": "appEpa",
@@ -418,6 +442,7 @@
   {
     "id": "zeta-anmelden",
     "name": "ZETA-Anmeldung (SMC-B)",
+    "category": "TI 2.0",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [{ "card": "smcb", "unlocked": true }, { "service": "zeta" }]
@@ -430,6 +455,7 @@
   {
     "id": "popp-token-beantragen",
     "name": "PoPP-Token beantragen (eGK)",
+    "category": "TI 2.0",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [{ "card": "egk" }, { "service": "popp" }]
@@ -442,6 +468,7 @@
   {
     "id": "vsdm2-pruefen",
     "name": "VSDM-2.0-Prüfung",
+    "category": "TI 2.0",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [

@@ -309,6 +309,30 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
 }
+.tiv-menu--wide {
+  width: min(46rem, 100vw);
+  max-height: 100vh;
+  overflow-y: auto;
+}
+.tiv-menu__cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.tiv-menu__cols > ul {
+  flex: 1 1 13rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-menu__head {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
 .tiv-menu__item {
   display: flex;
   flex-wrap: wrap;

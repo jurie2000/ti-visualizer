@@ -555,6 +555,7 @@ describe("Token-Bausteine (#203)", () => {
       {
         id: "x",
         name: "X",
+        category: "X",
         offeredBy: { types: ["pvs"] },
         requires: { need },
         flow: "erezept",

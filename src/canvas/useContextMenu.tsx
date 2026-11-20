@@ -66,6 +66,7 @@ export function useContextMenu() {
       (a): MenuEntry => ({
         id: `action-${a.id}`,
         label: a.name,
+        group: a.category,
         ...(!a.enabled && {
           disabledReason: a.disabledReason || "Nicht ausführbar.",
         }),

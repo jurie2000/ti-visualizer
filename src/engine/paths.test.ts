@@ -19,7 +19,7 @@ const catalog = {
   deviceTypes: [
     dt("pvs", "primary", ["netConfig:client"]),
     dt("timc", "primary"),
-    dt("kt", "terminal", ["cardSlots"]),
+    dt("kt", "terminal", ["cardSlots", "netConfig:terminal"]),
     dt("mkt", "terminal", ["cardSlots"]),
     dt("cardlink", "terminal", ["nfcCard", "netConfig:terminal"]),
     dt("switch", "lan"),
@@ -657,9 +657,81 @@ describe("Terminal und Zugang 6.0", () => {
       });
     });
 
-    it("ein Weg ohne Zugang gilt nicht als TI-Pfad", () => {
-      const t = topo(nodes, [["pvs", "rt"], ...kette]);
-      expect(resolvePath(t, "pvs", "v", catalog).ok).toBe(false);
+    it("ohne Zugang führt der Weg über Router und Internet zu ZETA, PoPP und VSDM 2.0 (#215)", () => {
+      const t = topo(
+        [...nodes, ["p", "popp"]],
+        [["pvs", "rt"], ...kette, ["net", "p"]],
+      );
+      expect(resolvePath(t, "pvs", "v", catalog)).toMatchObject({
+        ok: true,
+        nodes: ["pvs", "rt", "net", "z", "v"],
+      });
+      expect(resolvePath(t, "pvs", "z", catalog).ok).toBe(true);
+      expect(resolvePath(t, "pvs", "p", catalog).ok).toBe(true);
+    });
+
+    it("ohne Zugang erreicht ein Primärsystem keine TI-1.0-Dienste (#215)", () => {
+      const t = topo(
+        [
+          ["pvs", "pvs"],
+          ["rt", "router"],
+          ["net", "internet"],
+          ["vpn", "vpn"],
+          ["zn", "zentral"],
+          ["erp", "erp"],
+        ],
+        [
+          ["pvs", "rt"],
+          ["rt", "net"],
+          ["net", "vpn"],
+          ["vpn", "zn"],
+          ["zn", "erp"],
+        ],
+      );
+      expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(false);
+    });
+
+    it("ein Internet-Auslöser erreicht ZETA weiterhin nicht (#215)", () => {
+      const t = topo(
+        [
+          ["app", "epaapp"],
+          ["net", "internet"],
+          ["z", "zeta"],
+        ],
+        [
+          ["app", "net"],
+          ["net", "z"],
+        ],
+      );
+      expect(resolvePath(t, "app", "z", catalog).ok).toBe(false);
+    });
+
+    it("LAN-Weg zum Netz-Kartenterminal ohne Zugang (#215)", () => {
+      const t = topo(
+        [
+          ["pvs", "pvs"],
+          ["sw", "switch"],
+          ["kt", "kt"],
+          ["mkt", "mkt"],
+          ["rt", "router"],
+        ],
+        [
+          ["pvs", "sw"],
+          ["sw", "kt"],
+          ["sw", "mkt"],
+          ["sw", "rt"],
+        ],
+      );
+      expect(resolvePath(t, "pvs", "kt", catalog, "lan")).toMatchObject({
+        ok: true,
+        nodes: ["pvs", "sw", "kt"],
+      });
+      expect(resolvePath(t, "pvs", "mkt", catalog, "lan").ok).toBe(false);
+      expect(terminalFor(t, "pvs", catalog, "lan")).toEqual({
+        status: "one",
+        terminal: "kt",
+      });
+      expect(terminalFor(t, "pvs", catalog)).toEqual({ status: "none" });
     });
 
     it("VSDM 2.0 ohne ZETA Guard auf dem Weg ist nicht erreichbar", () => {

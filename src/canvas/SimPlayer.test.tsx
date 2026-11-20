@@ -308,9 +308,8 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     const t = praxis(terminals);
     useTopology.getState().reset({
       ...t,
-      // TI 2.0 braucht ein TI-Gateway (Regelwerk 6.1)
       nodes: [
-        ...t.nodes.map((n) => (n.id === "kon" ? { ...n, type: "gateway" } : n)),
+        ...t.nodes,
         ...services.map((id) => ({
           id,
           type: id,
@@ -346,7 +345,7 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
         .getState()
         .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
     });
-    nexts(4);
+    nexts(3);
     expect(useTopology.getState().topology.tokens).toBeUndefined();
     nexts(1);
     expect(useSim.getState().sim.status).toBe("done");

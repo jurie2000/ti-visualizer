@@ -1,6 +1,6 @@
 import type { Catalog, Node, Topology } from "../schema";
 import { offers } from "./actions";
-import { resolvePath, softwareOn, terminalFor, zugangOf } from "./paths";
+import { resolvePath, softwareOn, terminalOf, zugangOf } from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes" | "actions">;
 type Flow = Catalog["flows"][number];
@@ -57,10 +57,14 @@ function between(
   a: string,
   b: string,
   catalog: Cat,
+  lan: boolean,
 ): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
   let problem: Problem = { kind: "kein-weg" };
-  for (const kind of ["ti", "local"] as const) {
+  // Der LAN-Weg gilt nur für Abläufe ohne Zugang (#215); sonst verdeckte er dessen Ausfall.
+  for (const kind of lan
+    ? (["ti", "local", "lan"] as const)
+    : (["ti", "local"] as const)) {
     for (const [x, y] of [
       [a, b],
       [b, a],
@@ -112,9 +116,10 @@ function roleBinder(
   catalog: Cat,
   terminal: string | undefined,
   flowId: string,
+  lan: boolean,
 ): (role: string) => string | undefined {
   const own = caps(catalog, trigger);
-  const choice = terminalFor(topology, trigger.id, catalog);
+  const choice = terminalOf(topology, trigger.id, catalog);
   const term =
     own.includes("cardSlots") || own.includes("netConfig:terminal")
       ? trigger.id
@@ -137,7 +142,9 @@ function roleBinder(
       );
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>
-      anchors.some((a) => a && "nodes" in between(topology, a, c.id, catalog)),
+      anchors.some(
+        (a) => a && "nodes" in between(topology, a, c.id, catalog, lan),
+      ),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
   const zugaenge = topology.nodes.filter((n) =>
     caps(catalog, n).includes("zugang"),
@@ -194,9 +201,10 @@ export function bindFlow(
   catalog: Cat,
   terminal?: string,
 ): BoundStep[] {
-  const bind = roleBinder(trigger, topology, catalog, terminal, flow.id);
+  const lan = !flow.steps.some((s) => s.from === "K" || s.to === "K");
+  const bind = roleBinder(trigger, topology, catalog, terminal, flow.id, lan);
   const choosing =
-    !terminal && terminalFor(topology, trigger.id, catalog).status === "choose";
+    !terminal && terminalOf(topology, trigger.id, catalog).status === "choose";
   return flow.steps.map((s) => {
     const base = { label: s.label, text: s.text };
     if (s.from === "E" || s.to === "E") {
@@ -208,7 +216,7 @@ export function bindFlow(
     const open = [s.from, s.to].some((x) => x === "T" || x === "K");
     const r: Path | Problem =
       a && b
-        ? between(topology, a, b, catalog)
+        ? between(topology, a, b, catalog, lan)
         : { kind: open && choosing ? "terminal-waehlen" : "fehlt" };
     return "nodes" in r
       ? { ...base, ...r }

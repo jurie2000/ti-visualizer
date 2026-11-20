@@ -6,6 +6,7 @@ import {
   resolvePath,
   softwareOn,
   terminalFor,
+  terminalOf,
   zugangOf,
   type PathResult,
 } from "./paths";
@@ -178,14 +179,6 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
     switch (e.need) {
       case "zugang":
         return needZugang(ctx);
-      case "zugangTi2": {
-        const r = needZugang(ctx);
-        if (r || !ctx.zugang) return r;
-        const z = ctx.topology.nodes.find((n) => n.id === ctx.zugang);
-        return z && caps(ctx.catalog, z).includes("zugangTi2")
-          ? undefined
-          : "Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.";
-      }
       case "ti": {
         const r = needZugang(ctx);
         if (r || !ctx.zugang) return r;
@@ -311,6 +304,22 @@ export function availableActions(
     for (const n of topology.nodes)
       if (caps(catalog, n).includes("zugang")) groups.set(n.id, []);
   if (groups.size === 0) groups.set(undefined, []);
+  // Ohne Zugang erreicht der Auslöser Netz-Kartenterminals über das LAN (TI 2.0, #215).
+  // Die Gruppe kommt zuletzt, damit die Begründungen der anderen vorgehen.
+  if (choice?.status === "none") {
+    const lan = terminalFor(topology, node.id, catalog, "lan");
+    const lanIds =
+      lan.status === "one"
+        ? [lan.terminal]
+        : lan.status === "choose"
+          ? lan.candidates
+          : [];
+    const have = groups.get(undefined) ?? [];
+    const extra = topology.nodes.filter(
+      (n) => lanIds.includes(n.id) && !have.some((h) => h.id === n.id),
+    );
+    if (extra.length > 0) groups.set(undefined, [...have, ...extra]);
+  }
 
   return catalog.actions
     .filter((a) => types.some((t) => offers(a.offeredBy, catalog, t)))
@@ -365,7 +374,7 @@ export function issueToken(
       ...topology,
       tokens: { ...topology.tokens, zeta: topology.simDate },
     };
-  const choice = terminalFor(topology, trigger.id, catalog);
+  const choice = terminalOf(topology, trigger.id, catalog);
   const holders = [
     trigger.id,
     terminal ?? (choice.status === "one" ? choice.terminal : undefined),

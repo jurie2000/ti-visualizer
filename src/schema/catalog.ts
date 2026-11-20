@@ -36,7 +36,6 @@ export type Expr =
   | {
       need:
         | "zugang"
-        | "zugangTi2"
         | "ti"
         | "pruefungsnachweis"
         | "befugnis"
@@ -65,7 +64,6 @@ export const Expr: z.ZodType<Expr> = z.lazy(() =>
     z.strictObject({
       need: z.enum([
         "zugang",
-        "zugangTi2",
         "ti",
         "pruefungsnachweis",
         "befugnis",

@@ -204,6 +204,11 @@ export const actions = z.array(
   z.strictObject({
     id: Id,
     name: Text,
+    /** Überschrift der Spalte im Kontextmenü (#217). */
+    /** Untergruppe im Aktionsfenster (#217). */
+    category: Text,
+    /** Spalte im Aktionsfenster: Online-Dienste über die TI oder lokal (eGK, TI 2.0). */
+    section: z.enum(["online", "lokal"]),
     offeredBy: Selector,
     requires: Expr,
     flow: Id,

@@ -76,7 +76,6 @@ test.describe("keyboard", { tag: "@keyboard" }, () => {
     // Aktion über das Kontextmenü am PC (Aktionen starten am Rechner), im Player mit Esc abbrechen
     await tabbeZuGerät(page, "pc1");
     await page.keyboard.press("Shift+F10");
-    await page.keyboard.press("ArrowDown");
     await expect(
       page.getByRole("menuitem", { name: /^E-Rezept ausstellen/ }),
     ).toBeFocused();

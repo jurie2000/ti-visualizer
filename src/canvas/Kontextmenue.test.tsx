@@ -116,7 +116,7 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     render(<Canvas />, { wrapper });
     await user.pointer({ keys: "[MouseRight]", target: node("pvs") });
     const items = within(screen.getByRole("menu")).getAllByRole("menuitem");
-    expect(items[0]).toHaveTextContent("Details");
+    expect(items[0]).toHaveFocus();
     await user.keyboard("{ArrowDown}");
     expect(items[1]).toHaveFocus();
     await user.keyboard("{End}");
@@ -125,6 +125,43 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     expect(items[0]).toHaveFocus();
     await user.keyboard("{Home}{ArrowUp}");
     expect(items.at(-1)).toHaveFocus();
+  });
+
+  it("ordnet Aktionen in Kategorie-Gruppen, Ausfall bleibt außerhalb, oben steht das Schließen-Kreuz (#217)", async () => {
+    const user = userEvent.setup();
+    render(<Canvas />, { wrapper });
+    node("pvs").focus();
+    await user.keyboard("{ContextMenu}");
+    const menu = screen.getByRole("menu");
+    const erp = within(menu).getByRole("group", {
+      name: "Verordnung & Bescheinigung",
+    });
+    expect(
+      within(erp).getByRole("menuitem", { name: AKTION }),
+    ).toBeInTheDocument();
+    expect(
+      within(menu).getByRole("group", { name: "KIM" }),
+    ).toBeInTheDocument();
+    // Kategorien ohne Aktion an diesem Gerät fehlen
+    expect(
+      within(menu).queryByRole("group", { name: "TI-Messenger" }),
+    ).toBeNull();
+    // Details sind über das Kreuz ersetzt: Auswahl des Geräts öffnet das Detailpanel
+    expect(
+      within(menu).queryByRole("menuitem", { name: "Details" }),
+    ).toBeNull();
+    expect(
+      within(menu).getByRole("button", { name: "Schließen" }),
+    ).toBeInTheDocument();
+    const ausfall = within(menu).getByRole("menuitem", {
+      name: "Ausfall simulieren",
+    });
+    expect(ausfall.closest('[role="group"]')).toBeNull();
+    // Pfeiltasten laufen in Dokumentreihenfolge durch alle Gruppen
+    const items = within(menu).getAllByRole("menuitem");
+    expect(items.at(-1)).toBe(ausfall);
+    await user.keyboard("{End}");
+    expect(ausfall).toHaveFocus();
   });
 
   it("zeigt ausgegraute Einträge mit Schloss, Begründung und aria-disabled, ohne Wirkung", async () => {

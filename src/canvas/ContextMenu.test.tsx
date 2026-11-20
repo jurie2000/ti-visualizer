@@ -50,6 +50,15 @@ describe("ContextMenu: Gruppen (#217)", () => {
     ).toEqual(["Details", "A1", "A2", "B1", "Ausfall"]);
   });
 
+  it("verliert keinen ungruppierten Eintrag zwischen gruppierten", () => {
+    open([entry("A1", "A"), entry("X"), entry("B1", "B")]);
+    expect(
+      within(screen.getByRole("menu"))
+        .getAllByRole("menuitem")
+        .map((i) => i.textContent),
+    ).toEqual(["A1", "B1", "X"]);
+  });
+
   it("ohne Gruppen: schmales Menü ohne Spalten", () => {
     open([entry("Details"), entry("Ausfall")]);
     expect(screen.queryByRole("group")).toBeNull();

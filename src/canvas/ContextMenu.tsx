@@ -98,15 +98,14 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     </li>
   );
 
-  // Gruppierte Einträge stehen zusammenhängend zwischen den ungruppierten (Details oben,
-  // Ausfall unten); Spalten in Reihenfolge des ersten Auftretens der Kategorie.
+  // Spalten in Reihenfolge des ersten Auftretens der Kategorie; ungruppierte Einträge
+  // (Details oben, Ausfall unten) stehen vor bzw. nach dem Spaltenblock.
   const first = entries.findIndex((e) => e.group);
-  const last = entries.findLastIndex((e) => e.group);
   const groups = new Map<string, MenuEntry[]>();
-  for (const e of entries.slice(first, last + 1))
+  for (const e of entries)
     if (e.group) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
   const head = first < 0 ? entries : entries.slice(0, first);
-  const tail = first < 0 ? [] : entries.slice(last + 1);
+  const tail = first < 0 ? [] : entries.slice(first).filter((e) => !e.group);
 
   return (
     <ul

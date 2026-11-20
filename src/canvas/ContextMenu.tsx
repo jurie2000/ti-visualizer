@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { useLayoutEffect, useRef, type KeyboardEvent } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 
 export interface MenuEntry {
   id: string;
@@ -34,9 +34,9 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
       ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [],
     );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const menu = ref.current;
-    // Echte Größe erst nach dem Layout bekannt: im Fenster halten, vor dem ersten Zeichnen
+    // Echte Größe erst nach dem Zeichnen bekannt: im Fenster halten
     if (menu) {
       menu.style.top = `${String(Math.max(0, Math.min(y, window.innerHeight - menu.offsetHeight)))}px`;
       menu.style.left = `${String(Math.max(0, Math.min(x, window.innerWidth - menu.offsetWidth)))}px`;

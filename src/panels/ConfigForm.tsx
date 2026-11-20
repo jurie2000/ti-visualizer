@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Select } from "../ui/Select";
 import {
   configVariantOf,
   configVariants,
@@ -245,24 +246,24 @@ function WorkplaceField({
   return (
     <div className="tiv-config__field">
       <label htmlFor={id}>{entry.name}</label>
-      <select
+      <Select
         id={id}
         value={current === undefined ? "" : String(current)}
         aria-describedby={`${id}-hint`}
-        onChange={(e) => {
-          setConfig(node.id, { workplace: e.target.value || undefined });
+        onChange={(v) => {
+          setConfig(node.id, { workplace: v || undefined });
         }}
-      >
-        <option value="">keiner</option>
-        {current && !places.some((p) => p.wp === current) && (
-          <option value={String(current)}>{String(current)}</option>
-        )}
-        {places.map((p) => (
-          <option key={p.wp} value={p.wp}>
-            {p.name.includes(p.wp) ? p.name : `${p.wp} – ${p.name}`}
-          </option>
-        ))}
-      </select>
+        options={[
+          { value: "", label: "keiner" },
+          ...(current && !places.some((p) => p.wp === current)
+            ? [{ value: String(current), label: String(current) }]
+            : []),
+          ...places.map((p) => ({
+            value: p.wp,
+            label: p.name.includes(p.wp) ? p.name : `${p.wp} – ${p.name}`,
+          })),
+        ]}
+      />
       <p id={`${id}-hint`} className="tiv-config__hint">
         {hintOf(entry)}
       </p>

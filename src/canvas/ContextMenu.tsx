@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef, type KeyboardEvent } from "react";
 
 export interface MenuEntry {
   id: string;
@@ -34,9 +34,9 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
       ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [],
     );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const menu = ref.current;
-    // Echte Größe erst nach dem Zeichnen bekannt: im Fenster halten
+    // Echte Größe erst nach dem Layout bekannt: im Fenster halten, vor dem ersten Zeichnen
     if (menu) {
       menu.style.top = `${String(Math.max(0, Math.min(y, window.innerHeight - menu.offsetHeight)))}px`;
       menu.style.left = `${String(Math.max(0, Math.min(x, window.innerWidth - menu.offsetWidth)))}px`;
@@ -98,11 +98,15 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     </li>
   );
 
-  // Kategorien in Reihenfolge des ersten Auftretens, an der Stelle des ersten Eintrags
+  // Gruppierte Einträge stehen zusammenhängend zwischen den ungruppierten (Details oben,
+  // Ausfall unten); Spalten in Reihenfolge des ersten Auftretens der Kategorie.
+  const first = entries.findIndex((e) => e.group);
+  const last = entries.findLastIndex((e) => e.group);
   const groups = new Map<string, MenuEntry[]>();
-  for (const e of entries)
+  for (const e of entries.slice(first, last + 1))
     if (e.group) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
-  const firstGrouped = entries.findIndex((e) => e.group);
+  const head = first < 0 ? entries : entries.slice(0, first);
+  const tail = first < 0 ? [] : entries.slice(last + 1);
 
   return (
     <ul
@@ -113,22 +117,20 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
       style={{ left: x, top: y }}
       onKeyDown={onKeyDown}
     >
-      {entries.map((entry, i) => {
-        if (!entry.group) return item(entry);
-        if (i !== firstGrouped) return null;
-        return (
-          <li key="groups" role="none" className="tiv-menu__cols">
-            {[...groups].map(([name, list]) => (
-              <ul key={name} role="group" aria-label={name}>
-                <li role="none" className="tiv-menu__head">
-                  {name}
-                </li>
-                {list.map(item)}
-              </ul>
-            ))}
-          </li>
-        );
-      })}
+      {head.map(item)}
+      {groups.size > 0 && (
+        <li role="none" className="tiv-menu__cols">
+          {[...groups].map(([name, list]) => (
+            <ul key={name} role="group" aria-label={name}>
+              <li role="none" className="tiv-menu__head">
+                {name}
+              </li>
+              {list.map(item)}
+            </ul>
+          ))}
+        </li>
+      )}
+      {tail.map(item)}
     </ul>
   );
 }

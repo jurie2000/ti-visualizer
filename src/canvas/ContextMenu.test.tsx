@@ -1,0 +1,83 @@
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { ContextMenu, type MenuEntry } from "./ContextMenu";
+
+const entry = (id: string, group?: string, disabledReason?: string) => ({
+  id,
+  label: id,
+  ...(group && { group }),
+  ...(disabledReason && { disabledReason }),
+  onSelect: vi.fn(),
+});
+
+const open = (entries: MenuEntry[], x = 0, y = 0) =>
+  render(
+    <ContextMenu
+      x={x}
+      y={y}
+      title="Gerät"
+      entries={entries}
+      onClose={vi.fn()}
+    />,
+  );
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+describe("ContextMenu: Gruppen (#217)", () => {
+  it("führt Kategorien in Reihenfolge des ersten Auftretens zusammen, ungruppierte Einträge bleiben davor und danach", () => {
+    open([
+      entry("Details"),
+      entry("A1", "A"),
+      entry("B1", "B"),
+      entry("A2", "A"),
+      entry("Ausfall"),
+    ]);
+    const menu = screen.getByRole("menu");
+    const groups = within(menu).getAllByRole("group");
+    expect(groups.map((g) => g.getAttribute("aria-label"))).toEqual(["A", "B"]);
+    expect(
+      within(groups[0] as HTMLElement)
+        .getAllByRole("menuitem")
+        .map((i) => i.textContent),
+    ).toEqual(["A1", "A2"]);
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((i) => i.textContent),
+    ).toEqual(["Details", "A1", "A2", "B1", "Ausfall"]);
+  });
+
+  it("ohne Gruppen: schmales Menü ohne Spalten", () => {
+    open([entry("Details"), entry("Ausfall")]);
+    expect(screen.queryByRole("group")).toBeNull();
+    expect(screen.getByRole("menu")).not.toHaveClass("tiv-menu--wide");
+  });
+
+  it("gesperrter Eintrag in einer Gruppe: aria-disabled, ohne Wirkung", async () => {
+    const gesperrt = entry("A1", "A", "Kein Zugang.");
+    open([gesperrt]);
+    const item = screen.getByRole("menuitem", { name: /A1/ });
+    expect(item).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(item);
+    expect(gesperrt.onSelect).not.toHaveBeenCalled();
+  });
+
+  it("Pfeiltaste springt über Gruppengrenzen", async () => {
+    open([entry("A1", "A"), entry("B1", "B")]);
+    expect(screen.getByRole("menuitem", { name: "A1" })).toHaveFocus();
+    await userEvent.keyboard("{ArrowDown}");
+    expect(screen.getByRole("menuitem", { name: "B1" })).toHaveFocus();
+  });
+
+  it("hält das Menü im Fenster", () => {
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(400);
+    vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(300);
+    open([entry("A1", "A")], 5000, 5000);
+    const menu = screen.getByRole("menu");
+    expect(menu.style.left).toBe(`${String(window.innerWidth - 400)}px`);
+    expect(menu.style.top).toBe(`${String(window.innerHeight - 300)}px`);
+  });
+});

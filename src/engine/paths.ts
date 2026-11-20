@@ -2,7 +2,7 @@ import type { Catalog, Node, Topology } from "../schema";
 
 // Pfadregel nach Regelwerk 6.0:
 // Auslöser → LAN → Zugang → Router/Internet → VPN → Zentrales Netz → Dienst.
-// TI 2.0: Auslöser → LAN → Zugang → Router/Internet → ZETA Guard → VSDM 2.0.
+// TI 2.0: Auslöser → LAN → (Zugang optional) → Router/Internet → ZETA Guard → VSDM 2.0.
 // Die Suche läuft als Breitensuche über (Knoten, Phase). Die Phase erzwingt die
 // Rollenfolge, deshalb kann kein Weg den Zugang oder das VPN auslassen.
 
@@ -17,8 +17,11 @@ export const INTERNET_PAIRS: Record<string, string[]> = {
   timc: ["tim"],
 };
 
-/** `ti`: Weg bis zum Dienst. `local`: nur bis zur eGK im Kartenterminal (NFDM/eMP). */
-export type PathKind = "ti" | "local";
+/**
+ * `ti`: Weg bis zum Dienst. `local`: nur bis zur eGK im Kartenterminal (NFDM/eMP).
+ * `lan`: nur über das LAN zu einem Netz-Kartenterminal, ohne Zugang (TI 2.0, #215).
+ */
+export type PathKind = "ti" | "local" | "lan";
 
 export type PathResult =
   | { ok: true; nodes: string[]; edges: string[]; zugang?: string }
@@ -39,7 +42,7 @@ const POST = 1; // hinter dem Zugang: Router und Internet
 const VPN = 2; // am VPN-Zugangsdienst
 const ZENTRAL = 3; // im Zentralen Netz
 const INET = 4; // reiner Internet-Weg ohne Zugang
-const ZETA = 5; // am ZETA Guard (TI 2.0), nur mit Zugang erreichbar
+const ZETA = 5; // am ZETA Guard (TI 2.0)
 
 type Role =
   "local" | "net" | "zugang" | "internet" | "vpn" | "zentral" | "zeta" | "end";
@@ -97,6 +100,10 @@ function search(
   const goal = byId.get(target);
   if (!start || !goal || trigger === target) return undefined;
   if (start.fault && !ignoreFaults) return undefined;
+  // TI 2.0 braucht keinen Zugang: Primärsystem und Rechner gehen über den Router ins Internet (#215).
+  const lokal = kind === "ti" && roleOf(start, catalog) === "local";
+  const capsOf = (n: Node) =>
+    catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
   const internetOnly =
     kind === "ti" &&
     (goal.type === "popp" ||
@@ -105,12 +112,9 @@ function search(
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
   // nutzt nur seinen Zugang.
   const hasSlots = (n: Node) =>
-    catalog.deviceTypes.some(
-      (d) =>
-        d.id === n.type &&
-        (d.capabilities.includes("cardSlots") ||
-          d.capabilities.includes("netConfig:terminal")),
-    );
+    capsOf(n).some((c) => c === "cardSlots" || c === "netConfig:terminal");
+  const isNetTerminal = (n: Node) =>
+    capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");
   const terminal =
     kind === "local" ? goal : hasSlots(start) ? start : undefined;
   const fixedZugang = terminal
@@ -132,20 +136,20 @@ function search(
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
         if (phase === LAN) return POST;
-        return phase === INET && isGoal ? INET : -1;
+        return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
-        if (kind === "local") return -1;
+        if (kind !== "ti") return -1;
         if (phase === POST || phase === INET) return phase;
-        return phase === LAN && internetOnly ? INET : -1;
+        return phase === LAN && (internetOnly || lokal) ? INET : -1;
       case "vpn":
         return phase === POST ? VPN : -1;
       case "zentral":
         return phase === VPN ? ZENTRAL : -1;
       case "zeta":
-        // Der Zugang trägt die Kartenauthentisierung: ohne ihn kein ZETA-Pfad.
-        return phase === POST ? ZETA : -1;
+        return phase === POST || (phase === INET && lokal) ? ZETA : -1;
       case "end":
         if (!isGoal) return -1;
+        if (kind === "lan") return phase === LAN && isNetTerminal(n) ? LAN : -1;
         if (kind === "local") return phase === POST ? phase : -1;
         if (phase === VPN || phase === ZENTRAL || phase === ZETA) return phase;
         // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
@@ -247,6 +251,7 @@ export function terminalFor(
   topology: Topology,
   trigger: string,
   catalog: Catalogue,
+  kind: "local" | "lan" = "local",
 ): TerminalChoice {
   const slots = new Set(
     catalog.deviceTypes
@@ -275,7 +280,7 @@ export function terminalFor(
     (n) => n.config?.workplace && wps.includes(n.config.workplace),
   );
   const pick = (assigned.length > 0 ? assigned : terminals).filter(
-    (n) => resolvePath(topology, trigger, n.id, catalog, "local").ok,
+    (n) => resolvePath(topology, trigger, n.id, catalog, kind).ok,
   );
   const [first] = pick;
   if (!first) return { status: "none" };

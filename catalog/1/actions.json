@@ -420,11 +420,7 @@
     "name": "ZETA-Anmeldung (SMC-B)",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [
-        { "need": "zugangTi2" },
-        { "card": "smcb", "unlocked": true },
-        { "service": "zeta" }
-      ]
+      "all": [{ "card": "smcb", "unlocked": true }, { "service": "zeta" }]
     },
     "flow": "zeta",
     "issues": "zeta",
@@ -436,7 +432,7 @@
     "name": "PoPP-Token beantragen (eGK)",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [{ "need": "zugangTi2" }, { "card": "egk" }, { "service": "popp" }]
+      "all": [{ "card": "egk" }, { "service": "popp" }]
     },
     "flow": "popp",
     "issues": "popp",
@@ -449,7 +445,6 @@
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        { "need": "zugangTi2" },
         { "need": "zetaToken" },
         { "need": "poppToken" },
         { "service": "vsdm2" }

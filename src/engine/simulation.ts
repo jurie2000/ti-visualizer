@@ -60,7 +60,7 @@ function between(
 ): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
   let problem: Problem = { kind: "kein-weg" };
-  for (const kind of ["ti", "local"] as const) {
+  for (const kind of ["ti", "local", "lan"] as const) {
     for (const [x, y] of [
       [a, b],
       [b, a],

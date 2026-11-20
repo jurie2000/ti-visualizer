@@ -103,7 +103,6 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
     expect(owners("cardSlots")).toEqual(["kt", "mkt"]);
     expect(owners("nfcCard")).toEqual(["cardlink", "epaapp", "erpapp"]);
     expect(owners("zugang")).toEqual(["gateway", "kon"]);
-    expect(owners("zugangTi2")).toEqual(["gateway"]);
     expect(owners("netConfig:konnektor")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:terminal")).toEqual(["cardlink", "kt"]);
     expect(owners("netConfig:router")).toEqual(["router"]);

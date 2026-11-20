@@ -719,7 +719,7 @@
     "category": "network",
     "icon": "gate",
     "placeable": true,
-    "capabilities": ["netConfig:konnektor", "zugang", "zugangTi2"],
+    "capabilities": ["netConfig:konnektor", "zugang"],
     "ports": [
       {
         "id": "lan",

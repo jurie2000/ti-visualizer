@@ -282,7 +282,7 @@
     "where": "Zugangsmodul in der Praxis, HSK-Instanz beim Gateway-Anbieter.",
     "connected": "LAN-Seite: PVS, KIS, AVS, Pflege-Software, Kartenterminal, KIM-Clientmodul, Switch, Firewall, CardLink. WAN-Seite: Router. VPN: VPN-Zugangsdienst.",
     "fault": "Kein Weg ins Internet (weder Router noch VPN-Zugangsdienst erreichbar); dann ist die TI nicht erreichbar. Eine gSMC-K hat das TI-Gateway nicht.",
-    "confusion": "Konnektor (Einzelgerät in der Praxis, kann TI 2.0 nicht nutzen).",
+    "confusion": "Konnektor (Einzelgerät in der Praxis). Für TI 2.0 braucht die Praxis weder Konnektor noch TI-Gateway.",
     "related": ["kon"],
     "source": ["gemF_TI-Gateway"],
     "status": "plausibel"

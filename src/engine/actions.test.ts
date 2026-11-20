@@ -130,9 +130,22 @@ const edit = (t: Topology, id: string, f: (n: Node) => Node): Topology => ({
   ...t,
   nodes: t.nodes.map((n) => (n.id === id ? f(n) : n)),
 });
-// TI 2.0 braucht ein TI-Gateway, der Konnektor genügt nicht (Regelwerk 6.1).
-const withGateway = (t: Topology) =>
-  edit(t, "kon", (n) => ({ ...n, type: "gateway" }));
+// Praxis ohne Zugang (#215): der Router hängt zusätzlich am Switch.
+const routerAmSwitch = (t: Topology): Topology => ({
+  ...t,
+  edges: [
+    ...t.edges,
+    {
+      id: "sw-rt",
+      fault: false,
+      ends: [
+        { node: "sw", port: "p" },
+        { node: "rt", port: "p" },
+      ],
+    },
+  ],
+});
+const ohneZugang = (t: Topology) => without(routerAmSwitch(t), "kon");
 const cards = (t: Topology, id: string, f: (c: AnyCard[]) => AnyCard[]) =>
   edit(t, id, (n) => ({ ...n, cards: f(n.cards ?? []) }));
 const drop = (t: Topology, id: string, ...kinds: string[]) =>
@@ -300,12 +313,8 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
     );
   });
 
-  const TI2 = ["zeta-anmelden", "popp-token-beantragen"];
-  const praxis = (action: string) =>
-    TI2.includes(action) ? withGateway(full()) : full();
-
   it.each(cases)("%s ist in der vollen Praxis aktiv", (action, trigger) => {
-    expect(state(praxis(action), trigger, action)).toMatchObject({
+    expect(state(full(), trigger, action)).toMatchObject({
       enabled: true,
     });
   });
@@ -313,7 +322,7 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
   it.each(cases)(
     "%s ist ausgegraut mit Begründung",
     (action, trigger, break_, reason) => {
-      const s = state(break_(praxis(action)), trigger, action);
+      const s = state(break_(full()), trigger, action);
       expect(s?.enabled).toBe(false);
       if (typeof reason === "string") expect(s?.disabledReason).toBe(reason);
       else expect(s?.disabledReason).toMatch(reason);
@@ -607,35 +616,56 @@ describe("TI-2.0-Aktionen (#204)", () => {
   const noTokens = (t: Topology): Topology => ({ ...t, tokens: {} });
   // Beide Token für die eGK im Terminal (id vergeben)
   const ready = (): Topology => ({
-    ...cards(withGateway(full()), "kt", (c) =>
+    ...cards(full(), "kt", (c) =>
       c.map((x) => (x.kind === "egk" ? { ...x, id: "egk-1" } : x)),
     ),
     tokens: { zeta: "2026-11-01", popp: ["egk-1"] },
   });
 
-  it("Konnektor: alle drei TI-2.0-Aktionen gesperrt, mit TI-Gateway frei (#211)", () => {
-    const gw = ready();
-    const kon: Topology = { ...gw, nodes: full().nodes };
-    for (const id of [
-      "zeta-anmelden",
-      "popp-token-beantragen",
-      "vsdm2-pruefen",
-    ]) {
-      expect(state(kon, "pvs", id)).toMatchObject({
-        enabled: false,
-        disabledReason:
-          "Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.",
-      });
-      expect(state(gw, "pvs", id)?.enabled, id).toBe(true);
-    }
-    // Ohne Zugang gilt die Meldung des Bausteins „Zugang“
+  const TI2 = catalog.actions
+    .filter((a) => ["zeta", "popp", "vsdm2"].includes(a.flow))
+    .map((a) => a.id);
+
+  it("alle drei Aktionen laufen ohne Zugang, mit Konnektor ebenso (#215)", () => {
+    for (const t of [ohneZugang(ready()), ready()])
+      for (const id of TI2) {
+        const a = state(t, "pvs", id);
+        expect(a?.enabled, id).toBe(true);
+        // vsdm2 braucht keine Karte, also auch kein Terminal
+        if (id !== "vsdm2-pruefen") expect(a?.terminal, id).toBe("kt");
+      }
+  });
+
+  it("Konnektor ausgefallen: TI 2.0 aktiv, TI 1.0 gesperrt (#215)", () => {
+    const t = faulty(routerAmSwitch(ready()), "kon");
+    for (const id of TI2) expect(state(t, "pvs", id)?.enabled, id).toBe(true);
+    expect(state(t, "pvs", "vsdm-pruefen")).toMatchObject({
+      enabled: false,
+      disabledReason: expect.stringContaining("ausgefallen") as string,
+    });
+  });
+
+  it("ohne Zugang sind Aktionen mit Baustein Zugang gesperrt (#215)", () => {
     expect(
-      state(without(gw, "kon"), "pvs", "zeta-anmelden")?.disabledReason,
+      state(ohneZugang(ready()), "pvs", "vsdm-pruefen")?.disabledReason,
     ).toContain("Zugang");
   });
 
+  it("ohne Zugang binden die Abläufe ohne Problem (#215)", () => {
+    const t = ohneZugang(ready());
+    const pvs = t.nodes.find((n) => n.id === "pvs") as Node;
+    for (const id of TI2) {
+      const flow = catalog.flows.find(
+        (f) => f.id === action(id).flow,
+      ) as NonNullable<(typeof catalog.flows)[number]>;
+      const steps = bindFlow(flow, pvs, t, catalog, "kt");
+      expect(steps.length, id).toBeGreaterThan(0);
+      for (const s of steps) expect(s.problem, id).toBeUndefined();
+    }
+  });
+
   it("ZETA-Anmeldung: nur mit freigeschalteter SMC-B", () => {
-    const locked = cards(withGateway(full()), "kt", (c) =>
+    const locked = cards(full(), "kt", (c) =>
       c.map((x) => (x.kind === "smcb" ? { ...x, unlocked: false } : x)),
     );
     expect(state(locked, "pvs", "zeta-anmelden")).toMatchObject({
@@ -646,11 +676,7 @@ describe("TI-2.0-Aktionen (#204)", () => {
 
   it("PoPP-Token: nur mit erreichbarem PoPP-Service", () => {
     expect(
-      state(
-        without(withGateway(full()), "popp"),
-        "pvs",
-        "popp-token-beantragen",
-      )?.enabled,
+      state(without(full(), "popp"), "pvs", "popp-token-beantragen")?.enabled,
     ).toBe(false);
   });
 
@@ -681,7 +707,7 @@ describe("TI-2.0-Aktionen (#204)", () => {
   });
 
   it("stellt Token aus: ZETA am simDate, PoPP mit freier eGK-id", () => {
-    const t = noTokens(withGateway(full()));
+    const t = noTokens(full());
     const zeta = issueToken("zeta", pvs(t), t, catalog);
     expect(zeta.tokens?.zeta).toBe(t.simDate);
     const popp = issueToken("popp", pvs(t), t, catalog);
@@ -701,7 +727,7 @@ describe("TI-2.0-Aktionen (#204)", () => {
   });
 
   it("läuft das PVS auf einem PC, startet der PC alle drei Aktionen", () => {
-    const base = noTokens(withGateway(full()));
+    const base = noTokens(full());
     const t: Topology = {
       ...base,
       nodes: [
@@ -762,20 +788,21 @@ describe("TI-2.0-Aktionen (#204)", () => {
   });
 
   it("jeder Ablauf bindet seine Stationen", () => {
-    for (const id of [
-      "zeta-anmelden",
-      "popp-token-beantragen",
-      "vsdm2-pruefen",
-    ]) {
+    const schritte = {
+      "zeta-anmelden": 4,
+      "popp-token-beantragen": 3,
+      "vsdm2-pruefen": 3,
+    };
+    for (const [id, n] of Object.entries(schritte)) {
       const flow = catalog.flows.find((f) => f.id === action(id).flow);
-      const t = withGateway(full());
+      const t = full();
       const steps = bindFlow(
         flow as NonNullable<typeof flow>,
         pvs(t),
         t,
         catalog,
       );
-      expect(steps.length).toBe(5);
+      expect(steps.length).toBe(n);
       for (const s of steps) expect(s.problem, id).toBeUndefined();
     }
   });

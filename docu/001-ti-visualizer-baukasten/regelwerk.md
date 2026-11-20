@@ -159,7 +159,6 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `gateway` |
-| `zugangTi2` | taugt als Zugang für die TI-2.0-Aktionen (Baustein „TI-2.0-Zugang“, 6.1) | `gateway` |
 
 ### 1.10 TI 2.0 (neu)
 
@@ -505,11 +504,11 @@ Auslöser → lokale Netzgeräte und Arbeitsplatz (beliebig viele) → **Zugang*
 → Router und Internet (beliebig viele) → **VPN-Zugangsdienst** →
 Zentrales Netz (optional) → **Dienst**
 
-**TI-2.0-Pfad** (VSDM 2.0): Auslöser → lokale Netzgeräte und Arbeitsplatz
-(beliebig viele) → **Zugang** → Router und Internet (beliebig viele) →
-**ZETA Guard** → **VSDM 2.0**. Ohne VPN-Zugangsdienst und ohne Zentrales
-Netz. Der Zugang bleibt Pflicht, weil er die Kartenauthentisierung trägt.
-Der VPN-Pfad oben gilt unverändert.
+**TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
+→ LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
+**ZETA Guard** → Dienst. Ohne VPN-Zugangsdienst und ohne Zentrales Netz.
+Das Primärsystem spricht das Kartenterminal direkt über das LAN an, ein
+Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
 
 - Wege, die den Zugang oder den VPN-Zugangsdienst (beim TI-2.0-Pfad den
   ZETA Guard) auslassen, zählen nicht als TI-Pfad, auch wenn sie über das
@@ -531,10 +530,13 @@ Der VPN-Pfad oben gilt unverändert.
   Arbeitsplatz des Auslösers zugeordnet ist (P-29). Gibt es keine
   Zuordnung, fragt die App, welches Terminal genutzt wird.
 
-Auslegung (2026-11-19): ZETA Guard und VSDM 2.0 sind ein TI-Pfad mit
-Zugang, kein reiner Internet-Weg. PoPP bleibt in der Paarliste. Das Pfadziel
-hinter dem ZETA Guard ist nicht auf VSDM 2.0 beschränkt, die
-Erlaubnisliste (4.2) legt es fest.
+Auslegung (2026-11-20, Issue #215): TI 2.0 braucht weder TI-Gateway noch
+Konnektor. Das Primärsystem erreicht das Kartenterminal über das LAN und
+den ZETA Guard über Router und Internet; die Kartenauthentisierung läuft
+im Primärsystem. Konnektor und TI-Gateway bleiben für TI 1.0 (VPN-Pfad).
+Ein Internet-Auslöser (Apps) erreicht ZETA weiterhin nicht. PoPP bleibt in
+der Paarliste. Das Pfadziel hinter dem ZETA Guard ist nicht auf VSDM 2.0
+beschränkt, die Erlaubnisliste (4.2) legt es fest.
 Status: plausibel (Entwurfsstände und Folien, Quellen: gemSpec_ZETA,
 Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2).
 
@@ -545,9 +547,8 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 | Baustein | Bedingung | Quelle |
 |---|---|---|
 | **Zugang** | Ein Zugang ist vom Auslöser aus nach 6.0 erreichbar und nicht ausgefallen | Arch |
-| **TI-2.0-Zugang** | Der Zugang hat die Fähigkeit `zugangTi2` (TI-Gateway). Ein Konnektor genügt nicht: Meldung „Ein Konnektor kann nicht für TI 2.0 genutzt werden. Nötig ist ein TI-Gateway.“ Setzt den Baustein „Zugang“ voraus | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet) | Arch |
-| **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4) | gemSpec_KT, gemILF_PS |
+| **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4). Bei Aktionen ohne Baustein „Zugang“ (TI 2.0) zählt auch ein Netz-Kartenterminal, das der Auslöser über das LAN ohne Zugang erreicht (#215) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
@@ -558,12 +559,11 @@ Status: Vereinfachung nach Arch und gemILF_PS.
 Die erste nicht erfüllte Bedingung liefert die Begründung im
 ausgegrauten Menüeintrag.
 
-**Auslegung (2026-11-19, Issue #211):** TI 2.0 (ZETA-Anmeldung,
-PoPP-Token, VSDM-2.0-Prüfung) läuft nur über ein TI-Gateway
-(Zero-Trust-Architektur, gemF_TI-Gateway); der Konnektor kann das nicht.
-Der Baustein „TI-2.0-Zugang“ prüft zuerst „Zugang“ und danach die Fähigkeit
-`zugangTi2`. Konnektor und TI-Gateway schließen sich weiter aus (X-1);
-VSDM 1.0 mit dem Konnektor bleibt unberührt. Status: plausibel.
+**Auslegung (2026-11-20, Issue #215):** TI 2.0 (ZETA-Anmeldung,
+PoPP-Token, VSDM-2.0-Prüfung) braucht keinen Zugang. Der Baustein
+„TI-2.0-Zugang“ und die Fähigkeit `zugangTi2` entfallen (ersetzt die
+Auslegung #211). VSDM 1.0 mit dem Konnektor bleibt unberührt. Status:
+plausibel (Info_VSDM2_ZETA_PoPP, gemSpec_ZETA).
 
 **Auslegung (2026-11-19, Token):** „Einmal am Tag“ wird zu „bis Tagesende
 von `simDate`“ vereinfacht; der ZETA-Token ist nur erfüllt, wenn
@@ -610,9 +610,9 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan erstellen/aktualisieren | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemILF_PS_AMTS, gemSysL_AMTS_A |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
-| ZETA-Anmeldung (SMC-B) | TI-2.0-Zugang, SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
-| PoPP-Token beantragen (eGK) | TI-2.0-Zugang, eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
-| VSDM-2.0-Prüfung | TI-2.0-Zugang, ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ZETA-Anmeldung (SMC-B) | SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| PoPP-Token beantragen (eGK) | eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
+| VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 
 **Auslegung (2026-11-19, TI-2.0-Aktionen):** (a) Die Token werden am Ende
 des Ablaufs ausgestellt, nicht beim Start, und nur, wenn kein Schritt ein
@@ -620,8 +620,8 @@ Problem hat; ein abgebrochener Ablauf stellt nichts aus. Die Ausstellung
 ist ein Schritt für Rückgängig. (b) `vsdm` (VPN, VSDM 1.0) bleibt
 unverändert und steht neben VSDM 2.0; beide sind einzeln wählbar (X-1
 bleibt). (c) Eine eGK ohne `id` bekommt bei der PoPP-Ausstellung eine freie
-`id`, damit der Token an ihr hängen kann. (d) Alle drei Aktionen nutzen den Baustein „TI-2.0-Zugang“
-(Auslegung 2026-11-19, Issue #211, siehe 6.1).
+`id`, damit der Token an ihr hängen kann. (d) Alle drei Aktionen laufen ohne Zugang (Auslegung 2026-11-20, Issue #215,
+siehe 6.0 und 6.1). P-30 gilt auf dem LAN-Weg ohne Zugang nicht, P-4 bleibt.
 (e) Der Schritt ZETA Guard→VSDM 2.0 im Ablauf `vsdm2` folgt der direkten
 Verbindung (Regelwerk 4.2), weil die Pfadregel nur Wege vom Auslöser kennt.
 Status: plausibel.
@@ -700,9 +700,9 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 |---|---|---|---|
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→IDP Token holen (OAuth 2.0, über K→V) · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | bestätigt | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
-| `zeta` | P→T Authentisierung mit der SMC-B anfordern · T→K SMC-B bestätigt (SICCT) · K→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→K Access Token · K→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
-| `popp` | T→P eGK-Daten (über K) · P→K Token-Antrag · K→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→K PoPP-Token · K→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
-| `vsdm2` | P→K Authentisierung mit PoPP-Token · K→ZETA Guard Zugriff (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→K Versichertenstammdaten · K→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `zeta` | P→T Authentisierung mit der SMC-B anfordern (über das LAN) · T→P SMC-B bestätigt · P→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `popp` | T→P eGK-Daten (über das LAN) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur mit HBA (QES) über T · CM→K Verschlüsselung mit der SMC-B · CM→KIM (mTLS, über K→V) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |

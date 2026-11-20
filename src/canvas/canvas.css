@@ -309,22 +309,115 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
 }
-.tiv-menu--wide {
-  width: min(46rem, 100vw);
-  max-height: 100vh;
-  overflow-y: auto;
+/* Aktionsfenster (#217): mittig, Kopfzeile, zwei Spalten, Fußzeile (Mockup im Issue) */
+.tiv-menu__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  background: rgb(0 0 0 / 0.35);
 }
-.tiv-menu__cols {
+.tiv-menu--wide {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(56rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 0;
+  border-width: 2px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.tiv-menu__title,
+.tiv-menu__foot {
+  position: sticky;
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 16px;
+  background: var(--color-neutral-200);
 }
-.tiv-menu__cols > ul {
-  flex: 1 1 13rem;
+.tiv-menu__title {
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--color-divider);
+}
+.tiv-menu__title span {
+  flex: 1;
+  color: var(--color-text-muted);
+}
+.tiv-menu__foot {
+  bottom: 0;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-divider);
+  color: var(--color-text-muted);
+}
+.tiv-menu__title .tiv-menu__item,
+.tiv-menu__foot .tiv-menu__item {
+  width: auto;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+}
+.tiv-menu__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+.tiv-menu__col {
   min-width: 0;
-  margin: 0;
+  padding: 12px 16px;
+}
+.tiv-menu__col + .tiv-menu__col {
+  border-left: 1px solid var(--color-divider);
+}
+.tiv-menu__section {
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.tiv-menu__group,
+.tiv-menu__steps {
+  margin: 0 0 12px;
   padding: 0;
   list-style: none;
+}
+/* Lokale Aktionen als Kacheln, wie im Mockup */
+.tiv-menu__col:last-child .tiv-menu__group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 8px;
+}
+.tiv-menu__col:last-child .tiv-menu__group > .tiv-menu__head {
+  grid-column: 1 / -1;
+}
+.tiv-menu__col:last-child .tiv-menu__item {
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+}
+.tiv-menu__steps {
+  padding: 8px;
+  background: var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+}
+.tiv-menu__steps li + li {
+  margin-top: 8px;
+}
+.tiv-menu__step {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-neutral-100);
+  background: var(--color-text);
+  border-radius: 50%;
 }
 .tiv-menu__head {
   padding: 4px 8px;

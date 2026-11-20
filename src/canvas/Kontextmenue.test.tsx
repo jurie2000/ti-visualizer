@@ -133,7 +133,9 @@ describe("Kontextmenü (FR-6, FR-7, FR-18)", () => {
     node("pvs").focus();
     await user.keyboard("{ContextMenu}");
     const menu = screen.getByRole("menu");
-    const erp = within(menu).getByRole("group", { name: "E-Rezept" });
+    const erp = within(menu).getByRole("group", {
+      name: "Verordnung & Bescheinigung",
+    });
     expect(
       within(erp).getByRole("menuitem", { name: AKTION }),
     ).toBeInTheDocument();

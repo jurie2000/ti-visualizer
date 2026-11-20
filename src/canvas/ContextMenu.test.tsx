@@ -81,10 +81,52 @@ describe("ContextMenu: Gruppen (#217)", () => {
     expect(screen.getByRole("menuitem", { name: "B1" })).toHaveFocus();
   });
 
-  it("hält das Menü im Fenster", () => {
+  it("Menü mit Kategorien ist ein mittiges Fenster mit Titel, ohne Zeigerposition", () => {
+    open([entry("A1", "A")], 50, 60);
+    const menu = screen.getByRole("menu", { name: "Gerät" });
+    expect(menu.style.left).toBe("");
+    expect(menu.style.top).toBe("");
+    expect(menu.querySelector(".tiv-menu__title")?.textContent).toBe(
+      "Gerät1 von 1 Aktionen verfügbar",
+    );
+  });
+
+  it("zählt verfügbare Aktionen und trennt Online- von lokalen Aktionen in Spalten", () => {
+    open([
+      entry("Details"),
+      { ...entry("L1", "Notfalldaten"), section: "lokal" as const },
+      entry("O1", "KIM", "KIM-Clientmodul fehlt."),
+      entry("O2", "KIM"),
+    ]);
+    const menu = screen.getByRole("menu");
+    expect(menu).toHaveTextContent("2 von 3 Aktionen verfügbar");
+    const cols = menu.querySelectorAll<HTMLElement>(".tiv-menu__col");
+    expect(
+      Array.from(cols).map((c) => c.querySelector("div")?.textContent),
+    ).toEqual(["Online · über TI", "Lokal · eGK & TI 2.0"]);
+    expect(
+      within(cols[0] as HTMLElement).getAllByRole("menuitem"),
+    ).toHaveLength(2);
+    expect(
+      within(cols[1] as HTMLElement).getByRole("menuitem"),
+    ).toHaveTextContent("L1");
+  });
+
+  it("nummeriert die Schritte der Gruppe TI 2.0", () => {
+    open([
+      entry("Details"),
+      { ...entry("Z", "TI 2.0"), section: "lokal" as const },
+      { ...entry("P", "TI 2.0"), section: "lokal" as const },
+    ]);
+    const steps = screen.getByRole("group", { name: "TI 2.0" });
+    expect(steps).toHaveTextContent("1Z");
+    expect(steps).toHaveTextContent("2P");
+  });
+
+  it("hält das schmale Menü im Fenster", () => {
     vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(400);
     vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(300);
-    open([entry("A1", "A")], 5000, 5000);
+    open([entry("A1")], 5000, 5000);
     const menu = screen.getByRole("menu");
     expect(menu.style.left).toBe(`${String(window.innerWidth - 400)}px`);
     expect(menu.style.top).toBe(`${String(window.innerHeight - 300)}px`);

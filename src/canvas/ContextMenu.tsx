@@ -6,10 +6,20 @@ export interface MenuEntry {
   label: string;
   /** Gesetzt: Eintrag ist ausgegraut und nennt die Begründung (FR-7). */
   disabledReason?: string;
-  /** Kategorie: Einträge mit Kategorie stehen als Spalten nebeneinander (#217). */
+  /** Untergruppe im Aktionsfenster; Einträge ohne Gruppe stehen in Kopf- oder Fußzeile (#217). */
   group?: string;
+  /** Spalte des Aktionsfensters; ohne Angabe „online“. */
+  section?: "online" | "lokal";
   onSelect: () => void;
 }
+
+// Reihenfolge und Titel der Spalten im Aktionsfenster (#217)
+const SECTIONS = [
+  ["online", "Online · über TI"],
+  ["lokal", "Lokal · eGK & TI 2.0"],
+] as const;
+// Die drei Schritte von VSDM 2.0 stehen nummeriert in einer Karte
+const STEPS = "TI 2.0";
 
 interface Props {
   x: number;
@@ -37,7 +47,7 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
   useEffect(() => {
     const menu = ref.current;
     // Echte Größe erst nach dem Zeichnen bekannt: im Fenster halten
-    if (menu) {
+    if (menu && !menu.classList.contains("tiv-menu--wide")) {
       menu.style.top = `${String(Math.max(0, Math.min(y, window.innerHeight - menu.offsetHeight)))}px`;
       menu.style.left = `${String(Math.max(0, Math.min(x, window.innerWidth - menu.offsetWidth)))}px`;
     }
@@ -78,58 +88,108 @@ export function ContextMenu({ x, y, title, entries, onClose }: Props) {
     entry.onSelect();
   };
 
-  const item = (entry: MenuEntry) => (
+  const button = (entry: MenuEntry, step = 0) => (
+    <button
+      key={entry.id}
+      type="button"
+      role="menuitem"
+      className="tiv-menu__item"
+      aria-disabled={entry.disabledReason ? true : undefined}
+      onClick={() => {
+        choose(entry);
+      }}
+    >
+      {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
+      {step > 0 && (
+        <span className="tiv-menu__step" aria-hidden="true">
+          {step}
+        </span>
+      )}
+      {entry.label}
+      {entry.disabledReason && (
+        <span className="tiv-menu__why">{entry.disabledReason}</span>
+      )}
+    </button>
+  );
+  const item = (entry: MenuEntry, step = 0) => (
     <li key={entry.id} role="none">
-      <button
-        type="button"
-        role="menuitem"
-        className="tiv-menu__item"
-        aria-disabled={entry.disabledReason ? true : undefined}
-        onClick={() => {
-          choose(entry);
-        }}
-      >
-        {entry.disabledReason && <Lock size={14} aria-hidden="true" />}
-        {entry.label}
-        {entry.disabledReason && (
-          <span className="tiv-menu__why">{entry.disabledReason}</span>
-        )}
-      </button>
+      {button(entry, step)}
     </li>
   );
 
-  // Spalten in Reihenfolge des ersten Auftretens der Kategorie; ungruppierte Einträge
-  // (Details oben, Ausfall unten) stehen vor bzw. nach dem Spaltenblock.
+  // Ungruppierte Einträge: der erste (Details) steht in der Kopfzeile, der Rest in der Fußzeile.
   const first = entries.findIndex((e) => e.group);
-  const groups = new Map<string, MenuEntry[]>();
-  for (const e of entries)
-    if (e.group) groups.set(e.group, [...(groups.get(e.group) ?? []), e]);
-  const head = first < 0 ? entries : entries.slice(0, first);
-  const tail = first < 0 ? [] : entries.slice(first).filter((e) => !e.group);
+  const wide = first >= 0;
+  const head = wide ? entries.slice(0, first) : entries;
+  const foot = wide ? entries.slice(first).filter((e) => !e.group) : [];
+  const actions = entries.filter((e) => e.group);
+  const free = actions.filter((e) => !e.disabledReason).length;
+  const bySection = (section: "online" | "lokal") => {
+    const groups = new Map<string, MenuEntry[]>();
+    for (const e of actions)
+      if ((e.section ?? "online") === section)
+        groups.set(e.group ?? "", [...(groups.get(e.group ?? "") ?? []), e]);
+    return [...groups];
+  };
+  const columns = SECTIONS.map(
+    ([id, label]) => [id, label, bySection(id)] as const,
+  ).filter(([, , groups]) => groups.length > 0);
 
   return (
-    <ul
-      ref={ref}
-      role="menu"
-      aria-label={title}
-      className={`tiv-menu nodrag nopan${groups.size > 0 ? " tiv-menu--wide" : ""}`}
-      style={{ left: x, top: y }}
-      onKeyDown={onKeyDown}
-    >
-      {head.map(item)}
-      {groups.size > 0 && (
-        <li role="none" className="tiv-menu__cols">
-          {[...groups].map(([name, list]) => (
-            <ul key={name} role="group" aria-label={name}>
-              <li role="none" className="tiv-menu__head">
-                {name}
-              </li>
-              {list.map(item)}
-            </ul>
-          ))}
-        </li>
-      )}
-      {tail.map(item)}
-    </ul>
+    <>
+      {wide && <div className="tiv-menu__backdrop" aria-hidden="true" />}
+      <ul
+        ref={ref}
+        role="menu"
+        aria-label={title}
+        className={`tiv-menu nodrag nopan${wide ? " tiv-menu--wide" : ""}`}
+        // Mit Aktionen öffnet das Menü als Fenster mittig, sonst am Zeiger
+        style={wide ? undefined : { left: x, top: y }}
+        onKeyDown={onKeyDown}
+      >
+        {wide && (
+          <li role="none" className="tiv-menu__title">
+            <strong>{title}</strong>
+            <span>
+              {free} von {actions.length} Aktionen verfügbar
+            </span>
+            {head.map((e) => button(e))}
+          </li>
+        )}
+        {!wide && head.map((e) => item(e))}
+        {wide && (
+          <li role="none" className="tiv-menu__cols">
+            {columns.map(([id, label, groups]) => (
+              <div key={id} className="tiv-menu__col">
+                <div className="tiv-menu__section" aria-hidden="true">
+                  {label}
+                </div>
+                {groups.map(([name, list]) => (
+                  <ul
+                    key={name}
+                    role="group"
+                    aria-label={name}
+                    className={
+                      name === STEPS ? "tiv-menu__steps" : "tiv-menu__group"
+                    }
+                  >
+                    <li role="none" className="tiv-menu__head">
+                      {name}
+                    </li>
+                    {list.map((e, i) => item(e, name === STEPS ? i + 1 : 0))}
+                  </ul>
+                ))}
+              </div>
+            ))}
+          </li>
+        )}
+        {wide && (
+          <li role="none" className="tiv-menu__foot">
+            <span>Simulation</span>
+            {foot.map((e) => button(e))}
+          </li>
+        )}
+      </ul>
+    </>
   );
 }

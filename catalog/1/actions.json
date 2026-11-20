@@ -4,31 +4,15 @@
     "name": "E-Rezept ausstellen",
     "category": "Verordnung & Bescheinigung",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "hba",
-          "unlocked": true
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "service": "erp"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "service": "erp" },
+        { "service": "idp" }
       ]
     },
     "flow": "erezept",
@@ -40,31 +24,15 @@
     "name": "eAU ausstellen und per KIM senden",
     "category": "Verordnung & Bescheinigung",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "hba",
-          "unlocked": true
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "present": "kimcm"
-        },
-        {
-          "service": "kim"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
       ]
     },
     "flow": "eau",
@@ -76,31 +44,15 @@
     "name": "eArztbrief per KIM senden",
     "category": "KIM",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis", "ris", "lis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "hba",
-          "unlocked": true
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "present": "kimcm"
-        },
-        {
-          "service": "kim"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "hba", "unlocked": true },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
       ]
     },
     "flow": "kim",
@@ -112,27 +64,14 @@
     "name": "KIM-Nachricht senden",
     "category": "KIM",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis", "pflege"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "pflege"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "present": "kimcm"
-        },
-        {
-          "service": "kim"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "present": "kimcm" },
+        { "service": "kim" }
       ]
     },
     "flow": "kim",
@@ -144,30 +83,15 @@
     "name": "eAU-Kopie in die ePA hochladen",
     "category": "ePA",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "need": "befugnis"
-        },
-        {
-          "service": "epa"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
       ]
     },
     "flow": "epa",
@@ -179,30 +103,15 @@
     "name": "Befund in die ePA hochladen",
     "category": "ePA",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis", "ris", "lis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "ris", "lis"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "need": "befugnis"
-        },
-        {
-          "service": "epa"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
       ]
     },
     "flow": "epa",
@@ -214,30 +123,15 @@
     "name": "ePA-Medikationsliste einsehen",
     "category": "ePA",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis", "avs"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "avs"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "need": "befugnis"
-        },
-        {
-          "service": "epa"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
       ]
     },
     "flow": "epa",
@@ -249,21 +143,12 @@
     "name": "Notfalldatensatz schreiben",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk"
-        },
-        {
-          "card": "hba",
-          "unlocked": true
-        }
+        { "need": "zugang" },
+        { "card": "egk" },
+        { "card": "hba", "unlocked": true }
       ]
     },
     "flow": "notfalldaten",
@@ -275,27 +160,15 @@
     "name": "Persönliche Erklärungen schreiben",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk"
-        },
+        { "need": "zugang" },
+        { "card": "egk" },
         {
           "any": [
-            {
-              "card": "smcb",
-              "unlocked": true
-            },
-            {
-              "card": "hba",
-              "unlocked": true
-            }
+            { "card": "smcb", "unlocked": true },
+            { "card": "hba", "unlocked": true }
           ]
         }
       ]
@@ -309,27 +182,15 @@
     "name": "Notfalldaten lesen",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk"
-        },
+        { "need": "zugang" },
+        { "card": "egk" },
         {
           "any": [
-            {
-              "card": "hba",
-              "unlocked": true
-            },
-            {
-              "card": "smcb",
-              "unlocked": true
-            }
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
           ]
         }
       ]
@@ -343,28 +204,15 @@
     "name": "Medikationsplan erstellen oder aktualisieren",
     "category": "Medikationsplan (eMP)",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk",
-          "pin": true
-        },
+        { "need": "zugang" },
+        { "card": "egk", "pin": true },
         {
           "any": [
-            {
-              "card": "hba",
-              "unlocked": true
-            },
-            {
-              "card": "smcb",
-              "unlocked": true
-            }
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
           ]
         }
       ]
@@ -378,28 +226,15 @@
     "name": "Medikationsplan auslesen",
     "category": "Medikationsplan (eMP)",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk",
-          "pin": true
-        },
+        { "need": "zugang" },
+        { "card": "egk", "pin": true },
         {
           "any": [
-            {
-              "card": "hba",
-              "unlocked": true
-            },
-            {
-              "card": "smcb",
-              "unlocked": true
-            }
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
           ]
         }
       ]
@@ -413,22 +248,12 @@
     "name": "Medikationsplan auslesen (AVS)",
     "category": "Medikationsplan (eMP)",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["avs"]
-    },
+    "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "card": "egk",
-          "pin": true
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        }
+        { "need": "zugang" },
+        { "card": "egk", "pin": true },
+        { "card": "smcb", "unlocked": true }
       ]
     },
     "flow": "emp",
@@ -440,35 +265,19 @@
     "name": "VSDM-Prüfung anstoßen",
     "category": "Versichertenstammdaten",
     "section": "online",
-    "offeredBy": {
-      "types": ["pvs", "kis", "kt"]
-    },
+    "offeredBy": { "types": ["pvs", "kis", "kt"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "egk"
-        },
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "egk" },
         {
           "any": [
-            {
-              "card": "smcb",
-              "unlocked": true
-            },
-            {
-              "card": "hba",
-              "unlocked": true
-            }
+            { "card": "smcb", "unlocked": true },
+            { "card": "hba", "unlocked": true }
           ]
         },
-        {
-          "service": "vsdm"
-        }
+        { "service": "vsdm" }
       ]
     },
     "flow": "vsdm",
@@ -480,33 +289,16 @@
     "name": "E-Rezept einlösen (eGK einlesen)",
     "category": "E-Rezept einlösen",
     "section": "online",
-    "offeredBy": {
-      "types": ["avs"]
-    },
+    "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "card": "egk"
-        },
-        {
-          "need": "pruefungsnachweis"
-        },
-        {
-          "service": "erp"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "card": "egk" },
+        { "need": "pruefungsnachweis" },
+        { "service": "erp" },
+        { "service": "idp" }
       ]
     },
     "flow": "erezeptEinloesen",
@@ -518,27 +310,14 @@
     "name": "E-Rezept einlösen (Rezeptcode scannen)",
     "category": "E-Rezept einlösen",
     "section": "online",
-    "offeredBy": {
-      "types": ["avs"]
-    },
+    "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "service": "erp"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "service": "erp" },
+        { "service": "idp" }
       ]
     },
     "flow": "erezeptEinloesenCode",
@@ -550,36 +329,17 @@
     "name": "E-Rezept per CardLink einlösen (Fernversorgung)",
     "category": "E-Rezept einlösen",
     "section": "online",
-    "offeredBy": {
-      "types": ["avs"]
-    },
+    "offeredBy": { "types": ["avs"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "present": "cardlink"
-        },
-        {
-          "card": "egk"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "need": "pruefungsnachweis"
-        },
-        {
-          "service": "erp"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "present": "cardlink" },
+        { "card": "egk" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "pruefungsnachweis" },
+        { "service": "erp" },
+        { "service": "idp" }
       ]
     },
     "flow": "cardlinkErp",
@@ -591,30 +351,15 @@
     "name": "Dokument in die ePA hochladen oder einsehen",
     "category": "ePA",
     "section": "online",
-    "offeredBy": {
-      "types": ["pflege"]
-    },
+    "offeredBy": { "types": ["pflege"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "need": "befugnis"
-        },
-        {
-          "service": "epa"
-        },
-        {
-          "service": "idp"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "smcb", "unlocked": true },
+        { "need": "befugnis" },
+        { "service": "epa" },
+        { "service": "idp" }
       ]
     },
     "flow": "epa",
@@ -626,24 +371,14 @@
     "name": "eGK offline einlesen (mobiles KT)",
     "category": "Mobil & CardLink",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["mkt"]
-    },
+    "offeredBy": { "types": ["mkt"] },
     "requires": {
       "all": [
-        {
-          "card": "egk"
-        },
+        { "card": "egk" },
         {
           "any": [
-            {
-              "card": "hba",
-              "unlocked": true
-            },
-            {
-              "card": "smcb",
-              "unlocked": true
-            }
+            { "card": "hba", "unlocked": true },
+            { "card": "smcb", "unlocked": true }
           ]
         }
       ]
@@ -657,23 +392,13 @@
     "name": "Daten ans Primärsystem übergeben (mobiles KT)",
     "category": "Mobil & CardLink",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["mkt"]
-    },
+    "offeredBy": { "types": ["mkt"] },
     "requires": {
       "any": [
-        {
-          "present": "pvs"
-        },
-        {
-          "present": "kis"
-        },
-        {
-          "present": "avs"
-        },
-        {
-          "present": "pflege"
-        }
+        { "present": "pvs" },
+        { "present": "kis" },
+        { "present": "avs" },
+        { "present": "pflege" }
       ]
     },
     "flow": "mobkt",
@@ -685,30 +410,15 @@
     "name": "eGK per Smartphone prüfen (CardLink/VSDM)",
     "category": "Mobil & CardLink",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["cardlink"]
-    },
+    "offeredBy": { "types": ["cardlink"] },
     "requires": {
       "all": [
-        {
-          "need": "zugang"
-        },
-        {
-          "need": "ti"
-        },
-        {
-          "card": "egk"
-        },
-        {
-          "present": "cardlink"
-        },
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "service": "vsdm"
-        }
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "card": "egk" },
+        { "present": "cardlink" },
+        { "card": "smcb", "unlocked": true },
+        { "service": "vsdm" }
       ]
     },
     "flow": "cardlinkVsdm",
@@ -720,12 +430,8 @@
     "name": "TI-Messenger-Nachricht senden",
     "category": "TI-Messenger",
     "section": "online",
-    "offeredBy": {
-      "types": ["timc"]
-    },
-    "requires": {
-      "service": "tim"
-    },
+    "offeredBy": { "types": ["timc"] },
+    "requires": { "service": "tim" },
     "flow": "tim",
     "source": ["gemSpec_TI-M_Basis", "FP_TIM"],
     "status": "plausibel"
@@ -735,24 +441,11 @@
     "name": "E-Rezept-App: Rezepte abrufen",
     "category": "E-Rezept",
     "section": "online",
-    "offeredBy": {
-      "types": ["erpapp"]
-    },
+    "offeredBy": { "types": ["erpapp"] },
     "requires": {
       "all": [
-        {
-          "service": "erp"
-        },
-        {
-          "any": [
-            {
-              "service": "idpsek"
-            },
-            {
-              "card": "egk"
-            }
-          ]
-        }
+        { "service": "erp" },
+        { "any": [{ "service": "idpsek" }, { "card": "egk" }] }
       ]
     },
     "flow": "appErezept",
@@ -764,19 +457,8 @@
     "name": "ePA-App: Akte ansehen und Befugnis verwalten",
     "category": "ePA",
     "section": "online",
-    "offeredBy": {
-      "types": ["epaapp"]
-    },
-    "requires": {
-      "all": [
-        {
-          "service": "epa"
-        },
-        {
-          "service": "idpsek"
-        }
-      ]
-    },
+    "offeredBy": { "types": ["epaapp"] },
+    "requires": { "all": [{ "service": "epa" }, { "service": "idpsek" }] },
     "flow": "appEpa",
     "source": ["gemSpec_Aktensystem_ePAfueralle", "gemSpec_IDP_Sek"],
     "status": "bestätigt"
@@ -786,19 +468,9 @@
     "name": "ZETA-Anmeldung (SMC-B)",
     "category": "TI 2.0",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [
-        {
-          "card": "smcb",
-          "unlocked": true
-        },
-        {
-          "service": "zeta"
-        }
-      ]
+      "all": [{ "card": "smcb", "unlocked": true }, { "service": "zeta" }]
     },
     "flow": "zeta",
     "issues": "zeta",
@@ -810,18 +482,9 @@
     "name": "PoPP-Token beantragen (eGK)",
     "category": "TI 2.0",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [
-        {
-          "card": "egk"
-        },
-        {
-          "service": "popp"
-        }
-      ]
+      "all": [{ "card": "egk" }, { "service": "popp" }]
     },
     "flow": "popp",
     "issues": "popp",
@@ -833,20 +496,12 @@
     "name": "VSDM-2.0-Prüfung",
     "category": "TI 2.0",
     "section": "lokal",
-    "offeredBy": {
-      "types": ["pvs", "kis"]
-    },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        {
-          "need": "zetaToken"
-        },
-        {
-          "need": "poppToken"
-        },
-        {
-          "service": "vsdm2"
-        }
+        { "need": "zetaToken" },
+        { "need": "poppToken" },
+        { "service": "vsdm2" }
       ]
     },
     "flow": "vsdm2",

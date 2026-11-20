@@ -107,7 +107,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       Object.defineProperty(
         HTMLElement.prototype,
         "offsetHeight",
-        fixed("h", 700),
+        fixed("h", 1000),
       );
     });
     afterEach(() => {
@@ -144,7 +144,7 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
           r.x * k + tx >= 0 &&
           r.y * k + ty >= 0 &&
           (r.x + r.w) * k + tx <= 1000 &&
-          (r.y + r.h) * k + ty <= 700,
+          (r.y + r.h) * k + ty <= 1000,
       );
     };
 
@@ -167,7 +167,8 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       await waitFor(() => {
         expect(sichtbar()).toBe(true);
       });
-    });
+      // Klinikum hat mehr Geräte (#213): mit Coverage in der CI über 5 s
+    }, 15000);
 
     it("T-720a Übersicht bricht auf leerer Fläche nicht ab", async () => {
       const user = userEvent.setup();

@@ -83,11 +83,86 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     ).toBeInTheDocument();
   });
 
-  it("[Regelwerk 8] im Modus Einfach gibt es kein Formular", () => {
+  it("[Regelwerk 8] im Modus Einfach zeigt nur der Arbeitsplatz ein Formular: Server nichts", () => {
     useSettings.setState({ mode: "simple" });
     render(<DetailPanel />);
     open("kon-1");
     expect(screen.queryByText("Geräteeinstellungen")).toBeNull();
+    open("switch-1");
+    expect(screen.queryByText("Geräteeinstellungen")).toBeNull();
+    useTopology.getState().addNode("server", { x: 0, y: 0 });
+    open("server-1");
+    expect(screen.queryByText("Geräteeinstellungen")).toBeNull();
+  });
+
+  it("[#213] Einfach: PC zeigt seine feste Arbeitsplatz-ID ohne weitere Felder", () => {
+    useSettings.setState({ mode: "simple" });
+    useTopology.getState().setConfig("pc-1", { workplace: "AP-3" });
+    render(<DetailPanel />);
+    open("pc-1");
+    expect(screen.getByText("AP-3")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).toBeNull();
+    expect(screen.queryByLabelText("IP-Adresse")).toBeNull();
+  });
+
+  it("[#213] Einfach: Kartenterminal wählt den Arbeitsplatz, der Name folgt, leer entfernt ihn", async () => {
+    const user = userEvent.setup();
+    useSettings.setState({ mode: "simple" });
+    useTopology.getState().setConfig("pc-1", { workplace: "AP-2" });
+    render(<DetailPanel />);
+    open("kt-1");
+    const select = screen.getByLabelText("Arbeitsplatz");
+    expect(select).toHaveTextContent("keiner");
+    await user.click(select);
+    expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual([
+      "keiner",
+      "Arbeitsplatz-PC AP-2",
+    ]);
+    await user.click(
+      screen.getByRole("option", { name: "Arbeitsplatz-PC AP-2" }),
+    );
+    expect(nodeOf("kt-1")?.config?.workplace).toBe("AP-2");
+    expect(nodeOf("kt-1")?.label).toBe("eHealth-Kartenterminal AP-2");
+    await user.click(select);
+    await user.click(screen.getByRole("option", { name: "keiner" }));
+    expect(nodeOf("kt-1")?.config).not.toHaveProperty("workplace");
+    expect(nodeOf("kt-1")?.label).toBeUndefined();
+  });
+
+  it("[#213] Auswahlliste per Tastatur: Pfeil öffnet, Enter wählt, Esc schließt", async () => {
+    const user = userEvent.setup();
+    useSettings.setState({ mode: "simple" });
+    useTopology.getState().setConfig("pc-1", { workplace: "AP-2" });
+    render(<DetailPanel />);
+    open("kt-1");
+    screen.getByLabelText("Arbeitsplatz").focus();
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+    expect(nodeOf("kt-1")?.config?.workplace).toBe("AP-2");
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("listbox")).toBeNull();
+  });
+
+  it("[#213] Einfach: Tablet zeigt seine ID, das Dropdown sortiert nach Nummer und führt Altwerte mit", async () => {
+    useSettings.setState({ mode: "simple" });
+    const st = useTopology.getState();
+    st.setConfig("pc-1", { workplace: "AP-10" });
+    st.addNode("tab", { x: 0, y: 0 });
+    st.setConfig("tab-1", { workplace: "AP-2" });
+    st.setConfig("kt-1", { workplace: "Empfang" });
+    render(<DetailPanel />);
+    open("tab-1");
+    expect(screen.getByText("AP-2")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).toBeNull();
+    open("kt-1");
+    await userEvent.click(screen.getByLabelText("Arbeitsplatz"));
+    expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual([
+      "keiner",
+      "Empfang",
+      "Visite-Tablet (KIS-Client per WLAN) AP-2",
+      "Arbeitsplatz-PC AP-10",
+    ]);
   });
 
   it("[Regelwerk 8] gültige IP wird beim Verlassen übernommen", async () => {

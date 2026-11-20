@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { create } from "zustand";
 import { NODE_SIZE } from "../canvas/deviceStyle";
-import { defaultConfig } from "../engine/config";
+import { defaultConfig, workplaceLabel } from "../engine/config";
 import { plugCard, unplugCard, type CardKind } from "../engine/cards";
 import { autoPorts, validateConnection } from "../engine/rules";
 import { containedNodes } from "../engine/zones";
@@ -140,11 +140,19 @@ export const useTopology = create<TopologyState>((set, get) => {
         );
       const id = freeId(type, t);
       const config = defaultConfig(type, t, catalog());
+      const label = workplaceLabel(type, catalog(), config?.workplace);
       commit({
         ...t,
         nodes: [
           ...t.nodes,
-          { id, type, position, fault: false, ...(config && { config }) },
+          {
+            id,
+            type,
+            position,
+            fault: false,
+            ...(label && { label }),
+            ...(config && { config }),
+          },
         ],
       });
       return { ok: true, id };
@@ -407,11 +415,22 @@ export const useTopology = create<TopologyState>((set, get) => {
         )
       )
         return fail(`${label("pairedWith")}: Das ist kein Zugang.`);
+      // Der Name folgt dem Arbeitsplatz und überschreibt einen eigenen Namen (Regelwerk 8).
+      const follow = "workplace" in patch;
+      const name = workplaceLabel(
+        node.type,
+        c,
+        config["workplace"] as string | undefined,
+      );
       commit({
         ...t,
-        nodes: t.nodes.map((n) =>
-          n.id === nodeId ? { ...n, config: parsed.data } : n,
-        ),
+        nodes: t.nodes.map((n) => {
+          if (n.id !== nodeId) return n;
+          const next = { ...n, config: parsed.data };
+          if (follow && name) next.label = name;
+          else if (follow) delete next.label;
+          return next;
+        }),
       });
       return { ok: true };
     },

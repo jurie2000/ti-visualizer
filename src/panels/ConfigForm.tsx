@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { Select } from "../ui/Select";
 import {
   configVariantOf,
   configVariants,
   type Catalog,
   type Node,
 } from "../schema";
-import { simLocked, useCatalog, useSim, useTopology } from "../store";
+import { apNumber, hasCapability, isTerminal } from "../engine/config";
+import {
+  simLocked,
+  useCatalog,
+  useSettings,
+  useSim,
+  useTopology,
+} from "../store";
 
 type Kind = "text" | "number" | "date" | "bool" | "radio";
 type Entry = Catalog["configDefaults"][number];
@@ -16,7 +24,7 @@ const KIND: Record<string, Kind> = {
   gateway: "text",
   dns: "text",
   vlan: "text",
-  workplace: "text",
+  workplace: "radio",
   timeOffset: "number",
   certExpires: "date",
   lastTimeSync: "date",
@@ -37,7 +45,6 @@ const FORMAT: Record<string, string> = {
   gateway: "IPv4-Adresse, z. B. 192.168.10.2",
   dns: "IPv4-Adresse, z. B. 192.168.10.2",
   vlan: "höchstens 32 Zeichen",
-  workplace: "höchstens 100 Zeichen",
   timeOffset: "ganze Zahl in Sekunden",
   certExpires: "Datum, JJJJ-MM-TT",
   lastTimeSync: "Datum, JJJJ-MM-TT",
@@ -205,15 +212,82 @@ function RadioField({
   );
 }
 
-/** Formular Geräteeinstellungen (Regelwerk 8), nur im Modus Erweitert (FR-17). */
+function WorkplaceField({
+  node,
+  entry,
+  id,
+  terminal,
+}: {
+  node: Node;
+  entry: Entry;
+  id: string;
+  terminal: boolean;
+}) {
+  const setConfig = useTopology((s) => s.setConfig);
+  const catalog = useCatalog((s) => s.catalog);
+  const topology = useTopology((s) => s.topology);
+  const current = valueOf(node, "workplace");
+  if (!terminal)
+    return (
+      <div className="tiv-config__field">
+        <span>{entry.name}</span>
+        <p id={`${id}-value`}>{current ? String(current) : "nicht vergeben"}</p>
+        <p className="tiv-config__hint">{hintOf(entry)}</p>
+      </div>
+    );
+  const places = topology.nodes
+    .flatMap((n) => {
+      const wp = n.config?.workplace;
+      return wp && hasCapability(n.type, catalog, "workplace")
+        ? [{ wp, name: n.label ?? n.id }]
+        : [];
+    })
+    .sort((a, b) => apNumber(a.wp) - apNumber(b.wp));
+  return (
+    <div className="tiv-config__field">
+      <label htmlFor={id}>{entry.name}</label>
+      <Select
+        id={id}
+        value={current === undefined ? "" : String(current)}
+        aria-describedby={`${id}-hint`}
+        onChange={(v) => {
+          setConfig(node.id, { workplace: v || undefined });
+        }}
+        options={[
+          { value: "", label: "keiner" },
+          ...(current && !places.some((p) => p.wp === current)
+            ? [{ value: String(current), label: String(current) }]
+            : []),
+          ...places.map((p) => ({
+            value: p.wp,
+            label: p.name.includes(p.wp) ? p.name : `${p.wp} – ${p.name}`,
+          })),
+        ]}
+      />
+      <p id={`${id}-hint`} className="tiv-config__hint">
+        {hintOf(entry)}
+      </p>
+    </div>
+  );
+}
+
+/** Formular Geräteeinstellungen (Regelwerk 8). Im Modus Einfach nur der Arbeitsplatz (FR-17, #213), sonst alle Felder. */
 export function ConfigForm({ node }: { node: Node }) {
   const catalog = useCatalog((s) => s.catalog);
   const topology = useTopology((s) => s.topology);
+  const advanced = useSettings((s) => s.mode) === "advanced";
   const locked = simLocked(useSim((s) => s.sim));
   const type = catalog.deviceTypes.find((d) => d.id === node.type);
   const variant = type && configVariantOf(type.capabilities);
   if (!variant) return null;
-  const fields = Object.keys(configVariants[variant].shape);
+  const terminal = isTerminal(node.type, catalog);
+  const hasWorkplace = hasCapability(node.type, catalog, "workplace");
+  const fields = Object.keys(configVariants[variant].shape).filter(
+    (f) =>
+      (advanced || f === "workplace") &&
+      (f !== "workplace" || terminal || hasWorkplace),
+  );
+  if (fields.length === 0) return null;
   const zugaenge = topology.nodes.filter((n) =>
     catalog.deviceTypes
       .find((d) => d.id === n.type)
@@ -228,6 +302,16 @@ export function ConfigForm({ node }: { node: Node }) {
         .map((e) => {
           const kind = KIND[e.field] ?? "text";
           const id = `cfg-${node.id}-${e.field}`;
+          if (e.field === "workplace")
+            return (
+              <WorkplaceField
+                key={id}
+                node={node}
+                entry={e}
+                id={id}
+                terminal={terminal}
+              />
+            );
           if (kind === "bool")
             return <BoolField key={id} node={node} entry={e} id={id} />;
           if (kind === "radio")

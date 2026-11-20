@@ -61,6 +61,18 @@ describe("Presets (Regelwerk 13)", () => {
     }
   });
 
+  it("[P-29] [#213] jeder Arbeitsplatz eines Presets ist eindeutig und kein Preset löst P-29 aus", () => {
+    for (const { id, topology } of catalog.presets) {
+      const ids = topology.nodes
+        .filter((n) => ["pc", "tab"].includes(n.type))
+        .map((n) => n.config?.workplace);
+      expect(ids.every(Boolean), id).toBe(true);
+      expect(new Set(ids).size, id).toBe(ids.length);
+      const found = runChecks(topology, "advanced", catalog).map((f) => f.id);
+      expect(found, id).not.toContain("P-29");
+    }
+  });
+
   it("[A-5] jede erlaubte Verbindung aus 4.2 ist über Anschlüsse herstellbar", () => {
     for (const rule of catalog.connectionRules)
       for (const ta of expand(rule.a))

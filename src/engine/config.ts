@@ -24,6 +24,50 @@ function freeIp(variant: string, topology: Topology) {
   return undefined;
 }
 
+export const hasCapability = (
+  type: string,
+  catalog: Catalog,
+  capability: string,
+) =>
+  catalog.deviceTypes
+    .find((d) => d.id === type)
+    ?.capabilities.includes(capability) ?? false;
+/** Kartenterminal mit Arbeitsplatzwahl (nicht CardLink, nicht mobiles KT). */
+export const isTerminal = (type: string, catalog: Catalog) =>
+  hasCapability(type, catalog, "cardSlots") &&
+  hasCapability(type, catalog, "netConfig:terminal");
+
+export const apNumber = (id: string | undefined) => {
+  const m = /^AP-(\d+)$/.exec(id ?? "");
+  return m ? Number(m[1]) : 0;
+};
+
+/** Nächste Arbeitsplatz-ID: höchste vergebene Nummer + 1, gelöschte Nummern kehren nicht zurück (Regelwerk 8). */
+export function nextWorkplace(topology: Topology) {
+  const max = Math.max(
+    0,
+    ...topology.nodes.map((n) => apNumber(n.config?.workplace)),
+  );
+  return `AP-${String(max + 1)}`;
+}
+
+/** Kleinster Arbeitsplatz eines Rechners, dem noch kein Terminal zugeordnet ist. */
+function freeWorkplace(topology: Topology, catalog: Catalog) {
+  const taken = new Set(
+    topology.nodes
+      .filter((n) => isTerminal(n.type, catalog))
+      .map((n) => n.config?.workplace),
+  );
+  return topology.nodes
+    .filter((n) => hasCapability(n.type, catalog, "workplace"))
+    .flatMap((n) =>
+      n.config?.workplace && !taken.has(n.config.workplace)
+        ? [n.config.workplace]
+        : [],
+    )
+    .sort((a, b) => apNumber(a) - apNumber(b))[0];
+}
+
 /** Standardwerte für ein neues Gerät (FR-17). Ohne `netConfig:`-Fähigkeit: `undefined`. */
 export function defaultConfig(
   type: string,
@@ -61,8 +105,28 @@ export function defaultConfig(
     if (gateway?.config?.ip) config["gateway"] = gateway.config.ip;
     if (zugang?.config?.ip) config["dns"] = zugang.config.ip;
   }
+  if (hasCapability(type, catalog, "workplace"))
+    config["workplace"] = nextWorkplace(topology);
+  else if (isTerminal(type, catalog)) {
+    const free = freeWorkplace(topology, catalog);
+    if (free) config["workplace"] = free;
+  }
   if (variant === "terminal" && zugaenge.length === 1 && zugang)
     config["pairedWith"] = zugang.id;
 
   return config;
+}
+
+/** Name von PC, Tablet und Kartenterminal trägt den Arbeitsplatz; sonst `undefined` (Standardname). */
+export function workplaceLabel(
+  type: string,
+  catalog: Catalog,
+  workplace: string | undefined,
+) {
+  const name = catalog.deviceTypes.find((d) => d.id === type)?.name;
+  return workplace &&
+    name &&
+    (isTerminal(type, catalog) || hasCapability(type, catalog, "workplace"))
+    ? `${name} ${workplace}`
+    : undefined;
 }

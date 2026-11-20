@@ -1,3 +1,4 @@
+import { hasCapability, nextWorkplace, workplaceLabel } from "../engine/config";
 import { validateConnection } from "../engine/rules";
 import {
   LIMITS,
@@ -24,7 +25,8 @@ export const copyNodes = (t: Topology, ids: string[]): Clip => ({
 
 // Auslegung (2026-11-11): Eine Karte steckt in genau einem Gerät (K-9), die IP-Adresse
 // ist eindeutig (P-9) und die Kopplung gehört zu einem bestimmten Zugang. Die Kopie
-// übernimmt daher weder Karten noch `ip`, `paired` und `pairedWith`.
+// übernimmt daher weder Karten noch `ip`, `paired` und `pairedWith`. Rechner mit
+// Arbeitsplatz bekommen eine neue ID (Regelwerk 8, #213), das Kartenterminal behält seine.
 const NOT_COPIED = ["ip", "paired", "pairedWith"];
 
 export type PasteResult =
@@ -54,11 +56,13 @@ export function pasteClip(
   for (const n of clip.nodes) {
     const id = freeId(n.type, next);
     ids.set(n.id, id);
-    const config = n.config
+    const own = hasCapability(n.type, catalog, "workplace");
+    const kept = n.config
       ? (Object.fromEntries(
           Object.entries(n.config).filter(([k]) => !NOT_COPIED.includes(k)),
         ) as Node["config"])
       : undefined;
+    const config = own ? { ...kept, workplace: nextWorkplace(next) } : kept;
     next = {
       ...next,
       nodes: [
@@ -71,7 +75,9 @@ export function pasteClip(
             y: clamp(n.position.y + OFFSET * step),
           },
           fault: false,
-          ...(n.label !== undefined && { label: n.label }),
+          ...(own
+            ? { label: workplaceLabel(n.type, catalog, config?.workplace) }
+            : n.label !== undefined && { label: n.label }),
           ...(config && { config }),
         },
       ],

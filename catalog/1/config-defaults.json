@@ -82,8 +82,8 @@
   {
     "field": "workplace",
     "name": "Arbeitsplatz",
-    "default": "AP-1",
-    "rule": "jedem Arbeitsplatz ist im Normalfall ein Kartenterminal zugeordnet",
+    "default": null,
+    "rule": "jeder PC und jedes Tablet hat eine feste Arbeitsplatz-ID (AP-n, fortlaufend), das Kartenterminal wählt seinen Arbeitsplatz aus der Liste",
     "source": ["gemILF_PS"],
     "status": "bestätigt"
   },

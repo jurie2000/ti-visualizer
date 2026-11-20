@@ -167,7 +167,8 @@ describe("Canvas (Preset Arztpraxis, Erweitert)", () => {
       await waitFor(() => {
         expect(sichtbar()).toBe(true);
       });
-    });
+      // Klinikum hat mehr Geräte (#213): mit Coverage in der CI über 5 s
+    }, 15000);
 
     it("T-720a Übersicht bricht auf leerer Fläche nicht ab", async () => {
       const user = userEvent.setup();

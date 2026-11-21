@@ -2,6 +2,7 @@ import {
   Background,
   MiniMap,
   ReactFlow,
+  SelectionMode,
   useReactFlow,
   type EdgeTypes,
   type NodeChange,
@@ -9,7 +10,7 @@ import {
   type NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMemo, useState, type DragEvent } from "react";
+import { useMemo, useRef, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import {
   openDropped,
@@ -20,6 +21,7 @@ import {
   useTopology,
   useUi,
 } from "../store";
+import type { Selection } from "../store/uiStore";
 import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { PortPicker } from "../dialogs/PortPicker";
@@ -70,6 +72,42 @@ const ariaLabelConfig = {
 };
 
 /**
+ * Auswahl nach einer Änderungsliste von React Flow, `"keep"` ohne Auswahländerung.
+ * Eine Zone zählt nur, wenn sie allein gewählt wird: ein aufgezogener Bereich
+ * überlappt oft Zonen und soll nur Geräte erfassen (Issue #220).
+ */
+export function selectionFrom(
+  changes: NodeChange[],
+  current: Selection,
+  zoneIds: ReadonlySet<string>,
+): Selection | "keep" {
+  const picks = changes.filter((c) => c.type === "select");
+  if (picks.length === 0) return "keep";
+  const ids = new Set<string>();
+  if (current?.kind === "multi") for (const id of current.ids) ids.add(id);
+  else if (current?.kind === "node") ids.add(current.id);
+  let zone: string | undefined;
+  let added = 0;
+  for (const c of picks) {
+    if (!c.selected) ids.delete(c.id);
+    else if (zoneIds.has(c.id)) zone = c.id;
+    else {
+      ids.add(c.id);
+      added++;
+    }
+  }
+  if (added === 0 && zone) return { kind: "zone", id: zone };
+  const list = [...ids];
+  if (list.length > 1) return { kind: "multi", ids: list };
+  const [only] = list;
+  if (only) return { kind: "node", id: only };
+  // Abgewählt bis nichts mehr übrig ist; eine Kante oder Zone bleibt davon unberührt
+  return current?.kind === "node" || current?.kind === "multi"
+    ? undefined
+    : "keep";
+}
+
+/**
  * Die Canvas zeigt die Topologie aus dem Store und schreibt Änderungen nur über
  * Store-Aktionen zurück.
  *
@@ -101,6 +139,8 @@ export function Canvas() {
   const [sizes, setSizes] = useState<
     Record<string, { width: number; height: number }>
   >({});
+
+  const marquee = useRef(false);
 
   // Teilstrecke des Pakets im aktuellen Schritt, -1 ohne Paket
   const [hop, setHop] = useState(-1);
@@ -160,6 +200,12 @@ export function Canvas() {
     changes: NodeChange<DeviceFlowNode | ZoneFlowNode>[],
   ) => {
     const dropped: Record<string, Point> = {};
+    const picked = selectionFrom(
+      changes,
+      useUi.getState().selection,
+      new Set(topology.zones.map((z) => z.id)),
+    );
+    if (picked !== "keep") select(picked);
     for (const c of changes) {
       // Der Anfasser einer Zone meldet Lage und Größe selbst (ZoneNode), nicht als Verschieben
       if (
@@ -205,9 +251,6 @@ export function Canvas() {
       } else if (c.type === "dimensions" && c.dimensions) {
         const size = c.dimensions;
         setSizes((m) => ({ ...m, [c.id]: size }));
-      } else if (c.type === "select" && c.selected) {
-        const isZone = topology.zones.some((z) => z.id === c.id);
-        select({ kind: isZone ? "zone" : "node", id: c.id });
       }
     }
     const ids = Object.keys(dropped);
@@ -219,6 +262,8 @@ export function Canvas() {
   };
 
   const onEdgesChange = (changes: EdgeChange<ConnectionFlowEdge>[]) => {
+    // Ein aufgezogener Bereich wählt nur Geräte, auch wenn er Kanten kreuzt (Issue #220)
+    if (marquee.current) return;
     for (const c of changes)
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };
@@ -280,6 +325,16 @@ export function Canvas() {
             .filter(Boolean)
             .join(" ") || undefined
         }
+        selectionMode={SelectionMode.Partial}
+        // Bereich aufziehen: Umschalt+Ziehen (React-Flow-Standard); Ziehen allein verschiebt die Ansicht
+        // Neuer Bereich beginnt ohne die alte Auswahl
+        onSelectionStart={() => {
+          marquee.current = true;
+          select(undefined);
+        }}
+        onSelectionEnd={() => {
+          marquee.current = false;
+        }}
         nodesDraggable={!locked}
         nodesConnectable={!locked}
         onConnect={connecting.onConnect}

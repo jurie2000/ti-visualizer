@@ -11,6 +11,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
+import type { Selection } from "../store/uiStore";
 import {
   emptyTopology,
   serialize,
@@ -19,7 +20,7 @@ import {
   useUi,
 } from "../store";
 import { ToastProvider } from "../ui/Toast";
-import { Canvas } from "./Canvas";
+import { Canvas, selectionFrom } from "./Canvas";
 
 const praxis = (() => {
   const preset = loadCatalog().presets.find((p) => p.id === "praxis");
@@ -437,5 +438,75 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     fireEvent.pointerMove(el, { clientX: 40, clientY: 50, pointerId: 1 });
     fireEvent.pointerUp(el, { pointerId: 1 });
     expect(waypoints()).toHaveLength(1);
+  });
+});
+
+describe("selectionFrom (Issue #220)", () => {
+  const zones = new Set(["z1"]);
+  const pick = (id: string, selected = true) => ({
+    type: "select" as const,
+    id,
+    selected,
+  });
+
+  it("fasst einen aufgezogenen Bereich zu einer Mehrfachauswahl zusammen", () => {
+    expect(
+      selectionFrom([pick("a"), pick("b"), pick("z1")], undefined, zones),
+    ).toEqual({ kind: "multi", ids: ["a", "b"] });
+  });
+
+  it("wählt eine allein gewählte Zone als Zone", () => {
+    expect(selectionFrom([pick("z1")], undefined, zones)).toEqual({
+      kind: "zone",
+      id: "z1",
+    });
+  });
+
+  it("ergänzt und entfernt Geräte mit Umschalttaste", () => {
+    const current = { kind: "node", id: "a" } as const;
+    const two = selectionFrom([pick("b")], current, zones);
+    expect(two).toEqual({ kind: "multi", ids: ["a", "b"] });
+    expect(selectionFrom([pick("a", false)], two as Selection, zones)).toEqual({
+      kind: "node",
+      id: "b",
+    });
+  });
+
+  it("ändert nichts ohne Auswahländerung", () => {
+    expect(
+      selectionFrom([{ type: "dimensions", id: "a" }], undefined, zones),
+    ).toBe("keep");
+  });
+
+  it("hebt die Auswahl auf, wenn das letzte Gerät abgewählt wird", () => {
+    expect(
+      selectionFrom([pick("a", false)], { kind: "node", id: "a" }, zones),
+    ).toBeUndefined();
+  });
+
+  it("lässt eine gewählte Kante unberührt", () => {
+    expect(
+      selectionFrom([pick("a", false)], { kind: "edge", id: "e" }, zones),
+    ).toBe("keep");
+  });
+
+  it("ersetzt eine Kantenauswahl durch die Geräte des Bereichs", () => {
+    expect(
+      selectionFrom([pick("a"), pick("b")], { kind: "edge", id: "e" }, zones),
+    ).toEqual({ kind: "multi", ids: ["a", "b"] });
+  });
+
+  it("markiert alle Geräte einer Mehrfachauswahl auf der Canvas", () => {
+    render(<Canvas />, { wrapper });
+    const ids = useTopology
+      .getState()
+      .topology.nodes.slice(0, 2)
+      .map((n) => n.id);
+    act(() => {
+      useUi.setState({ selection: { kind: "multi", ids } });
+    });
+    expect(
+      document.querySelectorAll(".react-flow__node.selected"),
+    ).toHaveLength(2);
   });
 });

@@ -77,11 +77,15 @@ export function toFlow(
       data: { zone },
     });
   }
+  const multi = new Set(selection?.kind === "multi" ? selection.ids : []);
   for (const node of topology.nodes) {
     const device = catalog.deviceTypes.find((d) => d.id === node.type);
     if (!device) continue;
     const title = node.label ?? device.name;
-    const selected = selection?.kind === "node" && selection.id === node.id;
+    const selected =
+      selection?.kind === "multi"
+        ? multi.has(node.id)
+        : selection?.kind === "node" && selection.id === node.id;
     nodes.push({
       id: node.id,
       type: "device",

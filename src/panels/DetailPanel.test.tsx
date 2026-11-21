@@ -457,3 +457,13 @@ describe("T-406 Detailpanel (FR-11)", () => {
     useSim.setState({ sim: IDLE });
   });
 });
+
+describe("Mehrfachauswahl (Issue #220)", () => {
+  it("nennt die Zahl der gewählten Geräte", () => {
+    render(<DetailPanel />);
+    act(() => {
+      useUi.getState().select({ kind: "multi", ids: ["kt1", "kon1", "weg"] });
+    });
+    expect(screen.getByText("2 Geräte ausgewählt")).toBeInTheDocument();
+  });
+});

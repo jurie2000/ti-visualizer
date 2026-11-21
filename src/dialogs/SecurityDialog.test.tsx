@@ -57,7 +57,9 @@ describe("SecurityDialog", () => {
     await userEvent.click(button);
     const sel = useUi.getState().selection;
     expect(sel?.kind).toBe("node");
-    expect(e.ends.map((x) => x.node)).toContain(sel?.id);
+    expect(e.ends.map((x) => x.node)).toContain(
+      sel?.kind === "node" ? sel.id : "",
+    );
   });
 
   it("[P-1] jede simulierte Geräte-Störung wird gefunden", () => {

@@ -3,6 +3,7 @@ import { loadCatalog, type Node, type Topology } from "../schema";
 import { availableActions } from "./actions";
 import { bindFlow } from "./simulation";
 import { resolvePath, softwareOn, terminalFor } from "./paths";
+import { runChecks } from "./checks";
 import { autoPorts, validateConnection } from "./rules";
 
 const catalog = loadCatalog();
@@ -299,7 +300,6 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       link("net", "netz", "cloud1", "inet"),
       link("pvs1", "host", "cloud1", "soft"),
       link("cloud1", "lan", "gw1", "lan"),
-      link("gw1", "wan", "net", "netz"),
       link("gw1", "vpn", "vpn1", "zugang"),
       link("vpn1", "internet", "net", "netz"),
       link("vpn1", "zentral", "zen", "netz"),
@@ -389,13 +389,54 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     ]);
   });
 
-  it("#221: Das Kartenterminal erreicht das Gateway im Rechenzentrum über das Internet", () => {
+  it("#221: Das Kartenterminal erreicht das Gateway über den Cloud-Server, ohne Gateway-WAN", () => {
     const t = rz();
     const r = resolvePath(t, "kt1", "gw1", catalog);
     expect(r.ok && r.zugang).toBe("gw1");
-    expect(r.ok && r.nodes).toEqual(["kt1", "sw1", "rt1", "net", "gw1"]);
-    t.edges = t.edges.filter((e) => e.id !== "gw1-net");
-    expect(resolvePath(t, "kt1", "gw1", catalog).ok).toBe(false);
+    expect(r.ok && r.nodes).toEqual([
+      "kt1",
+      "sw1",
+      "rt1",
+      "net",
+      "cloud1",
+      "gw1",
+    ]);
+    const p5 = (u: Topology) =>
+      runChecks(u, "advanced", catalog).filter((f) => f.id === "P-5");
+    expect(p5(t)).toEqual([]);
+    // Gegenweg PC → Gateway → Terminal läuft ebenfalls über den Cloud-Server.
+    const back = resolvePath(t, "pc1", "kt1", catalog, "local");
+    expect(back.ok && back.nodes).toEqual([
+      "pc1",
+      "sw1",
+      "rt1",
+      "net",
+      "cloud1",
+      "gw1",
+      "cloud1",
+      "net",
+      "rt1",
+      "sw1",
+      "kt1",
+    ]);
+    for (const gone of ["e-cloud1-gw1", "e-net-cloud1"]) {
+      const u = rz();
+      const id = u.edges.find((e) =>
+        gone === "e-cloud1-gw1"
+          ? e.ends.some((x) => x.node === "gw1" && x.port === "lan")
+          : e.ends.some((x) => x.node === "cloud1" && x.port === "inet"),
+      )?.id;
+      u.edges = u.edges.filter((e) => e.id !== id);
+      expect(resolvePath(u, "kt1", "gw1", catalog).ok).toBe(false);
+      expect(p5(u).map((f) => f.nodes)).toEqual([["kt1"]]);
+      expect(terminalFor(u, "pc1", catalog)).toEqual({ status: "none" });
+    }
+  });
+
+  it("#221: Gateway-WAN am Internet bleibt erlaubt, wird für das Terminal nicht gebraucht", () => {
+    const t = rz();
+    t.edges.push(link("gw1", "wan", "net", "netz"));
+    expect(resolvePath(t, "kt1", "gw1", catalog).ok).toBe(true);
   });
 
   it("#221: Ein Kartenterminal im LAN mit lokalem Gateway läuft über das LAN", () => {

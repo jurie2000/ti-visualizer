@@ -44,7 +44,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). **Auslegung (2026-11-21, Issue #221):** Der Cloud-Server steht für das Rechenzentrum des Anbieters. Dort hängt ein TI-Gateway am Cloud-Server (LAN) und am Internet (WAN); die Software der Cloud erreicht die TI über dieses Gateway (TI 1.0) bzw. über das Internet zu ZETA Guard und PoPP-Service (TI 2.0). Ein Konnektor im Rechenzentrum bleibt ausgeschlossen (X-1). Der Kurzweg PC ↔ Cloud-Server (Internet-Zugriff) bleibt. Quellen: CGM_ManagedTI, Concat_TIaaS (nicht gematik, quellen.md Abschnitt 7), gemF_TI-Gateway. Status: Vereinfachung.
+**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). **Auslegung (2026-11-21, Issue #221):** Der Cloud-Server steht für das Rechenzentrum des Anbieters. Dort hängt ein TI-Gateway am Cloud-Server (LAN) und am VPN-Zugangsdienst; sein WAN am Internet bleibt erlaubt, wird für den Weg des Kartenterminals aber nicht gebraucht (Auslegung 2026-11-21, Issue #221: Kartenterminal → Internet → Cloud-Server → Gateway). Die Software der Cloud erreicht die TI über dieses Gateway (TI 1.0) bzw. über das Internet zu ZETA Guard und PoPP-Service (TI 2.0). Ein Konnektor im Rechenzentrum bleibt ausgeschlossen (X-1). Der Kurzweg PC ↔ Cloud-Server (Internet-Zugriff) bleibt. Quellen: CGM_ManagedTI, Concat_TIaaS (nicht gematik, quellen.md Abschnitt 7), gemF_TI-Gateway. Status: Vereinfachung.
 
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
@@ -522,7 +522,7 @@ Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
   E-Rezept-App ↔ E-Rezept-Dienst, IdP, sektoraler IdP ·
   ePA-App ↔ ePA-Dienst, sektoraler IdP ·
   TI-Messenger-Client ↔ TI-Messenger ·
-  CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, #221) · jeder Auslöser ↔ PoPP.
+  CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, über den Cloud-Server, #221) · jeder Auslöser ↔ PoPP.
 - Hinter dem Zugang führt das Internet nur in die eigenen Netzgeräte des
   Auslösers zurück, nie in fremde Router (Terminal einer anderen Einrichtung
   am selben Internet, #221).
@@ -553,7 +553,9 @@ Internet → VPN-Zugangsdienst → …. Der Cloud-Server führt ins LAN des
 Rechenzentrums zurück, das Internet davor ist kein Weg hinter den Zugang.
 TI 2.0 geht von der Cloud-Software über Internet zu ZETA Guard und
 PoPP-Service. Das Kartenterminal in der Praxis erreicht seinen Zugang im
-Rechenzentrum über das Internet (wie CardLink). Der LAN-Weg zu einem
+Rechenzentrum über Router, Internet und Cloud-Server (LAN-Anschluss des
+Gateways), nicht über das WAN des Gateways; der Gegenweg PC → Gateway →
+Kartenterminal läuft ebenso. CardLink verhält sich wie das Kartenterminal. Der LAN-Weg zu einem
 Netz-Kartenterminal (`lan`) kreuzt das Internet nie, sonst erreichte die
 Cloud fremde Praxen. Hinter dem Internet sucht die Software-Zuordnung
 (Arbeitsplatz → Cloud-Server) nicht weiter und betritt keine fremden Router.

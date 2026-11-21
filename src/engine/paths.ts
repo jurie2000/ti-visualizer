@@ -137,6 +137,7 @@ function search(
     (goal.type === "popp" ||
       (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
       (hasSlots(start) && roleOf(goal, catalog) === "zugang"));
+  const viaCloud = internetOnly && hasSlots(start);
   const isNetTerminal = (n: Node) =>
     capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");
   const terminal =
@@ -157,7 +158,11 @@ function search(
         return phase === LAN ? LAN : -1;
       case "cloud":
         // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
-        return phase === LAN || (phase === INET && lokal) ? LAN : -1;
+        // Das Kartenterminal und der Rückweg zu ihm nutzen den Cloud-Server statt Gateway-WAN.
+        if (phase === POST) return kind === "local" ? POST : -1;
+        return phase === LAN || (phase === INET && (lokal || viaCloud))
+          ? LAN
+          : -1;
       case "net":
         if (phase === POST && lokal && !home.has(n.id)) return -1;
         return phase === LAN || phase === POST || phase === INET ? phase : -1;

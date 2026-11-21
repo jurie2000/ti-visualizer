@@ -4,6 +4,10 @@ import { useSettings, useTopology } from "../store";
 import { App } from "./App";
 
 describe("App-Shell", () => {
+  afterEach(() => {
+    location.hash = "";
+  });
+
   it("zeigt Überschrift, Bereiche und Impressum-Link", async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -19,7 +23,7 @@ describe("App-Shell", () => {
     ).toBeInTheDocument();
   });
 
-  it("zeigt die Startansicht mit vier Presets, öffnet eines und führt zurück", async () => {
+  it("zeigt die Startansicht mit Leer, drei Presets und Bibliothek, öffnet eines und führt zurück", async () => {
     const user = userEvent.setup();
     render(<App />);
     expect(screen.getAllByRole("listitem")).toHaveLength(5);
@@ -35,6 +39,26 @@ describe("App-Shell", () => {
     // Leer starten ersetzt die Topologie
     await user.click(screen.getByRole("button", { name: /Leer starten/ }));
     expect(useTopology.getState().topology.nodes).toHaveLength(0);
+  });
+
+  it("Issue #225: Bibliothek zeigt alle Presets, Klinikum öffnet die Canvas, Home führt zurück", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.queryByRole("button", { name: /^Klinikum/ })).toBeNull();
+    await user.click(screen.getByRole("link", { name: /Preset-Bibliothek/ }));
+    expect(
+      await screen.findByRole("heading", { name: "Preset-Bibliothek" }),
+    ).toBeInTheDocument();
+    expect(location.hash).toBe("#/presets");
+    expect(screen.getAllByRole("listitem")).toHaveLength(4);
+    await user.click(
+      screen.getByRole("button", { name: "TI Visualizer, zur Startansicht" }),
+    );
+    expect(location.hash).toBe("");
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    await user.click(screen.getByRole("link", { name: /Preset-Bibliothek/ }));
+    await user.click(await screen.findByRole("button", { name: /^Klinikum/ }));
+    expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
   });
 
   it("Issue #184: laufendes Tutorial macht das Tutorial-Feld zum Fortsetzen-Feld, kein zweiter Button", async () => {

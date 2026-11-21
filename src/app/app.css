@@ -453,6 +453,7 @@ a.tiv-btn {
   border-radius: var(--radius-md);
   cursor: pointer;
   overflow-wrap: anywhere;
+  text-decoration: none;
 }
 .tiv-preset:hover {
   box-shadow: 0 2px 8px color-mix(in srgb, #201e1d 18%, transparent);

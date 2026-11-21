@@ -697,6 +697,43 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       );
 
     const aktionen = offered(["pvs", "avs"]);
+    it("Fremdpraxis: auch mit Gateway-WAN am Internet führt kein TI-1.0-Weg in Praxis B", () => {
+      const t = withPraxisB(cloud());
+      t.edges.push(link("gw1", "wan", "net", "netz"));
+      for (const id of ["vsdm", "erezept"]) {
+        const a = flowSteps(t, id, "pc1");
+        const b = flowSteps(t, id, "pcB");
+        for (const s of a)
+          for (const n of other) expect(s.nodes, `${id} pc1`).not.toContain(n);
+        for (const s of b)
+          for (const n of own) expect(s.nodes, `${id} pcB`).not.toContain(n);
+        expect(
+          b.some((s) => s.nodes.includes("ktB")),
+          id,
+        ).toBe(true);
+      }
+    });
+
+    it("vor Ort laufen ZETA und PoPP im LAN, ohne Internet und Gateway", () => {
+      for (const id of ["zeta", "popp"]) {
+        const [first] = flowSteps(vorOrt(), id, "pc1");
+        const way = ["pvs1", "pc1", "sw1", "kt1"];
+        expect(first?.nodes, id).toEqual(
+          id === "zeta" ? way : [...way].reverse(),
+        );
+      }
+    });
+
+    it("fällt der Router der Praxis aus, führt der Weg aus der Cloud nicht über Praxis B", () => {
+      const t = withPraxisB(cloud());
+      const rt = t.nodes.find((n) => n.id === "rt1");
+      if (rt) rt.fault = true;
+      for (const id of ["zeta", "popp"]) {
+        const [first] = flowSteps(t, id, "pc1");
+        for (const n of other) expect(first?.nodes, id).not.toContain(n);
+      }
+    });
+
     it("deckt Aktionen ab", () => {
       expect(aktionen.length).toBeGreaterThan(0);
     });
@@ -736,6 +773,8 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
               ...(viaGateway ? ["gw1"] : []),
             ]),
           );
+        if (!viaGateway)
+          for (const s of rzSteps) expect(s.nodes).not.toContain("gw1");
       },
     );
   });

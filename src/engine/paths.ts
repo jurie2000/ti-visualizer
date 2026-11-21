@@ -204,7 +204,7 @@ function search(
     }
   };
 
-  // Ein Gateway am Cloud-Server hat seinen Internetzugang über ihn, nicht über den eigenen WAN-Anschluss (#226).
+  // Ein Gateway am Cloud-Server hat sein Internet über ihn, nicht über den eigenen WAN-Anschluss. Gilt für jede Wegart (#226).
   const cloudIds = new Set(
     topology.nodes
       .filter((n) => roleOf(n, catalog) === "cloud")

@@ -143,7 +143,7 @@
     "name": "Notfalldatensatz schreiben",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -160,7 +160,7 @@
     "name": "Persönliche Erklärungen schreiben",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -182,7 +182,7 @@
     "name": "Notfalldaten lesen",
     "category": "Notfalldaten",
     "section": "lokal",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -204,7 +204,7 @@
     "name": "Medikationsplan erstellen oder aktualisieren",
     "category": "Medikationsplan (eMP)",
     "section": "lokal",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -226,7 +226,7 @@
     "name": "Medikationsplan auslesen",
     "category": "Medikationsplan (eMP)",
     "section": "lokal",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },
@@ -265,7 +265,7 @@
     "name": "VSDM-Prüfung anstoßen",
     "category": "Versichertenstammdaten",
     "section": "online",
-    "offeredBy": { "types": ["pvs", "kis", "kt"] },
+    "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
         { "need": "zugang" },

@@ -220,7 +220,7 @@ const cases: [
   ],
   [
     "notfalldaten-schreiben",
-    "kt",
+    "pvs",
     (t) => drop(t, "kt", "egk"),
     "Keine eGK gesteckt.",
   ],
@@ -238,7 +238,7 @@ const cases: [
       cards(t, "kt", (c) => c.map((x) => (x.kind === "egk" ? egk(false) : x))),
     MESSAGES.emp,
   ],
-  ["medikationsplan-lesen", "kt", (t) => without(t, "kon"), /Kein Zugang/],
+  ["medikationsplan-lesen", "pvs", (t) => without(t, "kon"), /Kein Zugang/],
   [
     "medikationsplan-lesen-avs",
     "avs",
@@ -351,10 +351,17 @@ describe("T-402 Pfad, Karten, Terminal", () => {
     const t = cards(full(), "kt", (c) =>
       c.map((x) => (x.kind === "egk" ? egk(false) : x)),
     );
-    expect(state(t, "kt", "medikationsplan-lesen")?.disabledReason).toBe(
+    expect(state(t, "pvs", "medikationsplan-lesen")?.disabledReason).toBe(
       MESSAGES.emp,
     );
-    expect(state(t, "kt", "notfalldaten-lesen")?.enabled).toBe(true);
+    expect(state(t, "pvs", "notfalldaten-lesen")?.enabled).toBe(true);
+  });
+
+  it("eHealth-KT bietet keine Aktionen an (Issue #219)", () => {
+    const t = full();
+    const kt = t.nodes.find((n) => n.id === "kt");
+    expect(kt).toBeDefined();
+    expect(availableActions(kt as Node, t, catalog)).toEqual([]);
   });
 
   it("Störung einer Kante unterbricht den Pfad", () => {

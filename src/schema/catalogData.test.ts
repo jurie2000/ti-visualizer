@@ -271,7 +271,7 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
 
   it("Regelwerk 6.3: AVS liest den Medikationsplan nur mit SMC-B", () => {
     expect(action("medikationsplan-lesen")?.offeredBy).toEqual({
-      types: ["pvs", "kis", "kt"],
+      types: ["pvs", "kis"],
     });
     const avs = action("medikationsplan-lesen-avs");
     expect(avs?.offeredBy).toEqual({ types: ["avs"] });

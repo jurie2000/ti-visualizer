@@ -871,6 +871,17 @@ describe("#229 Systeme: Konnektor-Praxis neben Rechenzentrum mit TI-Gateway", ()
     expect(r.ruleId).toBe("X-1");
   });
 
+  it("`web`-Kante vom Praxis-PC zum Cloud-Server vereinigt die Systeme: X-1 und P-32", () => {
+    const t = zwei();
+    expect(
+      validateConnection(t, "pcK", "web", "cloud1", "web", catalog).ruleId,
+    ).toBe("X-1");
+    t.edges.push(link("pcK", "web", "cloud1", "web"));
+    const f = runChecks(t, "advanced", catalog).filter((x) => x.id === "P-32");
+    expect(f).toHaveLength(1);
+    expect(f[0]?.key).toBe("P-32:gw1");
+  });
+
   it("zugangOf: Kartenterminal ohne Pairing nimmt den Zugang im eigenen System", () => {
     expect(zugangOf(zwei(), "ktK", catalog)).toBe("kon1");
   });

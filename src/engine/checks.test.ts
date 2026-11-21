@@ -479,6 +479,7 @@ describe("P-32 Konnektor und TI-Gateway im selben System", () => {
     const f = run(eins).filter((x) => x.id === "P-32");
     expect(f).toHaveLength(1);
     expect(f[0]?.nodes).toEqual(["g", "k"]);
+    expect(f[0]?.key).toBe("P-32:g");
     const zwei = topo(
       [...system("s", "k", "g"), ...system("t", "k2", "g2")],
       [...wired("s", "k", "g"), ...wired("t", "k2", "g2")],

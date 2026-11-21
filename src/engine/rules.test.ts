@@ -171,6 +171,22 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
     expect(check(t, "pv", "k2").ok).toBe(true);
   });
 
+  it("[X-1] mehrstufig: Switch–Switch–Konnektor, Gateway am Ende", () => {
+    const t = topo(
+      [
+        ["k", "kon"],
+        ["g", "gateway"],
+        ["s1", "switch"],
+        ["s2", "switch"],
+      ],
+      [
+        ["e1", "s1", "p1", "s2", "p1"],
+        ["e2", "s2", "p2", "k", "lan"],
+      ],
+    );
+    expect(check(t, "s1", "g").ruleId).toBe("X-1");
+  });
+
   it("[X-1] Konnektor und TI-Gateway nicht im selben System", () => {
     const t = topo(
       [

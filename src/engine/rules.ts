@@ -228,9 +228,17 @@ export function validateConnection(
 
   // X-1 je System (#229): nach dem Verbinden darf das Gegenstück nicht im selben System stehen.
   // Das Paar selbst (Konnektor direkt an Gateway) beantwortet die Begründungsregel V-10.
-  const system = systemOf(topology, [a, b], catalog);
+  // Früher Ausstieg: nur Regeln, deren beide Seiten auf der Canvas vorkommen. Die Geräte a und b
+  // selbst können Brücken sein (Switch an Switch), deshalb zählt die ganze Topologie.
+  const sides = catalog.exclusionRules.filter(({ exclusive: [s0, s1] }) =>
+    [s0, s1].every((side) =>
+      topology.nodes.some((n) => matches(side, n.type, catalog)),
+    ),
+  );
+  const system =
+    sides.length > 0 ? systemOf(topology, [a, b], catalog) : new Set<string>();
   const inSystem = topology.nodes.filter((n) => system.has(n.id));
-  for (const x of catalog.exclusionRules) {
+  for (const x of sides) {
     const [s0, s1] = x.exclusive;
     const left = inSystem.filter((n) => matches(s0, n.type, catalog));
     const right = inSystem.filter((n) => matches(s1, n.type, catalog));

@@ -56,6 +56,7 @@ type Role =
   | "end";
 
 const HOME_ROLES: Role[] = ["local", "cloud", "net", "zugang"];
+const SEPARATORS: Role[] = ["internet", "vpn", "zentral", "zeta"];
 
 function roleOf(node: Node, catalog: Catalogue): Role {
   const t = catalog.deviceTypes.find((d) => d.id === node.type);
@@ -89,13 +90,20 @@ export function systemOf(
   const adj = new Map<string, string[]>();
   for (const e of topology.edges) {
     const [a, b] = e.ends;
-    adj.set(a.node, [...(adj.get(a.node) ?? []), b.node]);
-    adj.set(b.node, [...(adj.get(b.node) ?? []), a.node]);
+    for (const [x, y] of [
+      [a.node, b.node],
+      [b.node, a.node],
+    ] as const) {
+      const list = adj.get(x);
+      if (list) list.push(y);
+      else adj.set(x, [y]);
+    }
   }
   const system = new Set(ids.filter((id) => byId.has(id)));
   for (const id of system) {
     const role = roleOf(byId.get(id) as Node, catalog);
-    if (["internet", "vpn", "zentral", "zeta"].includes(role)) continue;
+    // Nicht `!HOME_ROLES`: ein Kartenterminal (Rolle end) als Startknoten läuft in sein System hinein.
+    if (SEPARATORS.includes(role)) continue;
     for (const o of adj.get(id) ?? []) {
       const n = byId.get(o);
       if (n && HOME_ROLES.includes(roleOf(n, catalog))) system.add(o);
@@ -152,22 +160,11 @@ function search(
   // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
   // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
   // Bei Cloud-Software gehört auch die Praxis des auslösenden Arbeitsplatzes dazu (`origin`, #226).
-  const home = new Set<string>([trigger, origin]);
-  if (lokal || kind === "lan") {
-    for (const id of home)
-      for (const e of topology.edges) {
-        const [a, b] = e.ends;
-        const o = a.node === id ? b.node : b.node === id ? a.node : undefined;
-        const n = o === undefined ? undefined : byId.get(o);
-        if (n && HOME_ROLES.includes(roleOf(n, catalog))) home.add(n.id);
-      }
-  }
+  const home = systemOf(topology, [trigger, origin], catalog);
   // Hat das System des Auslösers einen eigenen Zugang, läuft er nicht über das Gateway eines Rechenzentrums (#229).
   const lokalOhneZugang =
     lokal &&
-    ![...systemOf(topology, [trigger, origin], catalog)].some(
-      (id) => roleOf(byId.get(id) as Node, catalog) === "zugang",
-    );
+    ![...home].some((id) => roleOf(byId.get(id) as Node, catalog) === "zugang");
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)

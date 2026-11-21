@@ -10,7 +10,7 @@ import {
   type NodeTypes,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMemo, useState, type DragEvent } from "react";
+import { useMemo, useRef, useState, type DragEvent } from "react";
 import type { Point } from "../schema";
 import {
   openDropped,
@@ -140,6 +140,8 @@ export function Canvas() {
     Record<string, { width: number; height: number }>
   >({});
 
+  const marquee = useRef(false);
+
   // Teilstrecke des Pakets im aktuellen Schritt, -1 ohne Paket
   const [hop, setHop] = useState(-1);
 
@@ -260,6 +262,8 @@ export function Canvas() {
   };
 
   const onEdgesChange = (changes: EdgeChange<ConnectionFlowEdge>[]) => {
+    // Ein aufgezogener Bereich wählt nur Geräte, auch wenn er Kanten kreuzt (Issue #220)
+    if (marquee.current) return;
     for (const c of changes)
       if (c.type === "select" && c.selected) select({ kind: "edge", id: c.id });
   };
@@ -325,7 +329,11 @@ export function Canvas() {
         // Bereich aufziehen: Umschalt+Ziehen (React-Flow-Standard); Ziehen allein verschiebt die Ansicht
         // Neuer Bereich beginnt ohne die alte Auswahl
         onSelectionStart={() => {
+          marquee.current = true;
           select(undefined);
+        }}
+        onSelectionEnd={() => {
+          marquee.current = false;
         }}
         nodesDraggable={!locked}
         nodesConnectable={!locked}

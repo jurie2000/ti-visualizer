@@ -546,6 +546,12 @@ TI-Gateway (#226). Der VPN-Pfad oben gilt unverändert.
   paart ein neues Terminal mit dem einzigen Zugang der Canvas; stünde später
   ein zweites System daneben, bliebe das Terminal sonst an dessen Zugang
   hängen. Hat das System keinen Zugang (Cloud-PVS-Praxis), gilt das Pairing.
+- Ein TI-Gateway muss nicht per LAN am Cloud-Server hängen. Hängt es nur
+  mit seinem WAN am Internet, erreicht Cloud-Software (und der Arbeitsplatz,
+  der sie nutzt) es über das Internet, sofern ihr System keinen eigenen
+  Zugang hat (#229). Dasselbe gilt für den Weg des Kartenterminals. Ein
+  Gateway am Cloud-Server behält den Weg über den Cloud-Server (#221).
+  Das Pairing des Kartenterminals ist auch im Modus Einfach wählbar.
 - Ein eHealth-KT erreicht seinen Zugang über das Internet nur über einen
   Cloud-Server (#221). Ein Auslöser mit eigenem Zugang im System nutzt
   keinen Cloud-Server hinter dem Internet (#229).

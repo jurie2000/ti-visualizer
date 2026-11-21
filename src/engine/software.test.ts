@@ -911,6 +911,35 @@ describe("#229 Systeme: Konnektor-Praxis neben Rechenzentrum mit TI-Gateway", ()
     expect(zugangOf(t, "ktK", catalog)).toBe("kon1");
   });
 
+  it("#229: Cloud-Software erreicht ein Gateway ohne LAN-Kante zum Cloud-Server über das Internet", () => {
+    const t = zwei(false);
+    t.edges = t.edges.filter((e) =>
+      e.ends.every((x) => x.node !== "gw1" || x.port !== "lan"),
+    );
+    t.edges.push(link("gw1", "wan", "net", "netz"));
+    const r = resolvePath(t, "pvs1", "erp1", catalog);
+    expect(r).toMatchObject({ ok: true, zugang: "gw1" });
+    expect(r.ok && r.nodes).toEqual([
+      "pvs1",
+      "cloud1",
+      "net",
+      "gw1",
+      "vpn1",
+      "zen",
+      "erp1",
+    ]);
+    // Die Konnektor-Praxis nutzt dieses Gateway nicht, auch nicht bei Ausfall ihres Konnektors.
+    const k = zwei();
+    k.edges = t.edges.concat(
+      link("rtK", "wan", "net", "netz"),
+      link("kon1", "vpn", "vpn1", "zugang"),
+    );
+    const kon = k.nodes.find((n) => n.id === "kon1");
+    if (kon) kon.fault = true;
+    const w = resolvePath(k, "pcK", "erp1", catalog);
+    expect(w).toMatchObject({ ok: false, reason: "ausgefallen", at: "kon1" });
+  });
+
   it("PC der Konnektor-Praxis: bei ausgefallenem Konnektor kein Weg über Cloud-Server und Gateway", () => {
     const t = zwei();
     expect(resolvePath(t, "pcK", "erp1", catalog).ok).toBe(true);

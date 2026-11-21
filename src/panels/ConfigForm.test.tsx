@@ -129,6 +129,16 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     expect(nodeOf("kt-1")?.label).toBeUndefined();
   });
 
+  it("[#229] Einfach: Kartenterminal zeigt das Pairing mit einem Zugang, ohne weitere Felder", async () => {
+    const user = userEvent.setup();
+    useSettings.setState({ mode: "simple" });
+    render(<DetailPanel />);
+    open("kt-1");
+    expect(screen.queryByLabelText("IP-Adresse")).toBeNull();
+    await user.click(screen.getByRole("radio", { name: "<i>Zugang</i>" }));
+    expect(nodeOf("kt-1")?.config?.pairedWith).toBe("kon-1");
+  });
+
   it("[#213] Auswahlliste per Tastatur: Pfeil öffnet, Enter wählt, Esc schließt", async () => {
     const user = userEvent.setup();
     useSettings.setState({ mode: "simple" });

@@ -221,6 +221,9 @@ function search(
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
         if (phase === LAN) return POST;
+        // Cloud-Software erreicht ein Gateway, das nicht am Cloud-Server hängt, über das Internet (#229).
+        if (phase === INET && cloudInternet && !cloudGateways.has(n.id))
+          return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
         // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).
@@ -266,6 +269,21 @@ function search(
   );
   const isWan = (g: string, o: string) =>
     cloudGateways.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
+
+  const cloudHosted = (id: string) =>
+    topology.edges.some(
+      (e) =>
+        isHostEdge(e, topology, catalog) &&
+        e.ends.some((x) => x.node === id) &&
+        e.ends.some((x) => cloudIds.has(x.node)),
+    );
+  const cloudInternet =
+    kind !== "lan" &&
+    lokalOhneZugang &&
+    (cloudHosted(trigger) ||
+      softwareOn(topology, trigger, catalog).some((s) =>
+        cloudHosted(s.node.id),
+      ));
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
   const prev = new Map<string, { from: string; edge: string } | null>([

@@ -321,9 +321,8 @@ export function Canvas() {
             .filter(Boolean)
             .join(" ") || undefined
         }
-        selectionOnDrag
         selectionMode={SelectionMode.Partial}
-        panOnDrag={[1, 2]}
+        // Bereich aufziehen: Umschalt+Ziehen (React-Flow-Standard); Ziehen allein verschiebt die Ansicht
         // Neuer Bereich beginnt ohne die alte Auswahl
         onSelectionStart={() => {
           select(undefined);

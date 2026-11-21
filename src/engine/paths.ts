@@ -56,6 +56,7 @@ type Role =
   | "end";
 
 const HOME_ROLES: Role[] = ["local", "cloud", "net", "zugang"];
+const SEPARATORS: Role[] = ["internet", "vpn", "zentral", "zeta"];
 
 function roleOf(node: Node, catalog: Catalogue): Role {
   const t = catalog.deviceTypes.find((d) => d.id === node.type);
@@ -75,7 +76,43 @@ function roleOf(node: Node, catalog: Catalogue): Role {
     : "end";
 }
 
-/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz (Vereinfachung, nicht im Regelwerk 6.0). */
+/**
+ * Das System eines oder mehrerer Geräte (Regelwerk 4.4, #229): alles, was über
+ * Kanten zusammenhängt, nur über eigene Geräte (`HOME_ROLES`). Internet, VPN-Zugangsdienst,
+ * Zentrales Netz und ZETA Guard trennen Systeme. Ausfälle zählen nicht.
+ */
+export function systemOf(
+  topology: Topology,
+  ids: string[],
+  catalog: Catalogue,
+): Set<string> {
+  const byId = new Map(topology.nodes.map((n) => [n.id, n]));
+  const adj = new Map<string, string[]>();
+  for (const e of topology.edges) {
+    const [a, b] = e.ends;
+    for (const [x, y] of [
+      [a.node, b.node],
+      [b.node, a.node],
+    ] as const) {
+      const list = adj.get(x);
+      if (list) list.push(y);
+      else adj.set(x, [y]);
+    }
+  }
+  const system = new Set(ids.filter((id) => byId.has(id)));
+  for (const id of system) {
+    const role = roleOf(byId.get(id) as Node, catalog);
+    // Nicht `!HOME_ROLES`: ein Kartenterminal (Rolle end) als Startknoten läuft in sein System hinein.
+    if (SEPARATORS.includes(role)) continue;
+    for (const o of adj.get(id) ?? []) {
+      const n = byId.get(o);
+      if (n && HOME_ROLES.includes(roleOf(n, catalog))) system.add(o);
+    }
+  }
+  return system;
+}
+
+/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im System, danach auf der Canvas (Vereinfachung, nicht im Regelwerk 6.0). */
 export function zugangOf(
   topology: Topology,
   terminalId: string,
@@ -86,15 +123,24 @@ export function zugangOf(
     const n = id ? byId.get(id) : undefined;
     return n !== undefined && roleOf(n, catalog) === "zugang";
   };
+  const system = systemOf(topology, [terminalId], catalog);
+  const inSystem = topology.nodes.filter(
+    (n) => system.has(n.id) && roleOf(n, catalog) === "zugang",
+  );
   const paired = byId.get(terminalId)?.config?.pairedWith;
-  if (paired !== undefined) return isZugang(paired) ? paired : undefined;
+  // Ein Pairing mit einem Zugang außerhalb des Systems gilt nicht, wenn das System einen eigenen hat (#229).
+  if (paired !== undefined && !(inSystem.length > 0 && !system.has(paired)))
+    return isZugang(paired) ? paired : undefined;
   for (const e of topology.edges) {
     const [a, b] = e.ends;
     if (a.node === terminalId && isZugang(b.node)) return b.node;
     if (b.node === terminalId && isZugang(a.node)) return a.node;
   }
-  // Normalfall: nur ein Zugang im Netz, dann gehört das Terminal zu ihm.
-  const only = topology.nodes.filter((n) => roleOf(n, catalog) === "zugang");
+  // Normalfall: nur ein Zugang im System des Terminals, sonst auf der ganzen Canvas (#229).
+  const only =
+    inSystem.length > 0
+      ? inSystem
+      : topology.nodes.filter((n) => roleOf(n, catalog) === "zugang");
   return only.length === 1 ? only[0]?.id : undefined;
 }
 
@@ -118,16 +164,11 @@ function search(
   // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
   // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
   // Bei Cloud-Software gehört auch die Praxis des auslösenden Arbeitsplatzes dazu (`origin`, #226).
-  const home = new Set<string>([trigger, origin]);
-  if (lokal || kind === "lan") {
-    for (const id of home)
-      for (const e of topology.edges) {
-        const [a, b] = e.ends;
-        const o = a.node === id ? b.node : b.node === id ? a.node : undefined;
-        const n = o === undefined ? undefined : byId.get(o);
-        if (n && HOME_ROLES.includes(roleOf(n, catalog))) home.add(n.id);
-      }
-  }
+  const home = systemOf(topology, [trigger, origin], catalog);
+  // Hat das System des Auslösers einen eigenen Zugang, läuft er nicht über das Gateway eines Rechenzentrums (#229).
+  const lokalOhneZugang =
+    lokal &&
+    ![...home].some((id) => roleOf(byId.get(id) as Node, catalog) === "zugang");
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
@@ -157,17 +198,24 @@ function search(
     const isGoal = n.id === target;
     switch (roleOf(n, catalog)) {
       case "local":
-        return phase === LAN ? LAN : -1;
+        if (phase === LAN) return LAN;
+        // Cloud-Software zeigt ihre Daten am Arbeitsplatz über das Internet an (#229).
+        return kind === "lan" && phase === INET && isGoal && home.has(n.id)
+          ? LAN
+          : -1;
       case "cloud":
         // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
         // Das Kartenterminal und der Rückweg zu ihm nutzen den Cloud-Server statt Gateway-WAN.
         if (phase === POST) return kind === "local" ? POST : -1;
         // LAN-Weg aus der Cloud: ohne Gateway über das Internet zum Router der eigenen Praxis (ZETA, PoPP).
         if (kind === "lan") return phase === LAN ? INET : -1;
-        return phase === LAN || (phase === INET && (lokal || viaCloud))
+        return phase === LAN ||
+          (phase === INET && (lokalOhneZugang || viaCloud))
           ? LAN
           : -1;
       case "net":
+        // Ein Kartenterminal kommt über das Internet nie in fremde Router, nur über Cloud-Server (#229).
+        if (phase === INET && kind === "ti" && isNetTerminal(start)) return -1;
         if (
           ((phase === POST && lokal) || (phase === INET && kind === "lan")) &&
           !home.has(n.id)
@@ -177,6 +225,9 @@ function search(
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
         if (phase === LAN) return POST;
+        // Cloud-Software erreicht ein Gateway, das nicht am Cloud-Server hängt, über das Internet (#229).
+        if (phase === INET && cloudInternet && !cloudGateways.has(n.id))
+          return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
         // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).
@@ -222,6 +273,14 @@ function search(
   );
   const isWan = (g: string, o: string) =>
     cloudGateways.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
+
+  const cloudInternet =
+    kind !== "lan" &&
+    lokalOhneZugang &&
+    (isCloudHosted(topology, trigger, catalog) ||
+      softwareOn(topology, trigger, catalog).some((s) =>
+        isCloudHosted(topology, s.node.id, catalog),
+      ));
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
   const prev = new Map<string, { from: string; edge: string } | null>([
@@ -361,6 +420,25 @@ export function terminalFor(
   return pick.length === 1
     ? { status: "one", terminal: first.id }
     : { status: "choose", candidates: pick.map((n) => n.id) };
+}
+
+/** Software läuft auf einem Cloud-Server (Kante „läuft auf“ zu einem `cloud`). */
+export function isCloudHosted(
+  topology: Topology,
+  id: string,
+  catalog: Catalogue,
+): boolean {
+  const cloud = new Set(
+    topology.nodes
+      .filter((n) => roleOf(n, catalog) === "cloud")
+      .map((n) => n.id),
+  );
+  return topology.edges.some(
+    (e) =>
+      isHostEdge(e, topology, catalog) &&
+      e.ends.some((x) => x.node === id) &&
+      e.ends.some((x) => cloud.has(x.node)),
+  );
 }
 
 /** Kante „läuft auf“: beide Enden sind `host`-Anschlüsse. */

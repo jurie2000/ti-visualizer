@@ -731,7 +731,7 @@
     "id": "gateway",
     "abbr": "TI-Gateway",
     "name": "TI-Gateway (Zugangsmodul + HSK-Instanz)",
-    "description": "Das TI-Gateway ersetzt den Konnektor in der Zero-Trust-Architektur. Beide schließen sich in einer Topologie gegenseitig aus.",
+    "description": "Das TI-Gateway ersetzt den Konnektor in der Zero-Trust-Architektur. Beide schließen sich im selben System gegenseitig aus.",
     "category": "network",
     "icon": "gate",
     "placeable": true,

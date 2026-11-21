@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { loadCatalog, type Node, type Topology } from "../schema";
 import { availableActions } from "./actions";
 import { bindFlow } from "./simulation";
-import { resolvePath, softwareOn, terminalFor } from "./paths";
+import { resolvePath, softwareOn, terminalFor, zugangOf } from "./paths";
 import { runChecks } from "./checks";
 import { autoPorts, validateConnection } from "./rules";
 
@@ -362,6 +362,20 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     }
     const ti = resolvePath(t, "pvs1", "erp1", catalog);
     expect(ti.ok && ti.zugang).toBe("gw1");
+  });
+
+  it("#229: Cloud-Software zeigt das Ergebnis am Arbeitsplatz an, Token-Abläufe und Praxis-Software nicht", () => {
+    const t = rz();
+    const pc = t.nodes.find((n) => n.id === "pc1") as Node;
+    const run = (id: string) => {
+      const flow = catalog.flows.find((f) => f.id === id);
+      if (!flow) throw new Error("Fixture fehlt");
+      return bindFlow(flow, pc, t, catalog);
+    };
+    const last = run("erezept").at(-1);
+    expect(last?.label).toBe("Anzeige am Arbeitsplatz");
+    expect(last?.nodes).toEqual(["pvs1", "cloud1", "net", "rt1", "sw1", "pc1"]);
+    expect(run("popp").at(-1)?.label).not.toBe("Anzeige am Arbeitsplatz");
   });
 
   it("#221: Fällt der Praxis-Router aus, ist das Gateway nicht erreichbar", () => {
@@ -742,7 +756,11 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       "Aktion %s: Cloud bindet wie vor Ort, der Weg zum Terminal führt über Internet und Router der Praxis",
       (_id, flowId) => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
-        const rzSteps = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        const rzAll = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        // Zusätzlich zeigt die Cloud-Software das Ergebnis am Arbeitsplatz an (#229)
+        const anzeige = !["zeta", "popp"].includes(flowId);
+        expect(rzAll.at(-1)?.label === "Anzeige am Arbeitsplatz").toBe(anzeige);
+        const rzSteps = anzeige ? rzAll.slice(0, -1) : rzAll;
         const flow = catalog.flows.find((f) => f.id === flowId);
         expect(rzSteps).toHaveLength(flow?.steps.length ?? -1);
         expect(rzSteps.map((s) => s.label)).toEqual(ort.map((s) => s.label));
@@ -777,5 +795,196 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
           for (const s of rzSteps) expect(s.nodes).not.toContain("gw1");
       },
     );
+  });
+});
+
+describe("#229 Systeme: Konnektor-Praxis neben Rechenzentrum mit TI-Gateway", () => {
+  const link = (
+    a: string,
+    ap: string,
+    b: string,
+    bp: string,
+  ): Topology["edges"][number] => ({
+    id: `${a}-${b}`,
+    fault: false,
+    ends: [
+      { node: a, port: ap },
+      { node: b, port: bp },
+    ],
+  });
+  const node = (id: string, type: string, extra: Partial<Node> = {}): Node => ({
+    id,
+    type,
+    position: { x: 0, y: 0 },
+    fault: false,
+    ...extra,
+  });
+  const cards = [
+    { kind: "egk" as const, expires: "2027-01-01", pinActive: true },
+    { kind: "smcb" as const, expires: "2027-01-01", unlocked: true },
+  ];
+  /** Rechenzentrum mit Cloud-PVS und Gateway; daneben eine Konnektor-Praxis am selben Internet. Ohne Kante Konnektor ↔ VPN und Praxis-Router ↔ Internet. */
+  const zwei = (verbunden = true): Topology => ({
+    name: "zwei",
+    description: "",
+    simDate: "2026-11-01",
+    zones: [],
+    nodes: [
+      node("net", "internet"),
+      node("cloud1", "cloud"),
+      node("pvs1", "pvs"),
+      node("gw1", "gateway"),
+      node("vpn1", "vpn"),
+      node("zen", "zentral"),
+      node("erp1", "erp"),
+      node("pcK", "pc", { config: { workplace: "AP-K" } }),
+      node("ktK", "kt", { config: { workplace: "AP-K" }, cards }),
+      node("swK", "switch"),
+      node("kon1", "kon"),
+      node("rtK", "router"),
+    ],
+    edges: [
+      link("net", "netz", "cloud1", "inet"),
+      link("pvs1", "host", "cloud1", "soft"),
+      link("cloud1", "lan", "gw1", "lan"),
+      link("gw1", "vpn", "vpn1", "zugang"),
+      link("vpn1", "internet", "net", "netz"),
+      link("vpn1", "zentral", "zen", "netz"),
+      link("zen", "netz", "erp1", "ti"),
+      link("pcK", "eth0", "swK", "p1"),
+      link("ktK", "lan0", "swK", "p2"),
+      link("swK", "p3", "kon1", "lan"),
+      link("kon1", "wan", "rtK", "lan1"),
+      ...(verbunden
+        ? [
+            link("rtK", "wan", "net", "netz"),
+            link("kon1", "vpn", "vpn1", "zugang"),
+          ]
+        : []),
+    ],
+  });
+
+  it("verbindet Praxis und Rechenzentrum am Internet und VPN, ohne X-1 und P-32", () => {
+    const t = zwei(false);
+    expect(validateConnection(t, "rtK", "wan", "net", "netz", catalog).ok).toBe(
+      true,
+    );
+    expect(
+      validateConnection(t, "kon1", "vpn", "vpn1", "zugang", catalog).ok,
+    ).toBe(true);
+    expect(
+      runChecks(zwei(), "advanced", catalog).filter((f) => f.id === "P-32"),
+    ).toEqual([]);
+  });
+
+  it("Gateway am Switch der Konnektor-Praxis: X-1", () => {
+    const r = validateConnection(
+      zwei(),
+      "gw1",
+      undefined,
+      "swK",
+      undefined,
+      catalog,
+    );
+    expect(r.ruleId).toBe("X-1");
+  });
+
+  it("`web`-Kante vom Praxis-PC zum Cloud-Server vereinigt die Systeme: X-1 und P-32", () => {
+    const t = zwei();
+    expect(
+      validateConnection(t, "pcK", "web", "cloud1", "web", catalog).ruleId,
+    ).toBe("X-1");
+    t.edges.push(link("pcK", "web", "cloud1", "web"));
+    const f = runChecks(t, "advanced", catalog).filter((x) => x.id === "P-32");
+    expect(f).toHaveLength(1);
+    expect(f[0]?.key).toBe("P-32:gw1");
+  });
+
+  it("zugangOf: Kartenterminal ohne Pairing nimmt den Zugang im eigenen System", () => {
+    expect(zugangOf(zwei(), "ktK", catalog)).toBe("kon1");
+  });
+
+  it("zugangOf: ohne Zugang im System sucht der Fallback auf der ganzen Canvas (#226)", () => {
+    const t = zwei();
+    t.nodes.push(
+      node("kt1", "kt"),
+      node("sw1", "switch"),
+      node("rt1", "router"),
+    );
+    t.edges.push(
+      link("kt1", "lan0", "sw1", "p1"),
+      link("sw1", "p2", "rt1", "lan1"),
+    );
+    // Zwei Zugänge auf der Canvas: kein eindeutiger Zugang
+    expect(zugangOf(t, "kt1", catalog)).toBeUndefined();
+    t.nodes = t.nodes.filter((n) => n.id !== "kon1");
+    t.edges = t.edges.filter((e) => e.ends.every((x) => x.node !== "kon1"));
+    expect(zugangOf(t, "kt1", catalog)).toBe("gw1");
+  });
+
+  it("zugangOf: Pairing mit dem Gateway eines anderen Systems gilt nicht, wenn das System einen eigenen Zugang hat", () => {
+    const t = zwei();
+    const kt = t.nodes.find((n) => n.id === "ktK");
+    if (kt) kt.config = { ...kt.config, pairedWith: "gw1" };
+    expect(zugangOf(t, "ktK", catalog)).toBe("kon1");
+  });
+
+  it("#229: Cloud-Software erreicht ein Gateway ohne LAN-Kante zum Cloud-Server über das Internet", () => {
+    const t = zwei(false);
+    t.edges = t.edges.filter((e) =>
+      e.ends.every((x) => x.node !== "gw1" || x.port !== "lan"),
+    );
+    t.edges.push(link("gw1", "wan", "net", "netz"));
+    const r = resolvePath(t, "pvs1", "erp1", catalog);
+    expect(r).toMatchObject({ ok: true, zugang: "gw1" });
+    expect(r.ok && r.nodes).toEqual([
+      "pvs1",
+      "cloud1",
+      "net",
+      "gw1",
+      "vpn1",
+      "zen",
+      "erp1",
+    ]);
+    // Die Konnektor-Praxis nutzt dieses Gateway nicht, auch nicht bei Ausfall ihres Konnektors.
+    const k = zwei();
+    k.edges = t.edges.concat(
+      link("rtK", "wan", "net", "netz"),
+      link("kon1", "vpn", "vpn1", "zugang"),
+    );
+    const kon = k.nodes.find((n) => n.id === "kon1");
+    if (kon) kon.fault = true;
+    const w = resolvePath(k, "pcK", "erp1", catalog);
+    expect(w).toMatchObject({ ok: false, reason: "ausgefallen", at: "kon1" });
+  });
+
+  it("PC der Konnektor-Praxis: bei ausgefallenem Konnektor kein Weg über Cloud-Server und Gateway", () => {
+    const t = zwei();
+    expect(resolvePath(t, "pcK", "erp1", catalog).ok).toBe(true);
+    const kon = t.nodes.find((n) => n.id === "kon1");
+    if (kon) kon.fault = true;
+    const r = resolvePath(t, "pcK", "erp1", catalog);
+    expect(r).toMatchObject({ ok: false, reason: "ausgefallen", at: "kon1" });
+    const nodes = !r.ok && r.reason === "ausgefallen" ? r.nodes : [];
+    expect(nodes).not.toContain("cloud1");
+    expect(nodes).not.toContain("gw1");
+  });
+
+  it("Kartenterminal gepairt mit fremdem Konnektor: kein Weg über fremde Router", () => {
+    const t = zwei();
+    t.nodes.push(
+      node("kt1", "kt", { config: { pairedWith: "kon1" } }),
+      node("sw1", "switch"),
+      node("rt1", "router"),
+    );
+    t.edges.push(
+      link("kt1", "lan0", "sw1", "p1"),
+      link("sw1", "p2", "rt1", "lan1"),
+      link("rt1", "wan", "net", "netz"),
+    );
+    expect(resolvePath(t, "kt1", "kon1", catalog)).toEqual({
+      ok: false,
+      reason: "kein-weg",
+    });
   });
 });

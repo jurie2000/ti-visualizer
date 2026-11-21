@@ -284,7 +284,7 @@ export function ConfigForm({ node }: { node: Node }) {
   const hasWorkplace = hasCapability(node.type, catalog, "workplace");
   const fields = Object.keys(configVariants[variant].shape).filter(
     (f) =>
-      (advanced || f === "workplace") &&
+      (advanced || f === "workplace" || f === "pairedWith") &&
       (f !== "workplace" || terminal || hasWorkplace),
   );
   if (fields.length === 0) return null;

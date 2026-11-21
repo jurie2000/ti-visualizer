@@ -9,7 +9,7 @@
         "types": ["gateway"]
       }
     ],
-    "message": "Konnektor und TI-Gateway kommen in diesem Lernmodell nicht in derselben Topologie vor.",
+    "message": "Konnektor und TI-Gateway kommen in diesem Lernmodell nicht im selben System vor.",
     "source": ["FP_Konnektor", "gemF_TI-Gateway"],
     "status": "Vereinfachung"
   }

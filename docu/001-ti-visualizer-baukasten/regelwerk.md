@@ -550,13 +550,12 @@ Internet → VPN-Zugangsdienst → …. Der Cloud-Server führt ins LAN des
 Rechenzentrums zurück, das Internet davor ist kein Weg hinter den Zugang.
 TI 2.0 geht von der Cloud-Software über Internet zu ZETA Guard und
 PoPP-Service. Das Kartenterminal in der Praxis erreicht seinen Zugang im
-Rechenzentrum über das Internet (wie CardLink); ein Netz-Kartenterminal
-erreicht der Cloud-Server über das Internet. Hinter dem Internet sucht die
-Software-Zuordnung (Arbeitsplatz → Cloud-Server) nicht weiter und betritt
-keine fremden Router.
-Status: Vereinfachung nach Arch, gemILF_PS, CGM_ManagedTI, Concat_TIaaS.
-
-Status: Vereinfachung nach Arch und gemILF_PS.
+Rechenzentrum über das Internet (wie CardLink). Der LAN-Weg zu einem
+Netz-Kartenterminal (`lan`) kreuzt das Internet nie, sonst erreichte die
+Cloud fremde Praxen. Hinter dem Internet sucht die Software-Zuordnung
+(Arbeitsplatz → Cloud-Server) nicht weiter und betritt keine fremden Router.
+Status: Vereinfachung nach Arch und gemILF_PS (Cloud: CGM_ManagedTI,
+Concat_TIaaS).
 
 ### 6.1 Bausteine der Voraussetzungen
 

@@ -109,7 +109,8 @@ function search(
   const goal = byId.get(target);
   if (!start || !goal || trigger === target) return undefined;
   if (start.fault && !ignoreFaults) return undefined;
-  // TI 2.0 braucht keinen Zugang: Primärsystem und Rechner gehen über den Router ins Internet (#215).
+  // Primärsystem und Rechner gehen über den Router ins Internet: TI 2.0 ohne Zugang (#215),
+  // Cloud-Software mit Gateway im Rechenzentrum, auch für den Weg zum Terminal (#221).
   const lokal = kind !== "lan" && roleOf(start, catalog) === "local";
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
@@ -135,12 +136,7 @@ function search(
     kind === "ti" && roleOf(start, catalog) === "zugang" ? POST : LAN;
 
   /** Phase nach dem Schritt auf `n`, oder -1, wenn die Rollenfolge es verbietet. */
-  const next = (
-    phase: number,
-    n: Node,
-    direct: boolean,
-    from: Node,
-  ): number => {
+  const next = (phase: number, n: Node, direct: boolean): number => {
     const isGoal = n.id === target;
     switch (roleOf(n, catalog)) {
       case "local":
@@ -155,9 +151,8 @@ function search(
         if (phase === LAN) return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
-        // Ein Netz-Kartenterminal erreicht der Cloud-Server über das Internet, sonst niemand (#221).
-        if (kind === "lan")
-          return phase === LAN && from.type === "cloud" ? LAN : -1;
+        // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).
+        if (kind === "lan") return -1;
         if (phase === POST || phase === INET) return phase;
         return phase === LAN && (internetOnly || lokal) ? INET : -1;
       case "vpn":
@@ -205,7 +200,7 @@ function search(
       const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
       const n = other === undefined ? undefined : byId.get(other);
       if (!n || (n.fault && !ignoreFaults)) continue;
-      const p = next(phase, n, id === trigger, byId.get(id) as Node);
+      const p = next(phase, n, id === trigger);
       if (p < 0 || prev.has(key(n.id, p))) continue;
       prev.set(key(n.id, p), { from: key(id, phase), edge: e.id });
       queue.push([n.id, p]);

@@ -256,7 +256,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       { node: b, port: bp },
     ],
   });
-  const node = (id: string, type: string, extra = {}) => ({
+  const node = (id: string, type: string, extra: Partial<Node> = {}): Node => ({
     id,
     type,
     position: { x: 0, y: 0 },
@@ -358,6 +358,90 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     expect(!r.ok && r.reason === "ausgefallen" && r.at).toBe("rt1");
   });
 
+  it("#221: Der Weg zum Gateway im Rechenzentrum, Reihenfolge Internet, Cloud, Gateway", () => {
+    const t = rz();
+    const r = resolvePath(t, "pvs1", "erp1", catalog);
+    expect(r.ok && r.nodes.slice(0, 3)).toEqual(["pvs1", "cloud1", "gw1"]);
+    const viaPc = resolvePath(t, "pc1", "erp1", catalog);
+    expect(viaPc.ok && viaPc.nodes.slice(0, 7)).toEqual([
+      "pc1",
+      "sw1",
+      "rt1",
+      "net",
+      "cloud1",
+      "gw1",
+      "vpn1",
+    ]);
+  });
+
+  it("#221: Das Kartenterminal erreicht das Gateway im Rechenzentrum über das Internet", () => {
+    const t = rz();
+    const r = resolvePath(t, "kt1", "gw1", catalog);
+    expect(r.ok && r.zugang).toBe("gw1");
+    expect(r.ok && r.nodes).toEqual(["kt1", "sw1", "rt1", "net", "gw1"]);
+    t.edges = t.edges.filter((e) => e.id !== "gw1-net");
+    expect(resolvePath(t, "kt1", "gw1", catalog).ok).toBe(false);
+  });
+
+  it("#221: Ein Kartenterminal im LAN mit lokalem Gateway läuft über das LAN", () => {
+    const t = rz();
+    t.nodes.push(node("gwL", "gateway"));
+    t.edges.push(link("sw1", "p4", "gwL", "lan"));
+    const kt = t.nodes.find((n) => n.id === "kt1");
+    if (kt) kt.config = { ...kt.config, pairedWith: "gwL" };
+    const r = resolvePath(t, "kt1", "gwL", catalog);
+    expect(r.ok && r.nodes).toEqual(["kt1", "sw1", "gwL"]);
+  });
+
+  it("#221: Ohne TI-Gateway gibt es für die Cloud-Software kein TI 1.0, ohne Internet keinen Weg", () => {
+    const t = rz();
+    t.nodes = t.nodes.filter((n) => n.id !== "gw1");
+    t.edges = t.edges.filter((e) => !e.id.includes("gw1"));
+    expect(resolvePath(t, "pvs1", "erp1", catalog)).toEqual({
+      ok: false,
+      reason: "kein-weg",
+    });
+    expect(resolvePath(t, "pc1", "erp1", catalog).ok).toBe(false);
+  });
+
+  it("#221: Fällt Gateway, Cloud-Server oder Internet aus, ist die TI nicht erreichbar", () => {
+    for (const id of ["gw1", "cloud1", "net"]) {
+      const t = rz();
+      const n = t.nodes.find((x) => x.id === id);
+      if (n) n.fault = true;
+      const r = resolvePath(t, "pc1", "erp1", catalog);
+      expect(r.ok).toBe(false);
+      expect(!r.ok && r.reason).toBe("ausgefallen");
+    }
+  });
+
+  it("#221: TI 2.0 aus der Cloud braucht das Gateway nicht, aber die Internet-Anbindung", () => {
+    const t = rz();
+    t.nodes = t.nodes.filter((n) => n.id !== "gw1");
+    t.edges = t.edges.filter((e) => !e.id.includes("gw1"));
+    expect(actionsOf(t, "pc1", "advanced")).toEqual(
+      expect.arrayContaining(["zeta-anmelden", "popp-token-beantragen"]),
+    );
+    const zeta = resolvePath(t, "pc1", "zeta1", catalog);
+    expect(zeta.ok && zeta.nodes).toEqual([
+      "pc1",
+      "sw1",
+      "rt1",
+      "net",
+      "zeta1",
+    ]);
+    expect(resolvePath(t, "pc1", "popp1", catalog).ok).toBe(true);
+  });
+
+  it("#221: Falsche Anschlusspaare der Cloud werden abgelehnt", () => {
+    const t = rz();
+    t.edges = [];
+    expect(check(t, ["cloud1", "web"], ["gw1", "lan"]).ok).toBe(false);
+    expect(check(t, ["cloud1", "inet"], ["gw1", "lan"]).ok).toBe(false);
+    expect(check(t, ["cloud1", "lan"], ["net", "netz"]).ok).toBe(false);
+    expect(check(t, ["gw1", "lan"], ["net", "netz"]).ok).toBe(false);
+  });
+
   it("#221: Zwei Einrichtungen am selben Internet teilen keine Server und keine Terminals", () => {
     const t = rz();
     t.nodes.push(
@@ -392,5 +476,17 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       status: "one",
       terminal: "kt1",
     });
+    // Der LAN-Weg kreuzt das Internet nie: die Cloud erreicht kein Netz-Kartenterminal.
+    for (const id of ["pvs1", "cloud1"])
+      expect(terminalFor(t, id, catalog, "lan")).toEqual({ status: "none" });
+  });
+
+  it("#221: Ein nicht netzfähiges Kartenterminal gilt nicht als Netz-Terminal", () => {
+    const t = rz();
+    t.nodes.push(node("mkt1", "mkt", { config: { workplace: "AP-1" } }));
+    t.edges.push(link("mkt1", "usb0", "pc1", "usb0"));
+    t.nodes = t.nodes.filter((n) => n.id !== "kt1");
+    t.edges = t.edges.filter((e) => e.id !== "kt1-sw1");
+    expect(terminalFor(t, "pc1", catalog, "lan")).toEqual({ status: "none" });
   });
 });

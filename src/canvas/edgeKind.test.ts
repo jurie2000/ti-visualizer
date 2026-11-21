@@ -38,8 +38,11 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("T-724c: Zugriff auf einen Cloud-Server ergibt die Art Internet", () => {
     expect(kindOf(["pc", "web"], ["cloud", "web"])).toBe("inet");
   });
-  it("#221: Cloud-Server am Internet ergibt Internet, am TI-Gateway TCP", () => {
+  it("#221: Cloud-Server und TI-Gateway (WAN) am Internet ergeben Internet", () => {
     expect(kindOf(["cloud", "inet"], ["internet", "netz"])).toBe("inet");
+    expect(kindOf(["gateway", "wan"], ["internet", "netz"])).toBe("inet");
+  });
+  it("#221: Cloud-Server am TI-Gateway (LAN) ergibt TCP", () => {
     expect(kindOf(["cloud", "lan"], ["gateway", "lan"])).toBe("tcp");
   });
   it("[#202] ZETA Guard, PoPP und VSDM 2.0 ergeben die Art Internet", () => {

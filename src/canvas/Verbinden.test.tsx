@@ -64,9 +64,10 @@ describe("Verbinden per Tastatur", () => {
 
   it("[X-1] erklärt im ExclusionDialog, warum Konnektor und TI-Gateway sich ausschließen", async () => {
     useTopology.getState().addNode("gateway", { x: 0, y: 0 });
+    const gw = useTopology.getState().topology.nodes.at(-1)?.id ?? "";
     render(<Canvas />, { wrapper });
     const before = useTopology.getState().topology.edges.length;
-    await verbinden("pvs1", "kon1");
+    await verbinden(gw, "sw1");
     expect(useTopology.getState().topology.edges).toHaveLength(before);
     expect(
       screen.getByRole("dialog", {

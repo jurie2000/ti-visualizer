@@ -464,14 +464,31 @@ describe("P-31 Terminal mit mehr als einem Zugang gepairt", () => {
   });
 });
 
-describe("P-32 Konnektor und TI-Gateway", () => {
-  it("[P-32] positiv: beide Arten, ein Befund mit allen Zugängen", () => {
-    const t = topo([node("k", "kon"), node("g", "gateway")]);
-    const f = run(t).filter((x) => x.id === "P-32");
+describe("P-32 Konnektor und TI-Gateway im selben System", () => {
+  const system = (sw: string, kon: string, gw: string) => [
+    node(sw, "switch"),
+    node(kon, "kon"),
+    node(gw, "gateway"),
+  ];
+  const wired = (sw: string, kon: string, gw: string) => [
+    edge(`${sw}-k`, sw, kon),
+    edge(`${sw}-g`, sw, gw),
+  ];
+  it("[P-32] positiv: ein Befund je System mit beiden Seiten", () => {
+    const eins = topo(system("s", "k", "g"), wired("s", "k", "g"));
+    const f = run(eins).filter((x) => x.id === "P-32");
     expect(f).toHaveLength(1);
     expect(f[0]?.nodes).toEqual(["g", "k"]);
+    const zwei = topo(
+      [...system("s", "k", "g"), ...system("t", "k2", "g2")],
+      [...wired("s", "k", "g"), ...wired("t", "k2", "g2")],
+    );
+    expect(run(zwei).filter((x) => x.id === "P-32")).toHaveLength(2);
   });
-  it("[P-32] negativ: nur Konnektor oder nur Gateway, auch mehrere gleicher Art", () => {
+  it("[P-32] negativ: getrennte Systeme, nur eine Art, mehrere gleicher Art", () => {
+    expect(
+      ids(run(topo([node("k", "kon"), node("g", "gateway")]))),
+    ).not.toContain("P-32");
     expect(ids(run(topo([node("k", "kon"), node("k2", "kon")])))).not.toContain(
       "P-32",
     );

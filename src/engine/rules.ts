@@ -1,4 +1,5 @@
 import type { Catalog, Edge, Selector, Topology } from "../schema";
+import { systemOf } from "./paths";
 
 // Regel-Engine nach Regelwerk 4.0. Reine Funktionen, ungerichtet (D15), der
 // Modus spielt keine Rolle (D36).
@@ -225,22 +226,20 @@ export function validateConnection(
   )
     return fail(g2.id, g2.message);
 
-  // X-1: Das Gegenstück darf nirgends sonst in der Topologie stehen. Das Paar
-  // selbst (Konnektor direkt an Gateway) beantwortet die Begründungsregel V-10.
+  // X-1 je System (#229): nach dem Verbinden darf das Gegenstück nicht im selben System stehen.
+  // Das Paar selbst (Konnektor direkt an Gateway) beantwortet die Begründungsregel V-10.
+  const system = systemOf(topology, [a, b], catalog);
+  const inSystem = topology.nodes.filter((n) => system.has(n.id));
   for (const x of catalog.exclusionRules) {
     const [s0, s1] = x.exclusive;
-    for (const [mine, theirs] of [
-      [s0, s1],
-      [s1, s0],
-    ] as const)
-      for (const node of [na, nb])
-        if (
-          matches(mine, node.type, catalog) &&
-          topology.nodes.some(
-            (n) => n.id !== a && n.id !== b && matches(theirs, n.type, catalog),
-          )
-        )
-          return fail(x.id, x.message);
+    const left = inSystem.filter((n) => matches(s0, n.type, catalog));
+    const right = inSystem.filter((n) => matches(s1, n.type, catalog));
+    if (
+      left.length > 0 &&
+      right.length > 0 &&
+      [...left, ...right].some((n) => n.id !== a && n.id !== b)
+    )
+      return fail(x.id, x.message);
   }
 
   // G-4: ein eHealth-KT arbeitet mit höchstens einem Zugang zusammen

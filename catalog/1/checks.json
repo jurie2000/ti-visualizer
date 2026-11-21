@@ -163,10 +163,10 @@
   },
   {
     "id": "P-32",
-    "name": "Konnektor und TI-Gateway in derselben Topologie",
+    "name": "Konnektor und TI-Gateway im selben System",
     "severity": "Fehler",
     "onlyAdvanced": false,
-    "explanation": "Eine Topologie bildet in diesem Lernmodell eine Einrichtung mit einem Zugangsweg ab: Konnektor oder TI-Gateway, nicht beide.",
+    "explanation": "Ein System (alle Geräte, die über Kabel zusammenhängen, getrennt an Internet, VPN-Zugangsdienst, Zentralem Netz und ZETA Guard) bildet in diesem Lernmodell eine Einrichtung mit einem Zugangsweg ab: Konnektor oder TI-Gateway, nicht beide.",
     "source": ["FP_Konnektor", "gemF_TI-Gateway"],
     "status": "Vereinfachung"
   },

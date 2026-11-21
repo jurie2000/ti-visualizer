@@ -171,21 +171,50 @@ describe("Regel-Engine: Grundprüfungen und Ausschlüsse (T-105)", () => {
     expect(check(t, "pv", "k2").ok).toBe(true);
   });
 
-  it("[X-1] Konnektor und TI-Gateway nicht in derselben Topologie", () => {
-    const t = topo([
-      ["k", "kon"],
-      ["g", "gateway"],
-      ["p", "pvs"],
-    ]);
-    for (const [a, b] of [
-      ["p", "k"],
-      ["g", "p"],
-    ] as const)
-      expect(check(t, a, b)).toEqual({
-        ok: false,
-        reason: msg("X-1").message,
-        ruleId: "X-1",
-      });
+  it("[X-1] Konnektor und TI-Gateway nicht im selben System", () => {
+    const t = topo(
+      [
+        ["k", "kon"],
+        ["g", "gateway"],
+        ["s", "switch"],
+        ["s2", "switch"],
+      ],
+      [["e1", "s", "p1", "k", "lan"]],
+    );
+    // Gateway an den Switch der Konnektor-Praxis
+    expect(check(t, "g", "s")).toEqual({
+      ok: false,
+      reason: msg("X-1").message,
+      ruleId: "X-1",
+    });
+    // Switch an Switch zweier Systeme
+    const zwei = topo(
+      [
+        ["k", "kon"],
+        ["g", "gateway"],
+        ["s", "switch"],
+        ["s2", "switch"],
+      ],
+      [
+        ["e1", "s", "p1", "k", "lan"],
+        ["e2", "s2", "p1", "g", "lan"],
+      ],
+    );
+    expect(check(zwei, "s", "s2").ruleId).toBe("X-1");
+    // Konnektor an den Switch des Gateways; ein freier Switch bleibt erlaubt
+    expect(check(zwei, "s2", "k").ruleId).toBe("X-1");
+    expect(check(t, "s2", "g").ok).toBe(true);
+    // direkt: Begründungsregel V-10
+    expect(
+      check(
+        topo([
+          ["k", "kon"],
+          ["g", "gateway"],
+        ]),
+        "k",
+        "g",
+      ).ruleId,
+    ).toBe("V-10");
     // ohne Gegenstück bleibt der Konnektor verbindbar
     expect(
       check(

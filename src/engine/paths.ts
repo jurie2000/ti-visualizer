@@ -75,7 +75,36 @@ function roleOf(node: Node, catalog: Catalogue): Role {
     : "end";
 }
 
-/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im Netz (Vereinfachung, nicht im Regelwerk 6.0). */
+/**
+ * Das System eines oder mehrerer Geräte (Regelwerk 4.4, #229): alles, was über
+ * Kanten zusammenhängt, nur über eigene Geräte (`HOME_ROLES`). Internet, VPN-Zugangsdienst,
+ * Zentrales Netz und ZETA Guard trennen Systeme. Ausfälle zählen nicht.
+ */
+export function systemOf(
+  topology: Topology,
+  ids: string[],
+  catalog: Catalogue,
+): Set<string> {
+  const byId = new Map(topology.nodes.map((n) => [n.id, n]));
+  const adj = new Map<string, string[]>();
+  for (const e of topology.edges) {
+    const [a, b] = e.ends;
+    adj.set(a.node, [...(adj.get(a.node) ?? []), b.node]);
+    adj.set(b.node, [...(adj.get(b.node) ?? []), a.node]);
+  }
+  const system = new Set(ids.filter((id) => byId.has(id)));
+  for (const id of system) {
+    const role = roleOf(byId.get(id) as Node, catalog);
+    if (["internet", "vpn", "zentral", "zeta"].includes(role)) continue;
+    for (const o of adj.get(id) ?? []) {
+      const n = byId.get(o);
+      if (n && HOME_ROLES.includes(roleOf(n, catalog))) system.add(o);
+    }
+  }
+  return system;
+}
+
+/** Zugang, zu dem ein Kartenterminal gehört: `pairedWith`, sonst der direkt verbundene, sonst der einzige im System, danach auf der Canvas (Vereinfachung, nicht im Regelwerk 6.0). */
 export function zugangOf(
   topology: Topology,
   terminalId: string,
@@ -93,8 +122,13 @@ export function zugangOf(
     if (a.node === terminalId && isZugang(b.node)) return b.node;
     if (b.node === terminalId && isZugang(a.node)) return a.node;
   }
-  // Normalfall: nur ein Zugang im Netz, dann gehört das Terminal zu ihm.
-  const only = topology.nodes.filter((n) => roleOf(n, catalog) === "zugang");
+  // Normalfall: nur ein Zugang im System des Terminals, sonst auf der ganzen Canvas (#229).
+  const zugaenge = (ids: Set<string> | undefined) =>
+    topology.nodes.filter(
+      (n) => (!ids || ids.has(n.id)) && roleOf(n, catalog) === "zugang",
+    );
+  const inSystem = zugaenge(systemOf(topology, [terminalId], catalog));
+  const only = inSystem.length > 0 ? inSystem : zugaenge(undefined);
   return only.length === 1 ? only[0]?.id : undefined;
 }
 
@@ -128,6 +162,12 @@ function search(
         if (n && HOME_ROLES.includes(roleOf(n, catalog))) home.add(n.id);
       }
   }
+  // Hat das System des Auslösers einen eigenen Zugang, läuft er nicht über das Gateway eines Rechenzentrums (#229).
+  const lokalOhneZugang =
+    lokal &&
+    ![...systemOf(topology, [trigger, origin], catalog)].some(
+      (id) => roleOf(byId.get(id) as Node, catalog) === "zugang",
+    );
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
@@ -164,10 +204,13 @@ function search(
         if (phase === POST) return kind === "local" ? POST : -1;
         // LAN-Weg aus der Cloud: ohne Gateway über das Internet zum Router der eigenen Praxis (ZETA, PoPP).
         if (kind === "lan") return phase === LAN ? INET : -1;
-        return phase === LAN || (phase === INET && (lokal || viaCloud))
+        return phase === LAN ||
+          (phase === INET && (lokalOhneZugang || viaCloud))
           ? LAN
           : -1;
       case "net":
+        // Ein Kartenterminal kommt über das Internet nie in fremde Router, nur über Cloud-Server (#229).
+        if (phase === INET && kind === "ti" && isNetTerminal(start)) return -1;
         if (
           ((phase === POST && lokal) || (phase === INET && kind === "lan")) &&
           !home.has(n.id)

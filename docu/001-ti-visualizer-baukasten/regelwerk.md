@@ -459,7 +459,7 @@ und K-6 in Abschnitt 5.
 | V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |
 | V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
 | V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |
-| V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway kommen in diesem Lernmodell nicht in derselben Topologie vor. | Vereinfachung | siehe X-1 |
+| V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway kommen in diesem Lernmodell nicht im selben System vor. | Vereinfachung | siehe X-1 |
 | V-12 | Primärsystem oder Kartenterminal direkt an VPN-Zugangsdienst | Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf. | bestätigt | Arch, gemSpec_VPN_ZugD |
 | V-14 | Mobiles KT an Zugang oder Netzwerk | Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. Die Daten gehen später per USB ans Primärsystem. | bestätigt | gemSpec_MobKT |
 | V-15 | Versicherten-App an Zugang oder Primärsystem | Versicherte nutzen ihre Apps über das Internet, nicht über die Infrastruktur der Praxis. | bestätigt | gemSpec_eRp_FdV |
@@ -474,7 +474,9 @@ und K-6 in Abschnitt 5.
 
 | ID | Regel | Status | Quelle |
 |---|---|---|---|
-| X-1 | Konnektor und TI-Gateway nicht in derselben Topologie. Eine Topologie bildet in v1 eine Einrichtung ab. Topologien mit mehreren Einrichtungen und unterschiedlichem Zugang sind nicht vorgesehen | Vereinfachung: die gematik beschreibt das TI-Gateway als Alternative zum Konnektor, ein Verbot beider nebeneinander steht dort nicht | FP Konnektor/TI-Gateway, gemF_TI-Gateway |
+| X-1 | Konnektor und TI-Gateway nicht im selben System. Ein System bildet eine Einrichtung mit einem Zugangsweg ab. Mehrere Einrichtungen mit unterschiedlichem Zugang stehen in getrennten Systemen auf derselben Canvas | Vereinfachung: die gematik beschreibt das TI-Gateway als Alternative zum Konnektor, ein Verbot beider nebeneinander steht dort nicht | FP Konnektor/TI-Gateway, gemF_TI-Gateway |
+
+**Auslegung (2026-11-21, Issue #229):** Ein System umfasst alle Geräte, die über Kanten zusammenhängen. Es trennt sich an Internet, VPN-Zugangsdienst, Zentralem Netz und ZETA Guard (Begründung der Trennung am VPN: Abschnitt 4.2, Zugang ↔ VPN-Zugangsdienst ist eine Vereinfachung). X-1 gilt je System, nicht je Canvas: Praxis mit Konnektor und Rechenzentrum mit TI-Gateway lassen sich am selben Internet und VPN verbinden. V-10 und V-17 verbieten nur die direkte Kante, unabhängig vom System. Zwei Konnektoren im selben System bleiben erlaubt. P-32 meldet einen Befund je System. `web`- und `host`-Kanten verbinden Systeme. Status: Vereinfachung.
 
 ## 5. Karten
 
@@ -534,6 +536,14 @@ TI-Gateway (#226). Der VPN-Pfad oben gilt unverändert.
   es im Netz nur einen Zugang, gehört das Kartenterminal zu diesem
   (Vereinfachung, etwa für ein KT am Switch ohne Pairing). Dasselbe gilt
   für CardLink.
+- Fehlt Pairing und direkte Verbindung, sucht der Fallback „einziger
+  Zugang“ zuerst im System des Terminals und erst, wenn dort keiner steht,
+  auf der ganzen Canvas (#229). Eine Canvas mit Cloud-PVS-Praxis ohne
+  Pairing und einer Konnektor-Praxis meldet daher P-5 am Kartenterminal, bis es
+  mit dem Gateway gepairt ist (gewollt).
+- Ein eHealth-KT erreicht seinen Zugang über das Internet nur über einen
+  Cloud-Server (#221). Ein Auslöser mit eigenem Zugang im System nutzt
+  keinen Cloud-Server hinter dem Internet (#229).
 - **Mehrere passende Karten:** Es zählt das Terminal, das dem
   Arbeitsplatz des Auslösers zugeordnet ist (P-29). Gibt es keine
   Zuordnung, fragt die App, welches Terminal genutzt wird.
@@ -830,7 +840,7 @@ dort einstellbar sind. Alle anderen gelten in beiden Modi.
 | P-18 | Zertifikat der gSMC-K abgelaufen | `certExpires`, `simDate` | Fehler | bestätigt | Arch, gemF_Laufzeitverlängerung_gSMC-K |
 | P-22 | HBA oder SMC-B nicht freigeschaltet | PinCard `unlocked` | Fehler | bestätigt | gemILF_PS_AMTS, gemILF_PS |
 | P-31 | Kartenterminal mit mehr als einem Zugang gepairt | `pairedWith`, Kanten | Fehler | bestätigt | gemSpec_KT |
-| P-32 | Konnektor und TI-Gateway in derselben Topologie | Node `type` | Fehler | Vereinfachung | X-1 |
+| P-32 | Konnektor und TI-Gateway im selben System | Node `type` | Fehler | Vereinfachung | X-1 |
 | P-33 | Zugang ohne Weg ins Internet (weder zum Router noch direkt zum VPN-Zugangsdienst) | Kanten | Fehler | bestätigt | Betriebsarten |
 
 Auslegung (2026-11-11): Die Regeln hängen an Geräten und Kanten,
@@ -858,8 +868,8 @@ Standardwert (Regelwerk 8), nicht als Verstoß.
 - P-18: nur der Konnektor. Das TI-Gateway hat keine gSMC-K.
 - P-31: gepairt heißt `pairedWith` plus jede direkte Verbindung zu einem
   Zugang. Mehr als ein verschiedener Zugang ergibt den Fehler.
-- P-32: ein Befund für die ganze Topologie, mit allen Zugängen beider
-  Seiten (Ausschlussregel X-1).
+- P-32: ein Befund je System, mit allen Zugängen beider Seiten
+  (Ausschlussregel X-1).
 - P-33: Weg über Switches, Access Points und Firewalls zu Router oder
   VPN-Zugangsdienst (oder Internet). Primärsysteme und Terminals leiten
   nicht weiter. Je Zugang ein Befund.

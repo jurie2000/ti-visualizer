@@ -1,7 +1,7 @@
 import type { Catalog, Node, Topology } from "../schema";
 import { ADDRESSING } from "./addressing";
 import { cardState } from "./cards";
-import { resolvePath, zugangOf } from "./paths";
+import { resolvePath, systemOf, zugangOf } from "./paths";
 import { BETRIEB } from "./checksBetrieb";
 import { matches } from "./rules";
 
@@ -193,21 +193,24 @@ const RULES: Record<string, Rule> = {
     });
   },
 
-  // Ausschlussregel X-1 aus dem Katalog: beide Seiten kommen vor.
+  // Ausschlussregel X-1 aus dem Katalog: je System ein Befund, wenn beide Seiten darin vorkommen.
   "P-32": ({ t, c }) => {
     const rule = c.exclusionRules.find((r) => r.id === "X-1");
     if (!rule) return [];
     const [a, b] = rule.exclusive;
-    const left = t.nodes.filter((n) => matches(a, n.type, c));
-    const right = t.nodes.filter((n) => matches(b, n.type, c));
-    return left.length > 0 && right.length > 0
-      ? [
-          {
-            subject: "X-1",
-            nodes: sorted([...left, ...right].map((n) => n.id)),
-          },
-        ]
-      : [];
+    const seen = new Set<string>();
+    return t.nodes.flatMap((n) => {
+      if (seen.has(n.id) || !(matches(a, n.type, c) || matches(b, n.type, c)))
+        return [];
+      const system = systemOf(t, [n.id], c);
+      for (const id of system) seen.add(id);
+      const inSystem = t.nodes.filter((x) => system.has(x.id));
+      const left = inSystem.filter((x) => matches(a, x.type, c));
+      const right = inSystem.filter((x) => matches(b, x.type, c));
+      if (left.length === 0 || right.length === 0) return [];
+      const nodes = sorted([...left, ...right].map((x) => x.id));
+      return [{ subject: nodes[0] as string, nodes }];
+    });
   },
 
   // Weg ins Internet: Router oder VPN-Zugangsdienst, auch über Switches und

@@ -105,6 +105,7 @@ function search(
   catalog: Catalogue,
   kind: PathKind,
   ignoreFaults: boolean,
+  origin: string,
 ): { nodes: string[]; edges: string[] } | undefined {
   const byId = new Map(topology.nodes.map((n) => [n.id, n]));
   const start = byId.get(trigger);
@@ -116,7 +117,8 @@ function search(
   const lokal = kind !== "lan" && roleOf(start, catalog) === "local";
   // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
   // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
-  const home = new Set<string>([trigger]);
+  // Bei Cloud-Software gehört auch die Praxis des auslösenden Arbeitsplatzes dazu (`origin`, #226).
+  const home = new Set<string>([trigger, origin]);
   if (lokal) {
     for (const id of home)
       for (const e of topology.edges) {
@@ -241,8 +243,9 @@ export function resolvePath(
   target: string,
   catalog: Catalogue,
   kind: PathKind = "ti",
+  origin: string = trigger,
 ): PathResult {
-  const ok = search(topology, trigger, target, catalog, kind, false);
+  const ok = search(topology, trigger, target, catalog, kind, false, origin);
   if (ok) {
     const zugang = ok.nodes.find((id) => {
       const n = topology.nodes.find((x) => x.id === id);
@@ -250,7 +253,15 @@ export function resolvePath(
     });
     return { ok: true, ...ok, ...(zugang ? { zugang } : {}) };
   }
-  const ignoring = search(topology, trigger, target, catalog, kind, true);
+  const ignoring = search(
+    topology,
+    trigger,
+    target,
+    catalog,
+    kind,
+    true,
+    origin,
+  );
   if (!ignoring) return { ok: false, reason: "kein-weg" };
   const faulty = new Set(
     [...topology.nodes, ...topology.edges]

@@ -511,7 +511,9 @@ Zentrales Netz (optional) → **Dienst**
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
 **ZETA Guard** → Dienst. Ohne VPN-Zugangsdienst und ohne Zentrales Netz.
 Das Primärsystem spricht das Kartenterminal direkt über das LAN an, ein
-Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
+Zugang ist nicht nötig. Bei Cloud-Software erreicht das Primärsystem das
+Terminal über TI-Gateway, Cloud-Server, Internet und den Router der Praxis
+(#226). Der VPN-Pfad oben gilt unverändert.
 
 - Wege im VPN-Pfad, die den Zugang oder den VPN-Zugangsdienst auslassen,
   zählen nicht als TI-Pfad, auch wenn sie über das Internet zum Dienst
@@ -524,7 +526,7 @@ Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
   TI-Messenger-Client ↔ TI-Messenger ·
   CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, über den Cloud-Server, #221) · jeder Auslöser ↔ PoPP.
 - Hinter dem Zugang führt das Internet nur in die eigenen Netzgeräte des
-  Auslösers zurück, nie in fremde Router (Terminal einer anderen Einrichtung
+  auslösenden Arbeitsplatzes zurück, nie in fremde Router (Terminal einer anderen Einrichtung
   am selben Internet, #221).
 - **Mehrere Zugänge im Netz:** Ein Kartenterminal gehört zu dem Zugang,
   mit dem es gepairt ist (`pairedWith` in der TerminalConfig). Bei einer
@@ -561,6 +563,14 @@ Cloud fremde Praxen. Hinter dem Internet sucht die Software-Zuordnung
 (Arbeitsplatz → Cloud-Server) nicht weiter und betritt keine fremden Router.
 Status: Vereinfachung nach Arch und gemILF_PS (Cloud: CGM_ManagedTI,
 Concat_TIaaS).
+
+Auslegung (2026-11-21, Issue #226): Läuft das Primärsystem in der Cloud,
+ist der Weg Primärsystem ↔ Terminal: Cloud-Software → Cloud-Server →
+TI-Gateway → Cloud-Server → Internet → Router → Switch → Kartenterminal.
+Eigen sind die Netzgeräte der Praxis des auslösenden Arbeitsplatzes (der
+Rechner, der die Aktion auslöst), nicht die der Cloud-Software, die mehrere
+Praxen bedient. Fremde Praxen am selben Internet bleiben außen vor.
+Status: Vereinfachung.
 
 ### 6.1 Bausteine der Voraussetzungen
 
@@ -722,8 +732,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 |---|---|---|---|
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→IDP Token holen (OAuth 2.0, über K→V) · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | bestätigt | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
-| `zeta` | P→T Authentisierung mit der SMC-B anfordern (über das LAN) · T→P SMC-B bestätigt · P→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
-| `popp` | T→P eGK-Daten (über das LAN) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
 | `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |

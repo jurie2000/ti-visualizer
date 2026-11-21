@@ -558,4 +558,132 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     t.edges = t.edges.filter((e) => e.id !== "kt1-sw1");
     expect(terminalFor(t, "pc1", catalog, "lan")).toEqual({ status: "none" });
   });
+
+  const flowSteps = (t: Topology, flowId: string, trigger: string) => {
+    const flow = catalog.flows.find((f) => f.id === flowId);
+    const from = t.nodes.find((n) => n.id === trigger);
+    if (!flow || !from) throw new Error("Fixture fehlt");
+    return bindFlow(flow, from, t, catalog);
+  };
+
+  it("#226: Cloud-PVS findet den Weg zum Kartenterminal über Gateway, Cloud-Server und Router der Praxis", () => {
+    const t = rz();
+    for (const id of ["zeta", "popp"]) {
+      const steps = flowSteps(t, id, "pc1");
+      expect(
+        steps.filter((s) => s.problem),
+        id,
+      ).toEqual([]);
+      for (const s of steps) expect(s.nodes.length).toBeGreaterThan(0);
+    }
+    const [toKt, fromKt] = flowSteps(t, "zeta", "pc1");
+    const way = ["pvs1", "cloud1", "gw1", "cloud1", "net", "rt1", "sw1", "kt1"];
+    expect(toKt?.nodes).toEqual(way);
+    expect(fromKt?.nodes).toEqual([...way].reverse());
+  });
+
+  it("#226: Cloud-Weg und fremde Praxis: jede Praxis erreicht nur ihr eigenes Terminal", () => {
+    const t = rz();
+    t.nodes.push(
+      node("pcB", "pc", { config: { workplace: "AP-B" } }),
+      node("ktB", "kt", { config: { workplace: "AP-B" }, cards }),
+      node("swB", "switch"),
+      node("rtB", "router"),
+    );
+    t.edges.push(
+      link("pcB", "eth0", "swB", "p1"),
+      link("ktB", "lan0", "swB", "p2"),
+      link("swB", "p3", "rtB", "lan1"),
+      link("rtB", "wan", "net", "netz"),
+    );
+    const own = ["kt1", "sw1", "rt1"];
+    const other = ["ktB", "swB", "rtB"];
+    for (const id of ["zeta", "popp"]) {
+      const a = flowSteps(t, id, "pc1")[0]?.nodes ?? [];
+      const b = flowSteps(t, id, "pcB")[0]?.nodes ?? [];
+      expect(a.length).toBeGreaterThan(0);
+      expect(b.length).toBeGreaterThan(0);
+      for (const n of other) expect(a, `${id} pc1`).not.toContain(n);
+      for (const n of own) expect(b, `${id} pcB`).not.toContain(n);
+    }
+  });
+
+  describe("#226 alle Aktionen: Cloud und vor Ort binden gleich", () => {
+    const services = ["vsdm", "kim", "kk", "vzd", "epa", "idp", "erp", "vsdm2"];
+    const withServices = (t: Topology): Topology => {
+      for (const s of services) {
+        t.nodes.push(node(`${s}1`, s));
+        t.edges.push(
+          s === "vsdm2"
+            ? link("zeta1", "net", "vsdm21", "net")
+            : link("zen", "netz", `${s}1`, "ti"),
+        );
+      }
+      t.nodes.push(
+        node("kimcm1", "kimcm"),
+        node("avs1", "avs"),
+        node("cardlink1", "cardlink"),
+      );
+      // KIM ↔ Krankenkasse ist eine direkte Verbindung (Regelwerk 4.2)
+      t.edges.push(
+        link("cardlink1", "wan", "net", "netz"),
+        link("kim1", "ti", "kk1", "ti"),
+      );
+      return t;
+    };
+    const cloud = (): Topology => {
+      const t = withServices(rz());
+      t.edges.push(
+        link("avs1", "host", "cloud1", "soft"),
+        link("kimcm1", "lan0", "gw1", "lan"),
+        link("pvs1", "app", "kimcm1", "lan0"),
+      );
+      return t;
+    };
+    const vorOrt = (): Topology => {
+      const t = withServices(rz());
+      const drop = ["cloud1", "gw1"];
+      t.nodes = t.nodes.filter((n) => !drop.includes(n.id));
+      t.edges = t.edges.filter(
+        (e) => !e.ends.some((x) => drop.includes(x.node)),
+      );
+      t.nodes.push(node("kon1", "kon"));
+      t.edges.push(
+        link("kon1", "lan", "sw1", "p4"),
+        link("kon1", "wan", "rt1", "lan2"),
+        link("kon1", "vpn", "vpn1", "zugang"),
+        link("pvs1", "host", "pc1", "soft"),
+        link("avs1", "host", "pc1", "soft"),
+        link("kimcm1", "lan0", "sw1", "p5"),
+      );
+      return t;
+    };
+    const offered = (types: string[]) =>
+      catalog.actions.filter(
+        (a) =>
+          "types" in a.offeredBy &&
+          a.offeredBy.types.some((x) => types.includes(x)),
+      );
+
+    it.each(offered(["pvs", "avs"]).map((a) => [a.id, a.flow]))(
+      "Aktion %s: Cloud bindet wie vor Ort, nur der Weg zum Terminal führt über Gateway und Internet",
+      (_id, flowId) => {
+        const ort = flowSteps(vorOrt(), flowId, "pc1");
+        const rzSteps = flowSteps(cloud(), flowId, "pc1");
+        expect(rzSteps.map((s) => s.label)).toEqual(ort.map((s) => s.label));
+        const ends = (steps: typeof ort) =>
+          steps.map((s) => [s.nodes.at(0), s.nodes.at(-1)]);
+        expect(rzSteps.map((s) => s.problem)).toEqual(ort.map(() => undefined));
+        expect(ort.map((s) => s.problem)).toEqual(ort.map(() => undefined));
+        // Das Gateway ersetzt den Konnektor als Zugang (K)
+        expect(ends(rzSteps)).toEqual(
+          ends(ort).map((e) => e.map((n) => (n === "kon1" ? "gw1" : n))),
+        );
+        const nodes = (steps: typeof ort) => steps.flatMap((s) => s.nodes);
+        expect(nodes(ort)).not.toContain("cloud1");
+        for (const s of rzSteps.filter((x) => x.nodes.includes("kt1")))
+          expect(s.nodes).toEqual(expect.arrayContaining(["gw1", "net"]));
+      },
+    );
+  });
 });

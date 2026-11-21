@@ -523,6 +523,9 @@ Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
   ePA-App ↔ ePA-Dienst, sektoraler IdP ·
   TI-Messenger-Client ↔ TI-Messenger ·
   CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, #221) · jeder Auslöser ↔ PoPP.
+- Hinter dem Zugang führt das Internet nur in die eigenen Netzgeräte des
+  Auslösers zurück, nie in fremde Router (Terminal einer anderen Einrichtung
+  am selben Internet, #221).
 - **Mehrere Zugänge im Netz:** Ein Kartenterminal gehört zu dem Zugang,
   mit dem es gepairt ist (`pairedWith` in der TerminalConfig). Bei einer
   direkten Verbindung ist das der verbundene Zugang. Fehlt beides und gibt

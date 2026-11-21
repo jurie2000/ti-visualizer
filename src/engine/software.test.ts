@@ -476,6 +476,19 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       status: "one",
       terminal: "kt1",
     });
+    // Hinter dem Gateway führt das Internet nicht in fremde Router.
+    expect(resolvePath(t, "pc1", "ktB", catalog, "local")).toEqual({
+      ok: false,
+      reason: "kein-weg",
+    });
+    const own = resolvePath(t, "pc1", "kt1", catalog, "local");
+    expect(own.ok).toBe(true);
+    expect(terminalFor(t, "pc1", catalog)).toEqual({
+      status: "one",
+      terminal: "kt1",
+    });
+    // Die Cloud-Software hat keinen Arbeitsplatz im Netz und löst nichts aus: kein fremdes Terminal.
+    expect(terminalFor(t, "pvs1", catalog)).toEqual({ status: "none" });
     // Der LAN-Weg kreuzt das Internet nie: die Cloud erreicht kein Netz-Kartenterminal.
     for (const id of ["pvs1", "cloud1"])
       expect(terminalFor(t, id, catalog, "lan")).toEqual({ status: "none" });

@@ -55,6 +55,8 @@ type Role =
   | "zeta"
   | "end";
 
+const HOME_ROLES: Role[] = ["local", "cloud", "net", "zugang"];
+
 function roleOf(node: Node, catalog: Catalogue): Role {
   const t = catalog.deviceTypes.find((d) => d.id === node.type);
   if (!t) return "end";
@@ -112,6 +114,18 @@ function search(
   // Primärsystem und Rechner gehen über den Router ins Internet: TI 2.0 ohne Zugang (#215),
   // Cloud-Software mit Gateway im Rechenzentrum, auch für den Weg zum Terminal (#221).
   const lokal = kind !== "lan" && roleOf(start, catalog) === "local";
+  // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
+  // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
+  const home = new Set<string>([trigger]);
+  if (lokal) {
+    for (const id of home)
+      for (const e of topology.edges) {
+        const [a, b] = e.ends;
+        const o = a.node === id ? b.node : b.node === id ? a.node : undefined;
+        const n = o === undefined ? undefined : byId.get(o);
+        if (n && HOME_ROLES.includes(roleOf(n, catalog))) home.add(n.id);
+      }
+  }
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
@@ -145,6 +159,7 @@ function search(
         // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
         return phase === LAN || (phase === INET && lokal) ? LAN : -1;
       case "net":
+        if (phase === POST && lokal && !home.has(n.id)) return -1;
         return phase === LAN || phase === POST || phase === INET ? phase : -1;
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;

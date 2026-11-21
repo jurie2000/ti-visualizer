@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { loadCatalog, type Topology } from "../schema";
+import { loadCatalog, type Node, type Topology } from "../schema";
 import { availableActions } from "./actions";
 import { bindFlow } from "./simulation";
-import { resolvePath } from "./paths";
+import { resolvePath, softwareOn, terminalFor } from "./paths";
 import { validateConnection } from "./rules";
 
 const catalog = loadCatalog();
@@ -239,5 +239,158 @@ describe("T-724c Software als Dienst (SaaS)", () => {
     if (!pc || !flow) throw new Error("Fixture fehlt");
     const [first] = bindFlow(flow, pc, t, catalog);
     expect(first?.nodes.slice(0, 4)).toEqual(["pvs1", "cloud1", "pc1", "sw1"]);
+  });
+});
+
+describe("#221 Cloud-Dienst im Rechenzentrum", () => {
+  const link = (
+    a: string,
+    ap: string,
+    b: string,
+    bp: string,
+  ): Topology["edges"][number] => ({
+    id: `${a}-${b}`,
+    fault: false,
+    ends: [
+      { node: a, port: ap },
+      { node: b, port: bp },
+    ],
+  });
+  const node = (id: string, type: string, extra = {}) => ({
+    id,
+    type,
+    position: { x: 0, y: 0 },
+    fault: false,
+    ...extra,
+  });
+  const cards = [
+    { kind: "egk" as const, expires: "2027-01-01", pinActive: true },
+    { kind: "hba" as const, expires: "2027-01-01", unlocked: true },
+    { kind: "smcb" as const, expires: "2027-01-01", unlocked: true },
+  ];
+
+  /** Praxis (PC, Switch, Router, KT) am Internet; PVS auf dem Cloud-Server mit TI-Gateway im Rechenzentrum. */
+  const rz = (): Topology => ({
+    name: "rz",
+    description: "",
+    simDate: "2026-11-01",
+    zones: [],
+    nodes: [
+      node("pc1", "pc", { config: { workplace: "AP-1" } }),
+      node("kt1", "kt", { config: { workplace: "AP-1" }, cards }),
+      node("sw1", "switch"),
+      node("rt1", "router"),
+      node("net", "internet"),
+      node("cloud1", "cloud"),
+      node("pvs1", "pvs"),
+      node("gw1", "gateway"),
+      node("vpn1", "vpn"),
+      node("zen", "zentral"),
+      node("erp1", "erp"),
+      node("idp1", "idp"),
+      node("zeta1", "zeta"),
+      node("popp1", "popp"),
+    ],
+    edges: [
+      link("pc1", "eth0", "sw1", "p1"),
+      link("kt1", "lan0", "sw1", "p2"),
+      link("sw1", "p3", "rt1", "lan1"),
+      link("rt1", "wan", "net", "netz"),
+      link("net", "netz", "cloud1", "inet"),
+      link("pvs1", "host", "cloud1", "soft"),
+      link("cloud1", "lan", "gw1", "lan"),
+      link("gw1", "wan", "net", "netz"),
+      link("gw1", "vpn", "vpn1", "zugang"),
+      link("vpn1", "internet", "net", "netz"),
+      link("vpn1", "zentral", "zen", "netz"),
+      link("zen", "netz", "erp1", "ti"),
+      link("zen", "netz", "idp1", "ti"),
+      link("net", "netz", "zeta1", "net"),
+      link("net", "netz", "popp1", "net"),
+    ],
+  });
+
+  it("#221: Cloud-Server hängt an Internet und TI-Gateway, nicht am Konnektor oder Switch", () => {
+    const t = rz();
+    t.edges = [];
+    expect(check(t, ["cloud1", "inet"], ["net", "netz"]).ok).toBe(true);
+    expect(check(t, ["cloud1", "lan"], ["gw1", "lan"]).ok).toBe(true);
+    expect(check(t, ["gw1", "wan"], ["net", "netz"]).ok).toBe(true);
+    // ohne Gateway: Konnektor weder am Internet noch am Cloud-Server
+    t.nodes = t.nodes.filter((n) => n.id !== "gw1");
+    t.nodes.push(node("kon1", "kon"));
+    expect(check(t, ["kon1", "wan"], ["net", "netz"]).ok).toBe(false);
+    expect(check(t, ["cloud1", "lan"], ["kon1", "lan"]).ok).toBe(false);
+    expect(check(t, ["cloud1", "lan"], ["sw1", "p1"]).ok).toBe(false);
+  });
+
+  it("#221: Der PC erbt die Software des Cloud-Servers über Router und Internet", () => {
+    const found = softwareOn(rz(), "pc1", catalog);
+    expect(found.map((f) => [f.node.id, f.own])).toEqual([["pvs1", false]]);
+  });
+
+  it("#221: TI 1.0 und TI 2.0 laufen aus der Cloud-Software über das Internet", () => {
+    const t = rz();
+    expect(actionsOf(t, "pc1", "advanced")).toEqual(
+      expect.arrayContaining([
+        "erezept-ausstellen",
+        "zeta-anmelden",
+        "popp-token-beantragen",
+      ]),
+    );
+    const pc = t.nodes.find((n) => n.id === "pc1") as Node;
+    for (const id of ["erezept", "popp"]) {
+      const flow = catalog.flows.find((f) => f.id === id);
+      if (!flow) throw new Error("Fixture fehlt");
+      const nodes = bindFlow(flow, pc, t, catalog).flatMap((s) => s.nodes);
+      expect(nodes).toEqual(expect.arrayContaining(["net", "cloud1"]));
+    }
+    const ti = resolvePath(t, "pvs1", "erp1", catalog);
+    expect(ti.ok && ti.zugang).toBe("gw1");
+  });
+
+  it("#221: Fällt der Praxis-Router aus, ist das Gateway nicht erreichbar", () => {
+    const t = rz();
+    const rt = t.nodes.find((n) => n.id === "rt1");
+    if (rt) rt.fault = true;
+    const r = resolvePath(t, "pc1", "erp1", catalog);
+    expect(r.ok).toBe(false);
+    expect(!r.ok && r.reason === "ausgefallen" && r.at).toBe("rt1");
+  });
+
+  it("#221: Zwei Einrichtungen am selben Internet teilen keine Server und keine Terminals", () => {
+    const t = rz();
+    t.nodes.push(
+      node("pcB", "pc", { config: { workplace: "AP-1" } }),
+      node("swB", "switch"),
+      node("rtB", "router"),
+      node("ktB", "kt", { config: { workplace: "AP-1" }, cards }),
+      node("srvB", "server"),
+      node("kisB", "kis"),
+    );
+    t.edges.push(
+      link("pcB", "eth0", "swB", "p1"),
+      link("ktB", "lan0", "swB", "p2"),
+      link("swB", "p3", "rtB", "lan1"),
+      link("rtB", "wan", "net", "netz"),
+      link("swB", "p4", "srvB", "eth0"),
+      link("kisB", "host", "srvB", "soft"),
+    );
+    // Der Cloud-Server ist über das Internet für alle da, der Server der Nachbarn nicht.
+    expect(softwareOn(t, "pc1", catalog).map((f) => f.node.id)).toEqual([
+      "pvs1",
+    ]);
+    expect(softwareOn(t, "pcB", catalog).map((f) => f.node.id)).toEqual([
+      "kisB",
+      "pvs1",
+    ]);
+    expect(terminalFor(t, "pcB", catalog, "lan")).toEqual({
+      status: "one",
+      terminal: "ktB",
+    });
+    expect(terminalFor(t, "pc1", catalog, "lan")).toEqual({
+      status: "one",
+      terminal: "kt1",
+    });
   });
 });

@@ -69,7 +69,7 @@
     },
     {
       "id": "prot-ps-zugang",
-      "a": { "types": ["pvs", "kis", "avs", "pflege"] },
+      "a": { "types": ["pvs", "kis", "avs", "pflege", "cloud"] },
       "b": { "capability": "zugang" },
       "label": "SOAP",
       "protocol": "SOAP, XML",

@@ -401,5 +401,48 @@
     },
     "source": ["gemILF_PS", "CGM_ManagedTI", "Concat_TIaaS"],
     "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-cloud-internet",
+    "a": {
+      "types": ["cloud"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "kinds": {
+      "a": ["net"]
+    },
+    "source": ["CGM_ManagedTI", "Concat_TIaaS"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-cloud-gateway",
+    "a": {
+      "types": ["cloud"]
+    },
+    "b": {
+      "types": ["gateway"]
+    },
+    "kinds": {
+      "a": ["eth"],
+      "b": ["eth"]
+    },
+    "source": ["CGM_ManagedTI", "Concat_TIaaS", "gemF_TI-Gateway"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-gateway-internet",
+    "a": {
+      "types": ["gateway"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "kinds": {
+      "a": ["wan"]
+    },
+    "source": ["gemF_TI-Gateway", "Arch"],
+    "status": "Vereinfachung"
   }
 ]

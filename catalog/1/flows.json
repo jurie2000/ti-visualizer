@@ -529,7 +529,7 @@
         "from": "P",
         "to": "T",
         "label": "Authentisierung mit der SMC-B",
-        "text": "Das Primärsystem fordert vom Kartenterminal über das LAN die Authentisierung mit der SMC-B an."
+        "text": "Das Primärsystem fordert vom Kartenterminal die Authentisierung mit der SMC-B an: im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet."
       },
       {
         "from": "T",
@@ -541,7 +541,7 @@
         "from": "P",
         "to": "zeta",
         "label": "Anmeldung (über das Internet)",
-        "text": "Das Primärsystem meldet die Praxis über Router und Internet beim ZETA Guard an."
+        "text": "Das Primärsystem meldet die Praxis über das Internet beim ZETA Guard an."
       },
       {
         "from": "zeta",
@@ -561,13 +561,13 @@
         "from": "T",
         "to": "P",
         "label": "eGK-Daten",
-        "text": "Das Kartenterminal liefert die Daten der eGK über das LAN an das Primärsystem."
+        "text": "Das Kartenterminal liefert die Daten der eGK an das Primärsystem: im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet."
       },
       {
         "from": "P",
         "to": "popp",
         "label": "Token anfordern (über das Internet)",
-        "text": "Das Primärsystem beantragt den PoPP-Token über Router und Internet beim PoPP-Service."
+        "text": "Das Primärsystem beantragt den PoPP-Token über das Internet beim PoPP-Service."
       },
       {
         "from": "popp",
@@ -587,7 +587,7 @@
         "from": "P",
         "to": "zeta",
         "label": "Zugriff (über das Internet)",
-        "text": "Das Primärsystem schickt die Anfrage mit Access Token und PoPP-Token über Router und Internet an den ZETA Guard."
+        "text": "Das Primärsystem schickt die Anfrage mit Access Token und PoPP-Token über das Internet an den ZETA Guard."
       },
       {
         "from": "zeta",

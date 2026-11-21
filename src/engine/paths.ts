@@ -105,6 +105,7 @@ function search(
   catalog: Catalogue,
   kind: PathKind,
   ignoreFaults: boolean,
+  origin: string,
 ): { nodes: string[]; edges: string[] } | undefined {
   const byId = new Map(topology.nodes.map((n) => [n.id, n]));
   const start = byId.get(trigger);
@@ -116,8 +117,9 @@ function search(
   const lokal = kind !== "lan" && roleOf(start, catalog) === "local";
   // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
   // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
-  const home = new Set<string>([trigger]);
-  if (lokal) {
+  // Bei Cloud-Software gehört auch die Praxis des auslösenden Arbeitsplatzes dazu (`origin`, #226).
+  const home = new Set<string>([trigger, origin]);
+  if (lokal || kind === "lan") {
     for (const id of home)
       for (const e of topology.edges) {
         const [a, b] = e.ends;
@@ -160,11 +162,17 @@ function search(
         // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
         // Das Kartenterminal und der Rückweg zu ihm nutzen den Cloud-Server statt Gateway-WAN.
         if (phase === POST) return kind === "local" ? POST : -1;
+        // LAN-Weg aus der Cloud: ohne Gateway über das Internet zum Router der eigenen Praxis (ZETA, PoPP).
+        if (kind === "lan") return phase === LAN ? INET : -1;
         return phase === LAN || (phase === INET && (lokal || viaCloud))
           ? LAN
           : -1;
       case "net":
-        if (phase === POST && lokal && !home.has(n.id)) return -1;
+        if (
+          ((phase === POST && lokal) || (phase === INET && kind === "lan")) &&
+          !home.has(n.id)
+        )
+          return -1;
         return phase === LAN || phase === POST || phase === INET ? phase : -1;
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
@@ -172,7 +180,7 @@ function search(
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
         // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).
-        if (kind === "lan") return -1;
+        if (kind === "lan") return phase === INET ? INET : -1;
         if (phase === POST || phase === INET) return phase;
         return phase === LAN && (internetOnly || lokal) ? INET : -1;
       case "vpn":
@@ -183,7 +191,10 @@ function search(
         return phase === POST || (phase === INET && lokal) ? ZETA : -1;
       case "end":
         if (!isGoal) return -1;
-        if (kind === "lan") return phase === LAN && isNetTerminal(n) ? LAN : -1;
+        if (kind === "lan")
+          return (phase === LAN || phase === INET) && isNetTerminal(n)
+            ? phase
+            : -1;
         if (kind === "local") return phase === POST ? phase : -1;
         if (phase === VPN || phase === ZENTRAL || phase === ZETA) return phase;
         // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
@@ -192,6 +203,25 @@ function search(
         return phase === LAN && !direct ? -1 : phase;
     }
   };
+
+  // Ein Gateway am Cloud-Server hat sein Internet über ihn, nicht über den eigenen WAN-Anschluss. Gilt für jede Wegart (#226).
+  const cloudIds = new Set(
+    topology.nodes
+      .filter((n) => roleOf(n, catalog) === "cloud")
+      .map((n) => n.id),
+  );
+  const cloudGateways = new Set(
+    topology.edges.flatMap((e) => {
+      const [x, y] = e.ends;
+      const hit = (g: string, c: string) =>
+        cloudIds.has(c) && roleOf(byId.get(g) as Node, catalog) === "zugang"
+          ? [g]
+          : [];
+      return [...hit(x.node, y.node), ...hit(y.node, x.node)];
+    }),
+  );
+  const isWan = (g: string, o: string) =>
+    cloudGateways.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
   const prev = new Map<string, { from: string; edge: string } | null>([
@@ -220,6 +250,7 @@ function search(
       const other = a.node === id ? b.node : b.node === id ? a.node : undefined;
       const n = other === undefined ? undefined : byId.get(other);
       if (!n || (n.fault && !ignoreFaults)) continue;
+      if (isWan(id, n.id) || isWan(n.id, id)) continue;
       const p = next(phase, n, id === trigger);
       if (p < 0 || prev.has(key(n.id, p))) continue;
       prev.set(key(n.id, p), { from: key(id, phase), edge: e.id });
@@ -241,8 +272,9 @@ export function resolvePath(
   target: string,
   catalog: Catalogue,
   kind: PathKind = "ti",
+  origin: string = trigger,
 ): PathResult {
-  const ok = search(topology, trigger, target, catalog, kind, false);
+  const ok = search(topology, trigger, target, catalog, kind, false, origin);
   if (ok) {
     const zugang = ok.nodes.find((id) => {
       const n = topology.nodes.find((x) => x.id === id);
@@ -250,7 +282,15 @@ export function resolvePath(
     });
     return { ok: true, ...ok, ...(zugang ? { zugang } : {}) };
   }
-  const ignoring = search(topology, trigger, target, catalog, kind, true);
+  const ignoring = search(
+    topology,
+    trigger,
+    target,
+    catalog,
+    kind,
+    true,
+    origin,
+  );
   if (!ignoring) return { ok: false, reason: "kein-weg" };
   const faulty = new Set(
     [...topology.nodes, ...topology.edges]

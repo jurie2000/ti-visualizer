@@ -558,4 +558,224 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     t.edges = t.edges.filter((e) => e.id !== "kt1-sw1");
     expect(terminalFor(t, "pc1", catalog, "lan")).toEqual({ status: "none" });
   });
+
+  const flowSteps = (t: Topology, flowId: string, trigger: string) => {
+    const flow = catalog.flows.find((f) => f.id === flowId);
+    const from = t.nodes.find((n) => n.id === trigger);
+    if (!flow || !from) throw new Error("Fixture fehlt");
+    return bindFlow(flow, from, t, catalog);
+  };
+
+  it("#226: Cloud-PVS erreicht das Kartenterminal für ZETA und PoPP über das Internet, ohne TI-Gateway", () => {
+    const t = rz();
+    for (const id of ["zeta", "popp"]) {
+      const steps = flowSteps(t, id, "pc1");
+      expect(
+        steps.filter((s) => s.problem),
+        id,
+      ).toEqual([]);
+      for (const s of steps) expect(s.nodes.length).toBeGreaterThan(0);
+    }
+    const [toKt, fromKt] = flowSteps(t, "zeta", "pc1");
+    const way = ["pvs1", "cloud1", "net", "rt1", "sw1", "kt1"];
+    expect(toKt?.nodes).toEqual(way);
+    expect(fromKt?.nodes).toEqual([...way].reverse());
+  });
+
+  it("#226: ZETA und PoPP brauchen kein TI-Gateway am Cloud-Server", () => {
+    const t = rz();
+    t.nodes = t.nodes.filter((n) => n.id !== "gw1");
+    t.edges = t.edges.filter((e) => !e.ends.some((x) => x.node === "gw1"));
+    for (const id of ["zeta", "popp"]) {
+      const steps = flowSteps(t, id, "pc1");
+      expect(steps.filter((s) => s.problem)).toEqual([]);
+    }
+    expect(flowSteps(t, "zeta", "pc1")[0]?.nodes).toEqual([
+      "pvs1",
+      "cloud1",
+      "net",
+      "rt1",
+      "sw1",
+      "kt1",
+    ]);
+  });
+
+  it("#226: TI-1.0-Verkehr zum Terminal läuft über den Cloud-Server, auch wenn das Gateway mit dem WAN am Internet hängt", () => {
+    const t = rz();
+    t.edges.push(link("gw1", "wan", "net", "netz"));
+    const step = flowSteps(t, "vsdm", "pc1")[1];
+    expect(step?.problem).toBeUndefined();
+    expect(step?.nodes).toEqual(["gw1", "cloud1", "net", "rt1", "sw1", "kt1"]);
+  });
+
+  const withPraxisB = (t: Topology): Topology => {
+    t.nodes.push(
+      node("pcB", "pc", { config: { workplace: "AP-B" } }),
+      node("ktB", "kt", { config: { workplace: "AP-B" }, cards }),
+      node("swB", "switch"),
+      node("rtB", "router"),
+    );
+    t.edges.push(
+      link("pcB", "eth0", "swB", "p1"),
+      link("ktB", "lan0", "swB", "p2"),
+      link("swB", "p3", "rtB", "lan1"),
+      link("rtB", "wan", "net", "netz"),
+    );
+    return t;
+  };
+  const own = ["kt1", "sw1", "rt1"];
+  const other = ["ktB", "swB", "rtB"];
+
+  it("#226: Cloud-Weg und fremde Praxis: jede Praxis erreicht nur ihr eigenes Terminal", () => {
+    const t = withPraxisB(rz());
+    for (const id of ["zeta", "popp"]) {
+      const a = flowSteps(t, id, "pc1");
+      const b = flowSteps(t, id, "pcB");
+      for (const s of [...a, ...b]) expect(s.nodes.length).toBeGreaterThan(0);
+      for (const s of a)
+        for (const n of other) expect(s.nodes, `${id} pc1`).not.toContain(n);
+      for (const s of b)
+        for (const n of own) expect(s.nodes, `${id} pcB`).not.toContain(n);
+    }
+  });
+
+  describe("#226 alle Aktionen: Cloud und vor Ort binden gleich", () => {
+    const services = ["vsdm", "kim", "kk", "vzd", "epa", "idp", "erp", "vsdm2"];
+    const withServices = (t: Topology): Topology => {
+      for (const s of services) {
+        t.nodes.push(node(`${s}1`, s));
+        t.edges.push(
+          s === "vsdm2"
+            ? link("zeta1", "net", "vsdm21", "net")
+            : link("zen", "netz", `${s}1`, "ti"),
+        );
+      }
+      t.nodes.push(
+        node("kimcm1", "kimcm"),
+        node("avs1", "avs"),
+        node("cardlink1", "cardlink"),
+      );
+      // KIM ↔ Krankenkasse ist eine direkte Verbindung (Regelwerk 4.2)
+      t.edges.push(
+        link("cardlink1", "wan", "net", "netz"),
+        link("kim1", "ti", "kk1", "ti"),
+      );
+      return t;
+    };
+    const cloud = (): Topology => {
+      const t = withServices(rz());
+      t.edges.push(
+        link("avs1", "host", "cloud1", "soft"),
+        link("kimcm1", "lan0", "gw1", "lan"),
+        link("pvs1", "app", "kimcm1", "lan0"),
+      );
+      return t;
+    };
+    const vorOrt = (): Topology => {
+      const t = withServices(rz());
+      const drop = ["cloud1", "gw1"];
+      t.nodes = t.nodes.filter((n) => !drop.includes(n.id));
+      t.edges = t.edges.filter(
+        (e) => !e.ends.some((x) => drop.includes(x.node)),
+      );
+      t.nodes.push(node("kon1", "kon"));
+      t.edges.push(
+        link("kon1", "lan", "sw1", "p4"),
+        link("kon1", "wan", "rt1", "lan2"),
+        link("kon1", "vpn", "vpn1", "zugang"),
+        link("pvs1", "host", "pc1", "soft"),
+        link("avs1", "host", "pc1", "soft"),
+        link("kimcm1", "lan0", "sw1", "p5"),
+      );
+      return t;
+    };
+    const offered = (types: string[]) =>
+      catalog.actions.filter(
+        (a) =>
+          "types" in a.offeredBy &&
+          a.offeredBy.types.some((x) => types.includes(x)),
+      );
+
+    const aktionen = offered(["pvs", "avs"]);
+    it("Fremdpraxis: auch mit Gateway-WAN am Internet führt kein TI-1.0-Weg in Praxis B", () => {
+      const t = withPraxisB(cloud());
+      t.edges.push(link("gw1", "wan", "net", "netz"));
+      for (const id of ["vsdm", "erezept"]) {
+        const a = flowSteps(t, id, "pc1");
+        const b = flowSteps(t, id, "pcB");
+        for (const s of a)
+          for (const n of other) expect(s.nodes, `${id} pc1`).not.toContain(n);
+        for (const s of b)
+          for (const n of own) expect(s.nodes, `${id} pcB`).not.toContain(n);
+        expect(
+          b.some((s) => s.nodes.includes("ktB")),
+          id,
+        ).toBe(true);
+      }
+    });
+
+    it("vor Ort laufen ZETA und PoPP im LAN, ohne Internet und Gateway", () => {
+      for (const id of ["zeta", "popp"]) {
+        const [first] = flowSteps(vorOrt(), id, "pc1");
+        const way = ["pvs1", "pc1", "sw1", "kt1"];
+        expect(first?.nodes, id).toEqual(
+          id === "zeta" ? way : [...way].reverse(),
+        );
+      }
+    });
+
+    it("fällt der Router der Praxis aus, führt der Weg aus der Cloud nicht über Praxis B", () => {
+      const t = withPraxisB(cloud());
+      const rt = t.nodes.find((n) => n.id === "rt1");
+      if (rt) rt.fault = true;
+      for (const id of ["zeta", "popp"]) {
+        const [first] = flowSteps(t, id, "pc1");
+        for (const n of other) expect(first?.nodes, id).not.toContain(n);
+      }
+    });
+
+    it("deckt Aktionen ab", () => {
+      expect(aktionen.length).toBeGreaterThan(0);
+    });
+
+    it.each(aktionen.map((a) => [a.id, a.flow]))(
+      "Aktion %s: Cloud bindet wie vor Ort, der Weg zum Terminal führt über Internet und Router der Praxis",
+      (_id, flowId) => {
+        const ort = flowSteps(vorOrt(), flowId, "pc1");
+        const rzSteps = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        const flow = catalog.flows.find((f) => f.id === flowId);
+        expect(rzSteps).toHaveLength(flow?.steps.length ?? -1);
+        expect(rzSteps.map((s) => s.label)).toEqual(ort.map((s) => s.label));
+        const ends = (steps: typeof ort) =>
+          steps.map((s) => [s.nodes.at(0), s.nodes.at(-1)]);
+        expect(rzSteps.map((s) => s.problem)).toEqual(ort.map(() => undefined));
+        expect(ort.map((s) => s.problem)).toEqual(ort.map(() => undefined));
+        // Schritte ohne Weg (z. B. Rolle E) gibt es vor Ort genauso
+        expect(rzSteps.map((s) => s.nodes.length > 0)).toEqual(
+          ort.map((s) => s.nodes.length > 0),
+        );
+        // Das Gateway ersetzt den Konnektor als Zugang (K)
+        expect(ends(rzSteps)).toEqual(
+          ends(ort).map((e) => e.map((n) => (n === "kon1" ? "gw1" : n))),
+        );
+        const nodes = (steps: typeof ort) => steps.flatMap((s) => s.nodes);
+        for (const n of other) expect(nodes(rzSteps)).not.toContain(n);
+        // Terminalwege laufen über Internet und Router der Praxis; das Gateway nur, wenn der Ablauf einen Zugang (K) hat
+        const viaGateway = flow?.steps.some(
+          (x) => x.from === "K" || x.to === "K",
+        );
+        for (const s of rzSteps.filter((x) => x.nodes.includes("kt1")))
+          expect(s.nodes).toEqual(
+            expect.arrayContaining([
+              "net",
+              "rt1",
+              "sw1",
+              ...(viaGateway ? ["gw1"] : []),
+            ]),
+          );
+        if (!viaGateway)
+          for (const s of rzSteps) expect(s.nodes).not.toContain("gw1");
+      },
+    );
+  });
 });

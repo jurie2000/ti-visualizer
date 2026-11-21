@@ -58,18 +58,19 @@ function between(
   b: string,
   catalog: Cat,
   lan: boolean,
+  origin: string,
 ): Path | Problem {
   if (a === b) return { nodes: [a], edges: [] };
   let problem: Problem = { kind: "kein-weg" };
   // Der LAN-Weg gilt nur für Abläufe ohne Zugang (#215); sonst verdeckte er dessen Ausfall.
   for (const kind of lan
-    ? (["ti", "local", "lan"] as const)
+    ? (["lan", "ti", "local"] as const)
     : (["ti", "local"] as const)) {
     for (const [x, y] of [
       [a, b],
       [b, a],
     ] as const) {
-      const r = resolvePath(topology, x, y, catalog, kind);
+      const r = resolvePath(topology, x, y, catalog, kind, origin);
       if (r.ok)
         return x === a
           ? r
@@ -143,7 +144,8 @@ function roleBinder(
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>
       anchors.some(
-        (a) => a && "nodes" in between(topology, a, c.id, catalog, lan),
+        (a) =>
+          a && "nodes" in between(topology, a, c.id, catalog, lan, trigger.id),
       ),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
   const zugaenge = topology.nodes.filter((n) =>
@@ -216,7 +218,7 @@ export function bindFlow(
     const open = [s.from, s.to].some((x) => x === "T" || x === "K");
     const r: Path | Problem =
       a && b
-        ? between(topology, a, b, catalog, lan)
+        ? between(topology, a, b, catalog, lan, trigger.id)
         : { kind: open && choosing ? "terminal-waehlen" : "fehlt" };
     return "nodes" in r
       ? { ...base, ...r }

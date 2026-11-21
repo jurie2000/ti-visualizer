@@ -64,7 +64,7 @@ function between(
   let problem: Problem = { kind: "kein-weg" };
   // Der LAN-Weg gilt nur für Abläufe ohne Zugang (#215); sonst verdeckte er dessen Ausfall.
   for (const kind of lan
-    ? (["ti", "local", "lan"] as const)
+    ? (["lan", "ti", "local"] as const)
     : (["ti", "local"] as const)) {
     for (const [x, y] of [
       [a, b],

@@ -566,7 +566,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     return bindFlow(flow, from, t, catalog);
   };
 
-  it("#226: Cloud-PVS findet den Weg zum Kartenterminal über Gateway, Cloud-Server und Router der Praxis", () => {
+  it("#226: Cloud-PVS erreicht das Kartenterminal für ZETA und PoPP über das Internet, ohne TI-Gateway", () => {
     const t = rz();
     for (const id of ["zeta", "popp"]) {
       const steps = flowSteps(t, id, "pc1");
@@ -577,9 +577,35 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       for (const s of steps) expect(s.nodes.length).toBeGreaterThan(0);
     }
     const [toKt, fromKt] = flowSteps(t, "zeta", "pc1");
-    const way = ["pvs1", "cloud1", "gw1", "cloud1", "net", "rt1", "sw1", "kt1"];
+    const way = ["pvs1", "cloud1", "net", "rt1", "sw1", "kt1"];
     expect(toKt?.nodes).toEqual(way);
     expect(fromKt?.nodes).toEqual([...way].reverse());
+  });
+
+  it("#226: ZETA und PoPP brauchen kein TI-Gateway am Cloud-Server", () => {
+    const t = rz();
+    t.nodes = t.nodes.filter((n) => n.id !== "gw1");
+    t.edges = t.edges.filter((e) => !e.ends.some((x) => x.node === "gw1"));
+    for (const id of ["zeta", "popp"]) {
+      const steps = flowSteps(t, id, "pc1");
+      expect(steps.filter((s) => s.problem)).toEqual([]);
+    }
+    expect(flowSteps(t, "zeta", "pc1")[0]?.nodes).toEqual([
+      "pvs1",
+      "cloud1",
+      "net",
+      "rt1",
+      "sw1",
+      "kt1",
+    ]);
+  });
+
+  it("#226: TI-1.0-Verkehr zum Terminal läuft über den Cloud-Server, auch wenn das Gateway mit dem WAN am Internet hängt", () => {
+    const t = rz();
+    t.edges.push(link("gw1", "wan", "net", "netz"));
+    const step = flowSteps(t, "vsdm", "pc1")[1];
+    expect(step?.problem).toBeUndefined();
+    expect(step?.nodes).toEqual(["gw1", "cloud1", "net", "rt1", "sw1", "kt1"]);
   });
 
   const withPraxisB = (t: Topology): Topology => {
@@ -676,7 +702,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     });
 
     it.each(aktionen.map((a) => [a.id, a.flow]))(
-      "Aktion %s: Cloud bindet wie vor Ort, nur der Weg zum Terminal führt über Gateway und Internet",
+      "Aktion %s: Cloud bindet wie vor Ort, der Weg zum Terminal führt über Internet und Router der Praxis",
       (_id, flowId) => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
         const rzSteps = flowSteps(withPraxisB(cloud()), flowId, "pc1");
@@ -697,9 +723,18 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
         );
         const nodes = (steps: typeof ort) => steps.flatMap((s) => s.nodes);
         for (const n of other) expect(nodes(rzSteps)).not.toContain(n);
+        // Terminalwege laufen über Internet und Router der Praxis; das Gateway nur, wenn der Ablauf einen Zugang (K) hat
+        const viaGateway = flow?.steps.some(
+          (x) => x.from === "K" || x.to === "K",
+        );
         for (const s of rzSteps.filter((x) => x.nodes.includes("kt1")))
           expect(s.nodes).toEqual(
-            expect.arrayContaining(["gw1", "net", "rt1", "sw1"]),
+            expect.arrayContaining([
+              "net",
+              "rt1",
+              "sw1",
+              ...(viaGateway ? ["gw1"] : []),
+            ]),
           );
       },
     );

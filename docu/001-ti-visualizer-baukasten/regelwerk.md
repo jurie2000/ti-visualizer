@@ -512,8 +512,8 @@ Zentrales Netz (optional) → **Dienst**
 **ZETA Guard** → Dienst. Ohne VPN-Zugangsdienst und ohne Zentrales Netz.
 Das Primärsystem spricht das Kartenterminal direkt über das LAN an, ein
 Zugang ist nicht nötig. Bei Cloud-Software erreicht das Primärsystem das
-Terminal über TI-Gateway, Cloud-Server, Internet und den Router der Praxis
-(#226). Der VPN-Pfad oben gilt unverändert.
+Terminal über Cloud-Server, Internet und den Router der Praxis, ohne
+TI-Gateway (#226). Der VPN-Pfad oben gilt unverändert.
 
 - Wege im VPN-Pfad, die den Zugang oder den VPN-Zugangsdienst auslassen,
   zählen nicht als TI-Pfad, auch wenn sie über das Internet zum Dienst
@@ -565,8 +565,12 @@ Status: Vereinfachung nach Arch und gemILF_PS (Cloud: CGM_ManagedTI,
 Concat_TIaaS).
 
 Auslegung (2026-11-21, Issue #226): Läuft das Primärsystem in der Cloud,
-ist der Weg Primärsystem ↔ Terminal: Cloud-Software → Cloud-Server →
-TI-Gateway → Cloud-Server → Internet → Router → Switch → Kartenterminal.
+ist der TI-2.0-Weg Primärsystem ↔ Terminal (ZETA, PoPP): Cloud-Software →
+Cloud-Server → Internet → Router → Switch → Kartenterminal, ohne TI-Gateway.
+Der TI-1.0-Verkehr (Zugang K) läuft ebenfalls über den Cloud-Server:
+Kartenterminal ↔ TI-Gateway über Router, Internet und Cloud-Server, auch
+wenn der WAN-Anschluss des Gateways am Internet hängt. Ein Gateway am
+Cloud-Server nutzt sein WAN nicht für den Weg zum Terminal.
 Eigen sind die Netzgeräte der Praxis des auslösenden Arbeitsplatzes (der
 Rechner, der die Aktion auslöst), nicht die der Cloud-Software, die mehrere
 Praxen bedient. Fremde Praxen am selben Internet bleiben außen vor.

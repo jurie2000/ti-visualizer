@@ -2,6 +2,7 @@ import {
   Background,
   MiniMap,
   ReactFlow,
+  SelectionMode,
   useReactFlow,
   type EdgeTypes,
   type NodeChange,
@@ -20,6 +21,7 @@ import {
   useTopology,
   useUi,
 } from "../store";
+import type { Selection } from "../store/uiStore";
 import { useToast } from "../ui/Toast";
 import { ExclusionDialog } from "../dialogs/ExclusionDialog";
 import { PortPicker } from "../dialogs/PortPicker";
@@ -68,6 +70,44 @@ const ariaLabelConfig = {
   "minimap.ariaLabel": "Übersichtskarte",
   "handle.ariaLabel": "Anschlusspunkt",
 };
+
+/**
+ * Auswahl nach einer Änderungsliste von React Flow, `"keep"` ohne Auswahländerung.
+ * Eine Zone zählt nur, wenn sie allein gewählt wird: ein aufgezogener Bereich
+ * überlappt oft Zonen und soll nur Geräte erfassen (Issue #220).
+ */
+export function selectionFrom(
+  changes: { type: string; id?: string; selected?: boolean }[],
+  current: Selection,
+  zoneIds: ReadonlySet<string>,
+): Selection | "keep" {
+  const picks = changes.filter((c) => c.type === "select");
+  if (picks.length === 0) return "keep";
+  const ids = new Set(
+    current?.kind === "multi"
+      ? current.ids
+      : current?.kind === "node"
+        ? [current.id]
+        : [],
+  );
+  let zone: string | undefined;
+  let added = 0;
+  for (const c of picks) {
+    if (!c.id) continue;
+    if (!c.selected) ids.delete(c.id);
+    else if (zoneIds.has(c.id)) zone = c.id;
+    else {
+      ids.add(c.id);
+      added++;
+    }
+  }
+  if (added === 0 && zone) return { kind: "zone", id: zone };
+  const list = [...ids];
+  if (list.length > 1) return { kind: "multi", ids: list };
+  const [only] = list;
+  if (only) return { kind: "node", id: only };
+  return "keep";
+}
 
 /**
  * Die Canvas zeigt die Topologie aus dem Store und schreibt Änderungen nur über
@@ -160,6 +200,12 @@ export function Canvas() {
     changes: NodeChange<DeviceFlowNode | ZoneFlowNode>[],
   ) => {
     const dropped: Record<string, Point> = {};
+    const picked = selectionFrom(
+      changes,
+      selection,
+      new Set(topology.zones.map((z) => z.id)),
+    );
+    if (picked !== "keep") select(picked);
     for (const c of changes) {
       // Der Anfasser einer Zone meldet Lage und Größe selbst (ZoneNode), nicht als Verschieben
       if (
@@ -205,9 +251,6 @@ export function Canvas() {
       } else if (c.type === "dimensions" && c.dimensions) {
         const size = c.dimensions;
         setSizes((m) => ({ ...m, [c.id]: size }));
-      } else if (c.type === "select" && c.selected) {
-        const isZone = topology.zones.some((z) => z.id === c.id);
-        select({ kind: isZone ? "zone" : "node", id: c.id });
       }
     }
     const ids = Object.keys(dropped);
@@ -280,6 +323,12 @@ export function Canvas() {
             .filter(Boolean)
             .join(" ") || undefined
         }
+        selectionOnDrag
+        selectionMode={SelectionMode.Partial}
+        panOnDrag={[1, 2]}
+        onSelectionStart={() => {
+          select(undefined);
+        }}
         nodesDraggable={!locked}
         nodesConnectable={!locked}
         onConnect={connecting.onConnect}

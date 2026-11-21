@@ -19,7 +19,7 @@ import {
   useUi,
 } from "../store";
 import { ToastProvider } from "../ui/Toast";
-import { Canvas } from "./Canvas";
+import { Canvas, selectionFrom } from "./Canvas";
 
 const praxis = (() => {
   const preset = loadCatalog().presets.find((p) => p.id === "praxis");
@@ -437,5 +437,43 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
     fireEvent.pointerMove(el, { clientX: 40, clientY: 50, pointerId: 1 });
     fireEvent.pointerUp(el, { pointerId: 1 });
     expect(waypoints()).toHaveLength(1);
+  });
+});
+
+describe("selectionFrom (Issue #220)", () => {
+  const zones = new Set(["z1"]);
+  const pick = (id: string, selected = true) => ({
+    type: "select",
+    id,
+    selected,
+  });
+
+  it("fasst einen aufgezogenen Bereich zu einer Mehrfachauswahl zusammen", () => {
+    expect(
+      selectionFrom([pick("a"), pick("b"), pick("z1")], undefined, zones),
+    ).toEqual({ kind: "multi", ids: ["a", "b"] });
+  });
+
+  it("wählt eine allein gewählte Zone als Zone", () => {
+    expect(selectionFrom([pick("z1")], undefined, zones)).toEqual({
+      kind: "zone",
+      id: "z1",
+    });
+  });
+
+  it("ergänzt und entfernt Geräte mit Umschalttaste", () => {
+    const current = { kind: "node", id: "a" } as const;
+    const two = selectionFrom([pick("b")], current, zones);
+    expect(two).toEqual({ kind: "multi", ids: ["a", "b"] });
+    expect(selectionFrom([pick("a", false)], two as never, zones)).toEqual({
+      kind: "node",
+      id: "b",
+    });
+  });
+
+  it("ändert nichts ohne Auswahländerung", () => {
+    expect(selectionFrom([{ type: "position" }], undefined, zones)).toBe(
+      "keep",
+    );
   });
 });

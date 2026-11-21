@@ -342,6 +342,11 @@ function Body({ sel }: { sel: Selection }) {
       );
     }
   }
+  if (sel?.kind === "multi") {
+    found = true;
+    title = `${String(sel.ids.length)} Geräte ausgewählt`;
+    content = <p>Ziehen verschiebt alle gemeinsam.</p>;
+  }
   if (sel && !found) content = <p>Die Auswahl gibt es nicht mehr.</p>;
   return (
     <Titled title={title} head={head}>

@@ -189,8 +189,10 @@ describe("Verbinden per Klick: Punkt, dann Zielgerät", () => {
     expect(ziel("rt1")).toHaveClass("is-active");
     const pane = document.querySelector<HTMLElement>(".react-flow__pane");
     if (!pane) throw new Error("Fläche fehlt");
-    // nur `click`: das `mousedown` von user.click scheitert in jsdom an d3-zoom
-    fireEvent.click(pane);
+    // Mit Aufziehen (Issue #220) wertet React Flow den Klick aus Zeiger-Ereignissen aus;
+    // das `mousedown` von user.click scheitert in jsdom an d3-zoom
+    fireEvent.pointerDown(pane, { button: 0, isPrimary: true, pointerId: 1 });
+    fireEvent.pointerUp(pane, { button: 0, isPrimary: true, pointerId: 1 });
     expect(ziel("rt1")).not.toHaveClass("is-active");
   });
 });

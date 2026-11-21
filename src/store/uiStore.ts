@@ -2,7 +2,10 @@ import { create } from "zustand";
 import type { ZoneShape } from "../schema";
 
 export type Selection =
-  { kind: "node" | "edge" | "zone"; id: string } | undefined;
+  | { kind: "node" | "edge" | "zone"; id: string }
+  /** Mehrere Geräte, aufgezogen oder mit Umschalt/Strg angeklickt (Issue #220). */
+  | { kind: "multi"; ids: string[] }
+  | undefined;
 
 /** Gewählte Aktion aus dem Kontextmenü; der Player (T-405) spielt sie ab. */
 export interface PendingAction {

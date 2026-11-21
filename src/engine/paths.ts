@@ -45,7 +45,17 @@ const INET = 4; // reiner Internet-Weg ohne Zugang
 const ZETA = 5; // am ZETA Guard (TI 2.0)
 
 type Role =
-  "local" | "net" | "zugang" | "internet" | "vpn" | "zentral" | "zeta" | "end";
+  | "local"
+  | "cloud"
+  | "net"
+  | "zugang"
+  | "internet"
+  | "vpn"
+  | "zentral"
+  | "zeta"
+  | "end";
+
+const HOME_ROLES: Role[] = ["local", "cloud", "net", "zugang"];
 
 function roleOf(node: Node, catalog: Catalogue): Role {
   const t = catalog.deviceTypes.find((d) => d.id === node.type);
@@ -58,6 +68,7 @@ function roleOf(node: Node, catalog: Catalogue): Role {
     t.id === "zeta"
   )
     return t.id;
+  if (t.id === "cloud") return "cloud";
   if (t.category === "lan") return "net";
   return t.category === "primary" || t.category === "computer"
     ? "local"
@@ -100,19 +111,33 @@ function search(
   const goal = byId.get(target);
   if (!start || !goal || trigger === target) return undefined;
   if (start.fault && !ignoreFaults) return undefined;
-  // TI 2.0 braucht keinen Zugang: Primärsystem und Rechner gehen über den Router ins Internet (#215).
-  const lokal = kind === "ti" && roleOf(start, catalog) === "local";
+  // Primärsystem und Rechner gehen über den Router ins Internet: TI 2.0 ohne Zugang (#215),
+  // Cloud-Software mit Gateway im Rechenzentrum, auch für den Weg zum Terminal (#221).
+  const lokal = kind !== "lan" && roleOf(start, catalog) === "local";
+  // Eigene Praxis: Geräte, die der Auslöser ohne Internet erreicht. Hinter dem Gateway
+  // führt das Internet nur dorthin zurück, nie in fremde Router (Regelwerk 6.0, #221).
+  const home = new Set<string>([trigger]);
+  if (lokal) {
+    for (const id of home)
+      for (const e of topology.edges) {
+        const [a, b] = e.ends;
+        const o = a.node === id ? b.node : b.node === id ? a.node : undefined;
+        const n = o === undefined ? undefined : byId.get(o);
+        if (n && HOME_ROLES.includes(roleOf(n, catalog))) home.add(n.id);
+      }
+  }
   const capsOf = (n: Node) =>
     catalog.deviceTypes.find((d) => d.id === n.type)?.capabilities ?? [];
-  const internetOnly =
-    kind === "ti" &&
-    (goal.type === "popp" ||
-      (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
-      (start.type === "cardlink" && roleOf(goal, catalog) === "zugang"));
   // Ein Kartenterminal oder CardLink (Ziel bei `local`, Auslöser bei `ti`)
   // nutzt nur seinen Zugang.
   const hasSlots = (n: Node) =>
     capsOf(n).some((c) => c === "cardSlots" || c === "netConfig:terminal");
+  const internetOnly =
+    kind === "ti" &&
+    (goal.type === "popp" ||
+      (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
+      (hasSlots(start) && roleOf(goal, catalog) === "zugang"));
+  const viaCloud = internetOnly && hasSlots(start);
   const isNetTerminal = (n: Node) =>
     capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");
   const terminal =
@@ -131,14 +156,23 @@ function search(
     switch (roleOf(n, catalog)) {
       case "local":
         return phase === LAN ? LAN : -1;
+      case "cloud":
+        // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
+        // Das Kartenterminal und der Rückweg zu ihm nutzen den Cloud-Server statt Gateway-WAN.
+        if (phase === POST) return kind === "local" ? POST : -1;
+        return phase === LAN || (phase === INET && (lokal || viaCloud))
+          ? LAN
+          : -1;
       case "net":
+        if (phase === POST && lokal && !home.has(n.id)) return -1;
         return phase === LAN || phase === POST || phase === INET ? phase : -1;
       case "zugang":
         if (fixedZugang !== undefined && n.id !== fixedZugang) return -1;
         if (phase === LAN) return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
-        if (kind !== "ti") return -1;
+        // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).
+        if (kind === "lan") return -1;
         if (phase === POST || phase === INET) return phase;
         return phase === LAN && (internetOnly || lokal) ? INET : -1;
       case "vpn":
@@ -347,6 +381,11 @@ export function softwareOn(
       seen.add(n.id);
       const t = type(n);
       if (t?.category === "lan") queue.push(n.id);
+      // Über das Internet nur Cloud-Server, nicht weiter in fremde Netze (#221).
+      else if (t?.id === "internet") {
+        for (const c of neighbours(n.id))
+          if (c.n.type === "cloud") take(c.n.id, false);
+      }
       // Server: Rechner ohne Arbeitsplatz
       else if (
         t?.category === "computer" &&

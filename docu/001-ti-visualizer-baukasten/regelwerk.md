@@ -44,7 +44,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). Das Modell vereinfacht: Die TI-Aktionen der Cloud-Software gehen vom PC der Praxis über den Konnektor der Praxis (Weg: Cloud-Server, PC, Switch, Konnektor). Ein Konnektor oder TI-Gateway im Rechenzentrum ist nicht Teil des Modells.
+**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). **Auslegung (2026-11-21, Issue #221):** Der Cloud-Server steht für das Rechenzentrum des Anbieters. Dort hängt ein TI-Gateway am Cloud-Server (LAN) und am VPN-Zugangsdienst; sein WAN am Internet bleibt erlaubt, wird für den Weg des Kartenterminals aber nicht gebraucht (Auslegung 2026-11-21, Issue #221: Kartenterminal → Internet → Cloud-Server → Gateway). Die Software der Cloud erreicht die TI über dieses Gateway (TI 1.0) bzw. über das Internet zu ZETA Guard und PoPP-Service (TI 2.0). Ein Konnektor im Rechenzentrum bleibt ausgeschlossen (X-1). Der Kurzweg PC ↔ Cloud-Server (Internet-Zugriff) bleibt. Quellen: CGM_ManagedTI, Concat_TIaaS (nicht gematik, quellen.md Abschnitt 7), gemF_TI-Gateway. Status: Vereinfachung.
 
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
@@ -206,7 +206,7 @@ Abschnitt 5.
 | PVS, AVS, Pflege | Anwendung (`app`, mehrfach), Läuft auf (`host`, mehrfach: dieselbe Software läuft auf mehreren Rechnern) | Vereinfachung (Software hat kein Ethernet, das Kabel hängt am Rechner) | gemILF_PS |
 | PC | Ethernet0, USB0, USB1, Software (`host`, mehrfach), Internet-Zugriff (`web`, mehrfach) | Mockup, plausibel; „Software“ und „Internet-Zugriff“ Vereinfachung | gemILF_PS |
 | Server | Ethernet0, Ethernet1, Software (`host`, mehrfach) | plausibel | gemILF_PS, DVO |
-| Cloud-Server | Internet-Zugriff (`web`, mehrfach), Software (`host`, mehrfach) | Vereinfachung | gemILF_PS |
+| Cloud-Server | Internet (`net`, mehrfach), LAN (`eth`, mehrfach, zum TI-Gateway im Rechenzentrum), Internet-Zugriff (`web`, mehrfach), Software (`host`, mehrfach) | Vereinfachung (Auslegung 2026-11-21, Issue #221) | gemILF_PS, CGM_ManagedTI, Concat_TIaaS |
 | KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung | KH, gemILF_PS |
 | RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
@@ -300,8 +300,8 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Verbindung | Protokoll und Datenformat | Netzport | TLS | Status | Quelle |
 |---|---|---|---|---|---|
 | eHealth-KT ↔ Zugang | SICCT, nach Pairing | 4742 | ja | bestätigt (Netzport plausibel) | gemSpec_KT |
-| CardLink ↔ Zugang | wie Kartenterminal, über das Internet | offen | ja | plausibel | gemSpec_eHealth-CardLink (A_24769); Netzweg offen (12) |
-| Primärsystem ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
+| Kartenterminal, CardLink ↔ Zugang | wie Kartenterminal, über das Internet (Kartenterminal in der Praxis, Zugang im Rechenzentrum: Auslegung 2026-11-21, Issue #221) | offen | ja | plausibel | gemSpec_eHealth-CardLink (A_24769); Netzweg offen (12) |
+| Primärsystem, Cloud-Server ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
 | Mobiles KT ↔ Primärsystem oder PC | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |
 | Switch ↔ TI-Gateway | IPsec (IKEv2) vom TI-Gateway über das Praxisnetz | UDP 500 und 4500 | nein (IPsec) | plausibel | gemF_TI-Gateway |
@@ -389,6 +389,9 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | PC, Server | Switch, Router-LAN | plausibel | DVO |
 | PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung | gemILF_PS |
 | PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung | gemILF_PS |
+| Cloud-Server | Internet | Vereinfachung (Issue #221) | CGM_ManagedTI, Concat_TIaaS |
+| Cloud-Server (LAN) | TI-Gateway (LAN), nicht Konnektor, nicht Switch | Vereinfachung (Issue #221) | CGM_ManagedTI, Concat_TIaaS, gemF_TI-Gateway |
+| TI-Gateway (WAN) | Internet, nur TI-Gateway, nicht Konnektor | Vereinfachung (Issue #221) | gemF_TI-Gateway, Arch |
 | Visite-Tablet | Access Point, Router-WLAN | plausibel | KH |
 | RIS, LIS | KIS (HL7-Schnittstelle) | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | bestätigt | gemSpec_CM_KOMLE |
@@ -409,7 +412,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
 | Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | bestätigt | Betriebsarten, gemSpec_Kon |
-| Zugang | VPN-Zugangsdienst (direkt, über `tun`) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
+| Zugang | VPN-Zugangsdienst (direkt, über `tun`; Auslegung 2026-11-21, Issue #221: nur `tun` an `tun`, damit der WAN-Anschluss des Zugangs für das Internet frei bleibt) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
 | VPN-Zugangsdienst | Internet | bestätigt | Arch |
 | VPN-Zugangsdienst | Zentrales Netz | bestätigt | Arch |
 | VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
@@ -519,7 +522,10 @@ Zugang ist nicht nötig. Der VPN-Pfad oben gilt unverändert.
   E-Rezept-App ↔ E-Rezept-Dienst, IdP, sektoraler IdP ·
   ePA-App ↔ ePA-Dienst, sektoraler IdP ·
   TI-Messenger-Client ↔ TI-Messenger ·
-  CardLink ↔ sein Zugang · jeder Auslöser ↔ PoPP.
+  CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, über den Cloud-Server, #221) · jeder Auslöser ↔ PoPP.
+- Hinter dem Zugang führt das Internet nur in die eigenen Netzgeräte des
+  Auslösers zurück, nie in fremde Router (Terminal einer anderen Einrichtung
+  am selben Internet, #221).
 - **Mehrere Zugänge im Netz:** Ein Kartenterminal gehört zu dem Zugang,
   mit dem es gepairt ist (`pairedWith` in der TerminalConfig). Bei einer
   direkten Verbindung ist das der verbundene Zugang. Fehlt beides und gibt
@@ -540,7 +546,21 @@ beschränkt, die Erlaubnisliste (4.2) legt es fest.
 Status: plausibel (Entwurfsstände und Folien, Quellen: gemSpec_ZETA,
 Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2).
 
-Status: Vereinfachung nach Arch und gemILF_PS.
+Auslegung (2026-11-21, Issue #221): Cloud-Software im Rechenzentrum. Das
+Internet zwischen Praxis und Rechenzentrum zählt zum Weg vor dem Zugang:
+Auslöser → LAN → Router → Internet → Cloud-Server → TI-Gateway (Zugang) →
+Internet → VPN-Zugangsdienst → …. Der Cloud-Server führt ins LAN des
+Rechenzentrums zurück, das Internet davor ist kein Weg hinter den Zugang.
+TI 2.0 geht von der Cloud-Software über Internet zu ZETA Guard und
+PoPP-Service. Das Kartenterminal in der Praxis erreicht seinen Zugang im
+Rechenzentrum über Router, Internet und Cloud-Server (LAN-Anschluss des
+Gateways), nicht über das WAN des Gateways; der Gegenweg PC → Gateway →
+Kartenterminal läuft ebenso. CardLink verhält sich wie das Kartenterminal. Der LAN-Weg zu einem
+Netz-Kartenterminal (`lan`) kreuzt das Internet nie, sonst erreichte die
+Cloud fremde Praxen. Hinter dem Internet sucht die Software-Zuordnung
+(Arbeitsplatz → Cloud-Server) nicht weiter und betritt keine fremden Router.
+Status: Vereinfachung nach Arch und gemILF_PS (Cloud: CGM_ManagedTI,
+Concat_TIaaS).
 
 ### 6.1 Bausteine der Voraussetzungen
 

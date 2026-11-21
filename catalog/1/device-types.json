@@ -274,12 +274,28 @@
     "id": "cloud",
     "abbr": "Cloud",
     "name": "Cloud-Server (SaaS)",
-    "description": "Hier läuft Software als Dienst im Internet (SaaS). Der PC bekommt sie über das Internet, die Software läuft auf dem Server im Rechenzentrum. Die TI-Aktionen gehen vom PC der Praxis über den Konnektor der Praxis (Vereinfachung).",
+    "description": "Hier läuft Software als Dienst im Internet (SaaS). Der PC bekommt sie über das Internet, die Software läuft auf dem Server im Rechenzentrum. Der Cloud-Server steht für das Rechenzentrum: Er hängt am Internet und am TI-Gateway des Anbieters, darüber erreicht die Software die TI.",
     "category": "computer",
     "icon": "cloud",
     "placeable": true,
     "capabilities": [],
     "ports": [
+      {
+        "id": "inet",
+        "name": "Internet",
+        "kind": "net",
+        "multi": true,
+        "source": ["CGM_ManagedTI", "Concat_TIaaS"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "lan",
+        "name": "LAN (Rechenzentrum)",
+        "kind": "eth",
+        "multi": true,
+        "source": ["CGM_ManagedTI", "Concat_TIaaS"],
+        "status": "Vereinfachung"
+      },
       {
         "id": "web",
         "name": "Internet-Zugriff",

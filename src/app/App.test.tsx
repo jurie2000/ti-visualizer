@@ -72,7 +72,7 @@ describe("App-Shell", () => {
       screen.getByRole("heading", { name: "Preset-Bibliothek" }),
     ).toBeInTheDocument();
     await user.click(screen.getByRole("link", { name: "Zur Startansicht" }));
-    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    expect(await screen.findAllByRole("listitem")).toHaveLength(5);
   });
 
   it("Issue #184: laufendes Tutorial macht das Tutorial-Feld zum Fortsetzen-Feld, kein zweiter Button", async () => {

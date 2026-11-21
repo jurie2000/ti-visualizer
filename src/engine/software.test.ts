@@ -582,8 +582,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     expect(fromKt?.nodes).toEqual([...way].reverse());
   });
 
-  it("#226: Cloud-Weg und fremde Praxis: jede Praxis erreicht nur ihr eigenes Terminal", () => {
-    const t = rz();
+  const withPraxisB = (t: Topology): Topology => {
     t.nodes.push(
       node("pcB", "pc", { config: { workplace: "AP-B" } }),
       node("ktB", "kt", { config: { workplace: "AP-B" }, cards }),
@@ -596,15 +595,21 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       link("swB", "p3", "rtB", "lan1"),
       link("rtB", "wan", "net", "netz"),
     );
-    const own = ["kt1", "sw1", "rt1"];
-    const other = ["ktB", "swB", "rtB"];
+    return t;
+  };
+  const own = ["kt1", "sw1", "rt1"];
+  const other = ["ktB", "swB", "rtB"];
+
+  it("#226: Cloud-Weg und fremde Praxis: jede Praxis erreicht nur ihr eigenes Terminal", () => {
+    const t = withPraxisB(rz());
     for (const id of ["zeta", "popp"]) {
-      const a = flowSteps(t, id, "pc1")[0]?.nodes ?? [];
-      const b = flowSteps(t, id, "pcB")[0]?.nodes ?? [];
-      expect(a.length).toBeGreaterThan(0);
-      expect(b.length).toBeGreaterThan(0);
-      for (const n of other) expect(a, `${id} pc1`).not.toContain(n);
-      for (const n of own) expect(b, `${id} pcB`).not.toContain(n);
+      const a = flowSteps(t, id, "pc1");
+      const b = flowSteps(t, id, "pcB");
+      for (const s of [...a, ...b]) expect(s.nodes.length).toBeGreaterThan(0);
+      for (const s of a)
+        for (const n of other) expect(s.nodes, `${id} pc1`).not.toContain(n);
+      for (const s of b)
+        for (const n of own) expect(s.nodes, `${id} pcB`).not.toContain(n);
     }
   });
 
@@ -665,24 +670,37 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
           a.offeredBy.types.some((x) => types.includes(x)),
       );
 
-    it.each(offered(["pvs", "avs"]).map((a) => [a.id, a.flow]))(
+    const aktionen = offered(["pvs", "avs"]);
+    it("deckt Aktionen ab", () => {
+      expect(aktionen.length).toBeGreaterThan(0);
+    });
+
+    it.each(aktionen.map((a) => [a.id, a.flow]))(
       "Aktion %s: Cloud bindet wie vor Ort, nur der Weg zum Terminal führt über Gateway und Internet",
       (_id, flowId) => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
-        const rzSteps = flowSteps(cloud(), flowId, "pc1");
+        const rzSteps = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        const flow = catalog.flows.find((f) => f.id === flowId);
+        expect(rzSteps).toHaveLength(flow?.steps.length ?? -1);
         expect(rzSteps.map((s) => s.label)).toEqual(ort.map((s) => s.label));
         const ends = (steps: typeof ort) =>
           steps.map((s) => [s.nodes.at(0), s.nodes.at(-1)]);
         expect(rzSteps.map((s) => s.problem)).toEqual(ort.map(() => undefined));
         expect(ort.map((s) => s.problem)).toEqual(ort.map(() => undefined));
+        // Schritte ohne Weg (z. B. Rolle E) gibt es vor Ort genauso
+        expect(rzSteps.map((s) => s.nodes.length > 0)).toEqual(
+          ort.map((s) => s.nodes.length > 0),
+        );
         // Das Gateway ersetzt den Konnektor als Zugang (K)
         expect(ends(rzSteps)).toEqual(
           ends(ort).map((e) => e.map((n) => (n === "kon1" ? "gw1" : n))),
         );
         const nodes = (steps: typeof ort) => steps.flatMap((s) => s.nodes);
-        expect(nodes(ort)).not.toContain("cloud1");
+        for (const n of other) expect(nodes(rzSteps)).not.toContain(n);
         for (const s of rzSteps.filter((x) => x.nodes.includes("kt1")))
-          expect(s.nodes).toEqual(expect.arrayContaining(["gw1", "net"]));
+          expect(s.nodes).toEqual(
+            expect.arrayContaining(["gw1", "net", "rt1", "sw1"]),
+          );
       },
     );
   });

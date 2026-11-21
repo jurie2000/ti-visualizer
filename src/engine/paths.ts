@@ -210,7 +210,7 @@ function search(
       .filter((n) => roleOf(n, catalog) === "cloud")
       .map((n) => n.id),
   );
-  const viaCloudOnly = new Set(
+  const cloudGateways = new Set(
     topology.edges.flatMap((e) => {
       const [x, y] = e.ends;
       const hit = (g: string, c: string) =>
@@ -221,7 +221,7 @@ function search(
     }),
   );
   const isWan = (g: string, o: string) =>
-    viaCloudOnly.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
+    cloudGateways.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
   const prev = new Map<string, { from: string; edge: string } | null>([

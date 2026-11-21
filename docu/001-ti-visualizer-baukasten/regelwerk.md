@@ -777,6 +777,13 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.
 
+**Anzeige am Arbeitsplatz (Vereinfachung, Auslegung 2026-11-21, Issue #229):**
+Läuft die Software eines Ablaufs auf einem Cloud-Server und wird er am
+Arbeitsplatz ausgelöst, ist der letzte Schritt „Anzeige am Arbeitsplatz“:
+die Software zeigt das Ergebnis über das Internet am lokalen PC an. Das
+gilt nicht für die Token-Abläufe ZETA-Anmeldung und PoPP-Token, die nichts
+anzeigen.
+
 **Simulation und Bearbeitung:** Während eine Simulation läuft oder
 pausiert, ist die Topologie gesperrt. Öffnen einer Datei, Moduswechsel,
 Störungen und jede Änderung der Topologie brechen die Simulation ab.

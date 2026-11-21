@@ -198,7 +198,11 @@ function search(
     const isGoal = n.id === target;
     switch (roleOf(n, catalog)) {
       case "local":
-        return phase === LAN ? LAN : -1;
+        if (phase === LAN) return LAN;
+        // Cloud-Software zeigt ihre Daten am Arbeitsplatz über das Internet an (#229).
+        return kind === "lan" && phase === INET && isGoal && home.has(n.id)
+          ? LAN
+          : -1;
       case "cloud":
         // Cloud-Server im Rechenzentrum: ab hier LAN-Seite des TI-Gateways (#221).
         // Das Kartenterminal und der Rückweg zu ihm nutzen den Cloud-Server statt Gateway-WAN.
@@ -270,19 +274,12 @@ function search(
   const isWan = (g: string, o: string) =>
     cloudGateways.has(g) && roleOf(byId.get(o) as Node, catalog) === "internet";
 
-  const cloudHosted = (id: string) =>
-    topology.edges.some(
-      (e) =>
-        isHostEdge(e, topology, catalog) &&
-        e.ends.some((x) => x.node === id) &&
-        e.ends.some((x) => cloudIds.has(x.node)),
-    );
   const cloudInternet =
     kind !== "lan" &&
     lokalOhneZugang &&
-    (cloudHosted(trigger) ||
+    (isCloudHosted(topology, trigger, catalog) ||
       softwareOn(topology, trigger, catalog).some((s) =>
-        cloudHosted(s.node.id),
+        isCloudHosted(topology, s.node.id, catalog),
       ));
 
   const key = (id: string, phase: number) => `${id}\0${String(phase)}`;
@@ -423,6 +420,25 @@ export function terminalFor(
   return pick.length === 1
     ? { status: "one", terminal: first.id }
     : { status: "choose", candidates: pick.map((n) => n.id) };
+}
+
+/** Software läuft auf einem Cloud-Server (Kante „läuft auf“ zu einem `cloud`). */
+export function isCloudHosted(
+  topology: Topology,
+  id: string,
+  catalog: Catalogue,
+): boolean {
+  const cloud = new Set(
+    topology.nodes
+      .filter((n) => roleOf(n, catalog) === "cloud")
+      .map((n) => n.id),
+  );
+  return topology.edges.some(
+    (e) =>
+      isHostEdge(e, topology, catalog) &&
+      e.ends.some((x) => x.node === id) &&
+      e.ends.some((x) => cloud.has(x.node)),
+  );
 }
 
 /** Kante „läuft auf“: beide Enden sind `host`-Anschlüsse. */

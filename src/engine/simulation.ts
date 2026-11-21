@@ -1,6 +1,12 @@
 import type { Catalog, Node, Topology } from "../schema";
 import { offers } from "./actions";
-import { resolvePath, softwareOn, terminalOf, zugangOf } from "./paths";
+import {
+  isCloudHosted,
+  resolvePath,
+  softwareOn,
+  terminalOf,
+  zugangOf,
+} from "./paths";
 
 type Cat = Pick<Catalog, "deviceTypes" | "actions">;
 type Flow = Catalog["flows"][number];
@@ -110,6 +116,9 @@ function between(
   return problem;
 }
 
+// Token-Abläufe zeigen nichts am Arbeitsplatz an.
+const TOKEN_FLOWS = ["zeta", "popp"];
+
 // Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs.
 function roleBinder(
   trigger: Node,
@@ -207,7 +216,7 @@ export function bindFlow(
   const bind = roleBinder(trigger, topology, catalog, terminal, flow.id, lan);
   const choosing =
     !terminal && terminalOf(topology, trigger.id, catalog).status === "choose";
-  return flow.steps.map((s) => {
+  const steps = flow.steps.map((s) => {
     const base = { label: s.label, text: s.text };
     if (s.from === "E" || s.to === "E") {
       const anchor = bind(s.from === "E" ? s.to : s.from);
@@ -228,6 +237,26 @@ export function bindFlow(
           problem: r,
         };
   });
+  // Läuft die Software in der Cloud, zeigt sie die Daten am Arbeitsplatz an, über das Internet (#229).
+  const p = bind("P");
+  if (
+    !p ||
+    p === trigger.id ||
+    TOKEN_FLOWS.includes(flow.id) ||
+    !isCloudHosted(topology, p, catalog)
+  )
+    return steps;
+  const r = resolvePath(topology, p, trigger.id, catalog, "lan", trigger.id);
+  return [
+    ...steps,
+    {
+      label: "Anzeige am Arbeitsplatz",
+      text: "Das Primärsystem im Rechenzentrum zeigt das Ergebnis am Arbeitsplatz an: über das Internet zum lokalen PC.",
+      ...(r.ok
+        ? { nodes: r.nodes, edges: r.edges }
+        : { nodes: [], edges: [], problem: { kind: "kein-weg" as const } }),
+    },
+  ];
 }
 
 // Zustandsautomat (Regelwerk 7, FR-9, FR-10)

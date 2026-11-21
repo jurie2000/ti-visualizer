@@ -364,6 +364,20 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     expect(ti.ok && ti.zugang).toBe("gw1");
   });
 
+  it("#229: Cloud-Software zeigt das Ergebnis am Arbeitsplatz an, Token-Abläufe und Praxis-Software nicht", () => {
+    const t = rz();
+    const pc = t.nodes.find((n) => n.id === "pc1") as Node;
+    const run = (id: string) => {
+      const flow = catalog.flows.find((f) => f.id === id);
+      if (!flow) throw new Error("Fixture fehlt");
+      return bindFlow(flow, pc, t, catalog);
+    };
+    const last = run("erezept").at(-1);
+    expect(last?.label).toBe("Anzeige am Arbeitsplatz");
+    expect(last?.nodes).toEqual(["pvs1", "cloud1", "net", "rt1", "sw1", "pc1"]);
+    expect(run("popp").at(-1)?.label).not.toBe("Anzeige am Arbeitsplatz");
+  });
+
   it("#221: Fällt der Praxis-Router aus, ist das Gateway nicht erreichbar", () => {
     const t = rz();
     const rt = t.nodes.find((n) => n.id === "rt1");
@@ -742,7 +756,11 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       "Aktion %s: Cloud bindet wie vor Ort, der Weg zum Terminal führt über Internet und Router der Praxis",
       (_id, flowId) => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
-        const rzSteps = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        const rzAll = flowSteps(withPraxisB(cloud()), flowId, "pc1");
+        // Zusätzlich zeigt die Cloud-Software das Ergebnis am Arbeitsplatz an (#229)
+        const anzeige = !["zeta", "popp"].includes(flowId);
+        expect(rzAll.at(-1)?.label === "Anzeige am Arbeitsplatz").toBe(anzeige);
+        const rzSteps = anzeige ? rzAll.slice(0, -1) : rzAll;
         const flow = catalog.flows.find((f) => f.id === flowId);
         expect(rzSteps).toHaveLength(flow?.steps.length ?? -1);
         expect(rzSteps.map((s) => s.label)).toEqual(ort.map((s) => s.label));

@@ -3,7 +3,7 @@ import { loadCatalog, type Node, type Topology } from "../schema";
 import { availableActions } from "./actions";
 import { bindFlow } from "./simulation";
 import { resolvePath, softwareOn, terminalFor } from "./paths";
-import { validateConnection } from "./rules";
+import { autoPorts, validateConnection } from "./rules";
 
 const catalog = loadCatalog();
 const praxis = (() => {
@@ -322,6 +322,21 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     expect(check(t, ["kon1", "wan"], ["net", "netz"]).ok).toBe(false);
     expect(check(t, ["cloud1", "lan"], ["kon1", "lan"]).ok).toBe(false);
     expect(check(t, ["cloud1", "lan"], ["sw1", "p1"]).ok).toBe(false);
+  });
+
+  it("#221: Modus Einfach steckt das Gateway am VPN über `vpn`, der WAN-Anschluss bleibt für das Internet frei", () => {
+    const t = rz();
+    t.edges = [];
+    t.edges.push(link("gw1", "lan", "cloud1", "lan"));
+    expect(autoPorts(t, "gw1", "vpn1", catalog)).toEqual({
+      a: "vpn",
+      b: "zugang",
+    });
+    t.edges.push(link("gw1", "vpn", "vpn1", "zugang"));
+    expect(autoPorts(t, "gw1", "net", catalog)).toEqual({
+      a: "wan",
+      b: "netz",
+    });
   });
 
   it("#221: Der PC erbt die Software des Cloud-Servers über Router und Internet", () => {

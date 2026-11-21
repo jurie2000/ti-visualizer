@@ -412,7 +412,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
 | Zugang (WAN) | Router (Weg ins Internet, im Reihenbetrieb zwischen LAN und Router) | bestätigt | Betriebsarten, gemSpec_Kon |
-| Zugang | VPN-Zugangsdienst (direkt, über `tun`) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
+| Zugang | VPN-Zugangsdienst (direkt, über `tun`; Auslegung 2026-11-21, Issue #221: nur `tun` an `tun`, damit der WAN-Anschluss des Zugangs für das Internet frei bleibt) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
 | VPN-Zugangsdienst | Internet | bestätigt | Arch |
 | VPN-Zugangsdienst | Zentrales Netz | bestätigt | Arch |
 | VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |

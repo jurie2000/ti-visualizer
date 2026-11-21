@@ -243,6 +243,10 @@
     "b": {
       "types": ["vpn"]
     },
+    "kinds": {
+      "a": ["tun"],
+      "b": ["tun"]
+    },
     "source": ["Arch"],
     "status": "Vereinfachung"
   },

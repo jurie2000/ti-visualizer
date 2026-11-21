@@ -101,6 +101,7 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
             open(emptyTopology());
           }}
         />
+        {/* #225: nur die ersten drei, der Rest steht in der Bibliothek */}
         {presets.slice(0, 3).map((p) => (
           <PresetCard
             key={p.id}

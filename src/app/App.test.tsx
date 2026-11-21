@@ -45,6 +45,8 @@ describe("App-Shell", () => {
     const user = userEvent.setup();
     render(<App />);
     expect(screen.queryByRole("button", { name: /^Klinikum/ })).toBeNull();
+    for (const name of [/^Arztpraxis/, /^Apotheke/, /^Kreiskrankenhaus/])
+      expect(screen.getByRole("button", { name })).toBeInTheDocument();
     await user.click(screen.getByRole("link", { name: /Preset-Bibliothek/ }));
     expect(
       await screen.findByRole("heading", { name: "Preset-Bibliothek" }),
@@ -59,6 +61,18 @@ describe("App-Shell", () => {
     await user.click(screen.getByRole("link", { name: /Preset-Bibliothek/ }));
     await user.click(await screen.findByRole("button", { name: /^Klinikum/ }));
     expect(screen.getByLabelText("Canvas")).toBeInTheDocument();
+    expect(location.hash).toBe("");
+  });
+
+  it("Issue #225: Direkteinstieg über #/presets zeigt die Bibliothek, Rücklink führt zur Startansicht", async () => {
+    const user = userEvent.setup();
+    location.hash = "#/presets";
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { name: "Preset-Bibliothek" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("link", { name: "Zur Startansicht" }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
   });
 
   it("Issue #184: laufendes Tutorial macht das Tutorial-Feld zum Fortsetzen-Feld, kein zweiter Button", async () => {

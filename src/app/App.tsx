@@ -86,7 +86,10 @@ export function App() {
   useEffect(
     () =>
       useOpen.subscribe((s, prev) => {
-        if (s.opened !== prev.opened) setStarted(true);
+        if (s.opened === prev.opened) return;
+        // Sonst führt ein Reload der Arbeitsfläche wieder in die Bibliothek (#225)
+        if (location.hash === PRESETS_HASH) location.hash = "";
+        setStarted(true);
       }),
     [],
   );

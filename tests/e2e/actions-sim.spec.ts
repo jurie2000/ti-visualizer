@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { schliessePalette, öffneKarteStecken, öffnePalette } from "./leisten";
+import { schliessePalette, öffnePalette } from "./leisten";
 
 const gerät = (page: Page, id: string) =>
   page.locator(`.react-flow__node[data-id="${id}"]`);
@@ -152,23 +152,12 @@ test.describe("actions-sim", { tag: "@actions-sim" }, () => {
     await bisZumEnde(page);
   });
 
-  test("eGK stecken macht die VSDM-Prüfung am Terminal ausführbar (FR-6, FR-7)", async ({
+  test("eHealth-KT bietet keine TI-Aktionen an (Issue #219)", async ({
     page,
   }) => {
     await menüAn(page, "kt1");
-    await expect(eintrag(page, "VSDM-Prüfung anstoßen")).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    await page.keyboard.press("Escape");
-    await öffneKarteStecken(page, gerät(page, "kt1"));
-    const dialog = page.getByRole("dialog", { name: "Karte stecken" });
-    await dialog.getByRole("radio", { name: /^eGK/ }).check();
-    await dialog.getByLabel("PIN aktiv").check();
-    await dialog.getByRole("button", { name: "Stecken" }).click();
-    await expect(dialog).toBeHidden();
-    await starte(page, "kt1", "VSDM-Prüfung anstoßen");
-    await bisZumEnde(page);
+    await expect(eintrag(page, "VSDM-Prüfung anstoßen")).toHaveCount(0);
+    await expect(eintrag(page, "Medikationsplan auslesen")).toHaveCount(0);
   });
 
   test("Abspielen läuft von allein weiter (Tempo ändern, FR-9)", async ({

@@ -410,12 +410,6 @@ describe("Betrieb in availableActions (Modus Erweitert)", () => {
     ).toBe(true);
   });
 
-  it("[P-30] gilt auch, wenn das Terminal selbst auslöst", () => {
-    const t = praxis({ kt: { paired: false } });
-    expect(action(t, "kt", "vsdm-pruefen")?.enabled).toBe(false);
-    expect(action(praxis(), "kt", "vsdm-pruefen")?.enabled).toBe(true);
-  });
-
   it("Regeln ohne Pfadwirkung (P-19, P-23, P-29) sperren nichts", () => {
     const t = parallel({ pc: { dhcp: true, workplace: "AP-2" } });
     expect(erezept(t)?.enabled).toBe(true);

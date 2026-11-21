@@ -99,24 +99,15 @@ function needCard(
   e: Extract<Expr, { card: string }>,
 ): string | undefined {
   const kind = e.card as CardKind;
-  // Ein nicht gepairtes Terminal als Auslöser verbirgt seine Karten ebenso (P-30).
-  const c = caps(ctx.catalog, ctx.trigger);
-  const selfHidden =
-    ctx.advanced &&
-    ctx.trigger.config?.paired === false &&
-    c.includes("cardSlots") &&
-    c.includes("netConfig:terminal");
-  const holders = [...(selfHidden ? [] : [ctx.trigger]), ...ctx.terminals].map(
-    (node) => ({
-      node,
-      state: cardState(ctx.topology, node.id, kind),
-    }),
-  );
+  const holders = [ctx.trigger, ...ctx.terminals].map((node) => ({
+    node,
+    state: cardState(ctx.topology, node.id, kind),
+  }));
   const plugged = holders.filter((h) => h.state.plugged);
   if (plugged.length === 0) {
     const msg = holders.find((h) => h.state.message)?.state.message;
     if (msg) return msg;
-    const hidden = [...(selfHidden ? [ctx.trigger] : []), ...ctx.unpaired].find(
+    const hidden = ctx.unpaired.find(
       (k) => cardState(ctx.topology, k.id, kind).plugged,
     );
     if (hidden)

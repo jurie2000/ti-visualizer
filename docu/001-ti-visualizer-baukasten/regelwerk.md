@@ -662,12 +662,14 @@ KH).
 | Gerät | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|---|
 | eHealth-KT, mobiles KT | Karte stecken / ziehen | K-1, K-2 | Dialog | gemSpec_KT |
-| eHealth-KT | eGK einlesen / VSDM-Prüfung | wie VSDM-Prüfung (6.2) | `vsdm` | gemSysL_VSDM |
-| eHealth-KT | Notfalldaten / Medikationsplan schreiben oder lesen | wie 6.2 | `notfalldaten`, `emp` | gemSpec_FM_NFDM, gemILF_PS_AMTS |
 | Mobiles KT | eGK offline einlesen | eGK, dazu HBA oder SMC-B im mobilen KT | `mobkt` | gemSpec_MobKT (plausibel, Kapitel zur Authentisierung nachlesen) |
 | Mobiles KT | Daten ans Primärsystem übergeben | USB-Verbindung zum Primärsystem | `mobkt` | gemSpec_MobKT |
 | CardLink | eGK per Smartphone prüfen (VSDM) | eGK per NFC, CardLink am Zugang, SMC-B, VSDM | `cardlinkVsdm` | gemSpec_eHealth-CardLink |
 | TI-Messenger-Client | TIM-Nachricht senden | TI-Messenger-FD erreichbar (direkt oder über das Internet). Die Organisation gilt als per SMC-B registriert (Vereinfachung) | `tim` | gemSpec_TI-M_Basis, FP TI-Messenger |
+
+Auslegung (2026-11-21, Issue #219): Das eHealth-KT löst keine Aktion selbst
+aus. Aufrufe kommen vom Arbeitsplatz (gemILF_PS, Aufrufkontext). Am KT bleibt
+nur Karte stecken / ziehen. Mobiles KT und CardLink sind nicht betroffen.
 
 ### 6.6 Versicherte
 

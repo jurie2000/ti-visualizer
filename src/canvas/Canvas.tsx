@@ -77,23 +77,18 @@ const ariaLabelConfig = {
  * überlappt oft Zonen und soll nur Geräte erfassen (Issue #220).
  */
 export function selectionFrom(
-  changes: { type: string; id?: string; selected?: boolean }[],
+  changes: NodeChange[],
   current: Selection,
   zoneIds: ReadonlySet<string>,
 ): Selection | "keep" {
   const picks = changes.filter((c) => c.type === "select");
   if (picks.length === 0) return "keep";
-  const ids = new Set(
-    current?.kind === "multi"
-      ? current.ids
-      : current?.kind === "node"
-        ? [current.id]
-        : [],
-  );
+  const ids = new Set<string>();
+  if (current?.kind === "multi") for (const id of current.ids) ids.add(id);
+  else if (current?.kind === "node") ids.add(current.id);
   let zone: string | undefined;
   let added = 0;
   for (const c of picks) {
-    if (!c.id) continue;
     if (!c.selected) ids.delete(c.id);
     else if (zoneIds.has(c.id)) zone = c.id;
     else {
@@ -106,7 +101,10 @@ export function selectionFrom(
   if (list.length > 1) return { kind: "multi", ids: list };
   const [only] = list;
   if (only) return { kind: "node", id: only };
-  return "keep";
+  // Abgewählt bis nichts mehr übrig ist; eine Kante oder Zone bleibt davon unberührt
+  return current?.kind === "node" || current?.kind === "multi"
+    ? undefined
+    : "keep";
 }
 
 /**
@@ -202,7 +200,7 @@ export function Canvas() {
     const dropped: Record<string, Point> = {};
     const picked = selectionFrom(
       changes,
-      selection,
+      useUi.getState().selection,
       new Set(topology.zones.map((z) => z.id)),
     );
     if (picked !== "keep") select(picked);
@@ -326,6 +324,7 @@ export function Canvas() {
         selectionOnDrag
         selectionMode={SelectionMode.Partial}
         panOnDrag={[1, 2]}
+        // Neuer Bereich beginnt ohne die alte Auswahl
         onSelectionStart={() => {
           select(undefined);
         }}

@@ -11,6 +11,7 @@ import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { loadCatalog } from "../schema";
+import type { Selection } from "../store/uiStore";
 import {
   emptyTopology,
   serialize,
@@ -443,7 +444,7 @@ describe("Gelenkpunkte einer Verbindung (FR-23)", () => {
 describe("selectionFrom (Issue #220)", () => {
   const zones = new Set(["z1"]);
   const pick = (id: string, selected = true) => ({
-    type: "select",
+    type: "select" as const,
     id,
     selected,
   });
@@ -465,15 +466,47 @@ describe("selectionFrom (Issue #220)", () => {
     const current = { kind: "node", id: "a" } as const;
     const two = selectionFrom([pick("b")], current, zones);
     expect(two).toEqual({ kind: "multi", ids: ["a", "b"] });
-    expect(selectionFrom([pick("a", false)], two as never, zones)).toEqual({
+    expect(selectionFrom([pick("a", false)], two as Selection, zones)).toEqual({
       kind: "node",
       id: "b",
     });
   });
 
   it("ändert nichts ohne Auswahländerung", () => {
-    expect(selectionFrom([{ type: "position" }], undefined, zones)).toBe(
-      "keep",
-    );
+    expect(
+      selectionFrom([{ type: "dimensions", id: "a" }], undefined, zones),
+    ).toBe("keep");
+  });
+
+  it("hebt die Auswahl auf, wenn das letzte Gerät abgewählt wird", () => {
+    expect(
+      selectionFrom([pick("a", false)], { kind: "node", id: "a" }, zones),
+    ).toBeUndefined();
+  });
+
+  it("lässt eine gewählte Kante unberührt", () => {
+    expect(
+      selectionFrom([pick("a", false)], { kind: "edge", id: "e" }, zones),
+    ).toBe("keep");
+  });
+
+  it("ersetzt eine Kantenauswahl durch die Geräte des Bereichs", () => {
+    expect(
+      selectionFrom([pick("a"), pick("b")], { kind: "edge", id: "e" }, zones),
+    ).toEqual({ kind: "multi", ids: ["a", "b"] });
+  });
+
+  it("markiert alle Geräte einer Mehrfachauswahl auf der Canvas", () => {
+    render(<Canvas />, { wrapper });
+    const ids = useTopology
+      .getState()
+      .topology.nodes.slice(0, 2)
+      .map((n) => n.id);
+    act(() => {
+      useUi.setState({ selection: { kind: "multi", ids } });
+    });
+    expect(
+      document.querySelectorAll(".react-flow__node.selected"),
+    ).toHaveLength(2);
   });
 });

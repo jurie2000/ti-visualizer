@@ -344,7 +344,9 @@ function Body({ sel }: { sel: Selection }) {
   }
   if (sel?.kind === "multi") {
     found = true;
-    title = `${String(sel.ids.length)} Geräte ausgewählt`;
+    // Nach Löschen oder Rückgängig können IDs fehlen
+    const count = topology.nodes.filter((n) => sel.ids.includes(n.id)).length;
+    title = `${String(count)} Geräte ausgewählt`;
     content = <p>Ziehen verschiebt alle gemeinsam.</p>;
   }
   if (sel && !found) content = <p>Die Auswahl gibt es nicht mehr.</p>;

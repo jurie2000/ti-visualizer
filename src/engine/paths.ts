@@ -123,20 +123,24 @@ export function zugangOf(
     const n = id ? byId.get(id) : undefined;
     return n !== undefined && roleOf(n, catalog) === "zugang";
   };
+  const system = systemOf(topology, [terminalId], catalog);
+  const inSystem = topology.nodes.filter(
+    (n) => system.has(n.id) && roleOf(n, catalog) === "zugang",
+  );
   const paired = byId.get(terminalId)?.config?.pairedWith;
-  if (paired !== undefined) return isZugang(paired) ? paired : undefined;
+  // Ein Pairing mit einem Zugang außerhalb des Systems gilt nicht, wenn das System einen eigenen hat (#229).
+  if (paired !== undefined && !(inSystem.length > 0 && !system.has(paired)))
+    return isZugang(paired) ? paired : undefined;
   for (const e of topology.edges) {
     const [a, b] = e.ends;
     if (a.node === terminalId && isZugang(b.node)) return b.node;
     if (b.node === terminalId && isZugang(a.node)) return a.node;
   }
   // Normalfall: nur ein Zugang im System des Terminals, sonst auf der ganzen Canvas (#229).
-  const zugaenge = (ids: Set<string> | undefined) =>
-    topology.nodes.filter(
-      (n) => (!ids || ids.has(n.id)) && roleOf(n, catalog) === "zugang",
-    );
-  const inSystem = zugaenge(systemOf(topology, [terminalId], catalog));
-  const only = inSystem.length > 0 ? inSystem : zugaenge(undefined);
+  const only =
+    inSystem.length > 0
+      ? inSystem
+      : topology.nodes.filter((n) => roleOf(n, catalog) === "zugang");
   return only.length === 1 ? only[0]?.id : undefined;
 }
 

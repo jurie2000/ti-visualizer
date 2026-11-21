@@ -904,6 +904,13 @@ describe("#229 Systeme: Konnektor-Praxis neben Rechenzentrum mit TI-Gateway", ()
     expect(zugangOf(t, "kt1", catalog)).toBe("gw1");
   });
 
+  it("zugangOf: Pairing mit dem Gateway eines anderen Systems gilt nicht, wenn das System einen eigenen Zugang hat", () => {
+    const t = zwei();
+    const kt = t.nodes.find((n) => n.id === "ktK");
+    if (kt) kt.config = { ...kt.config, pairedWith: "gw1" };
+    expect(zugangOf(t, "ktK", catalog)).toBe("kon1");
+  });
+
   it("PC der Konnektor-Praxis: bei ausgefallenem Konnektor kein Weg über Cloud-Server und Gateway", () => {
     const t = zwei();
     expect(resolvePath(t, "pcK", "erp1", catalog).ok).toBe(true);

@@ -541,6 +541,11 @@ TI-Gateway (#226). Der VPN-Pfad oben gilt unverändert.
   auf der ganzen Canvas (#229). Eine Canvas mit Cloud-PVS-Praxis ohne
   Pairing und einer Konnektor-Praxis meldet daher P-5 am Kartenterminal, bis es
   mit dem Gateway gepairt ist (gewollt).
+- Ein Pairing mit einem Zugang außerhalb des Systems des Terminals gilt
+  nicht, wenn das System einen eigenen Zugang hat (#229). Das Formular
+  paart ein neues Terminal mit dem einzigen Zugang der Canvas; stünde später
+  ein zweites System daneben, bliebe das Terminal sonst an dessen Zugang
+  hängen. Hat das System keinen Zugang (Cloud-PVS-Praxis), gilt das Pairing.
 - Ein eHealth-KT erreicht seinen Zugang über das Internet nur über einen
   Cloud-Server (#221). Ein Auslöser mit eigenem Zugang im System nutzt
   keinen Cloud-Server hinter dem Internet (#229).

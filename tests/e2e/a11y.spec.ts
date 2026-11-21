@@ -22,6 +22,17 @@ test.describe("a11y", { tag: "@a11y" }, () => {
         expect(result.violations).toEqual([]);
       });
 
+      test("Preset-Bibliothek ohne Axe-Verstöße", async ({ page }) => {
+        await page.goto("./#/presets");
+        if (theme === "dark")
+          await page.getByRole("button", { name: "Dunkel" }).click();
+        await expect(
+          page.getByRole("heading", { name: "Preset-Bibliothek" }),
+        ).toBeVisible();
+        const result = await new AxeBuilder({ page }).withTags(tags).analyze();
+        expect(result.violations).toEqual([]);
+      });
+
       test("Canvas mit Preset ohne Axe-Verstöße", async ({ page }) => {
         await start(page);
         await page.getByRole("button", { name: /^Arztpraxis Dr/ }).click();

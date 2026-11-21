@@ -1005,6 +1005,11 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 
+Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
+zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die
+Kachel „Preset-Bibliothek“. Die Bibliothek unter `#/presets` zeigt alle
+Presets. Neue Presets werden hinten angehängt und erscheinen nur dort.
+
 Quelle: Mockup (`design/mockup/TI Visualizer.dc.html`, `PRESETS`). Belege
 für die einzelnen Verbindungen siehe Abschnitt 4.2.
 

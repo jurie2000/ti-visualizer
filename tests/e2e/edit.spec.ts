@@ -58,7 +58,7 @@ test.describe("edit Sortieren", { tag: "@edit" }, () => {
         page,
       }) => {
         await page.setViewportSize({ width: 1600, height: 900 });
-        await page.goto("./");
+        await page.goto("./#/presets");
         await page.getByRole("button", { name }).click();
         await page.getByRole("button", { name: modus, exact: true }).click();
         await expect(

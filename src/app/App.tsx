@@ -19,6 +19,7 @@ import { Button } from "../ui/Button";
 import { ToastProvider } from "../ui/Toast";
 import { EditShortcuts } from "./EditShortcuts";
 import { LEXICON_HASH, LexiconPage } from "./LexiconPage";
+import { PRESETS_HASH, PresetLibrary } from "./PresetLibrary";
 import { ModeSwitch } from "./ModeSwitch";
 import { SidePanel } from "./SidePanel";
 import { SaveControls } from "./SaveControls";
@@ -37,6 +38,7 @@ export function App() {
   const [impressumOpen, setImpressumOpen] = useState(false);
   const hash = useSyncExternalStore(onHash, () => location.hash);
   const lexicon = hash === LEXICON_HASH || hash.startsWith(`${LEXICON_HASH}/`);
+  const library = hash === PRESETS_HASH;
   const [started, setStarted] = useState(false);
   const tutorial = useUi((s) => s.tutorial);
   const selection = useUi((s) => s.selection);
@@ -78,13 +80,16 @@ export function App() {
   useEffect(() => {
     if (first.current) first.current = false;
     else mainRef.current?.focus();
-  }, [started]);
+  }, [started, library]);
 
   // Datei oder Preset wurde eingesetzt (auch per Drop oder aus dem Schutzdialog): zur Arbeitsfläche
   useEffect(
     () =>
       useOpen.subscribe((s, prev) => {
-        if (s.opened !== prev.opened) setStarted(true);
+        if (s.opened === prev.opened) return;
+        // Sonst führt ein Reload der Arbeitsfläche wieder in die Bibliothek (#225)
+        if (location.hash === PRESETS_HASH) location.hash = "";
+        setStarted(true);
       }),
     [],
   );
@@ -114,7 +119,7 @@ export function App() {
               aria-label="TI Visualizer, zur Startansicht"
               title="Zur Startansicht"
               onClick={() => {
-                if (lexicon) location.hash = "";
+                if (lexicon || library) location.hash = "";
                 setStarted(false);
               }}
             >
@@ -153,14 +158,18 @@ export function App() {
                 tabIndex={-1}
                 className="tiv-main tiv-main--start"
               >
-                <StartScreen
-                  onResume={() => {
-                    // Switch und Konnektor stehen nur im Modus Erweitert in der Palette
-                    useSettings.getState().set({ mode: "advanced" });
-                    useUi.getState().setTutorial(true);
-                    setStarted(true);
-                  }}
-                />
+                {library ? (
+                  <PresetLibrary />
+                ) : (
+                  <StartScreen
+                    onResume={() => {
+                      // Switch und Konnektor stehen nur im Modus Erweitert in der Palette
+                      useSettings.getState().set({ mode: "advanced" });
+                      useUi.getState().setTutorial(true);
+                      setStarted(true);
+                    }}
+                  />
+                )}
               </main>
             ) : (
               <main ref={mainRef} tabIndex={-1} className="tiv-main">

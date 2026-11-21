@@ -1,4 +1,4 @@
-import { FolderOpen } from "lucide-react";
+import { FolderOpen, Library } from "lucide-react";
 import type { Topology } from "../schema";
 import {
   emptyTopology,
@@ -10,6 +10,7 @@ import {
 } from "../store";
 import { AutosaveHint } from "./AutosaveHint";
 import { PresetCard } from "./PresetCard";
+import { PRESETS_HASH } from "./PresetLibrary";
 
 /**
  * Startansicht (FR-2): Öffnen, Tutorials, die Presets und der leere Start.
@@ -100,7 +101,8 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
             open(emptyTopology());
           }}
         />
-        {presets.map((p) => (
+        {/* #225: nur die ersten drei, der Rest steht in der Bibliothek */}
+        {presets.slice(0, 3).map((p) => (
           <PresetCard
             key={p.id}
             topology={p.topology}
@@ -109,6 +111,15 @@ export function StartScreen({ onResume }: { onResume: () => void }) {
             }}
           />
         ))}
+        <li>
+          <a className="tiv-preset" href={PRESETS_HASH}>
+            <span className="tiv-preset__preview">
+              <Library className="tiv-preset__plus" aria-hidden="true" />
+            </span>
+            <span className="tiv-preset__title">Preset-Bibliothek</span>
+            <span>Alle fertigen Einrichtungen auf einen Blick.</span>
+          </a>
+        </li>
       </ul>
     </section>
   );

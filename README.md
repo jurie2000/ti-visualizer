@@ -25,7 +25,7 @@ Für alle, die die TI-Architektur lernen oder vermitteln wollen. Der Visualizer 
   - Zugang zur TI (Konnektor, Highspeed-Konnektor, TI-Gateway, VPN-Zugangsdienst)
   - Zentrale Dienste und Fachdienste (IDP, VZD, VSDM, E-Rezept, KIM, TI-Messenger, ePA und weitere)
 - **Karten stecken**: eGK, HBA und SMC-B werden in Kartenterminals gesteckt, die eGK auch per NFC über eHealth-CardLink gelesen.
-- **Presets**: Start mit *Arztpraxis*, *Apotheke*, *Krankenhaus*, *Klinikum* oder leer.
+- **Presets**: Start mit *Arztpraxis*, *Apotheke*, *Krankenhaus* oder leer. Die *Preset-Bibliothek* zeigt alle Presets, auch *Klinikum*.
 - **Modus Einfach und Erweitert**: Erweitert zeigt Anschlüsse, Netzwerkeinstellungen und typische Störungen.
 - **Nur gültige Verbindungen**: Das System prüft jede Verbindung fachlich und lehnt ungültige mit einer erklärenden Meldung ab. Beispiele: Ein Primärsystem darf nicht direkt an einen Fachdienst. Konnektor und TI-Gateway schließen sich in einer Topologie aus.
 - **Aktionen per Rechtsklick**: Das Kontextmenü eines Geräts zeigt alle möglichen Aktionen. Aktuell nicht ausführbare sind ausgegraut statt versteckt.

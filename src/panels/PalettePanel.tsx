@@ -44,7 +44,7 @@ export function PalettePanel({
       y: Math.round(center.y - NODE_SIZE.height / 2 + shift),
     });
     if (!result.ok) toast.show(result.reason);
-    else if (result.id) onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
+    else onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
   };
 
   return <Palette onAdd={add} reveal={reveal} />;

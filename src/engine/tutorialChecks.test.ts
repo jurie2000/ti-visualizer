@@ -61,12 +61,12 @@ describe("FR-20 Erledigt-Prüfung der Tutorial-Schritte", () => {
     ).toBe(true);
   });
 
-  it("Fachdienste: alle drei am VPN-Zugang", () => {
-    const nodes = ["vpn", "idp", "erp", "vsdm"].map((t) => node(t, t));
-    const two = [edge("vpn", "idp"), edge("vpn", "erp")];
-    expect(stepDone("fachdienste", ctx(nodes, two))).toBe(false);
+  it("Fachdienste: E-Rezept und VSDM am VPN-Zugang", () => {
+    const nodes = ["vpn", "erp", "vsdm"].map((t) => node(t, t));
+    const one = [edge("vpn", "erp")];
+    expect(stepDone("fachdienste", ctx(nodes, one))).toBe(false);
     expect(
-      stepDone("fachdienste", ctx(nodes, [...two, edge("vsdm", "vpn")])),
+      stepDone("fachdienste", ctx(nodes, [...one, edge("vsdm", "vpn")])),
     ).toBe(true);
   });
 

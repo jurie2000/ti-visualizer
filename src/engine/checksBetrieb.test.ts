@@ -58,7 +58,6 @@ const praxis = (over: Over = {}): Topology => {
       node("vpn", "vpn"),
       node("zn", "zentral"),
       node("erp", "erp"),
-      node("idp", "idp"),
       node("vsdm", "vsdm"),
     ],
     edges: [
@@ -78,7 +77,6 @@ const praxis = (over: Over = {}): Topology => {
       edge("net", "vpn"),
       edge("vpn", "zn"),
       edge("zn", "erp"),
-      edge("zn", "idp"),
       edge("zn", "vsdm"),
     ],
   };

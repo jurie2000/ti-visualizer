@@ -54,6 +54,19 @@ describe("Presets (Regelwerk 13)", () => {
     expect(ports).toEqual(["lan", "vpn", "wan"]);
   });
 
+  it("[#238] kein Preset verbindet den IDP mit VPN-Zugangsdienst oder Zentralem Netz", () => {
+    for (const { id, topology } of catalog.presets) {
+      const type = (n: string) => topology.nodes.find((x) => x.id === n)?.type;
+      for (const e of topology.edges) {
+        const types = e.ends.map((x) => type(x.node));
+        const hit =
+          types.includes("idp") &&
+          types.some((t) => t === "vpn" || t === "zentral");
+        expect(hit, `${id}: ${e.id}`).toBe(false);
+      }
+    }
+  });
+
   it("[P-34] kein Preset löst P-34 aus", () => {
     for (const { id, topology } of catalog.presets) {
       const found = runChecks(topology, "advanced", catalog).map((f) => f.id);

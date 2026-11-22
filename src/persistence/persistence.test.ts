@@ -652,6 +652,28 @@ describe("Importbefunde", () => {
     expect(other.findings[1]?.ref).toBe("e1");
   });
 
+  it("[#238] alte Datei mit Kante VPN↔IDP lädt ohne Fehler", () => {
+    const t = {
+      ...base(),
+      nodes: [node("v", "vpn"), node("i", "idp")],
+      edges: [
+        {
+          id: "e1",
+          fault: false,
+          ends: [
+            { node: "v", port: "zentral" },
+            { node: "i", port: "ti" },
+          ],
+        },
+      ],
+    };
+    for (const extra of [{}, { catalogVersion: "0-alt" }]) {
+      const r = ok(file(t, extra));
+      expect(r.topology.edges).toHaveLength(1);
+      expect(r.findings.filter((f) => f.severity === "Fehler")).toEqual([]);
+    }
+  });
+
   it("Einstellungen: übernommen, wenn gültig, sonst Befund", () => {
     const s = toFileSettings({
       theme: "light",

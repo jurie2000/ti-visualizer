@@ -11,8 +11,7 @@
         { "need": "ti" },
         { "card": "hba", "unlocked": true },
         { "card": "smcb", "unlocked": true },
-        { "service": "erp" },
-        { "service": "idp" }
+        { "service": "erp" }
       ]
     },
     "flow": "erezept",
@@ -90,8 +89,7 @@
         { "need": "ti" },
         { "card": "smcb", "unlocked": true },
         { "need": "befugnis" },
-        { "service": "epa" },
-        { "service": "idp" }
+        { "service": "epa" }
       ]
     },
     "flow": "epa",
@@ -110,8 +108,7 @@
         { "need": "ti" },
         { "card": "smcb", "unlocked": true },
         { "need": "befugnis" },
-        { "service": "epa" },
-        { "service": "idp" }
+        { "service": "epa" }
       ]
     },
     "flow": "epa",
@@ -130,8 +127,7 @@
         { "need": "ti" },
         { "card": "smcb", "unlocked": true },
         { "need": "befugnis" },
-        { "service": "epa" },
-        { "service": "idp" }
+        { "service": "epa" }
       ]
     },
     "flow": "epa",
@@ -297,8 +293,7 @@
         { "card": "smcb", "unlocked": true },
         { "card": "egk" },
         { "need": "pruefungsnachweis" },
-        { "service": "erp" },
-        { "service": "idp" }
+        { "service": "erp" }
       ]
     },
     "flow": "erezeptEinloesen",
@@ -316,8 +311,7 @@
         { "need": "zugang" },
         { "need": "ti" },
         { "card": "smcb", "unlocked": true },
-        { "service": "erp" },
-        { "service": "idp" }
+        { "service": "erp" }
       ]
     },
     "flow": "erezeptEinloesenCode",
@@ -338,8 +332,7 @@
         { "card": "egk" },
         { "card": "smcb", "unlocked": true },
         { "need": "pruefungsnachweis" },
-        { "service": "erp" },
-        { "service": "idp" }
+        { "service": "erp" }
       ]
     },
     "flow": "cardlinkErp",
@@ -358,8 +351,7 @@
         { "need": "ti" },
         { "card": "smcb", "unlocked": true },
         { "need": "befugnis" },
-        { "service": "epa" },
-        { "service": "idp" }
+        { "service": "epa" }
       ]
     },
     "flow": "epa",

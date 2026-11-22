@@ -56,7 +56,6 @@ function praxis(terminals: string[]): Topology {
     ["net", "idpsek"],
     ["zn", "vsdm"],
     ["zn", "erp"],
-    ["zn", "idp"],
     ["zn", "idpsek"],
     ...terminals.map((t): [string, string] => ["sw", t]),
   ];
@@ -125,7 +124,7 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     ).toHaveFocus();
     expect(live()).toHaveAttribute("aria-live", "polite");
     expect(live().textContent).toContain("Signaturauftrag");
-    expect(screen.getByText(/Schritt 1 von 7/)).toBeInTheDocument();
+    expect(screen.getByText(/Schritt 1 von 6/)).toBeInTheDocument();
     expect(useUi.getState().pendingAction).toBeUndefined();
     expect(node("pvs")).toHaveClass("is-sim");
     expect(node("kon")).toHaveClass("is-sim");
@@ -167,9 +166,9 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
     render(<Canvas />, { wrapper });
     start();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByText(/Schritt 2 von 7/)).toBeInTheDocument();
+    expect(screen.getByText(/Schritt 2 von 6/)).toBeInTheDocument();
     await user.keyboard("{ArrowLeft}");
-    expect(screen.getByText(/Schritt 1 von 7/)).toBeInTheDocument();
+    expect(screen.getByText(/Schritt 1 von 6/)).toBeInTheDocument();
     await user.keyboard(" ");
     expect(useSim.getState().sim.status).toBe("paused");
     await user.keyboard(" ");

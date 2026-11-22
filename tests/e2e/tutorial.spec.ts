@@ -119,11 +119,9 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
       await verbinde(page, "kon-1", "vpn-1");
     });
     await prüfe("Fachdienste", async () => {
-      await hinzufügen(page, /^IDP /);
       await hinzufügen(page, /^E-Rezept /);
       await hinzufügen(page, /^VSDM VSDM-Fachdienst /);
-      for (const d of ["idp-1", "erp-1", "vsdm-1"])
-        await verbinde(page, "vpn-1", d);
+      for (const d of ["erp-1", "vsdm-1"]) await verbinde(page, "vpn-1", d);
     });
     await prüfe("Dein erstes E-Rezept", () =>
       spiele(page, "pc-1", "E-Rezept ausstellen"),

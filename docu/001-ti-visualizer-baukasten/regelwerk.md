@@ -415,13 +415,13 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Zugang | VPN-Zugangsdienst (direkt, über `tun`; Auslegung 2026-11-21, Issue #221: nur `tun` an `tun`, damit der WAN-Anschluss des Zugangs für das Internet frei bleibt) | Vereinfachung: in Wirklichkeit über Router und Internet | Arch |
 | VPN-Zugangsdienst | Internet | bestätigt | Arch |
 | VPN-Zugangsdienst | Zentrales Netz | bestätigt | Arch |
-| VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA, IDP (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
+| VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
 
 **Zentrales Netz, Dienste und Versicherte**
 
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
-| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, IDP, VSDM, E-Rezept, KIM, ePA | bestätigt | gemSpec_Net, Arch |
+| Zentrales Netz | DNS, NTP, VZD, TSL/OCSP, VSDM, E-Rezept, KIM, ePA | bestätigt | gemSpec_Net, Arch |
 | KIM-Fachdienst | Krankenkasse | plausibel (Krankenkasse hat eigenen KIM-Zugang) | KIM-DK, PM eAU |
 | E-Rezept-FD, ePA, IDP, sektoraler IDP, PoPP, TI-Messenger-FD | Internet | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek, gemSpec_PoPP_Service, gemSpec_TI-M_Basis |
 | E-Rezept-App | E-Rezept-FD (direkt) | Vereinfachung: in Wirklichkeit über das Internet | gemSpec_eRp_FdV |
@@ -652,13 +652,13 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 
 | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|
-| eRezept ausstellen | Zugang, TI, HBA (QES), SMC-B, E-Rezept, IDP | `erezept` | gemILF_PS_eRp, gemSpec_FD_eRp, KH (HBA für QES) |
+| eRezept ausstellen | Zugang, TI, HBA (QES), SMC-B, E-Rezept | `erezept` | gemILF_PS_eRp, gemSpec_FD_eRp, KH (HBA für QES) |
 | eAU ausstellen und per KIM senden | Zugang, TI, HBA (QES), SMC-B, KIM-Clientmodul\*, KIM | `eau` | PM eAU, gemSpec_CM_KOMLE |
 | eArztbrief per KIM senden | Zugang, TI, HBA (QES), SMC-B, KIM-Clientmodul\*, KIM | `kim` | gemSpec_CM_KOMLE, KIM-DK |
 | KIM-Nachricht senden | Zugang, TI, SMC-B, KIM-Clientmodul\*, KIM | `kim` | gemSpec_CM_KOMLE |
-| eAU-Kopie in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA, IDP | `epa` | gemILF_PS_ePA, KBV (nur auf Wunsch) |
-| Befund in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA, IDP | `epa` | gemILF_PS_ePA |
-| ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis, ePA, IDP | `epa` | gemSpec_Aktensystem_ePAfueralle |
+| eAU-Kopie in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemILF_PS_ePA, KBV (nur auf Wunsch) |
+| Befund in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemILF_PS_ePA |
+| ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemSpec_Aktensystem_ePAfueralle |
 | Notfalldatensatz schreiben | Zugang, eGK, HBA (QES) | `notfalldaten` | gemSpec_FM_NFDM, KH |
 | Persönliche Erklärungen schreiben | Zugang, eGK, SMC-B oder HBA | `notfalldaten` | KH (Schreiben mit SMC-B) |
 | Notfalldaten lesen | Zugang, eGK, HBA oder SMC-B (freigeschaltet) | `notfalldaten` | KH |
@@ -699,17 +699,17 @@ KH).
 
 | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|
-| eRezept einlösen (eGK einlesen) | Zugang, TI, SMC-B, eGK, Prüfungsnachweis, E-Rezept, IDP | `erezeptEinloesen` | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
-| eRezept einlösen (Rezeptcode scannen) | Zugang, TI, SMC-B, E-Rezept, IDP | `erezeptEinloesenCode` | FP E-Rezept Apotheken |
-| eRezept per CardLink einlösen (Fernversorgung) | Zugang, TI, CardLink am Zugang, eGK per NFC, SMC-B, Prüfungsnachweis, E-Rezept, IDP | `cardlinkErp` | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
+| eRezept einlösen (eGK einlesen) | Zugang, TI, SMC-B, eGK, Prüfungsnachweis, E-Rezept | `erezeptEinloesen` | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
+| eRezept einlösen (Rezeptcode scannen) | Zugang, TI, SMC-B, E-Rezept | `erezeptEinloesenCode` | FP E-Rezept Apotheken |
+| eRezept per CardLink einlösen (Fernversorgung) | Zugang, TI, CardLink am Zugang, eGK per NFC, SMC-B, Prüfungsnachweis, E-Rezept | `cardlinkErp` | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
-| ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis (3 Tage), ePA, IDP | `epa` | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Apotheken |
+| ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis (3 Tage), ePA | `epa` | gemSpec_Aktensystem_ePAfueralle, gematik ePA für alle Apotheken |
 
 ### 6.4 Pflege-Software
 
 | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|
-| Dokument in die ePA hochladen / einsehen | Zugang, TI, SMC-B, Befugnis, ePA, IDP | `epa` | gematik Pflege-FAQ, gemSpec_Aktensystem_ePAfueralle |
+| Dokument in die ePA hochladen / einsehen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gematik Pflege-FAQ, gemSpec_Aktensystem_ePAfueralle |
 | KIM-Nachricht senden | Zugang, TI, SMC-B, KIM-Clientmodul\*, KIM | `kim` | gematik Pflege-FAQ, gemSpec_CM_KOMLE |
 
 ### 6.5 Kartenterminals, CardLink und TI-Messenger-Client
@@ -755,7 +755,7 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 
 | Ablauf | Schritte (Protokoll) | Status | Quelle |
 |---|---|---|---|
-| `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→IDP Token holen (OAuth 2.0, über K→V) · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | bestätigt | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
+| `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | Vereinfachung | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
 | `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
@@ -764,15 +764,26 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur mit HBA (QES) über T · CM→K Verschlüsselung mit der SMC-B · CM→KIM (mTLS, über K→V) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |
 | `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
-| `epa` | P→K Authentisierung mit der SMC-B · P→IDP Token (über K→V) · Befugnis prüfen (Prüfungsnachweis oder PoPP) · P→ePA Dokument bzw. Abfrage (VAU, FHIR, über K→V) · ePA→P | plausibel | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
+| `epa` | P→K Authentisierung mit der SMC-B · Befugnis prüfen (Prüfungsnachweis oder PoPP) · P→ePA Dokument bzw. Abfrage (VAU, FHIR, über K→V) · ePA→P | Vereinfachung | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
 | `tim` | Client→TI-Messenger-FD (Matrix, Internet) · FD→FD des Empfängers (Föderation über VZD) · Zustellung | plausibel | gemSpec_TI-M_Basis |
-| `erezeptEinloesen` | eGK-Weg: P→K ReadVSD mit eGK · K→V→VSDM Prüfungsnachweis · P→K Authentisierung mit der SMC-B · P→IDP Token (über K→V) · P→E-Rezept-FD Abruf mit Prüfungsnachweis (über K→V) · E-Rezept-FD→P Verordnung | bestätigt | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
-| `erezeptEinloesenCode` | Rezeptcode-Weg: wie `erezeptEinloesen` ohne eGK und ohne VSDM, also ab P→K Authentisierung mit der SMC-B | bestätigt | FP E-Rezept Apotheken |
+| `erezeptEinloesen` | eGK-Weg: P→K ReadVSD mit eGK · K→V→VSDM Prüfungsnachweis · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Abruf mit Prüfungsnachweis (über K→V) · E-Rezept-FD→P Verordnung | Vereinfachung | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
+| `erezeptEinloesenCode` | Rezeptcode-Weg: wie `erezeptEinloesen` ohne eGK und ohne VSDM, also ab P→K Authentisierung mit der SMC-B | Vereinfachung | FP E-Rezept Apotheken |
 | `cardlinkErp` | eGK→Smartphone (NFC, CAN) · Smartphone→CardLink (Internet) · CardLink→K wie ein Kartenterminal · P→K ReadVSD · K→V→VSDM Prüfungsnachweis · P→E-Rezept-FD Abruf (über K→V) · E-Rezept-FD→P | bestätigt | FP eHealth-CardLink, gemSpec_eHealth-CardLink |
 | `cardlinkVsdm` | wie `cardlinkErp` bis zum Prüfungsnachweis | bestätigt | gemSpec_eHealth-CardLink |
 | `mobkt` | eGK→Mobiles KT (offline lesen, speichern) · später Mobiles KT→P per USB (CT-API) | bestätigt | gemSpec_MobKT |
 | `appErezept` | App→Internet→sektoraler IDP (GesundheitsID) · App→E-Rezept-FD | bestätigt | gemSpec_eRp_FdV, gemSpec_IDP_Sek |
 | `appEpa` | App→Internet→sektoraler IDP (GesundheitsID) · App→ePA | bestätigt | gemSpec_Aktensystem_ePAfueralle, gemSpec_IDP_Sek |
+
+Auslegung (2026-11-22, Issue #238): In der TI 1.0 übernimmt der
+VPN-Zugangsdienst den Zugang, die Abläufe `erezept`, `epa`,
+`erezeptEinloesen` und `erezeptEinloesenCode` haben keinen IDP-Schritt, die
+zugehörigen Aktionen verlangen keinen IDP. Die Komponente `idp` bleibt samt
+Anschluss `ti` im Katalog, hat aber keine Erlaubnisregel zu VPN-Zugangsdienst
+oder Zentralem Netz mehr; alte Dateien mit solchen Kanten laden weiter, die
+Kanten bleiben stehen. Die Verschiebung des IDP in die TI 2.0 folgt in
+Issue #237. Die Quellen (gemILF_PS_eRp, gemSpec_IDP_FD) nennen den
+IDP-Schritt; die Anforderung im Issue weicht davon ab. Status daher
+Vereinfachung.
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.
@@ -1005,7 +1016,7 @@ Prüfregeln P-29 und P-34 bleiben nur Erweitert.
 - [x] Zeitgrenzwert 3600 s statt 5 Minuten (gemSpec_Kon).
 - [x] eMP braucht eGK und HBA oder SMC-B (gemSysL_AMTS_A).
 - [x] VSDM braucht neben der eGK die SMC-B oder den HBA (gemSysL_VSDM).
-- [x] IDP über die TI, TI-Messenger über das Internet (2026-11-03).
+- [x] IDP über die TI (für TI 1.0 aufgehoben, Issue #238), TI-Messenger über das Internet (2026-11-03).
 - [x] Karten sind Zustand des Terminals, ihre Regeln stehen in
   Abschnitt 5.
 - [x] PoPP und VSDM 2.0 nur als Komponente im Modus Erweitert.
@@ -1042,10 +1053,10 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 
 | Preset | Name im Mockup | Geräte | Karten | Abweichung vom Mockup |
 |---|---|---|---|---|
-| Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS (AP-1), 2 eHealth-KT (beide AP-1), 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK. Beide am Arbeitsplatz des PC | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
-| Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: IDP, **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
-| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
-| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: IDP, VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
+| Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS (AP-1), 2 eHealth-KT (beide AP-1), 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK. Beide am Arbeitsplatz des PC | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
+| Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
+| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
+| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

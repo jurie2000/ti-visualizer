@@ -56,9 +56,7 @@ export function stepDone(stepId: string, ctx: TutorialCtx): boolean {
     case "weg-in-die-ti":
       return linked(["kon", praxis], ["vpn", any]);
     case "fachdienste":
-      return ["idp", "erp", "vsdm"].every((s) =>
-        linked(["vpn", any], [s, any]),
-      );
+      return ["erp", "vsdm"].every((s) => linked(["vpn", any], [s, any]));
     case "erstes-erezept":
       return played.has("erezept-ausstellen");
     case "apotheke-nebenan":

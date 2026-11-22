@@ -278,7 +278,7 @@
       "types": ["vpn"]
     },
     "b": {
-      "types": ["vsdm", "erp", "kim", "epa", "idp"]
+      "types": ["vsdm", "erp", "kim", "epa"]
     },
     "source": ["Arch"],
     "status": "Vereinfachung"
@@ -289,7 +289,7 @@
       "types": ["zentral"]
     },
     "b": {
-      "types": ["dns", "ntp", "vzd", "tsl", "idp", "vsdm", "erp", "kim", "epa"]
+      "types": ["dns", "ntp", "vzd", "tsl", "vsdm", "erp", "kim", "epa"]
     },
     "source": ["gemSpec_Net", "Arch"],
     "status": "bestätigt"

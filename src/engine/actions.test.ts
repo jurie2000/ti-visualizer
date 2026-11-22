@@ -87,7 +87,7 @@ const links: [string, string, true?][] = [
   ["timc", "net"],
   ["erpapp", "net"],
   ["epaapp", "net"],
-  ...["vsdm", "erp", "idp", "idpsek", "kim", "epa", "popp"].map(
+  ...["vsdm", "erp", "idpsek", "kim", "epa", "popp"].map(
     (s): [string, string] => ["zn", s],
   ),
   ...["erp", "idp", "idpsek", "epa", "tim", "popp", "zeta"].map(
@@ -256,7 +256,7 @@ const cases: [
   [
     "erezept-einloesen-code",
     "avs",
-    (t) => without(t, "idp"),
+    (t) => without(t, "erp"),
     /fehlt in der Topologie/,
   ],
   [
@@ -317,6 +317,25 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
     expect(state(full(), trigger, action)).toMatchObject({
       enabled: true,
     });
+  });
+
+  it("[#238] die TI-1.0-Aktionen laufen ohne IDP in der Topologie", () => {
+    const ids = [
+      "erezept-ausstellen",
+      "eau-epa-hochladen",
+      "befund-epa-hochladen",
+      "epa-medikationsliste-einsehen",
+      "erezept-einloesen-egk",
+      "erezept-einloesen-code",
+      "erezept-cardlink-einloesen",
+      "epa-dokument-pflege",
+    ];
+    for (const id of ids) {
+      const trigger = cases.find((c) => c[0] === id)?.[1] ?? "";
+      expect(state(without(full(), "idp"), trigger, id), id).toMatchObject({
+        enabled: true,
+      });
+    }
   });
 
   it.each(cases)(

@@ -163,7 +163,8 @@ Regel-Engine und das Dateischema prüfen dagegen.
 
 Eigene Kategorie „TI 2.0“ (Palette und Katalog), Farbe Violett und Form
 Parallelogramm, damit sie sich von den anderen Kategorien abhebt (Farbe
-nie allein). Zur TI 2.0 zählen ZETA Guard, PoPP-Service, IDP und VSDM 2.0. `vsdm`
+nie allein). Zur TI 2.0 zählen ZETA Guard, PoPP-Service, IDP und
+VSDM 2.0. `vsdm`
 (VSDM 1.0) bleibt in 1.7.
 
 | Schlüssel | Name | Status | Quelle |
@@ -311,7 +312,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Primärsystem ↔ E-Rezept-FD | HTTPS mit VAU, FHIR. Läuft über die Route des Zugangs, der Zugang leitet nur weiter | 443 | ja | bestätigt | gemILF_PS_eRp |
 | Primärsystem ↔ ePA | HTTPS mit VAU, FHIR. Über die Route des Zugangs | 443 | ja | plausibel | gemILF_PS_ePA |
 | Zugang ↔ VSDM-FD | SOAP (ReadVSD) | offen | ja | plausibel | gemSysL_VSDM |
-| Primärsystem ↔ IDP | OAuth 2.0 und OpenID Connect, über das Internet | 443 | ja | bestätigt | gemSpec_IDP_FD, gemILF_PS_eRp |
+| Primärsystem ↔ IDP | OAuth 2.0 und OpenID Connect, über das Internet | 443 | ja | plausibel | gemSpec_IDP_FD, gemILF_PS_eRp |
 | KIS ↔ RIS/LIS | HL7 v2 (außerhalb der TI) | offen | ja | plausibel | KH |
 
 ## 4. Verbindungsregeln
@@ -433,11 +434,11 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
 | Internet | ZETA Guard | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
-| Internet | IDP (Auslegung 2026-11-22, Issue #237, Abschnitt 7) | plausibel | gemSpec_IDP_FD, gemSpec_ZETA |
+| Internet | IDP | plausibel | gemSpec_IDP_FD, gemSpec_ZETA |
 | ZETA Guard | VSDM 2.0 | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2 |
 
 Internet ↔ PoPP steht schon in der Zeile der Dienste mit Internetzugang
-(oben). Auslegung (2026-11-19): ZETA Guard und PoPP sind ohne VPN über
+(oben), Internet ↔ IDP ist die Zeile in der Tabelle. Auslegung (2026-11-19): ZETA Guard und PoPP sind ohne VPN über
 das Internet erreichbar (gemSpec_ZETA, gemSpec_PoPP_Service,
 Infoveranstaltung VSDM 2.0 vom 16.09.2025). Daher brauchen sie keinen
 Zugang und kein Zentrales Netz. Das Detail steht nur in Entwurfsständen
@@ -782,18 +783,14 @@ keinen IDP (auch `erezept-cardlink-einloesen`, dessen Ablauf `cardlinkErp`
 nie einen hatte). gemILF_PS_eRp und gemSpec_IDP_FD nennen den Schritt, das
 Issue weicht davon ab; darum steht der Status der vier Abläufe auf
 Vereinfachung, der Status der Aktionen bleibt (er hängt am Ergebnis, nicht
-an den Einzelschritten). `idp` bekommt in Issue #237 seinen Platz in der TI 2.0.
+an den Einzelschritten).
 
-Auslegung (2026-11-22, Issue #237): Der IDP ist ein Dienst der TI 2.0
-(Kategorie „TI 2.0“, Abschnitt 1.10), nur über das Internet erreichbar, ohne
-VPN-Zugangsdienst und Zentrales Netz. Die ZETA-Anmeldung (`zeta`) holt vor dem
-Access Token den Identity-Token beim IDP und verlangt dafür „IDP erreichbar“.
-Das Primärsystem erreicht den IDP wie PoPP über Router und Internet, auch aus
-der Cloud; die Signatur macht im Modell die SMC-B im Kartenterminal der Praxis
-(das HSM-B im Rechenzentrum ist nicht modelliert). Direkte Kanten zum IDP
-meldet V-21. Der Anschluss `ti` des IDP entfällt; alte Dateien mit einer Kante
-daran laden weiter, die Kante entfällt mit Hinweis („verbindungEntfallen“).
-Quellen: gemSpec_IDP_FD, gemSpec_ZETA. Status: plausibel.
+Auslegung (2026-11-22, Issue #237): Der IDP gehört zur TI 2.0 und ist nur über
+das Internet erreichbar, auch aus der Cloud. `zeta` holt vor dem Access Token
+den Identity-Token beim IDP. Die Signatur macht im Modell die SMC-B im
+Kartenterminal der Praxis (das HSM-B im Rechenzentrum ist nicht modelliert).
+Alte Dateien mit einer Kante am entfallenen Anschluss `ti` laden weiter, die
+Kante entfällt mit Hinweis. Status: plausibel (gemSpec_IDP_FD, gemSpec_ZETA).
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.

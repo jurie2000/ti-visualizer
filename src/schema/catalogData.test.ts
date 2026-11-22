@@ -274,6 +274,23 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
       ).toBe(false);
   });
 
+  it("[#237] zeta: SMC-B → IDP → ZETA Guard, IDP in TI 2.0 nur am Internet", () => {
+    expect(flow("zeta")?.steps.map((s) => `${s.from}>${s.to}`)).toEqual([
+      "P>T",
+      "T>P",
+      "P>idp",
+      "idp>P",
+      "P>zeta",
+      "zeta>P",
+    ]);
+    expect(action("zeta-anmelden")?.requires).toMatchObject({
+      all: [{ card: "smcb" }, { service: "idp" }, { service: "zeta" }],
+    });
+    const idp = catalog.deviceTypes.find((t) => t.id === "idp");
+    expect(idp?.category).toBe("ti2");
+    expect(idp?.ports.map((p) => p.id)).toEqual(["net"]);
+  });
+
   it("Regelwerk 7: Rezeptcode-Weg ohne eGK- und VSDM-Schritte", () => {
     expect(action("erezept-einloesen-code")?.flow).toBe("erezeptEinloesenCode");
     const code = flow("erezeptEinloesenCode")?.steps ?? [];

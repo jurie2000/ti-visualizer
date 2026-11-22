@@ -308,7 +308,7 @@
   {
     "id": "erl-dienste-internet",
     "a": {
-      "types": ["erp", "epa", "idp", "idpsek", "popp", "tim"]
+      "types": ["erp", "epa", "idpsek", "popp", "tim"]
     },
     "b": {
       "types": ["internet"]
@@ -320,6 +320,17 @@
       "gemSpec_TI-M_Basis"
     ],
     "status": "bestätigt"
+  },
+  {
+    "id": "erl-internet-idp",
+    "a": {
+      "types": ["internet"]
+    },
+    "b": {
+      "types": ["idp"]
+    },
+    "source": ["gemSpec_IDP_FD", "gemSpec_ZETA"],
+    "status": "plausibel"
   },
   {
     "id": "erl-internet-zeta",

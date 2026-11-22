@@ -212,7 +212,6 @@ const cases: [
     (t) => without(t, "zeta"),
     "ZETA Guard fehlt in der Topologie.",
   ],
-
   [
     "popp-token-beantragen",
     "pvs",
@@ -349,13 +348,16 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
     },
   );
 
-  it("[#237] zeta-anmelden verlangt einen IDP", () => {
-    expect(state(without(full(), "idp"), "pvs", "zeta-anmelden")).toMatchObject(
-      {
-        enabled: false,
-        disabledReason: "Identity Provider (IDP) fehlt in der Topologie.",
-      },
-    );
+  it("[#237] zeta-anmelden braucht einen vorhandenen, erreichbaren IDP", () => {
+    const t = full();
+    expect(state(without(t, "idp"), "pvs", "zeta-anmelden")).toMatchObject({
+      enabled: false,
+      disabledReason: "Identity Provider (IDP) fehlt in der Topologie.",
+    });
+    expect(state(faulty(t, "idp"), "pvs", "zeta-anmelden")).toMatchObject({
+      enabled: false,
+      disabledReason: expect.stringContaining("ausgefallen") as string,
+    });
   });
 });
 

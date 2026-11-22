@@ -543,9 +543,17 @@ describe("WLAN-Erkennung (A-4)", () => {
 });
 
 describe("TI 2.0: ZETA Guard, PoPP, VSDM 2.0 (#202)", () => {
+  it.each(["vpn", "zentral"])(
+    "[#237] %s und IDP lassen sich nicht verbinden",
+    (x) => {
+      expect(check(pair(x, "idp"), "x", "y").ok).toBe(false);
+    },
+  );
+
   it.each([
     ["internet", "zeta"],
     ["internet", "popp"],
+    ["internet", "idp"],
     ["zeta", "vsdm2"],
   ])("%s und %s lassen sich verbinden", (a, b) => {
     for (const [x, y] of [

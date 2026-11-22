@@ -190,7 +190,7 @@
       "netPort": "443",
       "tls": true,
       "source": ["gemSpec_IDP_FD", "gemILF_PS_eRp"],
-      "status": "bestätigt"
+      "status": "plausibel"
     },
     {
       "id": "prot-kis-risl",

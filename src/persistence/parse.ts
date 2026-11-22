@@ -432,7 +432,7 @@ function build(
       return false;
     };
     const keys: string[] = [];
-    // Der IDP gehört zur TI 2.0 und hat keinen TI-Zugang mehr (Issue #237).
+    // Der IDP gehört zur TI 2.0 und hat keinen TI-Zugang mehr (Issue #237); sonst würde der Anschluss unten als Fehler abgelehnt.
     if (
       e.ends.some(
         (x) => x.port === "ti" && nodeById.get(x.node)?.type === "idp",
@@ -441,7 +441,8 @@ function build(
       add({
         severity: "Hinweis",
         code: "verbindungEntfallen",
-        message: `Verbindung „${e.id}“ entfällt: Der IDP gehört zur TI 2.0 und ist nur über das Internet erreichbar.`,
+        message: `Verbindung „${e.id}“ entfällt: Der IDP hat keinen TI-Zugang mehr.`,
+        ref: e.id,
       });
       return false;
     }

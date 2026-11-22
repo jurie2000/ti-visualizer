@@ -472,11 +472,11 @@
     "short": "Der Anmeldedienst der TI 2.0.",
     "purpose": "Stellt der Praxis den Identity- und Refresh-Token aus, wenn sie sich mit der SMC-B-Signatur ausweist. Mit diesem Token holt sie beim ZETA Guard das Access Token (TI 2.0). Versicherte melden sich über den sektoralen IDP an.",
     "where": "Zentral, betrieben im Auftrag der gematik, erreichbar über das Internet.",
-    "connected": "Internet, E-Rezept-App.",
+    "connected": "Internet, Primärsystem (über Router und Internet), ZETA Guard (Token), E-Rezept-App.",
     "fault": "Ohne Identity-Token keine ZETA-Anmeldung: Der ZETA Guard stellt kein Access Token aus, wenn der IDP nicht erreichbar ist oder die SMC-B nicht freigeschaltet ist.",
     "confusion": "Sektoraler IDP (Anmeldung der Versicherten über ihre Krankenkasse) und PoPP-Service (belegt Anwesenheit, nicht Identität).",
-    "related": ["idpsek", "popp"],
-    "source": ["gemSpec_IDP_FD", "gemSpec_FD_eRp"],
+    "related": ["idpsek", "popp", "zeta"],
+    "source": ["gemSpec_IDP_FD", "gemSpec_ZETA"],
     "status": "plausibel"
   },
   {

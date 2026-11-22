@@ -297,6 +297,23 @@ describe("Internet-Wege 6.0", () => {
     expect(resolvePath(t, "pvs", "popp", catalog).ok).toBe(true);
   });
 
+  it("[#237] IDP ist über Router und Internet erreichbar, auch ohne Zugang", () => {
+    const t = topo(
+      [
+        ["pvs", "pvs"],
+        ["rt", "router"],
+        ["net", "internet"],
+        ["idp", "idp"],
+      ],
+      [
+        ["pvs", "rt"],
+        ["rt", "net"],
+        ["net", "idp"],
+      ],
+    );
+    expect(resolvePath(t, "pvs", "idp", catalog).ok).toBe(true);
+  });
+
   it("PoPP ist auch hinter dem Zugang über Router und Internet erreichbar", () => {
     const t = topo(
       [

@@ -305,7 +305,6 @@ export function Canvas() {
       y: Math.round(p.y - NODE_SIZE.height / 2),
     });
     if (!result.ok) toast.show(result.reason);
-    else if (result.id) select({ kind: "node", id: result.id });
   };
 
   return (

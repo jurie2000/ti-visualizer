@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import {
   räumePanelsAuf,
   schliessePalette,
+  öffneDetails,
   öffneKarteStecken,
   öffnePalette,
 } from "./leisten";
@@ -155,6 +156,7 @@ test.describe("tutorial", { tag: "@tutorial" }, () => {
       // Mit zwei Konnektoren braucht das Apotheken-Terminal sein Pairing
       await gerät(page, "kt-2").focus();
       await page.keyboard.press("Enter");
+      await öffneDetails(page); // kt-2 ist schon gewählt, das Panel öffnet nicht von selbst
       await page
         .getByRole("group", { name: "Pairing mit" })
         .getByLabel("kon-2")

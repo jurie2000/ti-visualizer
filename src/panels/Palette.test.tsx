@@ -6,7 +6,7 @@ import { IDLE } from "../engine/simulation";
 import { ToastProvider } from "../ui/Toast";
 import { Canvas } from "../canvas/Canvas";
 import { DRAG_TYPE } from "../canvas/deviceStyle";
-import { useCatalog, useSim, useTopology } from "../store";
+import { useCatalog, useSim, useTopology, useUi } from "../store";
 import { Palette } from "./Palette";
 import { PalettePanel } from "./PalettePanel";
 
@@ -108,6 +108,25 @@ describe("Palette", () => {
     expect(onAdded).toHaveBeenCalledTimes(1);
   });
 
+  it("#234: Hinzufügen per Klick wählt nichts aus (Detailpanel bleibt zu)", async () => {
+    const user = userEvent.setup();
+    useUi.setState({ selection: undefined });
+    render(
+      <ToastProvider>
+        <ReactFlowProvider>
+          <PalettePanel />
+        </ReactFlowProvider>
+      </ToastProvider>,
+    );
+    await user.click(
+      screen.getByRole("button", {
+        name: "PVS Praxisverwaltungssystem hinzufügen",
+      }),
+    );
+    expect(pvsCount()).toBe(1);
+    expect(useUi.getState().selection).toBeUndefined();
+  });
+
   it("fügt per Drop auf die Canvas hinzu", () => {
     render(
       <ToastProvider>
@@ -123,9 +142,11 @@ describe("Palette", () => {
       files: { item: () => null },
       items: [],
     };
+    useUi.setState({ selection: undefined });
     fireEvent.drop(pane, { dataTransfer, clientX: 200, clientY: 100 });
     expect(count()).toBe(1);
     expect(pvsCount()).toBe(1);
+    expect(useUi.getState().selection).toBeUndefined(); // #234
   });
 
   it("ignoriert fremde Drops", () => {

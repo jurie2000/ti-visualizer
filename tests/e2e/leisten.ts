@@ -41,14 +41,19 @@ export async function räumePanelsAuf(page: Page) {
     await page.keyboard.press("Escape");
 }
 
-/** Karte stecken über das Detailpanel (T-718): Gerät wählen, Schiene rechts aufklappen, Knopf drücken. */
-export async function öffneKarteStecken(page: Page, gerät: Locator) {
-  await gerät.click();
+/** Detailpanel per Mauszeiger auf der Schiene aufklappen (klappt beim Hinzufügen nicht von selbst auf, #234). */
+export async function öffneDetails(page: Page) {
   const schiene = await page
     .locator(".tiv-side--right .tiv-rail")
     .boundingBox();
   if (!schiene) throw new Error("Schiene fehlt");
   await page.mouse.move(schiene.x + 28, schiene.y + schiene.height / 2);
+}
+
+/** Karte stecken über das Detailpanel (T-718): Gerät wählen, Schiene rechts aufklappen, Knopf drücken. */
+export async function öffneKarteStecken(page: Page, gerät: Locator) {
+  await gerät.click();
+  await öffneDetails(page);
   await page
     .getByRole("region", { name: "Gesteckte Karten" })
     .getByRole("button", { name: "Karte stecken" })

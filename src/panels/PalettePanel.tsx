@@ -5,7 +5,7 @@ import {
   NODE_SIZE,
   categoryColor,
 } from "../canvas/deviceStyle";
-import { simLocked, useCatalog, useSim, useTopology, useUi } from "../store";
+import { simLocked, useCatalog, useSim, useTopology } from "../store";
 import type { RailItem } from "../app/SidePanel";
 import { useToast } from "../ui/Toast";
 import { Palette } from "./Palette";
@@ -25,7 +25,6 @@ export function PalettePanel({
 }) {
   const { screenToFlowPosition } = useReactFlow();
   const addNode = useTopology((s) => s.addNode);
-  const select = useUi((s) => s.select);
   const toast = useToast();
 
   const add = (type: string) => {
@@ -45,10 +44,7 @@ export function PalettePanel({
       y: Math.round(center.y - NODE_SIZE.height / 2 + shift),
     });
     if (!result.ok) toast.show(result.reason);
-    else if (result.id) {
-      select({ kind: "node", id: result.id });
-      onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
-    }
+    else onAdded?.(); // Überlagerung schließen, damit das neue Gerät sichtbar ist (T-703)
   };
 
   return <Palette onAdd={add} reveal={reveal} />;

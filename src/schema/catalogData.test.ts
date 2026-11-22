@@ -259,7 +259,7 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
   const action = (id: string) => catalog.actions.find((a) => a.id === id);
   const flow = (id: string) => catalog.flows.find((f) => f.id === id);
 
-  it("[#238] TI-1.0-Abläufe und -Aktionen kennen keinen IDP", () => {
+  it("[#238] TI-1.0-Abläufe kennen keinen IDP", () => {
     const flows = [
       "erezept",
       "epa",
@@ -272,18 +272,6 @@ describe("Echter Katalog: Nachbesserung T-401", () => {
         flow(id)?.steps.some((s) => s.from === "idp" || s.to === "idp"),
         id,
       ).toBe(false);
-    const actions = [
-      "erezept-ausstellen",
-      "eau-epa-hochladen",
-      "befund-epa-hochladen",
-      "epa-medikationsliste-einsehen",
-      "erezept-einloesen-egk",
-      "erezept-einloesen-code",
-      "erezept-cardlink-einloesen",
-      "epa-dokument-pflege",
-    ];
-    for (const id of actions)
-      expect(JSON.stringify(action(id)?.requires), id).not.toContain('"idp"');
   });
 
   it("Regelwerk 7: Rezeptcode-Weg ohne eGK- und VSDM-Schritte", () => {

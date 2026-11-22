@@ -775,15 +775,15 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `appEpa` | App→Internet→sektoraler IDP (GesundheitsID) · App→ePA | bestätigt | gemSpec_Aktensystem_ePAfueralle, gemSpec_IDP_Sek |
 
 Auslegung (2026-11-22, Issue #238): In der TI 1.0 übernimmt der
-VPN-Zugangsdienst den Zugang, die Abläufe `erezept`, `epa`,
-`erezeptEinloesen` und `erezeptEinloesenCode` haben keinen IDP-Schritt, die
-zugehörigen Aktionen verlangen keinen IDP. Die Komponente `idp` bleibt samt
-Anschluss `ti` im Katalog, hat aber keine Erlaubnisregel zu VPN-Zugangsdienst
-oder Zentralem Netz mehr; alte Dateien mit solchen Kanten laden weiter, die
-Kanten bleiben stehen. Die Verschiebung des IDP in die TI 2.0 folgt in
-Issue #237. Die Quellen (gemILF_PS_eRp, gemSpec_IDP_FD) nennen den
-IDP-Schritt; die Anforderung im Issue weicht davon ab. Status daher
-Vereinfachung.
+VPN-Zugangsdienst den Zugang. `erezept`, `epa`, `erezeptEinloesen` und
+`erezeptEinloesenCode` haben keinen IDP-Schritt, die Aktionen verlangen
+keinen IDP (auch `erezept-cardlink-einloesen`, dessen Ablauf `cardlinkErp`
+nie einen hatte). gemILF_PS_eRp und gemSpec_IDP_FD nennen den Schritt, das
+Issue weicht davon ab; darum steht der Status der vier Abläufe auf
+Vereinfachung, der Status der Aktionen bleibt (er hängt am Ergebnis, nicht
+an den Einzelschritten). `idp` bleibt samt Anschluss `ti` im Katalog, ohne
+Erlaubnisregel zu VPN-Zugangsdienst und Zentralem Netz; alte Dateien mit
+solchen Kanten laden weiter. Verschiebung in die TI 2.0: Issue #237.
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.

@@ -8,8 +8,8 @@ import type { Catalog, Node, Topology } from "../schema";
 
 /**
  * Wege nur über das Internet (Regelwerk 6.0): Auslöser und erlaubte Ziele.
- * Zusätzlich ist der PoPP-Service für jeden Auslöser über das Internet
- * erreichbar, CardLink erreicht seinen Zugang so.
+ * Zusätzlich sind PoPP-Service und IDP (TI 2.0) für jeden Auslöser über das
+ * Internet erreichbar, CardLink erreicht seinen Zugang so.
  */
 export const INTERNET_PAIRS: Record<string, string[]> = {
   erpapp: ["erp", "idp", "idpsek"],
@@ -178,6 +178,7 @@ function search(
   const internetOnly =
     kind === "ti" &&
     (goal.type === "popp" ||
+      goal.type === "idp" ||
       (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
       (hasSlots(start) && roleOf(goal, catalog) === "zugang"));
   const viaCloud = internetOnly && hasSlots(start);

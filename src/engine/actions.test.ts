@@ -212,6 +212,7 @@ const cases: [
     (t) => without(t, "zeta"),
     "ZETA Guard fehlt in der Topologie.",
   ],
+
   [
     "popp-token-beantragen",
     "pvs",
@@ -347,6 +348,15 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
       else expect(s?.disabledReason).toMatch(reason);
     },
   );
+
+  it("[#237] zeta-anmelden verlangt einen IDP", () => {
+    expect(state(without(full(), "idp"), "pvs", "zeta-anmelden")).toMatchObject(
+      {
+        enabled: false,
+        disabledReason: "Identity Provider (IDP) fehlt in der Topologie.",
+      },
+    );
+  });
 });
 
 describe("T-402 Pfad, Karten, Terminal", () => {
@@ -874,7 +884,7 @@ describe("TI-2.0-Aktionen (#204)", () => {
 
   it("jeder Ablauf bindet seine Stationen", () => {
     const schritte = {
-      "zeta-anmelden": 4,
+      "zeta-anmelden": 6,
       "popp-token-beantragen": 3,
       "vsdm2-pruefen": 3,
     };

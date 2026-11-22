@@ -150,7 +150,7 @@ Aus der Recherche. Eingearbeitet ins [Regelwerk](./regelwerk.md) am 2026-11-03 (
 | Das mobile Kartenterminal arbeitet offline und übergibt Daten später ans Primärsystem | gemSpec_MobKT | mobiles KT offline, Übergabe per USB (Regelwerk 12) |
 | eHealth-CardLink erlaubt keine PIN-Prüfung | gemSpec_eHealth-CardLink | neue Regel: kein HBA/SMC-B über CardLink, keine PIN-pflichtigen Aktionen |
 | VSDM 2.0 und künftig ePA/E-Rezept nutzen PoPP-Token statt VSDM-Prüfungsnachweis | gemSpec_VSDM_2, PoPP | PoPP als Komponente aufnehmen |
-| Der Fachdienst gibt die Anmeldung an den IDP ab (Relying Party) | gemSpec_FD_eRp | IDP über die TI (entschieden 2026-11-03, für TI 1.0 aufgehoben in #238) |
+| Der Fachdienst gibt die Anmeldung an den IDP ab (Relying Party) | gemSpec_FD_eRp | IDP über die TI (entschieden 2026-11-03, für TI 1.0 aufgehoben in #238, IDP seit #237 in der TI 2.0 über das Internet) |
 | Die Route 100.102.0.0/15 für offene Fachdienste und WANDA ist im Primärsystem einzurichten (gemILF_PS, Abschnitt 3.2.3) | gemILF_PS, gemSpec_Net | bestätigt P-27 |
 | eAU geht per KIM an die Krankenkasse, deren Adresse über das Institutionskennzeichen gefunden wird | Pressemitteilung eAU, Dienstkennungen KIM | Krankenkasse als Gegenstelle, VZD im Ablauf `eau` |
 | TI-Messenger nutzt Matrix, die Föderation läuft über den VZD | gemSpec_TI-M_Basis | VZD im Ablauf `tim` |

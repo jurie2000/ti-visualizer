@@ -286,9 +286,10 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
   });
 
   it.each(["pvs", "pc", "kt", "mkt", "switch", "router", "fw"])(
-    "[V-21] %s direkt an ZETA, PoPP oder VSDM 2.0 wird mit der Regelmeldung abgelehnt",
+    "[V-21] %s direkt an ZETA, PoPP, IDP oder VSDM 2.0 wird mit der Regelmeldung abgelehnt",
     (local) => {
-      for (const svc of ["zeta", "popp", "vsdm2"]) rejected("V-21", local, svc);
+      for (const svc of ["zeta", "popp", "idp", "vsdm2"])
+        rejected("V-21", local, svc);
     },
   );
 
@@ -567,10 +568,15 @@ describe("TI 2.0: ZETA Guard, PoPP, VSDM 2.0 (#202)", () => {
     expect(check(pair(a, b), "x", "y").ok).toBe(false);
   });
 
-  it("zeta, popp und vsdm2 stehen in der Kategorie TI 2.0, vsdm bleibt bei den Fachdiensten", () => {
+  it("zeta, popp, idp und vsdm2 stehen in der Kategorie TI 2.0, vsdm bleibt bei den Fachdiensten", () => {
     const cat = (id: string) =>
       catalog.deviceTypes.find((t) => t.id === id)?.category;
-    expect(["zeta", "popp", "vsdm2"].map(cat)).toEqual(["ti2", "ti2", "ti2"]);
+    expect(["zeta", "popp", "idp", "vsdm2"].map(cat)).toEqual([
+      "ti2",
+      "ti2",
+      "ti2",
+      "ti2",
+    ]);
     expect(cat("vsdm")).toBe("service");
   });
 });

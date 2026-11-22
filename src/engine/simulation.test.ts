@@ -40,6 +40,7 @@ const LINKS: [string, string][] = [
   ["epaapp", "internet"],
   ["internet", "tim"],
   ["internet", "erp"],
+  ["internet", "idp"],
   ["internet", "idpsek"],
   ["internet", "popp"],
   ["internet", "zeta"],

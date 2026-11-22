@@ -462,7 +462,11 @@
     "section": "lokal",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
-      "all": [{ "card": "smcb", "unlocked": true }, { "service": "zeta" }]
+      "all": [
+        { "card": "smcb", "unlocked": true },
+        { "service": "idp" },
+        { "service": "zeta" }
+      ]
     },
     "flow": "zeta",
     "issues": "zeta",

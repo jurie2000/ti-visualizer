@@ -515,15 +515,27 @@
       },
       {
         "from": "P",
+        "to": "idp",
+        "label": "Identity-Token holen (über das Internet)",
+        "text": "Das Primärsystem schickt die Signatur der SMC-B über das Internet an den IDP. Aus der Cloud signiert der Cloud-Server, im Rechenzentrum mit dem HSM-B oder über das Kartenterminal der Praxis."
+      },
+      {
+        "from": "idp",
+        "to": "P",
+        "label": "Identity-/Refresh-Token",
+        "text": "Der IDP prüft, ob die Praxis gültig registriert ist, und stellt den Identity- und Refresh-Token aus."
+      },
+      {
+        "from": "P",
         "to": "zeta",
-        "label": "Anmeldung (über das Internet)",
-        "text": "Das Primärsystem meldet die Praxis über das Internet beim ZETA Guard an."
+        "label": "Token vorlegen (über das Internet)",
+        "text": "Das Primärsystem legt den Token des IDP über das Internet beim ZETA Guard vor."
       },
       {
         "from": "zeta",
         "to": "P",
         "label": "Access Token",
-        "text": "Der ZETA Guard prüft die Anmeldung und stellt einen Access Token aus. Er gilt bis Tagesende."
+        "text": "Der ZETA Guard prüft den Token und stellt einen Access Token aus. Er gilt bis Tagesende."
       }
     ],
     "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],

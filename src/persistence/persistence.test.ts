@@ -652,7 +652,7 @@ describe("Importbefunde", () => {
     expect(other.findings[1]?.ref).toBe("e1");
   });
 
-  it("[#238] alte Datei mit Kante VPN↔IDP lädt ohne Fehler", () => {
+  it("[#237] alte Datei mit Kante VPN↔IDP lädt: Kante entfällt mit Hinweis, kein Fehler", () => {
     const t = {
       ...base(),
       nodes: [node("v", "vpn"), node("i", "idp")],
@@ -669,7 +669,11 @@ describe("Importbefunde", () => {
     };
     for (const extra of [{}, { catalogVersion: "0-alt" }]) {
       const r = ok(file(t, extra));
-      expect(r.topology.edges).toHaveLength(1);
+      expect(r.topology.edges).toHaveLength(0);
+      expect(r.findings.map((f) => [f.severity, f.code])).toContainEqual([
+        "Hinweis",
+        "verbindungEntfallen",
+      ]);
       expect(r.findings.filter((f) => f.severity === "Fehler")).toEqual([]);
     }
   });

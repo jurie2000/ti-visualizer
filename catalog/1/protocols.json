@@ -186,7 +186,7 @@
       "a": { "types": ["pvs", "kis", "avs", "pflege"] },
       "b": { "types": ["idp"] },
       "label": "OAuth 2.0/OIDC",
-      "protocol": "OAuth 2.0 und OpenID Connect, über die Route des Zugangs",
+      "protocol": "OAuth 2.0 und OpenID Connect, über das Internet",
       "netPort": "443",
       "tls": true,
       "source": ["gemSpec_IDP_FD", "gemILF_PS_eRp"],

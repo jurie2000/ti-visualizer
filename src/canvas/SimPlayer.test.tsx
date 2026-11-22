@@ -337,14 +337,14 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
   };
 
   it("ZETA-Anmeldung stellt den Token nach dem Ende einmal aus, ohne abzubrechen (#204)", () => {
-    ti2(["kt"], ["zeta"]);
+    ti2(["kt"], ["idp", "zeta"]);
     render(<Canvas />, { wrapper });
     act(() => {
       useUi
         .getState()
         .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
     });
-    nexts(3);
+    nexts(5);
     expect(useTopology.getState().topology.tokens).toBeUndefined();
     nexts(1);
     expect(useSim.getState().sim.status).toBe("done");
@@ -365,7 +365,7 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
   });
 
   it("Abbruch vor dem Ende und ein Ablauf mit Problem stellen keinen Token aus (#204)", () => {
-    ti2(["kt"], ["zeta"]);
+    ti2(["kt"], ["idp", "zeta"]);
     render(<Canvas />, { wrapper });
     act(() => {
       useUi
@@ -377,14 +377,14 @@ describe("SimPlayer (FR-9, FR-10, Regelwerk 7)", () => {
       useSim.getState().send("cancel");
     });
     expect(useTopology.getState().topology.tokens).toBeUndefined();
-    // Der ZETA Guard fehlt erst nach dem Start: der Schritt hat kein Ziel
+    // IDP und ZETA Guard fehlen erst nach dem Start: die Schritte haben kein Ziel
     ti2(["kt"], []);
     act(() => {
       useUi
         .getState()
         .startAction({ nodeId: "pvs", actionId: "zeta-anmelden" });
     });
-    nexts(5);
+    nexts(7);
     expect(useSim.getState().sim.status).toBe("done");
     expect(useTopology.getState().topology.tokens).toBeUndefined();
   });

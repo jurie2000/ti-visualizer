@@ -118,7 +118,6 @@ Status: Vereinfachung.
 | `ntp` | Zeitdienst | bestätigt | gemSpec_Net |
 | `vzd` | Verzeichnisdienst (FHIR-Directory) | bestätigt | gemSpec_VZD, gemSpec_VZD_FHIR_Directory |
 | `tsl` | TSL-Dienst mit OCSP-Responder | bestätigt | gemSpec_TSL, gemSpec_PKI |
-| `idp` | Identity Provider (zentral) | bestätigt | gemSpec_IDP_FD, gemSpec_FD_eRp |
 | `idpsek` | Sektoraler IDP (GesundheitsID) | bestätigt | gemSpec_IDP_Sek |
 
 ### 1.7 Fachdienste
@@ -164,13 +163,14 @@ Regel-Engine und das Dateischema prüfen dagegen.
 
 Eigene Kategorie „TI 2.0“ (Palette und Katalog), Farbe Violett und Form
 Parallelogramm, damit sie sich von den anderen Kategorien abhebt (Farbe
-nie allein). VSDM 2.0 ist der bisher einzige TI-2.0-Dienst. `vsdm`
+nie allein). Zur TI 2.0 zählen ZETA Guard, PoPP-Service, IDP und VSDM 2.0. `vsdm`
 (VSDM 1.0) bleibt in 1.7.
 
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
 | `zeta` | ZETA Guard (Zugangspunkt der TI 2.0) | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `popp` | PoPP-Service (von 1.7 hierher verschoben) | bestätigt | gemSpec_PoPP_Service |
+| `idp` | Identity Provider (IDP, Anmeldedienst der TI 2.0, von 1.6 hierher verschoben) | plausibel | gemSpec_IDP_FD, gemSpec_ZETA |
 | `vsdm2` | VSDM-2.0-Dienst | plausibel | gemSpec_VSDM_2, gemSpec_ZETA |
 
 ## 2. Anschlüsse
@@ -311,7 +311,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Primärsystem ↔ E-Rezept-FD | HTTPS mit VAU, FHIR. Läuft über die Route des Zugangs, der Zugang leitet nur weiter | 443 | ja | bestätigt | gemILF_PS_eRp |
 | Primärsystem ↔ ePA | HTTPS mit VAU, FHIR. Über die Route des Zugangs | 443 | ja | plausibel | gemILF_PS_ePA |
 | Zugang ↔ VSDM-FD | SOAP (ReadVSD) | offen | ja | plausibel | gemSysL_VSDM |
-| Primärsystem ↔ IDP | OAuth 2.0 und OpenID Connect, über die Route des Zugangs | 443 | ja | bestätigt | gemSpec_IDP_FD, gemILF_PS_eRp |
+| Primärsystem ↔ IDP | OAuth 2.0 und OpenID Connect, über das Internet | 443 | ja | bestätigt | gemSpec_IDP_FD, gemILF_PS_eRp |
 | KIS ↔ RIS/LIS | HL7 v2 (außerhalb der TI) | offen | ja | plausibel | KH |
 
 ## 4. Verbindungsregeln
@@ -433,6 +433,7 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Von | Nach | Status | Quelle |
 |---|---|---|---|
 | Internet | ZETA Guard | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| Internet | IDP (Auslegung 2026-11-22, Issue #237, Abschnitt 7) | plausibel | gemSpec_IDP_FD, gemSpec_ZETA |
 | ZETA Guard | VSDM 2.0 | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2 |
 
 Internet ↔ PoPP steht schon in der Zeile der Dienste mit Internetzugang
@@ -468,7 +469,7 @@ und K-6 in Abschnitt 5.
 | V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 | V-19 | TI-Messenger-FD an VPN-Zugangsdienst oder Zentrales Netz | Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst. | plausibel | gemSpec_TI-M_Basis |
 | V-20 | Router an Router | Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch. | Vereinfachung | DVO |
-| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
+| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service, IDP oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
 
 ### 4.4 Ausschlüsse
 
@@ -526,7 +527,7 @@ TI-Gateway (#226). Der VPN-Pfad oben gilt unverändert.
   E-Rezept-App ↔ E-Rezept-Dienst, IdP, sektoraler IdP ·
   ePA-App ↔ ePA-Dienst, sektoraler IdP ·
   TI-Messenger-Client ↔ TI-Messenger ·
-  CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, über den Cloud-Server, #221) · jeder Auslöser ↔ PoPP.
+  CardLink, Kartenterminal ↔ sein Zugang (im Rechenzentrum, über den Cloud-Server, #221) · jeder Auslöser ↔ PoPP und IDP.
 - Hinter dem Zugang führt das Internet nur in die eigenen Netzgeräte des
   auslösenden Arbeitsplatzes zurück, nie in fremde Router (Terminal einer anderen Einrichtung
   am selben Internet, #221).
@@ -665,7 +666,7 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | Medikationsplan erstellen/aktualisieren | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemILF_PS_AMTS, gemSysL_AMTS_A |
 | Medikationsplan auslesen | Zugang, eGK (mit PIN, K-7), HBA oder SMC-B (freigeschaltet) | `emp` | gemSysL_AMTS_A |
 | VSDM-Prüfung anstoßen | Zugang, TI, eGK, SMC-B oder HBA, VSDM | `vsdm` | gemSysL_VSDM, gemILF_PS |
-| ZETA-Anmeldung (SMC-B) | SMC-B (freigeschaltet), ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ZETA-Anmeldung (SMC-B) | SMC-B (freigeschaltet), IDP erreichbar, ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 | PoPP-Token beantragen (eGK) | eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
 | VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 
@@ -757,7 +758,7 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 |---|---|---|---|
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | Vereinfachung | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
-| `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→ZETA Guard Anmeldung (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→IDP Signatur der SMC-B, Identity-Token holen (über das Internet) · IDP→P Identity-/Refresh-Token · P→ZETA Guard Token vorlegen (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, gemSpec_IDP_FD, Info_VSDM2_ZETA_PoPP |
 | `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
 | `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
@@ -781,9 +782,18 @@ keinen IDP (auch `erezept-cardlink-einloesen`, dessen Ablauf `cardlinkErp`
 nie einen hatte). gemILF_PS_eRp und gemSpec_IDP_FD nennen den Schritt, das
 Issue weicht davon ab; darum steht der Status der vier Abläufe auf
 Vereinfachung, der Status der Aktionen bleibt (er hängt am Ergebnis, nicht
-an den Einzelschritten). `idp` bleibt samt Anschluss `ti` im Katalog, ohne
-Erlaubnisregel zu VPN-Zugangsdienst und Zentralem Netz; alte Dateien mit
-solchen Kanten laden weiter. Verschiebung in die TI 2.0: Issue #237.
+an den Einzelschritten). `idp` bekommt in Issue #237 seinen Platz in der TI 2.0.
+
+Auslegung (2026-11-22, Issue #237): Der IDP ist ein Dienst der TI 2.0
+(Kategorie „TI 2.0“, Abschnitt 1.10), nur über das Internet erreichbar, ohne
+VPN-Zugangsdienst und Zentrales Netz. Die ZETA-Anmeldung (`zeta`) holt vor dem
+Access Token den Identity-Token beim IDP und verlangt dafür „IDP erreichbar“.
+Das Primärsystem erreicht den IDP wie PoPP über Router und Internet, auch aus
+der Cloud; die Signatur macht im Modell die SMC-B im Kartenterminal der Praxis
+(das HSM-B im Rechenzentrum ist nicht modelliert). Direkte Kanten zum IDP
+meldet V-21. Der Anschluss `ti` des IDP entfällt; alte Dateien mit einer Kante
+daran laden weiter, die Kante entfällt mit Hinweis („verbindungEntfallen“).
+Quellen: gemSpec_IDP_FD, gemSpec_ZETA. Status: plausibel.
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
 über „erstes passendes Gerät der Topologie“ wie im Mockup.
@@ -1016,7 +1026,7 @@ Prüfregeln P-29 und P-34 bleiben nur Erweitert.
 - [x] Zeitgrenzwert 3600 s statt 5 Minuten (gemSpec_Kon).
 - [x] eMP braucht eGK und HBA oder SMC-B (gemSysL_AMTS_A).
 - [x] VSDM braucht neben der eGK die SMC-B oder den HBA (gemSysL_VSDM).
-- [x] IDP über die TI (für TI 1.0 aufgehoben, Issue #238), TI-Messenger über das Internet (2026-11-03).
+- [x] IDP über die TI (für TI 1.0 aufgehoben, Issue #238; seit Issue #237 in der TI 2.0 über das Internet), TI-Messenger über das Internet (2026-11-03).
 - [x] Karten sind Zustand des Terminals, ihre Regeln stehen in
   Abschnitt 5.
 - [x] PoPP und VSDM 2.0 nur als Komponente im Modus Erweitert.

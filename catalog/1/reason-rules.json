@@ -26,7 +26,6 @@
         "ntp",
         "vzd",
         "tsl",
-        "idp",
         "idpsek"
       ]
     },
@@ -215,7 +214,7 @@
   {
     "id": "V-16",
     "a": {
-      "types": ["dns", "ntp", "vzd", "tsl", "idp", "idpsek"]
+      "types": ["dns", "ntp", "vzd", "tsl", "idpsek"]
     },
     "b": {
       "types": ["switch", "router", "ap", "fw"]
@@ -306,7 +305,7 @@
       ]
     },
     "b": {
-      "types": ["zeta", "popp", "vsdm2"]
+      "types": ["zeta", "popp", "vsdm2", "idp"]
     },
     "message": "Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard.",
     "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP", "gemSpec_PoPP_Service"],

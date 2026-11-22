@@ -37,6 +37,7 @@ export interface Finding {
     | "doppelteId"
     | "unbekannterTyp"
     | "typErsetzt"
+    | "verbindungEntfallen"
     | "verweis"
     | "anschluss"
     | "karte"
@@ -431,6 +432,20 @@ function build(
       return false;
     };
     const keys: string[] = [];
+    // Der IDP gehört zur TI 2.0 und hat keinen TI-Zugang mehr (Issue #237); sonst würde der Anschluss unten als Fehler abgelehnt.
+    if (
+      e.ends.some(
+        (x) => x.port === "ti" && nodeById.get(x.node)?.type === "idp",
+      )
+    ) {
+      add({
+        severity: "Hinweis",
+        code: "verbindungEntfallen",
+        message: `Verbindung „${e.id}“ entfällt: Der IDP hat keinen TI-Zugang mehr.`,
+        ref: e.id,
+      });
+      return false;
+    }
     for (const [j, end] of e.ends.entries()) {
       const node = nodeById.get(end.node);
       if (!node)

@@ -29,12 +29,6 @@
       },
       {
         "from": "P",
-        "to": "idp",
-        "label": "Token holen (OAuth 2.0, über K→V)",
-        "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
-      },
-      {
-        "from": "P",
         "to": "erp",
         "label": "Verordnung einstellen (VAU, FHIR, über K→V)",
         "text": "Die verschlüsselte Verordnung wird im E-Rezept-Fachdienst eingestellt."
@@ -47,7 +41,7 @@
       }
     ],
     "source": ["gemILF_PS_eRp", "gemSpec_FD_eRp", "gemSpec_KT"],
-    "status": "bestätigt"
+    "status": "Vereinfachung"
   },
   {
     "id": "vsdm",
@@ -251,12 +245,6 @@
       },
       {
         "from": "P",
-        "to": "idp",
-        "label": "Token holen (über K→V)",
-        "text": "Über Zugang und VPN-Tunnel holt das Primärsystem ein Zugriffstoken beim IDP."
-      },
-      {
-        "from": "P",
         "to": "epa",
         "label": "Befugnis prüfen (Prüfungsnachweis oder PoPP)",
         "text": "Die Befugnis wird über Prüfungsnachweis oder PoPP-Token nachgewiesen."
@@ -275,7 +263,7 @@
       }
     ],
     "source": ["gemILF_PS_ePA", "gemSpec_Aktensystem_ePAfueralle"],
-    "status": "plausibel"
+    "status": "Vereinfachung"
   },
   {
     "id": "tim",
@@ -327,12 +315,6 @@
       },
       {
         "from": "P",
-        "to": "idp",
-        "label": "Token holen (über K→V)",
-        "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
-      },
-      {
-        "from": "P",
         "to": "erp",
         "label": "Abruf mit Prüfungsnachweis (über K→V)",
         "text": "Das AVS ruft die Verordnung beim E-Rezept-Fachdienst ab."
@@ -345,7 +327,7 @@
       }
     ],
     "source": ["gemF_eRp_Autorisierung_Apo", "FP_eHealth-CardLink"],
-    "status": "bestätigt"
+    "status": "Vereinfachung"
   },
   {
     "id": "erezeptEinloesenCode",
@@ -356,12 +338,6 @@
         "to": "K",
         "label": "Authentisierung mit der SMC-B",
         "text": "Die Apotheke weist sich mit der SMC-B aus."
-      },
-      {
-        "from": "P",
-        "to": "idp",
-        "label": "Token holen (über K→V)",
-        "text": "Über den VPN-Tunnel holt das AVS ein Zugriffstoken beim IDP."
       },
       {
         "from": "P",
@@ -377,7 +353,7 @@
       }
     ],
     "source": ["gematik_eRp_Apotheken"],
-    "status": "bestätigt"
+    "status": "Vereinfachung"
   },
   {
     "id": "cardlinkErp",
@@ -539,15 +515,27 @@
       },
       {
         "from": "P",
+        "to": "idp",
+        "label": "Identity-Token holen (über das Internet)",
+        "text": "Das Primärsystem schickt die Signatur der SMC-B über das Internet an den IDP. Aus der Cloud schickt der Cloud-Server sie."
+      },
+      {
+        "from": "idp",
+        "to": "P",
+        "label": "Identity-/Refresh-Token",
+        "text": "Der IDP prüft, ob die Praxis gültig registriert ist, und stellt den Identity- und Refresh-Token aus."
+      },
+      {
+        "from": "P",
         "to": "zeta",
-        "label": "Anmeldung (über das Internet)",
-        "text": "Das Primärsystem meldet die Praxis über das Internet beim ZETA Guard an."
+        "label": "Token vorlegen (über das Internet)",
+        "text": "Das Primärsystem legt den Token des IDP über das Internet beim ZETA Guard vor."
       },
       {
         "from": "zeta",
         "to": "P",
         "label": "Access Token",
-        "text": "Der ZETA Guard prüft die Anmeldung und stellt einen Access Token aus. Er gilt bis Tagesende."
+        "text": "Der ZETA Guard prüft den Token und stellt einen Access Token aus. Er gilt bis Tagesende."
       }
     ],
     "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],

@@ -652,6 +652,39 @@ describe("Importbefunde", () => {
     expect(other.findings[1]?.ref).toBe("e1");
   });
 
+  it("[#237] alte Datei mit Kante VPN↔IDP lädt: Kante entfällt mit Hinweis, kein Fehler", () => {
+    const t = {
+      ...base(),
+      nodes: [node("v", "vpn"), node("i", "idp"), node("n", "internet")],
+      edges: [
+        {
+          id: "e1",
+          fault: false,
+          ends: [
+            { node: "i", port: "ti" },
+            { node: "v", port: "zentral" },
+          ],
+        },
+        {
+          id: "e2",
+          fault: false,
+          ends: [
+            { node: "n", port: "netz" },
+            { node: "i", port: "net" },
+          ],
+        },
+      ],
+    };
+    for (const extra of [{}, { catalogVersion: "0-alt" }]) {
+      const r = ok(file(t, extra));
+      expect(r.topology.edges.map((e) => e.id)).toEqual(["e2"]);
+      expect(
+        r.findings.find((f) => f.code === "verbindungEntfallen"),
+      ).toMatchObject({ severity: "Hinweis", ref: "e1" });
+      expect(r.findings.filter((f) => f.severity === "Fehler")).toEqual([]);
+    }
+  });
+
   it("Einstellungen: übernommen, wenn gültig, sonst Befund", () => {
     const s = toFileSettings({
       theme: "light",

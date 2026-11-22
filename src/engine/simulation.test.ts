@@ -40,14 +40,16 @@ const LINKS: [string, string][] = [
   ["epaapp", "internet"],
   ["internet", "tim"],
   ["internet", "erp"],
+  ["internet", "idp"],
   ["internet", "idpsek"],
   ["internet", "popp"],
   ["internet", "zeta"],
   ["zeta", "vsdm2"],
   ["internet", "epa"],
-  ...["vsdm", "erp", "idp", "kim", "epa", "vzd", "kk"].map(
-    (s): [string, string] => ["zentral", s],
-  ),
+  ...["vsdm", "erp", "kim", "epa", "vzd", "kk"].map((s): [string, string] => [
+    "zentral",
+    s,
+  ]),
 ];
 const build = (skip: string[] = []): Topology => ({
   name: "t",
@@ -159,7 +161,7 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     );
   });
 
-  it("P→IDP läuft über Zugang und VPN-Zugangsdienst (6.0)", () => {
+  it("P→E-Rezept-FD läuft über Zugang und VPN-Zugangsdienst (6.0)", () => {
     const step = bind("erezept", "pvs")[4];
     expect(step?.nodes).toContain("kon");
     expect(step?.nodes).toContain("vpn");
@@ -244,7 +246,7 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
       ...t,
       nodes: t.nodes.map((n) => (n.id === "vpn" ? { ...n, fault: true } : n)),
     };
-    const step = bind("erezept", "pvs", down)[4];
+    const step = bind("vsdm", "pvs", down)[3];
     expect(step).toMatchObject({
       problem: { kind: "ausgefallen", at: "vpn" },
     });

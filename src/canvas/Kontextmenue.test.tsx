@@ -55,7 +55,6 @@ function praxis(terminals: string[]): Topology {
     ["net", "idpsek"],
     ["zn", "vsdm"],
     ["zn", "erp"],
-    ["zn", "idp"],
     ["zn", "idpsek"],
     ...terminals.map((t): [string, string] => ["sw", t]),
   ];

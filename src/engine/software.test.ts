@@ -304,7 +304,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
       link("vpn1", "internet", "net", "netz"),
       link("vpn1", "zentral", "zen", "netz"),
       link("zen", "netz", "erp1", "ti"),
-      link("zen", "netz", "idp1", "ti"),
+      link("net", "netz", "idp1", "net"),
       link("net", "netz", "zeta1", "net"),
       link("net", "netz", "popp1", "net"),
     ],
@@ -654,7 +654,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
   });
 
   describe("#226 alle Aktionen: Cloud und vor Ort binden gleich", () => {
-    const services = ["vsdm", "kim", "kk", "vzd", "epa", "idp", "erp", "vsdm2"];
+    const services = ["vsdm", "kim", "kk", "vzd", "epa", "erp", "vsdm2"];
     const withServices = (t: Topology): Topology => {
       for (const s of services) {
         t.nodes.push(node(`${s}1`, s));

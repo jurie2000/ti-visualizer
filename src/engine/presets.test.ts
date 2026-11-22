@@ -54,6 +54,14 @@ describe("Presets (Regelwerk 13)", () => {
     expect(ports).toEqual(["lan", "vpn", "wan"]);
   });
 
+  it("[#238] kein Preset enthält den IDP", () => {
+    for (const { id, topology } of catalog.presets)
+      expect(
+        topology.nodes.some((n) => n.type === "idp"),
+        id,
+      ).toBe(false);
+  });
+
   it("[P-34] kein Preset löst P-34 aus", () => {
     for (const { id, topology } of catalog.presets) {
       const found = runChecks(topology, "advanced", catalog).map((f) => f.id);

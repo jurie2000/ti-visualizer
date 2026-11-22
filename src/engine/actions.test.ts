@@ -87,7 +87,7 @@ const links: [string, string, true?][] = [
   ["timc", "net"],
   ["erpapp", "net"],
   ["epaapp", "net"],
-  ...["vsdm", "erp", "idp", "idpsek", "kim", "epa", "popp"].map(
+  ...["vsdm", "erp", "idpsek", "kim", "epa", "popp"].map(
     (s): [string, string] => ["zn", s],
   ),
   ...["erp", "idp", "idpsek", "epa", "tim", "popp", "zeta"].map(
@@ -256,7 +256,7 @@ const cases: [
   [
     "erezept-einloesen-code",
     "avs",
-    (t) => without(t, "idp"),
+    (t) => without(t, "erp"),
     /fehlt in der Topologie/,
   ],
   [
@@ -319,6 +319,25 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
     });
   });
 
+  it("[#238] die TI-1.0-Aktionen laufen ohne IDP in der Topologie", () => {
+    const ids = [
+      "erezept-ausstellen",
+      "eau-epa-hochladen",
+      "befund-epa-hochladen",
+      "epa-medikationsliste-einsehen",
+      "erezept-einloesen-egk",
+      "erezept-einloesen-code",
+      "erezept-cardlink-einloesen",
+      "epa-dokument-pflege",
+    ];
+    for (const id of ids) {
+      const trigger = cases.find((c) => c[0] === id)?.[1] ?? "";
+      expect(state(without(full(), "idp"), trigger, id), id).toMatchObject({
+        enabled: true,
+      });
+    }
+  });
+
   it.each(cases)(
     "%s ist ausgegraut mit Begründung",
     (action, trigger, break_, reason) => {
@@ -328,6 +347,18 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
       else expect(s?.disabledReason).toMatch(reason);
     },
   );
+
+  it("[#237] zeta-anmelden braucht einen vorhandenen, erreichbaren IDP", () => {
+    const t = full();
+    expect(state(without(t, "idp"), "pvs", "zeta-anmelden")).toMatchObject({
+      enabled: false,
+      disabledReason: "Identity Provider (IDP) fehlt in der Topologie.",
+    });
+    expect(state(faulty(t, "idp"), "pvs", "zeta-anmelden")).toMatchObject({
+      enabled: false,
+      disabledReason: expect.stringContaining("ausgefallen") as string,
+    });
+  });
 });
 
 describe("T-402 Pfad, Karten, Terminal", () => {
@@ -855,7 +886,7 @@ describe("TI-2.0-Aktionen (#204)", () => {
 
   it("jeder Ablauf bindet seine Stationen", () => {
     const schritte = {
-      "zeta-anmelden": 4,
+      "zeta-anmelden": 6,
       "popp-token-beantragen": 3,
       "vsdm2-pruefen": 3,
     };

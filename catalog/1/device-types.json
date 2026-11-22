@@ -932,21 +932,13 @@
   {
     "id": "idp",
     "abbr": "IDP",
-    "name": "Identity Provider (zentral)",
-    "description": "Der Identity Provider stellt Identitätsnachweise aus — die Grundlage jeder Anmeldung in der TI.",
-    "category": "zentral",
+    "name": "Identity Provider (IDP)",
+    "description": "Der Identity Provider stellt der Praxis die Identitätsnachweise für die ZETA-Anmeldung der TI 2.0 aus.",
+    "category": "ti2",
     "icon": "key",
     "placeable": true,
     "capabilities": [],
     "ports": [
-      {
-        "id": "ti",
-        "name": "TI-Zugang",
-        "kind": "ti",
-        "multi": true,
-        "source": ["Arch", "gemSpec_Net"],
-        "status": "bestätigt"
-      },
       {
         "id": "net",
         "name": "Internet",
@@ -962,8 +954,8 @@
         "status": "bestätigt"
       }
     ],
-    "source": ["gemSpec_IDP_FD", "gemSpec_FD_eRp"],
-    "status": "bestätigt"
+    "source": ["gemSpec_IDP_FD", "gemSpec_ZETA"],
+    "status": "plausibel"
   },
   {
     "id": "idpsek",

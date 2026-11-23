@@ -126,4 +126,16 @@ describe("SecurityDialog", () => {
     expect(names.length).toBeGreaterThanOrEqual(2);
     expect(new Set(names).size).toBe(names.length);
   });
+
+  it("Direktverbindung im Dialog wählt die Kante", async () => {
+    load(praxis);
+    render(<SecurityDialog />);
+    const section = screen.getByRole("region", {
+      name: "Vereinfachte Direktverbindungen",
+    });
+    const button = within(section).getAllByRole("button")[0];
+    if (!button) throw new Error("Direktverbindung fehlt");
+    await userEvent.click(button);
+    expect(useUi.getState().selection?.kind).toBe("edge");
+  });
 });

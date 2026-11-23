@@ -51,7 +51,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="tiv-toast__close"
-              aria-label="Meldung schließen"
+              aria-label="Meldung ausblenden"
               onClick={() => {
                 dismiss(t.id);
               }}

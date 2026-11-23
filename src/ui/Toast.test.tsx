@@ -68,17 +68,17 @@ describe("Toast", () => {
     expect(screen.queryByText("Kaputt")).toBeNull();
   });
 
-  it("Knopf „Meldung schließen“ entfernt die Meldung", () => {
+  it("Knopf „Meldung ausblenden“ entfernt die Meldung", () => {
     setup();
     fireEvent.click(screen.getByRole("button", { name: "fehler" }));
-    fireEvent.click(screen.getByRole("button", { name: "Meldung schließen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Meldung ausblenden" }));
     expect(screen.queryByText("Kaputt")).toBeNull();
   });
 
   it("Schließen lässt andere Meldungen bis zu ihrer eigenen Zeit stehen", () => {
     setup();
     fireEvent.click(screen.getByRole("button", { name: "fehler" }));
-    fireEvent.click(screen.getByRole("button", { name: "Meldung schließen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Meldung ausblenden" }));
     fireEvent.click(screen.getByRole("button", { name: "fehler" }));
     act(() => {
       vi.advanceTimersByTime(9000);

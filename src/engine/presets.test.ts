@@ -20,6 +20,7 @@ describe("Presets (Regelwerk 13)", () => {
       "apotheke",
       "krankenhaus",
       "klinikum",
+      "praxis-parallel",
     ]);
     for (const { id, topology } of catalog.presets) {
       expect(topology.simDate, id).toBe("2026-11-01");
@@ -79,12 +80,23 @@ describe("Presets (Regelwerk 13)", () => {
     }
   });
 
-  it("[#238] kein Preset enthält den IDP", () => {
-    for (const { id, topology } of catalog.presets)
+  it("[#238] die Presets der TI 1.0 enthalten keinen IDP", () => {
+    for (const { id, topology } of catalog.presets.filter(
+      (p) => p.id !== "praxis-parallel",
+    ))
       expect(
         topology.nodes.some((n) => n.type === "idp"),
         id,
       ).toBe(false);
+  });
+
+  it("[#244] Preset im Parallelbetrieb: Arbeitsplatz eindeutig, Token am Simulationstag, keine Fehler", () => {
+    const t = catalog.presets.find((p) => p.id === "praxis-parallel")?.topology;
+    expect(t?.tokens?.zeta).toBe(t?.simDate);
+    const found = runChecks(t as Topology, "advanced", catalog).filter(
+      (f) => f.severity === "Fehler",
+    );
+    expect(found.map((f) => f.id)).toEqual([]);
   });
 
   it("[P-34] kein Preset löst P-34 aus", () => {

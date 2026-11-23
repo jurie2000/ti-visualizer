@@ -52,7 +52,12 @@ describe("App-Shell", () => {
       await screen.findByRole("heading", { name: "Preset-Bibliothek" }),
     ).toBeInTheDocument();
     expect(location.hash).toBe("#/presets");
-    expect(screen.getAllByRole("listitem")).toHaveLength(4);
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+    expect(
+      screen.getByRole("button", {
+        name: /^Praxis, TI 2\.0 im Parallelbetrieb/,
+      }),
+    ).toBeInTheDocument();
     await user.click(
       screen.getByRole("button", { name: "TI Visualizer, zur Startansicht" }),
     );

@@ -90,10 +90,11 @@ describe("Presets (Regelwerk 13)", () => {
       ).toBe(false);
   });
 
-  it("[#244] Preset im Parallelbetrieb: Arbeitsplatz eindeutig, Token am Simulationstag, keine Fehler", () => {
+  it("[#244] Preset im Parallelbetrieb: Token am Simulationstag, keine Fehler", () => {
     const t = catalog.presets.find((p) => p.id === "praxis-parallel")?.topology;
-    expect(t?.tokens?.zeta).toBe(t?.simDate);
-    const found = runChecks(t as Topology, "advanced", catalog).filter(
+    if (!t) throw new Error("Preset praxis-parallel fehlt");
+    expect(t.tokens?.zeta).toBe(t.simDate);
+    const found = runChecks(t, "advanced", catalog).filter(
       (f) => f.severity === "Fehler",
     );
     expect(found.map((f) => f.id)).toEqual([]);

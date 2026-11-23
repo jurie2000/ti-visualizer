@@ -73,11 +73,13 @@ const tageSeitSync = (z: Node, t: Topology) =>
         (Date.parse(t.simDate) - Date.parse(z.config.lastTimeSync)) / DAY,
       );
 
-/** Router, die der Zugang erreicht (auch hinter einer Firewall), mit gesperrtem IPsec. */
+/** Router, die der Zugang erreicht (auch hinter einer Firewall), mit gesperrtem IPsec. Das TI-Gateway baut keinen IPsec-Tunnel auf (#241). */
 const ipsecGesperrt = (z: Node, t: Topology, c: Cat) =>
-  segment(z.id, t, c, true).filter(
-    (r) => r.type === "router" && r.config?.ipsecAllowed === false,
-  );
+  z.type === "gateway"
+    ? []
+    : segment(z.id, t, c, true).filter(
+        (r) => r.type === "router" && r.config?.ipsecAllowed === false,
+      );
 
 /** P-25 oder P-26 für einen Client, sonst `undefined` (Regelwerk 8, „Gateway der Clients“). */
 function gatewayRegel(

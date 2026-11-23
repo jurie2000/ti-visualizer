@@ -229,7 +229,7 @@
     "name": "Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel",
     "severity": "Fehler",
     "onlyAdvanced": true,
-    "explanation": "Der VPN-Tunnel braucht UDP 500 und 4500 (IPsec). Blockiert die Firewall des Routers sie, kommt kein Tunnel zustande.",
+    "explanation": "Der VPN-Tunnel braucht UDP 500 und 4500 (IPsec). Blockiert die Firewall des Routers sie, kommt kein Tunnel zustande. Das TI-Gateway ist ausgenommen.",
     "source": ["gemSpec_VPN_ZugD"],
     "status": "plausibel"
   },

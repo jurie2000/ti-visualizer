@@ -184,6 +184,14 @@ describe("P-21 IPsec", () => {
     );
     expect(hits(fern, "P-21")).toEqual([]);
   });
+
+  it("[P-21] negativ: TI-Gateway baut keinen IPsec-Tunnel auf (#241)", () => {
+    const t = praxis({ rt: { ipsecAllowed: false } });
+    t.nodes = t.nodes.map((n) =>
+      n.type === "kon" ? { ...n, type: "gateway" } : n,
+    );
+    expect(hits(t, "P-21")).toEqual([]);
+  });
 });
 
 describe("P-23, P-24 Segment", () => {

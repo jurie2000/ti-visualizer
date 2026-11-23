@@ -969,7 +969,7 @@ mit Konfiguration wird geprüft.
 | P-17a | Keine Zeitsynchronisation seit 30 Tagen (Warnung) bzw. 50 Tagen (Fehler) | `lastTimeSync`, `simDate` | Warnung / Fehler | bestätigt | gemSpec_Kon |
 | P-19 | Parallelbetrieb ohne Firewall. Der Zugang schützt das LAN dann nicht vor dem Internet | `mode`, Firewall-Knoten | Warnung | bestätigt | Betriebsarten |
 | P-20 | Parallelbetrieb ohne Router | `mode`, Router-Knoten | Fehler | bestätigt | Betriebsarten |
-| P-21 | Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel | `ipsecAllowed` | Fehler | plausibel | gemSpec_VPN_ZugD |
+| P-21 | Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel (nicht für das TI-Gateway, Auslegung 2026-11-23, #241) | `ipsecAllowed` | Fehler | plausibel | gemSpec_VPN_ZugD |
 | P-23 | DHCP aktiv, aber kein DHCP-Server im Segment | `dhcp`, `dhcpServer` | Fehler | Vereinfachung | gemSpec_Kon |
 | P-24 | Gerät in anderem VLAN als der Zugang | `vlan` | Fehler | Vereinfachung | DVO |
 | P-25 | Reihenbetrieb: Gateway eines Clients ist nicht der Zugang | `mode`, `gateway` | Fehler | bestätigt | Betriebsarten |

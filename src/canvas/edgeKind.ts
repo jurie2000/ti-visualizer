@@ -79,8 +79,11 @@ export function describeEdge(
         ? "wlan"
         : both("tun")
           ? "vpn"
-          : types.includes("switch") && types.includes("gateway")
-            ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway)
+          : types.includes("gateway") &&
+              (types.includes("switch") ||
+                (types.includes("router") &&
+                  ends.find((e) => e.type === "gateway")?.kind !== "wan"))
+            ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway); WAN-Kante alter Dateien bleibt Kabel
             : has("net")
               ? "inet"
               : both("ti") || both("app")

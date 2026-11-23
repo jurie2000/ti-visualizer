@@ -2,6 +2,7 @@ import type { Catalog, Node, Topology } from "../schema";
 
 // Pfadregel nach Regelwerk 6.0:
 // Auslöser → LAN → Zugang → Router/Internet → VPN → Zentrales Netz → Dienst.
+// TI-Gateway: Auslöser → LAN → Router → Gateway → (Zentrales Netz) → Dienst, ohne VPN (#241).
 // TI 2.0: Auslöser → LAN → (Zugang optional) → Router/Internet → ZETA Guard → VSDM 2.0.
 // Die Suche läuft als Breitensuche über (Knoten, Phase). Die Phase erzwingt die
 // Rollenfolge, deshalb kann kein Weg den Zugang oder das VPN auslassen.
@@ -194,8 +195,17 @@ function search(
   const startPhase =
     kind === "ti" && roleOf(start, catalog) === "zugang" ? POST : LAN;
 
+  // Das TI-Gateway erreicht die TI ohne VPN-Zugangsdienst (#241).
+  const direktTi = (phase: number, from: Node) =>
+    phase === POST && from.type === "gateway";
+
   /** Phase nach dem Schritt auf `n`, oder -1, wenn die Rollenfolge es verbietet. */
-  const next = (phase: number, n: Node, direct: boolean): number => {
+  const next = (
+    phase: number,
+    n: Node,
+    direct: boolean,
+    from: Node,
+  ): number => {
     const isGoal = n.id === target;
     switch (roleOf(n, catalog)) {
       case "local":
@@ -238,7 +248,7 @@ function search(
       case "vpn":
         return phase === POST ? VPN : -1;
       case "zentral":
-        return phase === VPN ? ZENTRAL : -1;
+        return phase === VPN || direktTi(phase, from) ? ZENTRAL : -1;
       case "zeta":
         return phase === POST || (phase === INET && lokal) ? ZETA : -1;
       case "end":
@@ -248,6 +258,7 @@ function search(
             ? phase
             : -1;
         if (kind === "local") return phase === POST ? phase : -1;
+        if (direktTi(phase, from)) return ZENTRAL;
         if (phase === VPN || phase === ZENTRAL || phase === ZETA) return phase;
         // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
         // ist die Vereinfachung aus Regelwerk 4.2 (z. B. E-Rezept-App ↔ E-Rezept-FD).
@@ -311,7 +322,7 @@ function search(
       const n = other === undefined ? undefined : byId.get(other);
       if (!n || (n.fault && !ignoreFaults)) continue;
       if (isWan(id, n.id) || isWan(n.id, id)) continue;
-      const p = next(phase, n, id === trigger);
+      const p = next(phase, n, id === trigger, byId.get(id) as Node);
       if (p < 0 || prev.has(key(n.id, p))) continue;
       prev.set(key(n.id, p), { from: key(id, phase), edge: e.id });
       queue.push([n.id, p]);

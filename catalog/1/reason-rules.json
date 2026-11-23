@@ -29,7 +29,7 @@
         "idpsek"
       ]
     },
-    "message": "Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst.",
+    "message": "Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway.",
     "source": ["Arch", "gemILF_PS"],
     "status": "bestätigt"
   },
@@ -103,7 +103,7 @@
     "b": {
       "types": ["vsdm", "erp", "kim", "tim", "epa"]
     },
-    "message": "Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst.",
+    "message": "Geräte des lokalen Netzes erreichen Fachdienste nur über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway.",
     "source": ["Arch"],
     "status": "bestätigt"
   },

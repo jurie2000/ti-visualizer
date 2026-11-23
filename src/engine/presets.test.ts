@@ -51,7 +51,32 @@ describe("Presets (Regelwerk 13)", () => {
       .filter((x) => x.node === "gw1")
       .map((x) => x.port)
       .sort();
-    expect(ports).toEqual(["lan", "vpn", "wan"]);
+    expect(ports).toEqual(["lan", "ti", "ti", "ti", "ti"]);
+  });
+
+  it("[#241] Krankenhaus und Klinikum: Gateway am Router, ohne VPN-Zugangsdienst, direkt an den Diensten", () => {
+    for (const id of ["krankenhaus", "klinikum"]) {
+      const t = catalog.presets.find((p) => p.id === id)?.topology;
+      expect(
+        t?.nodes.map((n) => n.type),
+        id,
+      ).not.toContain("vpn");
+      const gw = (t?.edges ?? []).filter((e) =>
+        e.ends.some((x) => x.node === "gw1"),
+      );
+      expect(
+        gw.some(
+          (e) =>
+            e.ends.some((x) => x.node === "gw1" && x.port === "lan") &&
+            e.ends.some((x) => x.node === "rt1"),
+        ),
+        id,
+      ).toBe(true);
+      expect(
+        t?.edges.some((e) => e.ends.some((x) => x.node === "vpn1")),
+        id,
+      ).toBe(false);
+    }
   });
 
   it("[#238] kein Preset enthält den IDP", () => {

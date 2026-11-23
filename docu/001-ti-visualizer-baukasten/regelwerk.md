@@ -220,7 +220,7 @@ Abschnitt 5.
 | Router (IAG) | LAN1 bis LAN4, WLAN (mehrfach), WAN | Mockup, plausibel | Betriebsarten |
 | Access Point | LAN (PoE), WLAN (mehrfach) | Mockup, plausibel | DVO |
 | Firewall | LAN, WAN | plausibel | Betriebsarten |
-| Konnektor, TI-Gateway | LAN (mehrfach), WAN, VPN (`tun`, logisch) | Vereinfachung: physisch hat der Konnektor einen LAN-Anschluss hinter einem Switch. Im Modell trägt er mehrere, damit im Modus Einfach Primärsystem, Kartenterminal und KIM-Clientmodul direkt daran hängen können | gemSpec_Kon, Betriebsarten |
+| Konnektor, TI-Gateway | LAN (mehrfach), WAN, VPN (`tun`, logisch); das TI-Gateway zusätzlich TI (`ti`, mehrfach, zum Zentralen Netz und zu den Diensten, Issue #241) | Vereinfachung: physisch hat der Konnektor einen LAN-Anschluss hinter einem Switch. Im Modell trägt er mehrere, damit im Modus Einfach Primärsystem, Kartenterminal und KIM-Clientmodul direkt daran hängen können | gemSpec_Kon, Betriebsarten |
 | VPN-Zugangsdienst | Zugangspunkt (`tun`, mehrfach), Zentrales Netz (`ti`, mehrfach), Internet (`net`) | bestätigt | Arch |
 | Internet | Netz (`net`, mehrfach) | Vereinfachung | Arch |
 | Zentrales Netz | Netz (`ti`, mehrfach) | Vereinfachung | Arch |
@@ -267,7 +267,7 @@ eigene Regel-ID):
 0. beide Enden `host`: `host`
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
-2a. Switch ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211, unten)
+2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -288,6 +288,8 @@ zur TI hinter dem Praxisnetz. Eine Kante zwischen Switch und TI-Gateway
 zeigt daher den Tunnel (`vpn`, Regel 2a) und nicht das Kabel. Eine Kante
 Switch ↔ Konnektor bleibt `phys`. Status: plausibel.
 
+Auslegung (2026-11-23, Issue #241): Regel 2a gilt auch für Router ↔ TI-Gateway (LAN-Anschluss des Gateways), weil auch diese Kante den Tunnel des Gateways zeigt.
+
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
 physische Strecke gemeint: `phys`. Verbinden zwei Endgeräte direkt, die
@@ -305,7 +307,7 @@ nicht belegt, das Detailpanel zeigt dann nur die belegten Angaben.
 | Primärsystem, Cloud-Server ↔ Zugang | SOAP, XML | 443 | ja | bestätigt (Netzport plausibel) | gemILF_PS |
 | Mobiles KT ↔ Primärsystem oder PC | CT-API über USB | keiner | nein | bestätigt | gemSpec_MobKT |
 | Zugang ↔ VPN-Zugangsdienst | IPsec (IKEv2) über das Transportnetz | UDP 500 und 4500 | nein (IPsec) | bestätigt (Netzport plausibel) | Arch, gemSpec_VPN_ZugD |
-| Switch ↔ TI-Gateway | IPsec (IKEv2) vom TI-Gateway über das Praxisnetz | UDP 500 und 4500 | nein (IPsec) | plausibel | gemF_TI-Gateway |
+| Switch oder Router ↔ TI-Gateway | IPsec (IKEv2) vom TI-Gateway über das Praxisnetz | UDP 500 und 4500 | nein (IPsec) | plausibel | gemF_TI-Gateway |
 | Primärsystem ↔ KIM-Clientmodul | SMTP und POP3 | offen | ja | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul ↔ KIM-Fachdienst | SMTP und POP3, über die Route des Zugangs | offen | ja (mTLS) | bestätigt | gemSpec_CM_KOMLE |
 | TI-Messenger-Client ↔ TI-Messenger-FD | Matrix (Client-Server-API), JSON | 443 | ja | bestätigt (Netzport plausibel) | gemSpec_TI-M_Basis |
@@ -417,6 +419,9 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | VPN-Zugangsdienst | Internet | bestätigt | Arch |
 | VPN-Zugangsdienst | Zentrales Netz | bestätigt | Arch |
 | VPN-Zugangsdienst | VSDM, E-Rezept, KIM, ePA (direkt) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | Arch |
+| TI-Gateway (`ti`) | Zentrales Netz (Auslegung 2026-11-23, Issue #241) | Vereinfachung | gemF_TI-Gateway, Arch |
+| TI-Gateway (`ti`) | VSDM, E-Rezept, KIM, ePA (direkt, ohne VPN-Zugangsdienst; Auslegung 2026-11-23, Issue #241) | Vereinfachung: in Wirklichkeit über das Zentrale Netz | gemF_TI-Gateway, Arch |
+| Router-LAN | TI-Gateway (LAN; Auslegung 2026-11-23, Issue #241) | Vereinfachung | gemF_TI-Gateway |
 
 **Zentrales Netz, Dienste und Versicherte**
 
@@ -455,10 +460,10 @@ und K-6 in Abschnitt 5.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über Konnektor oder TI-Gateway und den VPN-Zugangsdienst. | bestätigt | Arch, gemILF_PS |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
 | V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
-| V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über Konnektor und VPN-Zugangsdienst. | bestätigt | Arch |
+| V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway. | bestätigt | Arch |
 | V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
 | V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |
 | V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway kommen in diesem Lernmodell nicht im selben System vor. | Vereinfachung | siehe X-1 |
@@ -510,6 +515,17 @@ Ein **TI-Pfad** hat immer diese Rollenfolge (Spec FR-8):
 Auslöser → lokale Netzgeräte und Arbeitsplatz (beliebig viele) → **Zugang**
 → Router und Internet (beliebig viele) → **VPN-Zugangsdienst** →
 Zentrales Netz (optional) → **Dienst**
+
+**TI-Gateway-Pfad** (Auslegung 2026-11-23, Issue #241): Das TI-Gateway
+erreicht die TI direkt, ohne VPN-Zugangsdienst: Auslöser → LAN → Router →
+**TI-Gateway** → Zentrales Netz (optional) → **Dienst**. Jedes TI-Gateway
+hängt über eine eigene Kante Router ↔ TI-Gateway (LAN-Anschluss) am Router;
+diese Kante ist der Transportweg des Kartenterminals. Beim Konnektor bleibt
+Kartenterminal → Switch → Konnektor unverändert, der VPN-Pfad oben gilt für
+ihn weiter. Alte Dateien mit Gateway und VPN-Zugangsdienst laden ohne Warnung.
+Das Zugangsmodul ist Teil des TI-Gateways. Offen: Bei mehreren Praxen an einem
+Gateway trennt das Modell fremde Praxen noch nicht. Quelle: gemF_TI-Gateway.
+Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
@@ -604,7 +620,7 @@ Status: Vereinfachung.
 | Baustein | Bedingung | Quelle |
 |---|---|---|
 | **Zugang** | Ein Zugang ist vom Auslöser aus nach 6.0 erreichbar und nicht ausgefallen | Arch |
-| **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet) | Arch |
+| **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet). Beim TI-Gateway entfällt die Bedingung (Issue #241) | Arch |
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4). Bei Aktionen ohne Baustein „Zugang“ (TI 2.0) zählt auch ein Netz-Kartenterminal, das der Auslöser über das LAN ohne Zugang erreicht (#215) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
@@ -953,7 +969,7 @@ mit Konfiguration wird geprüft.
 | P-17a | Keine Zeitsynchronisation seit 30 Tagen (Warnung) bzw. 50 Tagen (Fehler) | `lastTimeSync`, `simDate` | Warnung / Fehler | bestätigt | gemSpec_Kon |
 | P-19 | Parallelbetrieb ohne Firewall. Der Zugang schützt das LAN dann nicht vor dem Internet | `mode`, Firewall-Knoten | Warnung | bestätigt | Betriebsarten |
 | P-20 | Parallelbetrieb ohne Router | `mode`, Router-Knoten | Fehler | bestätigt | Betriebsarten |
-| P-21 | Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel | `ipsecAllowed` | Fehler | plausibel | gemSpec_VPN_ZugD |
+| P-21 | Router-Firewall blockiert IPsec, deshalb kein VPN-Tunnel (nicht für das TI-Gateway, Auslegung 2026-11-23, #241) | `ipsecAllowed` | Fehler | plausibel | gemSpec_VPN_ZugD |
 | P-23 | DHCP aktiv, aber kein DHCP-Server im Segment | `dhcp`, `dhcpServer` | Fehler | Vereinfachung | gemSpec_Kon |
 | P-24 | Gerät in anderem VLAN als der Zugang | `vlan` | Fehler | Vereinfachung | DVO |
 | P-25 | Reihenbetrieb: Gateway eines Clients ist nicht der Zugang | `mode`, `gateway` | Fehler | bestätigt | Betriebsarten |
@@ -1062,8 +1078,8 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 |---|---|---|---|---|
 | Arztpraxis | Arztpraxis Dr. Behrens | 1 PC mit 1 PVS (AP-1), 2 eHealth-KT (beide AP-1), 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: SMC-B, **HBA**. KT 2: eGK. Beide am Arbeitsplatz des PC | HBA ergänzt (sonst kein eRezept). Router ergänzt (Weg ins Internet, P-33). TI-Messenger-Client ergänzt und direkt am TI-Messenger-FD statt am VPN |
 | Apotheke | Apotheke am Markt | 1 PC mit 1 AVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 Konnektor, 1 VPN-Zugangsdienst, 1 CardLink. Dienste: **VSDM**, E-Rezept, **ePA** | KT: SMC-B, eGK | VSDM ergänzt (Prüfungsnachweis), ePA ergänzt (Medikationsliste), Router und CardLink ergänzt |
-| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Switch wie ein Konnektor. TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
-| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 VPN-Zugangsdienst, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Router nicht direkt am VPN-Zugangsdienst: das TI-Gateway hängt direkt am VPN (vereinfacht), der Router führt ins Internet. TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
+| Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Router (LAN) ohne VPN-Zugangsdienst, direkt an den Diensten (#241). TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
+| Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

@@ -76,7 +76,14 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
     expect(kindOf(["switch", "p1"], ["gateway", "lan"])).toBe("vpn");
     expect(kindOf(["gateway", "lan"], ["switch", "p1"])).toBe("vpn");
   });
-  it("[#211] TI-Gateway am Router bleibt Kabel, Regel 2a gilt nur für den Switch", () => {
+  it("[#241] Router zum TI-Gateway (LAN) ergibt VPN, in beide Richtungen", () => {
+    expect(kindOf(["router", "lan1"], ["gateway", "lan"])).toBe("vpn");
+    expect(kindOf(["gateway", "lan"], ["router", "lan1"])).toBe("vpn");
+  });
+  it("[#241] Alte Kante TI-Gateway (WAN) zum Router bleibt Kabel", () => {
     expect(kindOf(["gateway", "wan"], ["router", "lan1"])).toBe("phys");
+  });
+  it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {
+    expect(kindOf(["gateway", "ti"], ["zentral", "netz"])).toBe("tcp");
   });
 });

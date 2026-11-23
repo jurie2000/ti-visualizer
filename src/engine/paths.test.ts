@@ -25,6 +25,7 @@ const catalog = {
     dt("switch", "lan"),
     dt("router", "lan"),
     dt("kon", "network", ["zugang"]),
+    dt("gateway", "network", ["zugang"]),
     dt("vpn", "network"),
     dt("internet", "network"),
     dt("zentral", "network"),
@@ -86,6 +87,92 @@ const praxis = (): Topology =>
       ["zn", "erp"],
     ],
   );
+
+describe("TI-Gateway ohne VPN-Zugangsdienst (#241)", () => {
+  const nodes: N[] = [
+    ["pvs", "pvs"],
+    ["kt", "kt"],
+    ["sw", "switch"],
+    ["rt", "router"],
+    ["gw", "gateway"],
+    ["zn", "zentral"],
+    ["erp", "erp"],
+  ];
+  const links: [string, string][] = [
+    ["pvs", "sw"],
+    ["kt", "sw"],
+    ["sw", "rt"],
+    ["rt", "gw"],
+    ["gw", "zn"],
+    ["zn", "erp"],
+  ];
+
+  it("PC über Switch und Router zum Gateway und weiter zum Dienst", () => {
+    const r = resolvePath(topo(nodes, links), "pvs", "erp", catalog);
+    expect(r).toMatchObject({
+      ok: true,
+      nodes: ["pvs", "sw", "rt", "gw", "zn", "erp"],
+      zugang: "gw",
+    });
+  });
+
+  it("Gateway direkt am Dienst, Zentrales Netz optional", () => {
+    const t = topo(
+      nodes.filter((n) => n[0] !== "zn"),
+      [...links.slice(0, 4), ["gw", "erp"]],
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(true);
+  });
+
+  it("Kartenterminal erreicht sein Gateway über Switch und Router", () => {
+    const r = resolvePath(topo(nodes, links), "kt", "gw", catalog);
+    expect(r).toMatchObject({ ok: true, nodes: ["kt", "sw", "rt", "gw"] });
+  });
+
+  it("Konnektor ohne VPN-Zugangsdienst bleibt kein Weg", () => {
+    const t = topo(
+      nodes.map((n) => (n[0] === "gw" ? ["gw", "kon"] : n)),
+      links,
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog)).toEqual({
+      ok: false,
+      reason: "kein-weg",
+    });
+  });
+
+  it("Alte Dateien: Gateway über VPN-Zugangsdienst erreicht weiter die TI", () => {
+    const t = topo(
+      [
+        ...nodes.filter((n) => n[0] !== "zn"),
+        ["vpn", "vpn"],
+        ["zn", "zentral"],
+      ],
+      [...links.slice(0, 4), ["gw", "vpn"], ["vpn", "zn"], ["zn", "erp"]],
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
+      ok: true,
+      nodes: ["pvs", "sw", "rt", "gw", "vpn", "zn", "erp"],
+    });
+  });
+
+  it("Fehlerhaftes Gateway ist kein Weg", () => {
+    const t = topo(
+      nodes.map((n) =>
+        n[0] === "gw" ? ["gw", "gateway", undefined, true] : n,
+      ),
+      links,
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(false);
+  });
+
+  it("Gateway am Dienst vorbei über den Router ist kein Weg", () => {
+    const t = topo(
+      nodes,
+      links.filter((l) => l[0] !== "gw"),
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(false);
+  });
+});
 
 describe("Pfadregel 6.0", () => {
   it("Rollenfolge Auslöser, LAN, Zugang, Router, Internet, VPN, Zentrales Netz, Dienst", () => {

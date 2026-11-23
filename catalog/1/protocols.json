@@ -104,7 +104,7 @@
     },
     {
       "id": "prot-switch-gateway",
-      "a": { "types": ["switch"] },
+      "a": { "types": ["switch", "router"] },
       "b": { "types": ["gateway"] },
       "label": "IPsec",
       "protocol": "IPsec (IKEv2) vom TI-Gateway über das Praxisnetz",

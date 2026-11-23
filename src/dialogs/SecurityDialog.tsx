@@ -53,30 +53,35 @@ function Befunde({ onClose }: { onClose: () => void }) {
     else if (edge) select({ kind: "edge", id: edge });
   };
   const label = (id: string) => topology.nodes.find((n) => n.id === id)?.label;
+  // Eindeutiger Knopfname: derselbe Check kann an mehreren Geräten anschlagen
+  const affected = (f: Finding) => f.nodes.map((n) => label(n) ?? n).join(", ");
 
   return (
-    <>
+    <div className="tiv-secdlg">
       {findings.length === 0 && <p>Keine Befunde.</p>}
       <ul>
         {findings.map((f) => {
           const Icon = ICON[f.severity];
           return (
-            <li key={f.key}>
-              <Icon aria-hidden="true" /> <strong>{f.severity}</strong>:{" "}
-              {f.name}
-              <p>{f.explanation}</p>
-              {f.nodes.length > 0 && (
-                <p>Betrifft: {f.nodes.map((n) => label(n) ?? n).join(", ")}</p>
-              )}
-              {(f.nodes.length > 0 || f.edges.length > 0) && (
-                <Button
-                  onClick={() => {
-                    focus(f);
-                  }}
-                >
-                  {`${f.name} auswählen: ${[...f.nodes.map((n) => label(n) ?? n), ...f.edges].join(", ")}`}
-                </Button>
-              )}
+            <li key={f.key} className="tiv-dwarn" data-severity={f.severity}>
+              <Icon aria-hidden="true" />
+              <div>
+                <strong>
+                  {f.severity}: {f.name}
+                </strong>
+                <p>{f.explanation}</p>
+                {affected(f) && <p>Betrifft: {affected(f)}</p>}
+                {(f.nodes.length > 0 || f.edges.length > 0) && (
+                  <Button
+                    aria-label={`Auswählen: ${[f.name, affected(f)].filter(Boolean).join(", ")}`}
+                    onClick={() => {
+                      focus(f);
+                    }}
+                  >
+                    Auswählen
+                  </Button>
+                )}
+              </div>
             </li>
           );
         })}
@@ -121,6 +126,6 @@ function Befunde({ onClose }: { onClose: () => void }) {
       <Button variant="primary" onClick={onClose}>
         Schließen
       </Button>
-    </>
+    </div>
   );
 }

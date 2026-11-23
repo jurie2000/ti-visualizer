@@ -22,7 +22,6 @@ type ConnectionRule = Catalog["connectionRules"][number];
 export const MESSAGES = {
   notFound: "Gerät nicht gefunden.",
   noPort: "Anschluss nicht gefunden.",
-  noPartner: "kann mit keinem anderen Gerät direkt verbunden werden.",
 } as const;
 
 export const matches = (
@@ -183,13 +182,6 @@ export function isWlan(
 const checkMessage = (catalog: Catalog, check: string) =>
   catalog.baseChecks.find((c) => c.check === check);
 
-/** Namen der Gerätearten, mit denen `type` laut Erlaubnisliste verbunden werden kann. */
-function partners(type: string, catalog: Catalog): string[] {
-  return catalog.deviceTypes
-    .filter((t) => t.placeable && pairRules(catalog, type, t.id).length > 0)
-    .map((t) => t.name);
-}
-
 /**
  * Prüft, ob zwei Geräte verbunden werden dürfen (Regelwerk 4.0): (1) G-1, G-2,
  * X-1, G-4, (2) Erlaubnisliste, sonst (3) Begründungsregel oder allgemeine
@@ -289,15 +281,10 @@ export function validateConnection(
         : false,
     );
     if (reason) return fail(reason.id, reason.message);
-    const list = partners(na.type, catalog);
-    const name = deviceOf(na.type, catalog)?.name ?? na.type;
+    const name = (type: string) => deviceOf(type, catalog)?.name ?? type;
     return {
       ok: false,
-      reason: `Diese Verbindung gibt es in der TI nicht. ${name} ${
-        list.length > 0
-          ? `kann verbunden werden mit: ${list.join(", ")}.`
-          : MESSAGES.noPartner
-      }`,
+      reason: `Diese Verbindung gibt es in der TI nicht: ${name(na.type)} und ${name(nb.type)} werden nicht direkt verbunden.`,
     };
   }
 

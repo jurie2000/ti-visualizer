@@ -36,11 +36,12 @@ describe("SecurityDialog", () => {
     load(withNodeFault(id));
     render(<SecurityDialog />);
     const dlg = screen.getByRole("dialog");
-    expect(within(dlg).getAllByText("Fehler").length).toBeGreaterThan(0);
+    expect(within(dlg).getAllByText(/^Fehler:/).length).toBeGreaterThan(0);
     const button = within(dlg).getAllByRole("button", {
-      name: /ausgefallen auswählen/,
+      name: /^Auswählen: .*ausgefallen/,
     })[0];
     if (!button) throw new Error("Auswahl-Knopf fehlt");
+    expect(button).toHaveTextContent(/^Auswählen$/);
     await userEvent.click(button);
     expect(useUi.getState().selection).toEqual({ kind: "node", id });
   });
@@ -51,9 +52,11 @@ describe("SecurityDialog", () => {
     load(withEdgeFault(e.id));
     render(<SecurityDialog />);
     const button = screen.getAllByRole("button", {
-      name: /unterbrochen auswählen/,
+      name: /^Auswählen: .*unterbrochen/,
     })[0];
     if (!button) throw new Error("Auswahl-Knopf fehlt");
+    expect(button).toHaveTextContent(/^Auswählen$/);
+    expect(button.getAttribute("aria-label")).not.toContain(e.id);
     await userEvent.click(button);
     const sel = useUi.getState().selection;
     expect(sel?.kind).toBe("node");
@@ -105,5 +108,34 @@ describe("SecurityDialog", () => {
     load({ ...praxis, nodes: [], edges: [] });
     render(<SecurityDialog />);
     expect(screen.getByText("Keine Befunde.")).toBeVisible();
+  });
+
+  it("[P-1] gleiche Befunde an mehreren Geräten haben verschiedene Knopfnamen", () => {
+    const [a, b] = praxis.nodes;
+    if (!a || !b) throw new Error("Preset ohne zwei Geräte");
+    load({
+      ...praxis,
+      nodes: praxis.nodes.map((n) =>
+        n.id === a.id || n.id === b.id ? { ...n, fault: true } : n,
+      ),
+    });
+    render(<SecurityDialog />);
+    const names = screen
+      .getAllByRole("button", { name: /^Auswählen: .*ausgefallen/ })
+      .map((x) => x.getAttribute("aria-label"));
+    expect(names.length).toBeGreaterThanOrEqual(2);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it("Direktverbindung im Dialog wählt die Kante", async () => {
+    load(praxis);
+    render(<SecurityDialog />);
+    const section = screen.getByRole("region", {
+      name: "Vereinfachte Direktverbindungen",
+    });
+    const button = within(section).getAllByRole("button")[0];
+    if (!button) throw new Error("Direktverbindung fehlt");
+    await userEvent.click(button);
+    expect(useUi.getState().selection?.kind).toBe("edge");
   });
 });

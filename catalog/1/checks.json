@@ -67,7 +67,7 @@
     "name": "Ungültige IP-Adresse",
     "severity": "Fehler",
     "onlyAdvanced": true,
-    "explanation": "Eine IPv4-Adresse besteht aus vier Zahlen von 0 bis 255, durch Punkte getrennt. Mit einem ungültigen Wert kann das Gerät nicht im Netz erreicht werden.",
+    "explanation": "Eine IPv4-Adresse besteht aus vier Zahlen von 0 bis 255. Mit einem ungültigen Wert ist das Gerät nicht erreichbar.",
     "source": ["editor"],
     "status": "Vereinfachung"
   },
@@ -85,7 +85,7 @@
     "name": "Ungültige Subnetzmaske",
     "severity": "Fehler",
     "onlyAdvanced": true,
-    "explanation": "Eine Subnetzmaske besteht aus einer lückenlosen Folge von Einsen, gefolgt von Nullen (z. B. 255.255.255.0), und lässt mindestens zwei Hostadressen übrig.",
+    "explanation": "Eine Subnetzmaske besteht aus Einsen, gefolgt von Nullen (z. B. 255.255.255.0), und lässt mindestens zwei Hostadressen frei.",
     "source": ["editor"],
     "status": "Vereinfachung"
   },
@@ -166,7 +166,7 @@
     "name": "Konnektor und TI-Gateway im selben System",
     "severity": "Fehler",
     "onlyAdvanced": false,
-    "explanation": "Ein System (alle Geräte, die über Kabel zusammenhängen, getrennt an Internet, VPN-Zugangsdienst, Zentralem Netz und ZETA Guard) bildet in diesem Lernmodell eine Einrichtung mit einem Zugangsweg ab: Konnektor oder TI-Gateway, nicht beide.",
+    "explanation": "Konnektor und TI-Gateway gehören in diesem Lernmodell nicht in dasselbe System.",
     "source": ["FP_Konnektor", "gemF_TI-Gateway"],
     "status": "Vereinfachung"
   },
@@ -283,7 +283,7 @@
     "name": "DNS eines Clients ist nicht der Zugang",
     "severity": "Warnung",
     "onlyAdvanced": true,
-    "explanation": "TI-Namen löst der Zugang auf. Mit einem anderen DNS-Server scheitert die Namensauflösung der TI. Wegen des Rückbaus von Split-DNS (C_12389) neu zu prüfen.",
+    "explanation": "TI-Namen löst der Zugang auf. Mit einem anderen DNS-Server scheitert die Namensauflösung der TI.",
     "source": ["gemILF_PS"],
     "status": "plausibel"
   },

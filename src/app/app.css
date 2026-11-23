@@ -398,6 +398,27 @@ a {
   background: var(--tiv-btn-bg);
   white-space: nowrap;
 }
+/* Fußzeile (#231): Optik wie Kopfleiste, außen bündig mit dem Fensterrand */
+.tiv-footer {
+  padding: 0;
+}
+.tiv-footer > .tiv-btn {
+  height: 38px;
+  padding: 0 16px;
+  border-color: var(--tiv-btn-bd);
+  background: var(--tiv-btn-bg);
+  white-space: nowrap;
+}
+.tiv-footer > .tiv-btn:first-child {
+  border-radius: 0 999px 0 0;
+  border-left: 0;
+  border-bottom: 0;
+}
+.tiv-footer > .tiv-btn:last-child {
+  border-radius: 999px 0 0 0;
+  border-right: 0;
+  border-bottom: 0;
+}
 a.tiv-btn {
   display: inline-flex;
   align-items: center;

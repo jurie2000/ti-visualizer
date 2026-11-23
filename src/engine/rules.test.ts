@@ -343,18 +343,16 @@ describe("Regel-Engine: Begründungsregeln (T-105)", () => {
     expect(check(pair("kon", "gateway"), "x", "y").ruleId).toBe("V-10");
   });
 
-  it("ohne Begründungsregel nennt die Meldung die erlaubten Partner", () => {
+  it("ohne Begründungsregel nennt die Meldung beide Geräte, keine Partnerliste", () => {
     const r = check(pair("kk", "pvs"), "x", "y");
+    const name = (id: string) =>
+      catalog.deviceTypes.find((t) => t.id === id)?.name ?? "";
     expect(r.ok).toBe(false);
     expect(r.ruleId).toBeUndefined();
-    const kim = catalog.deviceTypes.find((t) => t.id === "kim")?.name ?? "";
-    expect(r.reason).toMatch(/^Diese Verbindung gibt es in der TI nicht\. /);
-    expect(r.reason).toContain(`kann verbunden werden mit: ${kim}.`);
-  });
-
-  it("ohne Begründungsregel und ohne Partner sagt die Meldung das", () => {
-    const r = check(pair("egk", "pvs"), "x", "y");
-    expect(r.reason).toContain(MESSAGES.noPartner);
+    expect(r.reason).toBe(
+      `Diese Verbindung gibt es in der TI nicht: ${name("kk")} und ${name("pvs")} werden nicht direkt verbunden.`,
+    );
+    expect(r.reason).not.toContain("kann verbunden werden mit");
   });
 });
 

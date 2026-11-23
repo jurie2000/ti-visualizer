@@ -335,7 +335,11 @@ Ablauf: (1) Grundprüfungen G-1, G-2, G-4 und Ausschlüsse, (2) Paar in der
 Erlaubnisliste? Dann G-3 mit den Anschlussarten dieser Regel, danach
 gültig. (3) Sonst abgelehnt mit dem Text der passenden Begründungsregel,
 (4) ohne passende Regel mit der Meldung „Diese Verbindung gibt es in der
-TI nicht. ‹Gerät› kann verbunden werden mit: …“.
+TI nicht: ‹Gerät A› und ‹Gerät B› werden nicht direkt verbunden.“
+
+Auslegung (2026-11-23, Issue #232): Die allgemeine Meldung nennt beide
+Geräte und keine Partnerliste. Eine Liste aller erlaubten Partner ist bei
+Geräten mit vielen Partnern unlesbar und beantwortet die Frage nicht.
 
 Ergänzt 2026-11-05:
 

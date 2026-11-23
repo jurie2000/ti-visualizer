@@ -569,7 +569,7 @@ flowchart TD
     auto --> ok
     allow -- "nein" --> reason{"Begründungsregel<br/>passt?"}
     reason -- "ja" --> errR["Abgelehnt<br/>Text der Regel"]
-    reason -- "nein" --> errA["Abgelehnt<br/>erlaubte Partner nennen"]
+    reason -- "nein" --> errA["Abgelehnt<br/>allgemeine Meldung mit beiden Geräten"]
 ```
 
 ## 8. Verteilung

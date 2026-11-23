@@ -705,10 +705,6 @@ a.tiv-btn {
   padding: 0;
   list-style: none;
 }
-.tiv-secdlg > ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-}
 .tiv-secdlg .tiv-dwarn {
   margin: 0;
 }
@@ -1428,8 +1424,10 @@ a.tiv-btn {
   background: transparent;
 }
 @media (min-width: 1101px) {
+  /* mittig im Arbeitsbereich: links 56 px Leiste, rechts 400 px Detailpanel */
   .tiv-dialog:has(.tiv-secdlg) {
-    width: calc(100% - 400px - 32px);
+    inset-inline-start: 56px;
+    width: calc(100% - 56px - 400px - 32px);
   }
 }
 .tiv-plug {

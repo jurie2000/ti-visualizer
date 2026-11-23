@@ -2089,5 +2089,435 @@
     },
     "source": ["editor"],
     "status": "Vereinfachung"
+  },
+  {
+    "id": "praxis-parallel",
+    "topology": {
+      "name": "Praxis, TI 2.0 im Parallelbetrieb",
+      "description": "Arbeitsplatz-PC mit Kartenterminal am Switch, Router und TI-Gateway. Neben VSDM der TI 1.0 stehen IDP, ZETA, PoPP und VSDM 2 der TI 2.0.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "pc-1",
+          "type": "pc",
+          "position": {
+            "x": 265,
+            "y": 650
+          },
+          "fault": false,
+          "label": "Arbeitsplatz-PC AP-1",
+          "config": {
+            "mask": "255.255.255.0",
+            "routeTI": true,
+            "dhcp": false,
+            "vlan": "TI",
+            "ip": "192.168.10.10",
+            "workplace": "AP-1"
+          }
+        },
+        {
+          "id": "cloud-1",
+          "type": "cloud",
+          "position": {
+            "x": 1151,
+            "y": 282
+          },
+          "fault": false
+        },
+        {
+          "id": "kt-1",
+          "type": "kt",
+          "position": {
+            "x": 261,
+            "y": 789
+          },
+          "fault": false,
+          "label": "eHealth-Kartenterminal AP-1",
+          "config": {
+            "ip": "192.168.10.11",
+            "mask": "255.255.255.0",
+            "vlan": "TI",
+            "dhcp": false,
+            "paired": true,
+            "pairedWith": "gateway-1",
+            "workplace": "AP-1"
+          },
+          "cards": [
+            {
+              "kind": "egk",
+              "expires": "2029-11-23",
+              "pinActive": true,
+              "id": "egk-1"
+            },
+            {
+              "kind": "hba",
+              "expires": "2029-11-23",
+              "unlocked": true
+            },
+            {
+              "kind": "smcb",
+              "expires": "2029-11-23",
+              "unlocked": true
+            }
+          ]
+        },
+        {
+          "id": "switch-1",
+          "type": "switch",
+          "position": {
+            "x": 515,
+            "y": 748
+          },
+          "fault": false,
+          "config": {
+            "mask": "255.255.255.0",
+            "dhcp": false,
+            "vlan": "TI",
+            "ip": "192.168.10.12"
+          }
+        },
+        {
+          "id": "router-1",
+          "type": "router",
+          "position": {
+            "x": 742,
+            "y": 730
+          },
+          "fault": false,
+          "config": {
+            "mask": "255.255.255.0",
+            "dhcp": false,
+            "dhcpServer": false,
+            "vlan": "TI",
+            "ipsecAllowed": true,
+            "ip": "192.168.10.1"
+          }
+        },
+        {
+          "id": "gateway-1",
+          "type": "gateway",
+          "position": {
+            "x": 1150,
+            "y": 436
+          },
+          "fault": false,
+          "config": {
+            "mask": "255.255.255.0",
+            "mode": "reihe",
+            "dhcp": false,
+            "dhcpServer": false,
+            "vlan": "TI",
+            "certExpires": "2029-03-31",
+            "timeOffset": 0,
+            "updateOk": true,
+            "ip": "192.168.10.2",
+            "lastTimeSync": "2026-11-01"
+          }
+        },
+        {
+          "id": "internet-1",
+          "type": "internet",
+          "position": {
+            "x": 672,
+            "y": 248
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm-1",
+          "type": "vsdm",
+          "position": {
+            "x": 1695,
+            "y": 384
+          },
+          "fault": false
+        },
+        {
+          "id": "pvs-1",
+          "type": "pvs",
+          "position": {
+            "x": 1148,
+            "y": 101
+          },
+          "fault": false
+        },
+        {
+          "id": "idp-1",
+          "type": "idp",
+          "position": {
+            "x": 306,
+            "y": 50
+          },
+          "fault": false
+        },
+        {
+          "id": "zeta-1",
+          "type": "zeta",
+          "position": {
+            "x": 306,
+            "y": 450
+          },
+          "fault": false
+        },
+        {
+          "id": "popp-1",
+          "type": "popp",
+          "position": {
+            "x": 306,
+            "y": 250
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm2-1",
+          "type": "vsdm2",
+          "position": {
+            "x": 40,
+            "y": 450
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-1",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pc-1",
+              "port": "eth0"
+            },
+            {
+              "node": "switch-1",
+              "port": "p1"
+            }
+          ]
+        },
+        {
+          "id": "e-2",
+          "fault": false,
+          "ends": [
+            {
+              "node": "switch-1",
+              "port": "p2"
+            },
+            {
+              "node": "kt-1",
+              "port": "lan0"
+            }
+          ]
+        },
+        {
+          "id": "e-3",
+          "fault": false,
+          "ends": [
+            {
+              "node": "switch-1",
+              "port": "p3"
+            },
+            {
+              "node": "router-1",
+              "port": "lan1"
+            }
+          ]
+        },
+        {
+          "id": "e-4",
+          "fault": false,
+          "ends": [
+            {
+              "node": "router-1",
+              "port": "wan"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-5",
+          "fault": false,
+          "ends": [
+            {
+              "node": "internet-1",
+              "port": "netz"
+            },
+            {
+              "node": "cloud-1",
+              "port": "inet"
+            }
+          ]
+        },
+        {
+          "id": "e-6",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "lan"
+            },
+            {
+              "node": "cloud-1",
+              "port": "lan"
+            }
+          ]
+        },
+        {
+          "id": "e-7",
+          "fault": false,
+          "ends": [
+            {
+              "node": "router-1",
+              "port": "lan2"
+            },
+            {
+              "node": "gateway-1",
+              "port": "lan"
+            }
+          ]
+        },
+        {
+          "id": "e-8",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "ti"
+            },
+            {
+              "node": "vsdm-1",
+              "port": "ti"
+            }
+          ]
+        },
+        {
+          "id": "e-9",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pvs-1",
+              "port": "host"
+            },
+            {
+              "node": "cloud-1",
+              "port": "soft"
+            }
+          ]
+        },
+        {
+          "id": "e-10",
+          "fault": false,
+          "ends": [
+            {
+              "node": "zeta-1",
+              "port": "net"
+            },
+            {
+              "node": "vsdm2-1",
+              "port": "net"
+            }
+          ]
+        },
+        {
+          "id": "e-11",
+          "fault": false,
+          "ends": [
+            {
+              "node": "idp-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-12",
+          "fault": false,
+          "ends": [
+            {
+              "node": "popp-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-13",
+          "fault": false,
+          "ends": [
+            {
+              "node": "zeta-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "id": "zone-1",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 5,
+            "y": 19,
+            "w": 523,
+            "h": 534
+          },
+          "label": "TI 2.0"
+        },
+        {
+          "id": "zone-2",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 1578,
+            "y": 274,
+            "w": 383,
+            "h": 313
+          },
+          "label": "TI 1.0"
+        },
+        {
+          "id": "zone-3",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 1003,
+            "y": 65,
+            "w": 461,
+            "h": 518
+          },
+          "label": "Rechenzentrum"
+        },
+        {
+          "id": "zone-4",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 181,
+            "y": 595,
+            "w": 735,
+            "h": 400
+          },
+          "label": "Praxis"
+        }
+      ],
+      "tokens": {
+        "zeta": "2026-11-01",
+        "popp": ["egk-1"]
+      }
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
   }
 ]

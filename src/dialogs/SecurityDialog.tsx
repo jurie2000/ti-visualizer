@@ -53,6 +53,19 @@ function Befunde({ onClose }: { onClose: () => void }) {
     else if (edge) select({ kind: "edge", id: edge });
   };
   const label = (id: string) => topology.nodes.find((n) => n.id === id)?.label;
+  // Eindeutiger Knopfname: derselbe Check kann an mehreren Geräten oder Kanten anschlagen
+  const affected = (f: Finding) => {
+    const ids =
+      f.nodes.length > 0
+        ? f.nodes
+        : f.edges.flatMap(
+            (id) =>
+              topology.edges
+                .find((e) => e.id === id)
+                ?.ends.map((x) => x.node) ?? [],
+          );
+    return ids.map((n) => label(n) ?? n).join(", ");
+  };
 
   return (
     <div className="tiv-secdlg">
@@ -68,14 +81,10 @@ function Befunde({ onClose }: { onClose: () => void }) {
                   {f.severity}: {f.name}
                 </strong>
                 <p>{f.explanation}</p>
-                {f.nodes.length > 0 && (
-                  <p>
-                    Betrifft: {f.nodes.map((n) => label(n) ?? n).join(", ")}
-                  </p>
-                )}
+                {affected(f) && <p>Betrifft: {affected(f)}</p>}
                 {(f.nodes.length > 0 || f.edges.length > 0) && (
                   <Button
-                    aria-label={`${f.name} auswählen`}
+                    aria-label={`Auswählen: ${f.name}, ${affected(f)}`}
                     onClick={() => {
                       focus(f);
                     }}

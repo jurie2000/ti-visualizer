@@ -697,7 +697,7 @@ a.tiv-btn {
   gap: 12px;
   font-size: 1rem;
 }
-.tiv-secdlg ul {
+.tiv-secdlg > ul {
   display: flex;
   flex-direction: column;
   gap: 10px;

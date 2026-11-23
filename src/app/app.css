@@ -697,13 +697,17 @@ a.tiv-btn {
   gap: 12px;
   font-size: 1rem;
 }
-.tiv-secdlg > ul {
+.tiv-secdlg ul {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.tiv-secdlg > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 .tiv-secdlg .tiv-dwarn {
   margin: 0;
@@ -1414,6 +1418,18 @@ a.tiv-btn {
       rgb(32 30 29 / 38%) calc(100% - 400px),
       transparent calc(100% - 400px)
     );
+  }
+}
+/* Sicherheitsprüfung: volle Breite neben dem Detailpanel, Hintergrund nicht abdunkeln */
+.tiv-dialog:has(.tiv-secdlg) {
+  max-width: none;
+}
+.tiv-dialog:has(.tiv-secdlg)::backdrop {
+  background: transparent;
+}
+@media (min-width: 1101px) {
+  .tiv-dialog:has(.tiv-secdlg) {
+    width: calc(100% - 400px - 32px);
   }
 }
 .tiv-plug {

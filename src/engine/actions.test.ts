@@ -904,3 +904,54 @@ describe("TI-2.0-Aktionen (#204)", () => {
     }
   });
 });
+
+describe("TI-Gateway ohne VPN-Zugangsdienst (#241)", () => {
+  // full() mit Gateway statt Konnektor: Router am Switch, Gateway am Router und direkt am Zentralen Netz.
+  const edge = (a: string, b: string): Topology["edges"][number] => ({
+    id: `${a}-${b}`,
+    fault: false,
+    ends: [
+      { node: a, port: "p" },
+      { node: b, port: "p" },
+    ],
+  });
+  const gwTopo = (): Topology => {
+    const base = without(
+      edit(full(), "kon", (n) => ({ ...n, type: "gateway" })),
+      "vpn",
+    );
+    return {
+      ...base,
+      edges: [
+        ...base.edges.filter((e) => e.id !== "kon-rt"),
+        edge("sw", "rt"),
+        edge("rt", "kon"),
+        edge("kon", "zn"),
+        edge("net", "zn"),
+      ],
+    };
+  };
+
+  it("VSDM-Prüfung ist möglich, der Ablauf bindet ohne Problem", () => {
+    const t = gwTopo();
+    expect(state(t, "pvs", "vsdm-pruefen")?.enabled).toBe(true);
+    const flow = catalog.flows.find((f) => f.id === "vsdm") as NonNullable<
+      (typeof catalog.flows)[number]
+    >;
+    const node = t.nodes.find((n) => n.id === "pvs") as Node;
+    const steps = bindFlow(flow, node, t, catalog, "kt");
+    expect(steps.some((s) => s.problem)).toBe(false);
+  });
+
+  it("ohne Kante Gateway-Dienst bleibt der Dienst unerreichbar", () => {
+    const t = gwTopo();
+    const u = { ...t, edges: t.edges.filter((e) => e.id !== "kon-zn") };
+    expect(state(u, "pvs", "vsdm-pruefen")?.enabled).toBe(false);
+  });
+
+  it("derselbe Aufbau mit Konnektor ohne VPN-Zugangsdienst bleibt gesperrt", () => {
+    const t = gwTopo();
+    const k = edit(t, "kon", (n) => ({ ...n, type: "kon" }));
+    expect(state(k, "pvs", "vsdm-pruefen")?.enabled).toBe(false);
+  });
+});

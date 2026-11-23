@@ -447,6 +447,49 @@
     "status": "Vereinfachung"
   },
   {
+    "id": "erl-gateway-zentral",
+    "a": {
+      "types": ["gateway"]
+    },
+    "b": {
+      "types": ["zentral"]
+    },
+    "kinds": {
+      "a": ["ti"]
+    },
+    "source": ["gemF_TI-Gateway", "Arch"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-gateway-dienste",
+    "a": {
+      "types": ["gateway"]
+    },
+    "b": {
+      "types": ["vsdm", "erp", "kim", "epa"]
+    },
+    "kinds": {
+      "a": ["ti"]
+    },
+    "source": ["gemF_TI-Gateway", "Arch"],
+    "status": "Vereinfachung"
+  },
+  {
+    "id": "erl-router-gateway",
+    "a": {
+      "types": ["router"]
+    },
+    "b": {
+      "types": ["gateway"]
+    },
+    "kinds": {
+      "a": ["eth"],
+      "b": ["eth"]
+    },
+    "source": ["gemF_TI-Gateway"],
+    "status": "Vereinfachung"
+  },
+  {
     "id": "erl-gateway-internet",
     "a": {
       "types": ["gateway"]

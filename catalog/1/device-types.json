@@ -731,7 +731,7 @@
     "id": "gateway",
     "abbr": "TI-Gateway",
     "name": "TI-Gateway (Zugangsmodul + HSK-Instanz)",
-    "description": "Das TI-Gateway ersetzt den Konnektor in der Zero-Trust-Architektur. Beide schließen sich im selben System gegenseitig aus.",
+    "description": "Das TI-Gateway ersetzt den Konnektor in der Zero-Trust-Architektur. Das Zugangsmodul ist Teil des TI-Gateways und erreicht die TI direkt, ohne VPN-Zugangsdienst. Beide schließen sich im selben System gegenseitig aus.",
     "category": "network",
     "icon": "gate",
     "placeable": true,
@@ -759,6 +759,14 @@
         "kind": "tun",
         "multi": false,
         "source": ["gemSpec_Kon", "Betriebsarten"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "ti",
+        "name": "TI",
+        "kind": "ti",
+        "multi": true,
+        "source": ["gemF_TI-Gateway"],
         "status": "Vereinfachung"
       }
     ],

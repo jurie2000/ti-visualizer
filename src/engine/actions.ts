@@ -175,17 +175,20 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
       case "ti": {
         const r = needZugang(ctx);
         if (r || !ctx.zugang) return r;
-        const vpn = ofType(ctx, "vpn");
-        const weg =
-          vpn.length === 0
-            ? "Kein VPN-Zugangsdienst im Netz."
-            : reach(
-                ctx,
-                ctx.zugang,
-                vpn,
-                "Der Zugang hat keinen Weg zum VPN-Zugangsdienst.",
-              );
         const zugang = ctx.topology.nodes.find((n) => n.id === ctx.zugang);
+        const vpn = ofType(ctx, "vpn");
+        // Das TI-Gateway erreicht die TI direkt, ohne VPN-Zugangsdienst (Regelwerk 6.0, #241).
+        const weg =
+          zugang?.type === "gateway"
+            ? undefined
+            : vpn.length === 0
+              ? "Kein VPN-Zugangsdienst im Netz."
+              : reach(
+                  ctx,
+                  ctx.zugang,
+                  vpn,
+                  "Der Zugang hat keinen Weg zum VPN-Zugangsdienst.",
+                );
         return (
           weg ??
           (ctx.advanced && zugang

@@ -79,7 +79,8 @@ export function describeEdge(
         ? "wlan"
         : both("tun")
           ? "vpn"
-          : types.includes("switch") && types.includes("gateway")
+          : types.includes("gateway") &&
+              (types.includes("switch") || types.includes("router"))
             ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway)
             : has("net")
               ? "inet"

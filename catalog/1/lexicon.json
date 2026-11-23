@@ -278,10 +278,10 @@
   {
     "id": "gateway",
     "short": "Der TI-Zugang aus dem Rechenzentrum, der den Konnektor in der Praxis ersetzt.",
-    "purpose": "Ein kleines Zugangsmodul in der Praxis verbindet sich mit einer HSK-Instanz beim Anbieter; die HSK ist Teil des TI-Gateways. Die Praxis braucht keinen eigenen Konnektor mehr. Teil der Zero-Trust-Architektur (TI 2.0). Konnektor und TI-Gateway schließen sich im selben System gegenseitig aus.",
+    "purpose": "Das Zugangsmodul ist Teil des TI-Gateways und erreicht die TI direkt, ohne VPN-Zugangsdienst. Es hängt per LAN am Router der Praxis; die HSK-Instanz beim Anbieter ist ebenfalls Teil des TI-Gateways. Die Praxis braucht keinen eigenen Konnektor mehr. Teil der Zero-Trust-Architektur (TI 2.0). Konnektor und TI-Gateway schließen sich im selben System gegenseitig aus.",
     "where": "Zugangsmodul in der Praxis, HSK-Instanz beim Gateway-Anbieter.",
-    "connected": "LAN-Seite: PVS, KIS, AVS, Pflege-Software, Kartenterminal, KIM-Clientmodul, Switch, Firewall, CardLink, Cloud-Server. WAN-Seite: Router, im Rechenzentrum das Internet. VPN: VPN-Zugangsdienst.",
-    "fault": "Kein Weg ins Internet (weder Router noch VPN-Zugangsdienst erreichbar); dann ist die TI nicht erreichbar. Eine gSMC-K hat das TI-Gateway nicht.",
+    "connected": "LAN-Seite: PVS, KIS, AVS, Pflege-Software, Kartenterminal, KIM-Clientmodul, Switch, Router, Firewall, CardLink, Cloud-Server. WAN-Seite: Router (ältere Dateien), im Rechenzentrum das Internet. TI-Seite: Zentrales Netz, VSDM, E-Rezept, KIM, ePA.",
+    "fault": "Kein Weg zum Router oder zu den Diensten der TI; dann ist die TI nicht erreichbar. Eine gSMC-K hat das TI-Gateway nicht.",
     "confusion": "Konnektor (Einzelgerät in der Praxis). Für TI 2.0 braucht die Praxis weder Konnektor noch TI-Gateway.",
     "related": ["kon"],
     "source": ["gemF_TI-Gateway"],

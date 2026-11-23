@@ -502,6 +502,21 @@ describe("autoPorts (A-3)", () => {
     expect(autoPorts(pair("pc", "vsdm"), "x", "y", catalog)).toBeUndefined();
   });
 
+  it("[#241] Router und TI-Gateway verbinden über das LAN des Gateways", () => {
+    const t = pair("router", "gateway");
+    expect(autoPorts(t, "x", "y", catalog)).toEqual({ a: "lan1", b: "lan" });
+    expect(autoPorts(t, "y", "x", catalog)).toEqual({ a: "lan", b: "lan1" });
+    expect(autoPorts(pair("gateway", "vsdm"), "x", "y", catalog)).toEqual({
+      a: "ti",
+      b: "ti",
+    });
+    expect(autoPorts(pair("gateway", "zentral"), "x", "y", catalog)).toEqual({
+      a: "ti",
+      b: "netz",
+    });
+    expect(check(pair("gateway", "dns"), "x", "y").ok).toBe(false);
+  });
+
   it("[A-3] Konnektor-LAN ist mehrfach und bleibt wählbar", () => {
     const t = topo(
       [

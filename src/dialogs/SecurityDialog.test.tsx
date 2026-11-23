@@ -36,11 +36,13 @@ describe("SecurityDialog", () => {
     load(withNodeFault(id));
     render(<SecurityDialog />);
     const dlg = screen.getByRole("dialog");
-    expect(within(dlg).getAllByText("Fehler").length).toBeGreaterThan(0);
+    expect(within(dlg).getAllByText(/^Fehler:/).length).toBeGreaterThan(0);
     const button = within(dlg).getAllByRole("button", {
-      name: /ausgefallen auswählen/,
+      name: /ausgefallen auswählen$/,
     })[0];
     if (!button) throw new Error("Auswahl-Knopf fehlt");
+    expect(button).toHaveTextContent(/^Auswählen$/);
+    expect(button.getAttribute("aria-label")).not.toMatch(/\be\d+\b/);
     await userEvent.click(button);
     expect(useUi.getState().selection).toEqual({ kind: "node", id });
   });
@@ -51,7 +53,7 @@ describe("SecurityDialog", () => {
     load(withEdgeFault(e.id));
     render(<SecurityDialog />);
     const button = screen.getAllByRole("button", {
-      name: /unterbrochen auswählen/,
+      name: /unterbrochen auswählen$/,
     })[0];
     if (!button) throw new Error("Auswahl-Knopf fehlt");
     await userEvent.click(button);

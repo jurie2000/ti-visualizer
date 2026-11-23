@@ -681,6 +681,39 @@ a.tiv-btn {
   display: block;
   margin-bottom: 2px;
 }
+.tiv-dwarn[data-severity="Warnung"] {
+  border-color: var(--tiv-warn-bd);
+  background: var(--tiv-warn-bg);
+  color: var(--tiv-warn-fg);
+}
+.tiv-dwarn[data-severity="Hinweis"] {
+  border-color: var(--color-divider);
+  background: var(--color-neutral-200);
+  color: var(--color-text);
+}
+.tiv-secdlg {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 1rem;
+}
+.tiv-secdlg ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiv-secdlg .tiv-dwarn {
+  margin: 0;
+}
+.tiv-secdlg .tiv-dwarn p {
+  margin: 4px 0 0;
+}
+.tiv-secdlg .tiv-dwarn .tiv-btn {
+  margin-top: 8px;
+}
 .tiv-dbody {
   margin: 14px 0;
   line-height: 1.6;
@@ -1344,8 +1377,8 @@ a.tiv-btn {
   color: var(--color-neutral-800);
 }
 
-/* Dialog „Karte stecken“ (T-723): Mockup-Optik, rechtes Detailpanel bleibt sichtbar */
-.tiv-dialog:has(.tiv-plug) {
+/* Dialoge „Karte stecken“ (T-723) und Sicherheitsprüfung (#246): Mockup-Optik, rechtes Detailpanel bleibt sichtbar */
+.tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) {
   width: min(460px, calc(100% - 32px));
   padding: 0;
   background: var(--color-neutral-100);
@@ -1353,29 +1386,29 @@ a.tiv-btn {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
 }
-.tiv-dialog:has(.tiv-plug) .tiv-dialog__head {
+.tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) .tiv-dialog__head {
   padding: 18px 20px 4px;
 }
-.tiv-dialog:has(.tiv-plug) .tiv-dialog__head h2 {
+.tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) .tiv-dialog__head h2 {
   margin: 0;
   font-size: 1.4rem;
   line-height: 1.15;
 }
-.tiv-dialog:has(.tiv-plug) .tiv-dialog__head .tiv-btn {
+.tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) .tiv-dialog__head .tiv-btn {
   width: 32px;
   height: 32px;
   padding: 0;
   border-radius: 999px;
 }
-.tiv-dialog:has(.tiv-plug) .tiv-dialog__body {
+.tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) .tiv-dialog__body {
   padding: 0 20px 20px;
 }
 @media (min-width: 1101px) {
   /* Rechts 400 px frei (Schiene und Detailpanel): nicht abdunkeln, Dialog daneben mittig */
-  .tiv-dialog:has(.tiv-plug) {
+  .tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg)) {
     inset-inline-end: 400px;
   }
-  .tiv-dialog:has(.tiv-plug)::backdrop {
+  .tiv-dialog:has(:is(.tiv-plug, .tiv-secdlg))::backdrop {
     background: linear-gradient(
       to right,
       rgb(32 30 29 / 38%) calc(100% - 400px),

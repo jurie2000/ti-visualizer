@@ -464,22 +464,22 @@ und K-6 in Abschnitt 5.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Weg führt immer über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway. | bestätigt | Arch, gemILF_PS |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Zugang zur TI läuft über Konnektor oder TI-Gateway. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
-| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. Software läuft auf einem PC oder Server (läuft auf). RIS und LIS sind über eine Schnittstelle mit dem KIS verbunden. | plausibel | gemILF_PS, KH |
-| V-7 | Lokales Netz direkt an Fachdienst | Geräte des lokalen Netzes erreichen Fachdienste nur über den Konnektor und den VPN-Zugangsdienst oder über das TI-Gateway. | bestätigt | Arch |
+| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. | plausibel | gemILF_PS, KH |
+| V-7 | Lokales Netz direkt an Fachdienst | Das lokale Netz erreicht Fachdienste nur über Konnektor oder TI-Gateway. | bestätigt | Arch |
 | V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
 | V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |
 | V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway kommen in diesem Lernmodell nicht im selben System vor. | Vereinfachung | siehe X-1 |
 | V-12 | Primärsystem oder Kartenterminal direkt an VPN-Zugangsdienst | Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf. | bestätigt | Arch, gemSpec_VPN_ZugD |
-| V-14 | Mobiles KT an Zugang oder Netzwerk | Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. Die Daten gehen später per USB ans Primärsystem. | bestätigt | gemSpec_MobKT |
+| V-14 | Mobiles KT an Zugang oder Netzwerk | Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. | bestätigt | gemSpec_MobKT |
 | V-15 | Versicherten-App an Zugang oder Primärsystem | Versicherte nutzen ihre Apps über das Internet, nicht über die Infrastruktur der Praxis. | bestätigt | gemSpec_eRp_FdV |
 | V-16 | Zentrale Dienste direkt ins lokale Netz | Zentrale Dienste der TI liegen im Zentralen Netz und sind nur über den VPN-Zugangsdienst erreichbar. | bestätigt | Arch, gemSpec_Net |
 | V-17 | Zugang an Zugang | Eine Einrichtung nutzt ihre Konnektoren unabhängig voneinander. Sie werden nicht miteinander verbunden. | plausibel | gemSpec_Kon |
 | V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 | V-19 | TI-Messenger-FD an VPN-Zugangsdienst oder Zentrales Netz | Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst. | plausibel | gemSpec_TI-M_Basis |
 | V-20 | Router an Router | Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch. | Vereinfachung | DVO |
-| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service, IDP oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt. Der Weg führt über Router und Internet, VSDM 2.0 zusätzlich über ZETA Guard. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
+| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service, IDP oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt, sondern nur über Router und Internet. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
 
 ### 4.4 Ausschlüsse
 

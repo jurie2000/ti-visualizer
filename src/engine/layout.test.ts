@@ -78,7 +78,7 @@ describe("T-720a Sortieren (FR-16)", () => {
     ["praxis", 1, 1],
     ["apotheke", 0, 0],
     ["krankenhaus", 1, 1],
-    ["klinikum", 8, 4],
+    ["klinikum", 8, 4], // nachher 4: VPN-Knoten entfällt (#241)
   ])("T-720a Kreuzungen %s: vorher %i, nachher %i", (id, vorher, nachher) => {
     expect(crossings(preset(id))).toBe(vorher);
     expect(crossings(sorted(preset(id)))).toBe(nachher);

@@ -140,6 +140,31 @@ describe("TI-Gateway ohne VPN-Zugangsdienst (#241)", () => {
     });
   });
 
+  it("Alte Dateien: Gateway über VPN-Zugangsdienst erreicht weiter die TI", () => {
+    const t = topo(
+      [
+        ...nodes.filter((n) => n[0] !== "zn"),
+        ["vpn", "vpn"],
+        ["zn", "zentral"],
+      ],
+      [...links.slice(0, 4), ["gw", "vpn"], ["vpn", "zn"], ["zn", "erp"]],
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog)).toMatchObject({
+      ok: true,
+      nodes: ["pvs", "sw", "rt", "gw", "vpn", "zn", "erp"],
+    });
+  });
+
+  it("Fehlerhaftes Gateway ist kein Weg", () => {
+    const t = topo(
+      nodes.map((n) =>
+        n[0] === "gw" ? ["gw", "gateway", undefined, true] : n,
+      ),
+      links,
+    );
+    expect(resolvePath(t, "pvs", "erp", catalog).ok).toBe(false);
+  });
+
   it("Gateway am Dienst vorbei über den Router ist kein Weg", () => {
     const t = topo(
       nodes,

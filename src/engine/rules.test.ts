@@ -515,6 +515,7 @@ describe("autoPorts (A-3)", () => {
       b: "netz",
     });
     expect(check(pair("gateway", "dns"), "x", "y").ok).toBe(false);
+    expect(check(pair("vsdm", "gateway"), "x", "y").ok).toBe(true);
   });
 
   it("[A-3] Konnektor-LAN ist mehrfach und bleibt wählbar", () => {

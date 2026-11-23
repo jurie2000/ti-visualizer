@@ -80,6 +80,9 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
     expect(kindOf(["router", "lan1"], ["gateway", "lan"])).toBe("vpn");
     expect(kindOf(["gateway", "lan"], ["router", "lan1"])).toBe("vpn");
   });
+  it("[#241] Alte Kante TI-Gateway (WAN) zum Router bleibt Kabel", () => {
+    expect(kindOf(["gateway", "wan"], ["router", "lan1"])).toBe("phys");
+  });
   it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {
     expect(kindOf(["gateway", "ti"], ["zentral", "netz"])).toBe("tcp");
   });

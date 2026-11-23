@@ -195,6 +195,10 @@ function search(
   const startPhase =
     kind === "ti" && roleOf(start, catalog) === "zugang" ? POST : LAN;
 
+  // Das TI-Gateway erreicht die TI ohne VPN-Zugangsdienst (#241).
+  const direktTi = (phase: number, from: Node) =>
+    phase === POST && from.type === "gateway";
+
   /** Phase nach dem Schritt auf `n`, oder -1, wenn die Rollenfolge es verbietet. */
   const next = (
     phase: number,
@@ -244,10 +248,7 @@ function search(
       case "vpn":
         return phase === POST ? VPN : -1;
       case "zentral":
-        // Das TI-Gateway erreicht das Zentrale Netz ohne VPN-Zugangsdienst (#241).
-        return phase === VPN || (phase === POST && from.type === "gateway")
-          ? ZENTRAL
-          : -1;
+        return phase === VPN || direktTi(phase, from) ? ZENTRAL : -1;
       case "zeta":
         return phase === POST || (phase === INET && lokal) ? ZETA : -1;
       case "end":
@@ -257,7 +258,7 @@ function search(
             ? phase
             : -1;
         if (kind === "local") return phase === POST ? phase : -1;
-        if (phase === POST && from.type === "gateway") return ZENTRAL;
+        if (direktTi(phase, from)) return ZENTRAL;
         if (phase === VPN || phase === ZENTRAL || phase === ZETA) return phase;
         // Internet-Wege laufen über das Internet. Eine direkte Kante vom Auslöser
         // ist die Vereinfachung aus Regelwerk 4.2 (z. B. E-Rezept-App ↔ E-Rezept-FD).

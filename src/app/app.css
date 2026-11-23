@@ -358,6 +358,7 @@
   z-index: 30;
   left: 50%;
   transform: translateX(-50%);
+  /* über der Fußzeile */
   bottom: 56px;
   display: grid;
   gap: 8px;
@@ -386,11 +387,17 @@
 }
 .tiv-toast__close {
   flex: none;
-  padding: 0;
+  /* 28 px Trefferfläche, optisch bleibt das Icon bündig */
+  margin: -4px -8px -4px 0;
+  padding: 6px;
   border: 0;
+  border-radius: var(--radius-md);
   background: none;
   color: inherit;
   cursor: pointer;
+}
+.tiv-toast__close:focus-visible {
+  outline: var(--tiv-focus-width) solid var(--tiv-focus);
 }
 .tiv-toast--error {
   background: var(--tiv-error-bg);

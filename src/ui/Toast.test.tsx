@@ -74,4 +74,15 @@ describe("Toast", () => {
     fireEvent.click(screen.getByRole("button", { name: "Meldung schließen" }));
     expect(screen.queryByText("Kaputt")).toBeNull();
   });
+
+  it("Schließen lässt andere Meldungen bis zu ihrer eigenen Zeit stehen", () => {
+    setup();
+    fireEvent.click(screen.getByRole("button", { name: "fehler" }));
+    fireEvent.click(screen.getByRole("button", { name: "Meldung schließen" }));
+    fireEvent.click(screen.getByRole("button", { name: "fehler" }));
+    act(() => {
+      vi.advanceTimersByTime(9000);
+    });
+    expect(screen.getByText("Kaputt")).toBeInTheDocument();
+  });
 });

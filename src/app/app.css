@@ -409,12 +409,12 @@ a {
   background: var(--tiv-btn-bg);
   white-space: nowrap;
 }
-.tiv-footer > .tiv-btn:first-child {
+.tiv-footer > .tiv-btn:first-of-type {
   border-radius: 0 999px 0 0;
   border-left: 0;
   border-bottom: 0;
 }
-.tiv-footer > .tiv-btn:last-child {
+.tiv-footer > .tiv-btn:last-of-type {
   border-radius: 999px 0 0 0;
   border-right: 0;
   border-bottom: 0;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TivFile, Topology, configVariants } from ".";
+import { TivFile, Topology, configVariants, loadCatalog } from ".";
 
 const kt = {
   id: "kt1",
@@ -188,6 +188,38 @@ describe("Topology", () => {
   it("lehnt unbekannten tone ab", () => {
     expect(topoOk({ zones: [{ ...zone, tone: "<script>" }] })).toBe(false);
     expect(topoOk({ zones: [{ ...zone, tone: "accent-2" }] })).toBe(false);
+  });
+
+  it("[K-10] nimmt ein HSM-B mit Software an und lehnt einen ungültigen Verweis ab", () => {
+    const hsmb = { kind: "hsmb", expires: "2029-11-23", software: "pvs-1" };
+    expect(withCard(hsmb)).toBe(true);
+    expect(withCard({ ...hsmb, software: undefined })).toBe(true);
+    expect(withCard({ ...hsmb, software: "<b>" })).toBe(false);
+    expect(withCard({ ...hsmb, software: "" })).toBe(false);
+    expect(withCard({ ...hsmb, expires: "morgen" })).toBe(false);
+  });
+
+  it("[K-10] das Preset hebamme-mobil übersteht parse, serialize, parse unverändert", () => {
+    const preset = loadCatalog().presets.find((p) => p.id === "hebamme-mobil");
+    const first = Topology.parse(preset?.topology);
+    const again = Topology.parse(JSON.parse(JSON.stringify(first)));
+    expect(again).toEqual(first);
+    const gateway = again.nodes.find((n) => n.type === "gateway");
+    expect(gateway?.cards).toEqual([
+      { kind: "hsmb", expires: "2029-11-23", software: "pvs-1" },
+    ]);
+  });
+
+  it("[#254] das frühere Konfigfeld hsmb am Gateway wird beim Laden verworfen", () => {
+    const gw = {
+      id: "gw1",
+      type: "gateway",
+      fault: false,
+      position: { x: 0, y: 0 },
+      config: { ip: "192.168.10.2", hsmb: true },
+    };
+    const r = Topology.parse({ ...topology, nodes: [gw], edges: [] });
+    expect(r.nodes[0]?.config).toEqual({ ip: "192.168.10.2" });
   });
 
   it("prüft Karten", () => {

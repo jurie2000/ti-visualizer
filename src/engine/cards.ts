@@ -23,6 +23,7 @@ export const MESSAGES = {
     "Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal.",
   // K-10
   hsmOnly: "Das HSM-B steckt nur im TI-Gateway.",
+  gatewayOnlyHsm: "Im TI-Gateway steckt nur das HSM-B.",
   // K-2
   full: "Alle Kartenarten stecken bereits in diesem Terminal.",
   // K-9
@@ -57,7 +58,7 @@ export function plugCard(
   if (card.kind === "hsmb" && !hsm)
     return { ok: false, message: MESSAGES.hsmOnly };
   if (hsm && card.kind !== "hsmb")
-    return { ok: false, message: MESSAGES.noSlot };
+    return { ok: false, message: MESSAGES.gatewayOnlyHsm };
   if (!slots && !hsm && !caps.includes("nfcCard"))
     return { ok: false, message: MESSAGES.noSlot };
   if (!slots && !hsm && card.kind !== "egk")

@@ -202,12 +202,24 @@ describe("Karten-Engine (T-106)", () => {
     expect(plugged(t, "gw", hsmb).nodes[0]?.cards).toEqual([hsmb]);
     expect(fail(t, "kon", hsmb)).toBe(MESSAGES.hsmOnly);
     expect(fail(t, "kt", hsmb)).toBe(MESSAGES.hsmOnly);
-    expect(fail(t, "gw", egk)).toBe(MESSAGES.noSlot);
-    expect(fail(t, "gw", smcb)).toBe(MESSAGES.noSlot);
+    expect(fail(t, "gw", egk)).toBe(MESSAGES.gatewayOnlyHsm);
+    expect(fail(t, "gw", smcb)).toBe(MESSAGES.gatewayOnlyHsm);
     expect(cardState(plugged(t, "gw", hsmb), "gw", "hsmb")).toMatchObject({
       state: "ready",
       plugged: true,
     });
+    // je Art eine Karte (K-2), Ziehen leert den Slot, eine Karte steckt nur einmal (K-9)
+    const steckt = plugged(t, "gw", hsmb);
+    expect(fail(steckt, "gw", hsmb)).toBe(MESSAGES.full);
+    expect(cardState(unplugCard(steckt, "gw", "hsmb"), "gw", "hsmb")).toEqual({
+      state: "none",
+      plugged: false,
+    });
+    const mitId = { ...hsmb, id: "hsm-1" };
+    const zwei = topo(node("gw", "gateway"), node("gw2", "gateway"));
+    expect(fail(plugged(zwei, "gw", mitId), "gw2", mitId)).toBe(
+      MESSAGES.elsewhere,
+    );
     const alt = { ...hsmb, expires: "2026-10-31" };
     expect(cardState(plugged(t, "gw", alt), "gw", "hsmb").state).toBe(
       "expired",

@@ -248,7 +248,7 @@ describe("Dienst-Smartphone (#254)", () => {
       expect(run(withEgk(t, "egk-1"), id).enabled, id).toBe(false);
   });
 
-  it("ein HSM-B am Konnektor ist nicht steckbar und zählt nicht (K-10)", () => {
+  it("eine hsmb-Karte an einem Gerät ohne hsmSlot zählt nicht (K-10)", () => {
     const kon: Topology = {
       ...preset,
       nodes: preset.nodes.map((n) =>
@@ -260,31 +260,67 @@ describe("Dienst-Smartphone (#254)", () => {
     );
   });
 
-  it("HSM-B ohne oder mit fremder Software sperrt die Anmeldung", () => {
-    const ohne = hsmbCard(preset, (c) => [
-      { ...(c as AnyCard), software: undefined } as AnyCard,
-    ]);
-    const fremd = hsmbCard(preset, (c) => [
-      { ...(c as AnyCard), software: "pvs-9" } as AnyCard,
-    ]);
-    for (const t of [ohne, fremd])
-      expect(run(t, "zeta-anmelden-hsmb").disabledReason).toBe(
-        "Das HSM-B ist keiner Software dieses Geräts zugeordnet.",
-      );
+  // Software-Angabe entfernen (Feld fehlt, nicht `undefined`)
+  const ohneSoftware = (c: AnyCard | undefined): AnyCard[] => [
+    { kind: "hsmb", expires: (c as AnyCard).expires },
+  ];
+  it.each([
+    ["ohne Software", ohneSoftware],
+    [
+      "mit Software außerhalb des Geräts",
+      (c: AnyCard | undefined) => [{ ...(c as AnyCard), software: "pvs-9" }],
+    ],
+  ])("HSM-B %s sperrt die Anmeldung", (_name, change) => {
+    expect(
+      run(hsmbCard(preset, change), "zeta-anmelden-hsmb").disabledReason,
+    ).toBe("Das HSM-B ist keiner Software dieses Geräts zugeordnet.");
+  });
+
+  it("das HSM-B einer zweiten Software auf dem Smartphone genügt (Auslöser ist nicht die Software)", () => {
+    const kis: Topology = {
+      ...preset,
+      nodes: [
+        ...preset.nodes,
+        { id: "kis-1", type: "kis", fault: false, position: { x: 0, y: 0 } },
+      ],
+      edges: [
+        ...preset.edges,
+        {
+          id: "e-kis",
+          fault: false,
+          ends: [
+            { node: "kis-1", port: "host" },
+            { node: "mobil-1", port: "soft" },
+          ],
+        },
+      ],
+    };
+    const t = hsmbCard(kis, (c) => [{ ...(c as AnyCard), software: "kis-1" }]);
+    expect(run(t, "zeta-anmelden-hsmb").enabled).toBe(true);
   });
 
   it("ein abgelaufenes HSM-B sperrt die Anmeldung", () => {
-    const t = hsmbCard(preset, (c) => [
+    const t = hsmbCard({ ...preset, simDate: "2026-11-01" }, (c) => [
       { ...(c as AnyCard), expires: "2026-10-31" },
     ]);
-    expect(run(t, "zeta-anmelden-hsmb").disabledReason).toContain("abgelaufen");
+    expect(run(t, "zeta-anmelden-hsmb").disabledReason).toBe(
+      "HSM-B ist seit 31.10.2026 abgelaufen.",
+    );
   });
 
-  it("zetaHsmb bindet K an das Gateway mit HSM-B, nicht an ein anderes", () => {
+  // Zweites Gateway mit eigenem HSM-B neben gateway-1 (Software pvs-1)
+  const mitZweitem = (zweite: (c: AnyCard | undefined) => AnyCard[]) => {
     const gw = node(preset, "gateway-1");
-    const zweites: Topology = {
+    return {
       ...preset,
-      nodes: [{ ...gw, id: "gateway-0", cards: [] }, ...preset.nodes],
+      nodes: [
+        {
+          ...gw,
+          id: "gateway-0",
+          cards: zweite(gw.cards?.find((c) => c.kind === "hsmb")),
+        },
+        ...preset.nodes,
+      ],
       edges: [
         ...preset.edges,
         {
@@ -296,16 +332,38 @@ describe("Dienst-Smartphone (#254)", () => {
           ],
         },
       ],
-    };
-    const steps = bindFlow(
-      flowOf("zetaHsmb"),
-      node(zweites, "mobil-1"),
-      zweites,
-      catalog,
+    } satisfies Topology;
+  };
+  const kZiel = (t: Topology) =>
+    bindFlow(flowOf("zetaHsmb"), node(t, "mobil-1"), t, catalog)[0]?.nodes.at(
+      -1,
     );
-    expect(steps[0]?.nodes.at(-1)).toBe("gateway-1");
-    expect(steps.flatMap((s) => s.nodes)).not.toContain("gateway-0");
-  });
+
+  it.each([
+    ["ohne HSM-B", () => []],
+    [
+      "mit HSM-B einer anderen Software",
+      (c: AnyCard | undefined) => [{ ...(c as AnyCard), software: "pvs-9" }],
+    ],
+    [
+      "mit abgelaufenem HSM-B",
+      (c: AnyCard | undefined) => [
+        { ...(c as AnyCard), expires: "2026-10-31" },
+      ],
+    ],
+  ])(
+    "zetaHsmb bindet K an das passende Gateway, nicht an eines %s",
+    (_n, f) => {
+      // gateway-0 steht vor gateway-1 in der Liste und würde sonst gewählt
+      const t = mitZweitem(f);
+      expect(kZiel(t)).toBe("gateway-1");
+      expect(
+        bindFlow(flowOf("zetaHsmb"), node(t, "mobil-1"), t, catalog).flatMap(
+          (st) => st.nodes,
+        ),
+      ).not.toContain("gateway-0");
+    },
+  );
 
   it("Versicherten-Apps binden T nicht an sich selbst (nur Auslöser mit trigger)", () => {
     const app: Topology = {

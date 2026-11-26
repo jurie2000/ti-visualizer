@@ -146,12 +146,27 @@ describe("Karten stecken und ziehen", () => {
     expect(card).toMatchObject({ pinActive: false });
   });
 
+  // Leere Topologie mit TI-Gateway und den genannten Software-Knoten
+  const gatewayMit = (...types: string[]) => {
+    useTopology
+      .getState()
+      .reset({ ...praxis, nodes: [], edges: [], zones: [] });
+    const ids = types.map((t) => {
+      const r = useTopology.getState().addNode(t, { x: 0, y: 0 });
+      if (!r.ok || !r.id) throw new Error("nicht angelegt");
+      return r.id;
+    });
+    const gw = useTopology.getState().addNode("gateway", { x: 0, y: 0 });
+    if (!gw.ok || !gw.id) throw new Error("Gateway nicht angelegt");
+    return { software: ids, gateway: gw.id };
+  };
+  const cardOf = (id: string) =>
+    useTopology.getState().topology.nodes.find((n) => n.id === id)?.cards?.[0];
+
   it("[K-10] TI-Gateway: nur HSM-B, Software-Auswahl statt PIN, Karte trägt die Software", async () => {
     const user = userEvent.setup();
-    const sw = useTopology.getState().addNode("pvs", { x: 0, y: 0 });
-    const gw = useTopology.getState().addNode("gateway", { x: 0, y: 0 });
-    if (!sw.ok || !sw.id || !gw.ok || !gw.id) throw new Error("nicht angelegt");
-    useUi.getState().openDialog(`plugCard:${gw.id}`);
+    const { software, gateway } = gatewayMit("pvs", "kis");
+    useUi.getState().openDialog(`plugCard:${gateway}`);
     render(app);
     const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
     const arten = within(
@@ -159,20 +174,57 @@ describe("Karten stecken und ziehen", () => {
     ).getAllByRole<HTMLInputElement>("radio");
     expect(arten.map((r) => r.value)).toEqual(["hsmb"]);
     expect(within(dlg).queryByRole("checkbox")).toBeNull();
-    expect(within(dlg).getByText("Software")).toBeInTheDocument();
     await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
-    const card = useTopology
-      .getState()
-      .topology.nodes.find((n) => n.id === gw.id)?.cards?.[0];
-    // vorbelegt ist die erste Software der Topologie
-    const first = useTopology
-      .getState()
-      .topology.nodes.find(
-        (n) =>
-          loadCatalog().deviceTypes.find((d) => d.id === n.type)?.category ===
-          "primary",
-      );
-    expect(card).toMatchObject({ kind: "hsmb", software: first?.id });
-    expect(first?.id).toBeDefined();
+    expect(cardOf(gateway)).toMatchObject({
+      kind: "hsmb",
+      software: software[0],
+    });
+  });
+
+  it("[K-10] die Auswahl nimmt eine andere Software, eine Option „keine“ gibt es nicht", async () => {
+    const user = userEvent.setup();
+    const { software, gateway } = gatewayMit("pvs", "kis");
+    useUi.getState().openDialog(`plugCard:${gateway}`);
+    render(app);
+    const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
+    await user.click(within(dlg).getByRole("combobox"));
+    expect(screen.queryByRole("option", { name: "keine" })).toBeNull();
+    await user.click(
+      screen.getByRole("option", { name: /Krankenhausinformationssystem/ }),
+    );
+    await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
+    expect(cardOf(gateway)).toMatchObject({ software: software[1] });
+  });
+
+  it("[K-10] ohne Software im Netz ist Stecken nicht möglich", async () => {
+    const { gateway } = gatewayMit();
+    useUi.getState().openDialog(`plugCard:${gateway}`);
+    render(app);
+    const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
+    expect(within(dlg).getByRole("alert")).toHaveTextContent(
+      "Lege zuerst eine Software an",
+    );
+    expect(within(dlg).getByRole("button", { name: "Stecken" })).toBeDisabled();
+  });
+
+  it("[K-10] das Detailpanel zeigt das HSM-B mit Software, Ziehen entfernt es", async () => {
+    const user = userEvent.setup();
+    const { software, gateway } = gatewayMit("pvs");
+    useTopology.getState().plugCard(gateway, {
+      kind: "hsmb",
+      expires: "2029-11-23",
+      software: software[0] ?? "",
+    });
+    render(app);
+    act(() => {
+      useUi.getState().select({ kind: "node", id: gateway });
+    });
+    expect(
+      screen.getByText(/im TI-Gateway · für Praxisverwaltungssystem/),
+    ).toBeInTheDocument();
+    await user.click(
+      screen.getByRole("button", { name: /HSM-B aus .* ziehen/ }),
+    );
+    expect(cardOf(gateway)).toBeUndefined();
   });
 });

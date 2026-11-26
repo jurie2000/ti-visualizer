@@ -61,9 +61,8 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   // voll und die Engine meldet die Belegung.
   const { hsm, nfcOnly, candidates, free } = missingKinds(node, device);
   const kinds = free.length ? free : candidates;
-  const names = new Map(
-    useCatalog((s) => s.catalog.deviceTypes).map((d) => [d.id, d.name]),
-  );
+  const deviceTypes = useCatalog((s) => s.catalog.deviceTypes);
+  const names = new Map(deviceTypes.map((d) => [d.id, d.name]));
   const [kind, setKind] = useState<CardKind>(kinds[0] ?? "egk");
   // Zieldatum: simDate + 3 Jahre, 29.02. wird zum 28.02.
   const [expires, setExpires] = useState(
@@ -74,9 +73,8 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   );
   const [pin, setPin] = useState(true);
   // K-10: das HSM-B gehört einer Software, die erste ist vorbelegt
-  const categories = useCatalog((s) => s.catalog.deviceTypes);
   const software = useTopology((s) => s.topology.nodes).filter(
-    (n) => categories.find((d) => d.id === n.type)?.category === "primary",
+    (n) => deviceTypes.find((d) => d.id === n.type)?.category === "primary",
   );
   const [owner, setOwner] = useState(software[0]?.id ?? "");
 
@@ -87,7 +85,7 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
       kind === "egk"
         ? { kind, expires, ...(!nfcOnly && { pinActive: pin }) }
         : kind === "hsmb"
-          ? { kind, expires, ...(owner && { software: owner }) }
+          ? { kind, expires, software: owner }
           : { kind, expires, unlocked: pin };
     const r = plug(nodeId, card);
     // Der Toast liegt außerhalb des modalen Dialogs: erst schließen, dann melden.
@@ -137,19 +135,16 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
           }}
         />
       </label>
-      {hsm && (
+      {hsm && software.length > 0 && (
         <div className="tiv-plug__field">
           <label htmlFor="plug-software">Software</label>
           <Select
             id="plug-software"
             value={owner}
-            options={[
-              { value: "", label: "keine" },
-              ...software.map((n) => ({
-                value: n.id,
-                label: n.label ?? names.get(n.type) ?? n.id,
-              })),
-            ]}
+            options={software.map((n) => ({
+              value: n.id,
+              label: n.label ?? names.get(n.type) ?? n.id,
+            }))}
             onChange={setOwner}
           />
         </div>
@@ -171,7 +166,16 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
           {kind === "egk" ? "PIN aktiv" : "per PIN freigeschaltet"}
         </label>
       )}
-      <Button type="submit" variant="primary">
+      {hsm && software.length === 0 && (
+        <p role="alert">
+          Das HSM-B gehört einer Software. Lege zuerst eine Software an.
+        </p>
+      )}
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={hsm && software.length === 0}
+      >
         Stecken
       </Button>
     </form>

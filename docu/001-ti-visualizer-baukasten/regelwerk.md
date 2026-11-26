@@ -519,7 +519,7 @@ Verbindungsregeln aus Abschnitt 4.
 | K-7 | Die eGK-PIN dient als Einwilligung für eMP/AMTS, sofern die versicherte Person sie nicht abgeschaltet hat (Feld `pinActive` an der eGK) | Für den Medikationsplan ist die PIN der eGK nötig. | bestätigt | gemILF_PS_AMTS |
 | K-8 | Karten gehören nie an Konnektor, Primärsystem oder Fachdienst; das HSM-B steckt im TI-Gateway (K-10) | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch |
 | K-9 | Eine Karte steckt in genau einem Gerät | Diese Karte steckt bereits in einem anderen Terminal. | bestätigt (physisch) | gemSpec_KT |
-| K-10 | Das HSM-B steckt nur in einem Gerät mit der Fähigkeit `hsmSlot` (TI-Gateway), dort steckt nur das HSM-B. Es hat keinen PIN-Zustand (K-4 gilt nicht) und ist genau einer Software zugeordnet (Kartenfeld `software`). Darstellung: „im TI-Gateway · für ‹Software›“ | Das HSM-B steckt nur im TI-Gateway. | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
+| K-10 | Das HSM-B steckt nur in einem Gerät mit der Fähigkeit `hsmSlot` (TI-Gateway), dort steckt nur das HSM-B (andere Karten: „Im TI-Gateway steckt nur das HSM-B.“). Es hat keinen PIN-Zustand (K-4 gilt nicht) und ist genau einer Software zugeordnet (Kartenfeld `software`). Darstellung: „im TI-Gateway · für ‹Software›“ | Das HSM-B steckt nur im TI-Gateway. | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 
 Darstellung: Eine gesteckte Karte erscheint als Chip im Terminal mit der
 Beschriftung „gesteckt · ISO 7816“, eine per NFC gelesene eGK mit
@@ -725,8 +725,11 @@ Das HSM-B ist eine Karte (Kartenart `hsmb`, K-10) im TI-Gateway, einer
 Software zugeordnet. Es ersetzt die SMC-B bei der ZETA-Anmeldung und nur dort;
 alle anderen Aktionen brauchen weiter SMC-B oder HBA. Gründe in dieser
 Reihenfolge: abgelaufen, kein HSM-B gesteckt, keiner Software dieses Geräts
-zugeordnet, Gateway nicht erreichbar. Eine `software`-Angabe, die auf keinen
-Knoten zeigt, ist nur an diesem Sperrgrund sichtbar (kein eigener Check).
+zugeordnet, Gateway nicht erreichbar. Löscht man die Software, entfernt das Löschen die Zuordnung an allen HSM-B
+(das HSM-B bleibt stecken, ohne Software). Eine `software`-Angabe, die in einer
+Datei auf keinen Knoten zeigt, ist nur an diesem Sperrgrund sichtbar (kein
+eigener Check). Alte Zwischenstände mit `config.hsmb` am Gateway verlieren das
+Feld ohne Migration (das Schema ignoriert unbekannte Felder).
 Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA).
 Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
 Internet. Der HBA ist nicht nötig. Status: plausibel.

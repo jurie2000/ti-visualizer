@@ -280,7 +280,7 @@ eigene Regel-ID):
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
-2b. TI-Gateway (`ti`) ↔ Fachdienst (nicht Zentrales Netz): `vpn` (Auslegung 2026-11-26, Issue #254, unten)
+2b. TI-Gateway (`ti`) ↔ Gerät mit `ti`-Anschluss (Fachdienst), außer Zentrales Netz: `vpn` (Auslegung 2026-11-26, Issue #254, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -303,7 +303,7 @@ Switch ↔ Konnektor bleibt `phys`. Status: plausibel.
 
 Auslegung (2026-11-23, Issue #241): Regel 2a gilt auch für Router ↔ TI-Gateway (LAN-Anschluss des Gateways), weil auch diese Kante den Tunnel des Gateways zeigt.
 
-Auslegung (2026-11-26, Issue #254): Regel 2b: Der Weg des Zugangsmoduls im TI-Gateway zum Fachdienst (z. B. ePA) ist sein VPN-Tunnel; die Kante zeigt `vpn`. Ein VPN-Zugangsdienst-Knoten steht nicht im Pfad (Auslegung #241), nur die Kantenart ändert sich. Die Kante zum Zentralen Netz bleibt `tcp` (Regel 4). Das gilt auch für die Presets Krankenhaus und Klinikum. Status: Vereinfachung.
+Auslegung (2026-11-26, Issue #254): Regel 2b: Der Weg des Zugangsmoduls im TI-Gateway zum Fachdienst (z. B. ePA) ist sein VPN-Tunnel; die Kante zeigt `vpn`. Ein VPN-Zugangsdienst-Knoten steht nicht im Pfad (Auslegung #241), nur die Kantenart ändert sich. Die Kante zum Zentralen Netz bleibt `tcp`: sein Anschluss „Netz“ hat die Art `ti`, Regel 4 greift, Regel 2b nimmt es aus (#241). Regel 2b gilt in allen Presets mit so einer Kante und wechselt dort von `tcp` auf `vpn`: Praxis TI 2.0 (VSDM), Krankenhaus und Klinikum (je VSDM, E-Rezept, KIM, ePA) und Hebamme mobil (ePA). Status: Vereinfachung.
 
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die

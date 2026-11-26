@@ -226,7 +226,6 @@ describe("Dienst-Smartphone (#254)", () => {
         "epa-gateway",
       ).disabledReason,
     ).toBe("Kein HSM-B im TI-Gateway gesteckt.");
-    expect(run(without(nurPopp, "epa-1"), "epa-gateway").enabled).toBe(false);
   });
 
   it("epa-gateway: Negativfälle nennen ihren Grund, das ZETA-Token fehlt nie als Grund", () => {
@@ -252,6 +251,7 @@ describe("Dienst-Smartphone (#254)", () => {
         "Das HSM-B ist keiner Software dieses Geräts zugeordnet.",
       ],
       ["Gateway ausgefallen", faulty, "ist ausgefallen."],
+      ["ePA fehlt", without(basis, "epa-1"), "fehlt in der Topologie."],
       [
         "Gateway ohne Internetkante",
         cutAt(basis, "gateway-1"),
@@ -307,6 +307,35 @@ describe("Dienst-Smartphone (#254)", () => {
     const t = praxisAmInternet();
     for (const goal of ["gateway-1", "epa-1"])
       expect(resolvePath(t, "pc-1", goal, catalog, "ti").ok, goal).toBe(false);
+    // Positivfall: dieselbe Topologie mit einem Smartphone am Internet erreicht das Gateway
+    const mitHandy: Topology = {
+      ...t,
+      nodes: [
+        ...t.nodes,
+        {
+          id: "mobil-1",
+          type: "mobil",
+          fault: false,
+          position: { x: 0, y: 0 },
+        },
+      ],
+      edges: [
+        ...t.edges,
+        {
+          id: "e5",
+          fault: false,
+          ends: [
+            { node: "mobil-1", port: "net" },
+            { node: "internet-1", port: "netz" },
+          ],
+        },
+      ],
+    };
+    for (const goal of ["gateway-1", "epa-1"])
+      expect(
+        resolvePath(mitHandy, "mobil-1", goal, catalog, "ti").ok,
+        goal,
+      ).toBe(true);
   });
 
   it("das Smartphone erreicht ein Gateway im LAN einer Praxis nicht", () => {

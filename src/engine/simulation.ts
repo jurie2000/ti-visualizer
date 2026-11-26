@@ -221,6 +221,7 @@ export function bindFlow(
   const choosing =
     !terminal && terminalOf(topology, trigger.id, catalog).status === "choose";
   const p = bind("P");
+  // NFC geht vor Cloud: ein Smartphone liest die eGK selbst, auch wenn seine Software im Rechenzentrum läuft.
   const nfc = caps(catalog, trigger).includes("nfcCard");
   const cloud = p !== undefined && isCloudHosted(topology, p, catalog);
   const steps = flow.steps.map((s) => {

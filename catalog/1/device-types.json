@@ -455,6 +455,18 @@
     "status": "bestätigt"
   },
   {
+    "id": "hsmb",
+    "abbr": "HSM-B",
+    "name": "HSM-B (Institutionsausweis im TI-Gateway)",
+    "category": "card",
+    "icon": "card",
+    "placeable": false,
+    "capabilities": [],
+    "ports": [],
+    "source": ["gemF_TI-Gateway", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
     "id": "kt",
     "abbr": "eHealth-KT",
     "name": "eHealth-Kartenterminal",
@@ -765,7 +777,7 @@
     "category": "network",
     "icon": "gate",
     "placeable": true,
-    "capabilities": ["netConfig:konnektor", "zugang"],
+    "capabilities": ["netConfig:konnektor", "zugang", "hsmSlot"],
     "ports": [
       {
         "id": "lan",

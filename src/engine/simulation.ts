@@ -1,5 +1,5 @@
 import type { Catalog, Node, Topology } from "../schema";
-import { offers } from "./actions";
+import { hsmbGateways, offers } from "./actions";
 import {
   isCloudHosted,
   resolvePath,
@@ -161,11 +161,9 @@ function roleBinder(
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
   // Die Signatur macht nur ein TI-Gateway mit HSM-B (#254), das Terminal bestimmt K dort nicht.
   const hsmbFlow = flowId === "zetaHsmb";
-  const zugaenge = topology.nodes.filter(
-    (n) =>
-      caps(catalog, n).includes("zugang") &&
-      (!hsmbFlow || (n.type === "gateway" && n.config?.hsmb)),
-  );
+  const zugaenge = hsmbFlow
+    ? hsmbGateways(topology, trigger, catalog)
+    : topology.nodes.filter((n) => caps(catalog, n).includes("zugang"));
   const k =
     (!hsmbFlow && term && zugangOf(topology, term, catalog)) ||
     reached(zugaenge, [trigger.id])?.id;

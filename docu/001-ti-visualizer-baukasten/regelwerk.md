@@ -78,9 +78,10 @@ hängt. Status: plausibel.
 | `egk` | elektronische Gesundheitskarte | bestätigt | gemSpec_eGK_ObjSys_G2_1 |
 | `hba` | Heilberufsausweis | bestätigt | gemSpec_HBA_ObjSys |
 | `smcb` | Institutionskarte SMC-B | bestätigt | gemSpec_SMC-B_ObjSys_G2_1 |
+| `hsmb` | HSM-B (Institutionsausweis im TI-Gateway), neu | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 
 Smartcards sind **keine Knoten** auf der Fläche. Sie stecken in
-Geräten mit der Fähigkeit `cardSlots` oder `nfcCard` (Abschnitt 5). Die
+Geräten mit der Fähigkeit `cardSlots`, `nfcCard` oder `hsmSlot` (Abschnitt 5). Die
 Tabelle nennt die Kartenarten.
 
 Technische Karten sind ebenfalls keine Knoten, sondern Eigenschaften:
@@ -509,15 +510,16 @@ Verbindungsregeln aus Abschnitt 4.
 
 | ID | Regel | Meldung bei Verstoß | Status | Quelle |
 |---|---|---|---|---|
-| K-1 | Karten stecken nur in Geräten mit der Fähigkeit `cardSlots` (eHealth-KT, mobiles KT). Je Gerät eine Karte pro Kartenart | keine | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT, gemSpec_MobKT |
+| K-1 | Karten stecken nur in Geräten mit der Fähigkeit `cardSlots` (eHealth-KT, mobiles KT); das HSM-B ausgenommen (K-10). Je Gerät eine Karte pro Kartenart | keine | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT, gemSpec_MobKT |
 | K-2 | „Karte stecken“ legt eine neue Karte einer Art an, die im Gerät noch fehlt. Der Kartenvorrat ist unbegrenzt. „Karte ziehen“ entfernt die Karte | Alle Kartenarten stecken bereits in diesem Terminal. | Vereinfachung | gemSpec_KT |
 | K-3 | Jede Karte hat ein Ablaufdatum (Zertifikatslaufzeit). Verglichen wird mit dem Simulationsdatum der Topologie (`simDate`), nicht mit der echten Uhr. Eine abgelaufene Karte zählt als nicht gesteckt | ‹Karte› ist seit ‹Datum› abgelaufen. | bestätigt | gemSpec_PKI |
 | K-4 | HBA und SMC-B müssen per PIN freigeschaltet sein („erhöhter Sicherheitszustand“), sonst schlagen PIN-pflichtige Aktionen fehl | ‹Karte› ist nicht freigeschaltet. | bestätigt | gemILF_PS_AMTS, gemILF_PS |
 | K-5 | Die SMC-B ist im Infomodell einem Mandanten zugeordnet und steckt dauerhaft | keine | bestätigt | gemILF_PS |
 | K-6 | Geräte mit der Fähigkeit `nfcCard` (CardLink, Versicherten-Apps) lesen nur die eGK, ohne PIN, mit CAN | Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal. | bestätigt | gemSpec_eHealth-CardLink |
 | K-7 | Die eGK-PIN dient als Einwilligung für eMP/AMTS, sofern die versicherte Person sie nicht abgeschaltet hat (Feld `pinActive` an der eGK) | Für den Medikationsplan ist die PIN der eGK nötig. | bestätigt | gemILF_PS_AMTS |
-| K-8 | Karten gehören nie an Konnektor, Primärsystem oder Fachdienst | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch |
+| K-8 | Karten gehören nie an Konnektor, Primärsystem oder Fachdienst; das HSM-B steckt im TI-Gateway (K-10) | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch |
 | K-9 | Eine Karte steckt in genau einem Gerät | Diese Karte steckt bereits in einem anderen Terminal. | bestätigt (physisch) | gemSpec_KT |
+| K-10 | Das HSM-B steckt nur in einem Gerät mit der Fähigkeit `hsmSlot` (TI-Gateway), dort steckt nur das HSM-B. Es hat keinen PIN-Zustand (K-4 gilt nicht) und ist genau einer Software zugeordnet (Kartenfeld `software`). Darstellung: „im TI-Gateway · für ‹Software›“ | Das HSM-B steckt nur im TI-Gateway. | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 
 Darstellung: Eine gesteckte Karte erscheint als Chip im Terminal mit der
 Beschriftung „gesteckt · ISO 7816“, eine per NFC gelesene eGK mit
@@ -647,7 +649,7 @@ Status: Vereinfachung.
 | **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet). Beim TI-Gateway entfällt die Bedingung (Issue #241) | Arch |
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4). Bei Aktionen ohne Baustein „Zugang“ (TI 2.0) zählt auch ein Netz-Kartenterminal, das der Auslöser über das LAN ohne Zugang erreicht (#215) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
-| **HSM-B** | Ein TI-Gateway mit gesetztem Feld `hsmb` (Abschnitt 8) ist vom Auslöser aus als Signaturziel erreichbar (6.0) und nicht ausgefallen. Das HSM-B ist eine Einstellung des Gateways, keine Karte (K-1, K-8) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
+| **HSM-B** | Ein gültiges HSM-B (K-3) steckt in einem TI-Gateway, ist einer Software des Auslösers zugeordnet (K-10), und das Gateway ist als Signaturziel erreichbar (6.0, nicht ausgefallen) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
@@ -719,6 +721,12 @@ Dienst-Smartphone bietet die Aktionen der PS-App an. Reihenfolge:
 ZETA-Anmeldung (HSM-B), PoPP-Token beantragen, VSDM-2.0-Prüfung, ePA-Zugriff
 über ZETA, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
 per HSM-B hat keinen IDP-Schritt; die SMC-B-Aktion `zeta-anmelden` bleibt.
+Das HSM-B ist eine Karte (Kartenart `hsmb`, K-10) im TI-Gateway, einer
+Software zugeordnet. Es ersetzt die SMC-B bei der ZETA-Anmeldung und nur dort;
+alle anderen Aktionen brauchen weiter SMC-B oder HBA. Gründe in dieser
+Reihenfolge: abgelaufen, kein HSM-B gesteckt, keiner Software dieses Geräts
+zugeordnet, Gateway nicht erreichbar. Eine `software`-Angabe, die auf keinen
+Knoten zeigt, ist nur an diesem Sperrgrund sichtbar (kein eigener Check).
 Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA).
 Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
 Internet. Der HBA ist nicht nötig. Status: plausibel.
@@ -771,6 +779,7 @@ KH).
 | Gerät | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|---|
 | eHealth-KT, mobiles KT | Karte stecken / ziehen | K-1, K-2 | Dialog | gemSpec_KT |
+| TI-Gateway | HSM-B stecken / ziehen | K-2, K-10 | Dialog | gemF_TI-Gateway |
 | Mobiles KT | eGK offline einlesen | eGK, dazu HBA oder SMC-B im mobilen KT | `mobkt` | gemSpec_MobKT (plausibel, Kapitel zur Authentisierung nachlesen) |
 | Mobiles KT | Daten ans Primärsystem übergeben | USB-Verbindung zum Primärsystem | `mobkt` | gemSpec_MobKT |
 | CardLink | eGK per Smartphone prüfen (VSDM) | eGK per NFC, CardLink am Zugang, SMC-B, VSDM | `cardlinkVsdm` | gemSpec_eHealth-CardLink |
@@ -842,7 +851,7 @@ an den Einzelschritten).
 Auslegung (2026-11-22, Issue #237): Der IDP gehört zur TI 2.0 und ist nur über
 das Internet erreichbar, auch aus der Cloud. `zeta` holt vor dem Access Token
 den Identity-Token beim IDP. Die Signatur macht im Modell die SMC-B im
-Kartenterminal der Praxis (das HSM-B im Rechenzentrum ist für diese Aktion nicht modelliert; `zetaHsmb` (Issue #254) nutzt es).
+Kartenterminal der Praxis (das HSM-B im TI-Gateway ist für diese Aktion nicht modelliert; `zetaHsmb` (Issue #254) nutzt es).
 Alte Dateien mit einer Kante am entfallenen Anschluss `ti` laden weiter, die
 Kante entfällt mit Hinweis. Status: plausibel (gemSpec_IDP_FD, gemSpec_ZETA).
 
@@ -887,7 +896,6 @@ nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #16
 | Zeitabweichung | `timeOffset` (KonnektorConfig) | 0 s | Grenzwert NTP_MAX_TIMEDIFFERENCE = 3600 s | bestätigt | gemSpec_Kon |
 | Letzte Zeitsynchronisation | `lastTimeSync` (KonnektorConfig) | gleich `simDate` | Warnung nach 30 Tagen, kritisch nach 50 Tagen | bestätigt | gemSpec_Kon (NTP_WARN_PERIOD, NTP_GRACE_PERIOD) |
 | Kritisches Update | `updateOk` (KonnektorConfig) | ja | fehlt es nach Frist, baut der Zugang keinen VPN-Tunnel mehr auf | bestätigt | Arch |
-| HSM-B | `hsmb` (KonnektorConfig, nur TI-Gateway) | nein | das TI-Gateway signiert mit dem HSM-B der Betriebsstätte (Issue #254) | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 | IPsec an der Router-Firewall | `ipsecAllowed` (RouterConfig) | erlaubt | UDP 500/4500 für den VPN-Tunnel | plausibel | gemSpec_VPN_ZugD |
 
 Auslegung (2026-11-19, #213): Jeder Rechner mit Fähigkeit `workplace` (PC,
@@ -1120,7 +1128,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Router (LAN) ohne VPN-Zugangsdienst, direkt an den Diensten (#241). TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Praxis TI 2.0 | Praxis, TI 2.0 im Parallelbetrieb | 1 PC (AP-1) mit 1 PVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 TI-Gateway (LAN an Router und Cloud), Cloud. Dienste: VSDM (TI 1.0), IDP, ZETA, PoPP, VSDM 2 (TI 2.0). Vier Zonen. Nur in der Bibliothek | KT: eGK, HBA, SMC-B | kein Mockup-Preset, im Editor gebaut (#244). `simDate` und ZETA-Token auf 2026-11-01 gesetzt |
-| Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, `hsmb`), ZETA Guard, PoPP-Service, VSDM 2.0, ePA (an ZETA Guard). Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC) | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
+| Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ZETA Guard, PoPP-Service, VSDM 2.0, ePA (an ZETA Guard). Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

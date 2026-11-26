@@ -215,12 +215,21 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
           : "Kein PoPP-Token für diese eGK ausgestellt.";
       }
       case "hsmb": {
-        // Regelwerk 6.1: das TI-Gateway signiert mit dem HSM-B (#254)
-        const gateways = ctx.topology.nodes.filter(
-          (n) => n.type === "gateway" && n.config?.hsmb,
+        // Regelwerk 6.1: HSM-B im TI-Gateway, der Software zugeordnet, Gateway erreichbar (K-10, #254)
+        const holders = ctx.topology.nodes.filter((n) =>
+          caps(ctx.catalog, n).includes("hsmSlot"),
         );
+        const states = holders.map((n) =>
+          cardState(ctx.topology, n.id, "hsmb"),
+        );
+        if (!states.some((x) => x.plugged))
+          return (
+            states.find((x) => x.message)?.message ??
+            "Kein HSM-B im TI-Gateway gesteckt."
+          );
+        const gateways = hsmbGateways(ctx.topology, ctx.trigger, ctx.catalog);
         return gateways.length === 0
-          ? "Kein TI-Gateway mit HSM-B im Netz."
+          ? "Das HSM-B ist keiner Software dieses Geräts zugeordnet."
           : reach(
               ctx,
               ctx.trigger.id,
@@ -244,6 +253,28 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
     }
   }
   return "Diese Bedingung ist nicht prüfbar.";
+}
+
+/** TI-Gateways mit gültigem HSM-B, das einer Software des Auslösers zugeordnet ist (K-10). */
+export function hsmbGateways(
+  topology: Topology,
+  trigger: Node,
+  catalog: Cat,
+): Node[] {
+  const software = [
+    trigger.id,
+    ...softwareOn(topology, trigger.id, catalog).map((s) => s.node.id),
+  ];
+  return topology.nodes.filter((n) => {
+    const { plugged, card } = cardState(topology, n.id, "hsmb");
+    return (
+      plugged &&
+      caps(catalog, n).includes("hsmSlot") &&
+      card?.kind === "hsmb" &&
+      card.software !== undefined &&
+      software.includes(card.software)
+    );
+  });
 }
 
 export const offers = (s: Selector, c: Cat, type: string) =>

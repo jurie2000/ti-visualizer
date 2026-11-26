@@ -2580,9 +2580,15 @@
             "timeOffset": 0,
             "updateOk": true,
             "ip": "192.168.10.2",
-            "lastTimeSync": "2026-11-01",
-            "hsmb": true
-          }
+            "lastTimeSync": "2026-11-01"
+          },
+          "cards": [
+            {
+              "kind": "hsmb",
+              "expires": "2029-11-23",
+              "software": "pvs-1"
+            }
+          ]
         },
         {
           "id": "zeta-1",

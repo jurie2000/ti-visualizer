@@ -82,7 +82,12 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
 
   it("Smartcards sind keine Knoten und haben keine Anschlüsse (D12)", () => {
     const cards = catalog.deviceTypes.filter((t) => t.category === "card");
-    expect(cards.map((c) => c.id).sort()).toEqual(["egk", "hba", "smcb"]);
+    expect(cards.map((c) => c.id).sort()).toEqual([
+      "egk",
+      "hba",
+      "hsmb",
+      "smcb",
+    ]);
     for (const c of cards) {
       expect(c.placeable).toBe(false);
       expect(c.ports).toEqual([]);
@@ -107,6 +112,7 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
       "erpapp",
       "mobil",
     ]);
+    expect(owners("hsmSlot")).toEqual(["gateway"]);
     expect(owners("zugang")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:konnektor")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:terminal")).toEqual(["cardlink", "kt"]);

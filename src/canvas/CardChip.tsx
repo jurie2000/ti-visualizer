@@ -7,6 +7,7 @@ export const CARD_NAMES: Record<CardKind, string> = {
   egk: "eGK",
   hba: "HBA",
   smcb: "SMC-B",
+  hsmb: "HSM-B",
 };
 
 /** Zustandstext und -symbol einer Karte; gemeinsam für Marke und Chip (K-3, K-4). */
@@ -57,16 +58,24 @@ export function CardChip({
   card,
   nfc,
   owner,
+  software,
 }: {
   nodeId: string;
   card: AnyCard;
   nfc: boolean;
   /** Name des Geräts, in dem die Karte steckt (für den Namen des Knopfs). */
   owner: string;
+  /** Name der Software, der ein HSM-B gehört (K-10). */
+  software?: string | undefined;
 }) {
   const unplug = useTopology((s) => s.unplugCard);
   const { state, name, status } = useCardView(nodeId, card);
-  const way = nfc ? "NFC · ISO 14443, CAN" : "gesteckt · ISO 7816";
+  const way =
+    card.kind === "hsmb"
+      ? `im TI-Gateway${software ? ` · für ${software}` : ""}`
+      : nfc
+        ? "NFC · ISO 14443, CAN"
+        : "gesteckt · ISO 7816";
   return (
     <span className={`tiv-chip tiv-chip--${state} nodrag nopan`}>
       <CardIcon state={state} size={12} />

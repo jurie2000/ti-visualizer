@@ -145,4 +145,34 @@ describe("Karten stecken und ziehen", () => {
     expect(card?.kind).toBe("egk");
     expect(card).toMatchObject({ pinActive: false });
   });
+
+  it("[K-10] TI-Gateway: nur HSM-B, Software-Auswahl statt PIN, Karte trägt die Software", async () => {
+    const user = userEvent.setup();
+    const sw = useTopology.getState().addNode("pvs", { x: 0, y: 0 });
+    const gw = useTopology.getState().addNode("gateway", { x: 0, y: 0 });
+    if (!sw.ok || !sw.id || !gw.ok || !gw.id) throw new Error("nicht angelegt");
+    useUi.getState().openDialog(`plugCard:${gw.id}`);
+    render(app);
+    const dlg = await screen.findByRole("dialog", { name: "Karte stecken" });
+    const arten = within(
+      within(dlg).getByRole("group", { name: "Kartenart" }),
+    ).getAllByRole<HTMLInputElement>("radio");
+    expect(arten.map((r) => r.value)).toEqual(["hsmb"]);
+    expect(within(dlg).queryByRole("checkbox")).toBeNull();
+    expect(within(dlg).getByText("Software")).toBeInTheDocument();
+    await user.click(within(dlg).getByRole("button", { name: "Stecken" }));
+    const card = useTopology
+      .getState()
+      .topology.nodes.find((n) => n.id === gw.id)?.cards?.[0];
+    // vorbelegt ist die erste Software der Topologie
+    const first = useTopology
+      .getState()
+      .topology.nodes.find(
+        (n) =>
+          loadCatalog().deviceTypes.find((d) => d.id === n.type)?.category ===
+          "primary",
+      );
+    expect(card).toMatchObject({ kind: "hsmb", software: first?.id });
+    expect(first?.id).toBeDefined();
+  });
 });

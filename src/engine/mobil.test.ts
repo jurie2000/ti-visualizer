@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { Node, Topology } from "../schema";
+import type { AnyCard, Node, Topology } from "../schema";
 import { loadCatalog } from "../schema/loadCatalog";
 import { availableActions, issueToken } from "./actions";
 import { runChecks } from "./checks";
-import { defaultConfig } from "./config";
 import { resolvePath } from "./paths";
 import { validateConnection } from "./rules";
 import { bindFlow } from "./simulation";
@@ -30,6 +29,16 @@ const flowOf = (id: string) =>
   catalog.flows.find((f) => f.id === id) as (typeof catalog.flows)[number];
 const actionOf = (id: string) =>
   catalog.actions.find((a) => a.id === id) as (typeof catalog.actions)[number];
+
+// Das HSM-B des Gateways ändern: Karte entfernen oder Felder überschreiben
+const hsmbCard = (t: Topology, f: (c: AnyCard | undefined) => AnyCard[]) => ({
+  ...t,
+  nodes: t.nodes.map((n) =>
+    n.id === "gateway-1"
+      ? { ...n, cards: f(n.cards?.find((c) => c.kind === "hsmb")) }
+      : n,
+  ),
+});
 
 describe("Dienst-Smartphone (#254)", () => {
   it("Preset lädt ohne Fehler und ohne Token", () => {
@@ -62,16 +71,9 @@ describe("Dienst-Smartphone (#254)", () => {
   });
 
   it("jede Aktion bleibt gesperrt, solange ihre Voraussetzung fehlt", () => {
-    const ohneHsmb = {
-      ...preset,
-      nodes: preset.nodes.map((n) =>
-        n.id === "gateway-1"
-          ? { ...n, config: { ...n.config, hsmb: false } }
-          : n,
-      ),
-    };
+    const ohneHsmb = hsmbCard(preset, () => []);
     expect(run(ohneHsmb, "zeta-anmelden-hsmb").disabledReason).toBe(
-      "Kein TI-Gateway mit HSM-B im Netz.",
+      "Kein HSM-B im TI-Gateway gesteckt.",
     );
     expect(
       run(without(preset, "gateway-1"), "zeta-anmelden-hsmb").enabled,
@@ -246,26 +248,43 @@ describe("Dienst-Smartphone (#254)", () => {
       expect(run(withEgk(t, "egk-1"), id).enabled, id).toBe(false);
   });
 
-  it("HSM-B zählt nur am TI-Gateway, nicht am Konnektor", () => {
-    const kon = (t: Topology): Topology => ({
-      ...t,
-      nodes: t.nodes.map((n) =>
+  it("ein HSM-B am Konnektor ist nicht steckbar und zählt nicht (K-10)", () => {
+    const kon: Topology = {
+      ...preset,
+      nodes: preset.nodes.map((n) =>
         n.id === "gateway-1" ? { ...n, type: "kon" } : n,
       ),
-    });
-    expect(run(kon(preset), "zeta-anmelden-hsmb").disabledReason).toBe(
-      "Kein TI-Gateway mit HSM-B im Netz.",
+    };
+    expect(run(kon, "zeta-anmelden-hsmb").disabledReason).toBe(
+      "Kein HSM-B im TI-Gateway gesteckt.",
     );
+  });
+
+  it("HSM-B ohne oder mit fremder Software sperrt die Anmeldung", () => {
+    const ohne = hsmbCard(preset, (c) => [
+      { ...(c as AnyCard), software: undefined } as AnyCard,
+    ]);
+    const fremd = hsmbCard(preset, (c) => [
+      { ...(c as AnyCard), software: "pvs-9" } as AnyCard,
+    ]);
+    for (const t of [ohne, fremd])
+      expect(run(t, "zeta-anmelden-hsmb").disabledReason).toBe(
+        "Das HSM-B ist keiner Software dieses Geräts zugeordnet.",
+      );
+  });
+
+  it("ein abgelaufenes HSM-B sperrt die Anmeldung", () => {
+    const t = hsmbCard(preset, (c) => [
+      { ...(c as AnyCard), expires: "2026-10-31" },
+    ]);
+    expect(run(t, "zeta-anmelden-hsmb").disabledReason).toContain("abgelaufen");
   });
 
   it("zetaHsmb bindet K an das Gateway mit HSM-B, nicht an ein anderes", () => {
     const gw = node(preset, "gateway-1");
     const zweites: Topology = {
       ...preset,
-      nodes: [
-        { ...gw, id: "gateway-0", config: { ...gw.config, hsmb: false } },
-        ...preset.nodes,
-      ],
+      nodes: [{ ...gw, id: "gateway-0", cards: [] }, ...preset.nodes],
       edges: [
         ...preset.edges,
         {
@@ -309,10 +328,5 @@ describe("Dienst-Smartphone (#254)", () => {
     );
     expect(first?.nodes).toEqual([]);
     expect(first?.problem).toEqual({ kind: "fehlt" });
-  });
-
-  it("Standardwerte: hsmb nur am TI-Gateway, dort aus", () => {
-    expect(defaultConfig("gateway", preset, catalog)?.hsmb).toBe(false);
-    expect(defaultConfig("kon", preset, catalog)).not.toHaveProperty("hsmb");
   });
 });

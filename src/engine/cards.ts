@@ -21,6 +21,8 @@ export const MESSAGES = {
   // K-6
   nfcOnlyEgk:
     "Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal.",
+  // K-10
+  hsmOnly: "Das HSM-B steckt nur im TI-Gateway.",
   // K-2
   full: "Alle Kartenarten stecken bereits in diesem Terminal.",
   // K-9
@@ -33,6 +35,7 @@ export const CARD_NAMES: Record<CardKind, string> = {
   egk: "eGK",
   hba: "HBA",
   smcb: "SMC-B",
+  hsmb: "HSM-B",
 };
 
 const germanDate = (iso: string) => iso.split("-").reverse().join(".");
@@ -49,9 +52,15 @@ export function plugCard(
   const caps =
     catalog.deviceTypes.find((t) => t.id === node.type)?.capabilities ?? [];
   const slots = caps.includes("cardSlots");
-  if (!slots && !caps.includes("nfcCard"))
+  // K-10: HSM-B nur im TI-Gateway, dort nur das HSM-B
+  const hsm = caps.includes("hsmSlot");
+  if (card.kind === "hsmb" && !hsm)
+    return { ok: false, message: MESSAGES.hsmOnly };
+  if (hsm && card.kind !== "hsmb")
     return { ok: false, message: MESSAGES.noSlot };
-  if (!slots && card.kind !== "egk")
+  if (!slots && !hsm && !caps.includes("nfcCard"))
+    return { ok: false, message: MESSAGES.noSlot };
+  if (!slots && !hsm && card.kind !== "egk")
     return { ok: false, message: MESSAGES.nfcOnlyEgk };
   // K-6: per NFC (CAN) gibt es keine PIN, also auch keine Einwilligung für eMP (K-7).
   if (!slots && card.kind === "egk") card = { ...card, pinActive: false };
@@ -114,7 +123,7 @@ export function cardState(
       card,
       ...(card.pinActive === false && { empMessage: MESSAGES.emp }),
     };
-  if (!card.unlocked)
+  if (card.kind !== "hsmb" && !card.unlocked)
     return {
       state: "locked",
       plugged: true,

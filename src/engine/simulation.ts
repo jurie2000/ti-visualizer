@@ -1,5 +1,5 @@
 import type { Catalog, Node, Topology } from "../schema";
-import { offers } from "./actions";
+import { hsmbGateways, offers } from "./actions";
 import {
   isCloudHosted,
   resolvePath,
@@ -117,7 +117,7 @@ function between(
 }
 
 // Token-Abläufe zeigen nichts am Arbeitsplatz an.
-const TOKEN_FLOWS = ["zeta", "popp"];
+const TOKEN_FLOWS = ["zeta", "zetaHsmb", "popp"];
 
 // Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs.
 function roleBinder(
@@ -131,7 +131,9 @@ function roleBinder(
   const own = caps(catalog, trigger);
   const choice = terminalOf(topology, trigger.id, catalog);
   const term =
-    own.includes("cardSlots") || own.includes("netConfig:terminal")
+    own.includes("cardSlots") ||
+    own.includes("netConfig:terminal") ||
+    (own.includes("nfcCard") && own.includes("trigger")) // die eGK steckt im Dienst-Smartphone (NFC, #254), nicht in den Apps der Versicherten
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
   // Ohne Pfad zählt das einzige Gerät des Typs; das ist eindeutig, anders als „erstes Gerät“.
@@ -157,11 +159,13 @@ function roleBinder(
           a && "nodes" in between(topology, a, c.id, catalog, lan, trigger.id),
       ),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
-  const zugaenge = topology.nodes.filter((n) =>
-    caps(catalog, n).includes("zugang"),
-  );
+  // Signatur und ePA-Zugriff laufen über das TI-Gateway mit HSM-B (#254), das Terminal bestimmt K dort nicht.
+  const hsmbFlow = ["zetaHsmb", "epaGateway"].includes(flowId);
+  const zugaenge = hsmbFlow
+    ? hsmbGateways(topology, trigger, catalog)
+    : topology.nodes.filter((n) => caps(catalog, n).includes("zugang"));
   const k =
-    (term && zugangOf(topology, term, catalog)) ||
+    (!hsmbFlow && term && zugangOf(topology, term, catalog)) ||
     reached(zugaenge, [trigger.id])?.id;
   return (role) => {
     switch (role) {
@@ -216,8 +220,15 @@ export function bindFlow(
   const bind = roleBinder(trigger, topology, catalog, terminal, flow.id, lan);
   const choosing =
     !terminal && terminalOf(topology, trigger.id, catalog).status === "choose";
+  const p = bind("P");
+  // NFC geht vor Cloud: ein Smartphone liest die eGK selbst, auch wenn seine Software im Rechenzentrum läuft.
+  const nfc = caps(catalog, trigger).includes("nfcCard");
+  const cloud = p !== undefined && isCloudHosted(topology, p, catalog);
   const steps = flow.steps.map((s) => {
-    const base = { label: s.label, text: s.text };
+    const base = {
+      label: s.label,
+      text: (nfc && s.textNfc) || (cloud && s.textCloud) || s.text,
+    };
     if (s.from === "E" || s.to === "E") {
       const anchor = bind(s.from === "E" ? s.to : s.from);
       return { ...base, nodes: [], edges: [], ...(anchor && { anchor }) };
@@ -238,7 +249,6 @@ export function bindFlow(
         };
   });
   // Läuft die Software in der Cloud, zeigt sie die Daten am Arbeitsplatz an, über das Internet (#229).
-  const p = bind("P");
   if (
     !p ||
     p === trigger.id ||

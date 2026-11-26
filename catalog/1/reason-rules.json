@@ -12,7 +12,8 @@
         "tab",
         "ris",
         "lis",
-        "cloud"
+        "cloud",
+        "mobil"
       ]
     },
     "b": {
@@ -57,7 +58,8 @@
         "server",
         "tab",
         "ris",
-        "lis"
+        "lis",
+        "mobil"
       ]
     },
     "b": {
@@ -70,13 +72,14 @@
         "server",
         "tab",
         "ris",
-        "lis"
+        "lis",
+        "mobil"
       ]
     },
     "except": [
       {
         "a": {
-          "types": ["pc", "server"]
+          "types": ["pc", "server", "mobil"]
         },
         "b": {
           "types": ["kis", "pvs", "avs", "pflege", "ris", "lis"]
@@ -156,7 +159,8 @@
         "ris",
         "lis",
         "kt",
-        "cardlink"
+        "cardlink",
+        "mobil"
       ]
     },
     "b": {
@@ -301,7 +305,8 @@
         "switch",
         "router",
         "ap",
-        "fw"
+        "fw",
+        "mobil"
       ]
     },
     "b": {

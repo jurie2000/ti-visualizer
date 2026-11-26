@@ -83,6 +83,34 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("[#241] Alte Kante TI-Gateway (WAN) zum Router bleibt Kabel", () => {
     expect(kindOf(["gateway", "wan"], ["router", "lan1"])).toBe("phys");
   });
+  it("[#254] TI-Gateway am Fachdienst zeigt den VPN-Tunnel des Zugangsmoduls", () => {
+    expect(kindOf(["gateway", "ti"], ["epa", "ti"])).toBe("vpn");
+    expect(kindOf(["vsdm", "ti"], ["gateway", "ti"])).toBe("vpn");
+  });
+  it("[#254] in jedem Preset ist Gateway ↔ Fachdienst (ti) ein VPN, Zentrales Netz bleibt TCP", () => {
+    const hits: Record<string, number> = {};
+    for (const { id, topology } of catalog.presets)
+      for (const e of topology.edges) {
+        const ends = e.ends.map((x) => ({
+          node: topology.nodes.find((n) => n.id === x.node),
+          port: x.port,
+        }));
+        const gw = ends.find((x) => x.node?.type === "gateway");
+        const other = ends.find((x) => x !== gw);
+        if (gw?.port !== "ti" || other?.port !== "ti") continue;
+        const kind = describeEdge(e, topology, catalog).kind;
+        expect(kind, `${id} ${e.id}`).toBe(
+          other.node?.type === "zentral" ? "tcp" : "vpn",
+        );
+        if (other.node?.type !== "zentral") hits[id] = (hits[id] ?? 0) + 1;
+      }
+    expect(hits).toEqual({
+      "praxis-parallel": 1,
+      krankenhaus: 4,
+      klinikum: 4,
+      "hebamme-mobil": 1,
+    });
+  });
   it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {
     expect(kindOf(["gateway", "ti"], ["zentral", "netz"])).toBe("tcp");
   });

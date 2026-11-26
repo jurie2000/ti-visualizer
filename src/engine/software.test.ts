@@ -580,6 +580,10 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     return bindFlow(flow, from, t, catalog);
   };
 
+  it("[#254] PoPP-Ablauftext: Cloud-Software nennt den Weg über den Cloud-Server", () => {
+    expect(flowSteps(rz(), "popp", "pc1")[0]?.text).toContain("Cloud-Server");
+  });
+
   it("#226: Cloud-PVS erreicht das Kartenterminal für ZETA und PoPP über das Internet, ohne TI-Gateway", () => {
     const t = rz();
     for (const id of ["zeta", "popp"]) {
@@ -710,7 +714,10 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
           a.offeredBy.types.some((x) => types.includes(x)),
       );
 
-    const aktionen = offered(["pvs", "avs"]);
+    // Die HSM-B-Aktionen brauchen ein TI-Gateway mit HSM-B (Tests in mobil.test.ts)
+    const aktionen = offered(["pvs", "avs"]).filter(
+      (a) => !["zeta-anmelden-hsmb", "epa-gateway"].includes(a.id),
+    );
     it("Fremdpraxis: auch mit Gateway-WAN am Internet führt kein TI-1.0-Weg in Praxis B", () => {
       const t = withPraxisB(cloud());
       t.edges.push(link("gw1", "wan", "net", "netz"));
@@ -758,7 +765,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
         const rzAll = flowSteps(withPraxisB(cloud()), flowId, "pc1");
         // Zusätzlich zeigt die Cloud-Software das Ergebnis am Arbeitsplatz an (#229)
-        const anzeige = !["zeta", "popp"].includes(flowId);
+        const anzeige = !["zeta", "zetaHsmb", "popp"].includes(flowId);
         expect(rzAll.at(-1)?.label === "Anzeige am Arbeitsplatz").toBe(anzeige);
         const rzSteps = anzeige ? rzAll.slice(0, -1) : rzAll;
         const flow = catalog.flows.find((f) => f.id === flowId);

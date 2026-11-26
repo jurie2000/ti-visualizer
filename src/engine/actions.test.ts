@@ -304,11 +304,16 @@ const cases: [
 
 describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
   it("deckt jede Katalogaktion ab", () => {
-    // `vsdm2-pruefen` braucht Token und hat eigene Tests unten
+    // `vsdm2-pruefen` braucht Token und hat eigene Tests unten; die Aktionen des Dienst-Smartphones stehen in mobil.test.ts
     expect(cases.map((c) => c[0]).sort()).toEqual(
       catalog.actions
         .map((a) => a.id)
-        .filter((id) => id !== "vsdm2-pruefen")
+        .filter(
+          (id) =>
+            !["vsdm2-pruefen", "zeta-anmelden-hsmb", "epa-gateway"].includes(
+              id,
+            ),
+        )
         .sort(),
     );
   });

@@ -6,6 +6,7 @@ import type { AnyCard, Catalog, Node } from "../schema";
 import { useCatalog, useTopology, useUi } from "../store";
 import { Button } from "../ui/Button";
 import { Dialog } from "../ui/Dialog";
+import { Select } from "../ui/Select";
 import { useToast } from "../ui/Toast";
 
 /** Name des Dialogs in `useUi.dialog`; so öffnet ihn der Knopf am Terminal. */
@@ -14,15 +15,18 @@ export const plugCardDialog = (nodeId: string) => `plugCard:${nodeId}`;
 type DeviceType = Catalog["deviceTypes"][number];
 
 const ALL: CardKind[] = ["egk", "hba", "smcb"];
+const HSM: CardKind[] = ["hsmb"];
 
-/** Kartenarten, die ein Gerät noch aufnimmt (K-2). K-6: NFC-Geräte lesen nur die eGK. */
+/** Kartenarten, die ein Gerät noch aufnimmt (K-2). K-6: NFC-Geräte lesen nur die eGK, K-10: das TI-Gateway nur das HSM-B. */
 export function missingKinds(
   node: Node | undefined,
   device: DeviceType | undefined,
 ) {
-  const nfcOnly = !device?.capabilities.includes("cardSlots");
-  const candidates = nfcOnly ? ALL.slice(0, 1) : ALL;
+  const hsm = device?.capabilities.includes("hsmSlot") ?? false;
+  const nfcOnly = !hsm && !device?.capabilities.includes("cardSlots");
+  const candidates = hsm ? HSM : nfcOnly ? ALL.slice(0, 1) : ALL;
   return {
+    hsm,
     nfcOnly,
     candidates,
     free: candidates.filter((k) => !node?.cards?.some((c) => c.kind === k)),
@@ -55,11 +59,10 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   );
   // K-2: nur Arten anbieten, die noch fehlen; steckt alles, bleibt die Auswahl
   // voll und die Engine meldet die Belegung.
-  const { nfcOnly, candidates, free } = missingKinds(node, device);
+  const { hsm, nfcOnly, candidates, free } = missingKinds(node, device);
   const kinds = free.length ? free : candidates;
-  const names = new Map(
-    useCatalog((s) => s.catalog.deviceTypes).map((d) => [d.id, d.name]),
-  );
+  const deviceTypes = useCatalog((s) => s.catalog.deviceTypes);
+  const names = new Map(deviceTypes.map((d) => [d.id, d.name]));
   const [kind, setKind] = useState<CardKind>(kinds[0] ?? "egk");
   // Zieldatum: simDate + 3 Jahre, 29.02. wird zum 28.02.
   const [expires, setExpires] = useState(
@@ -69,6 +72,11 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
     ),
   );
   const [pin, setPin] = useState(true);
+  // K-10: das HSM-B gehört einer Software, die erste ist vorbelegt
+  const software = useTopology((s) => s.topology.nodes).filter(
+    (n) => deviceTypes.find((d) => d.id === n.type)?.category === "primary",
+  );
+  const [owner, setOwner] = useState(software[0]?.id ?? "");
 
   const submit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -76,7 +84,9 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
     const card: AnyCard =
       kind === "egk"
         ? { kind, expires, ...(!nfcOnly && { pinActive: pin }) }
-        : { kind, expires, unlocked: pin };
+        : kind === "hsmb"
+          ? { kind, expires, software: owner }
+          : { kind, expires, unlocked: pin };
     const r = plug(nodeId, card);
     // Der Toast liegt außerhalb des modalen Dialogs: erst schließen, dann melden.
     onDone();
@@ -86,7 +96,7 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
   return (
     <form className="tiv-plug" onSubmit={submit}>
       <p className="tiv-plug__lead">
-        {nfcOnly
+        {nfcOnly || hsm
           ? "Wähle die Karte und ihr Ablaufdatum."
           : "Wähle die Karte, ihr Ablaufdatum und den PIN-Status. Nach dem Stecken steckt die Karte im Terminal."}
       </p>
@@ -125,7 +135,21 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
           }}
         />
       </label>
-      {!nfcOnly && (
+      {hsm && software.length > 0 && (
+        <div className="tiv-plug__field">
+          <label htmlFor="plug-software">Software</label>
+          <Select
+            id="plug-software"
+            value={owner}
+            options={software.map((n) => ({
+              value: n.id,
+              label: n.label ?? names.get(n.type) ?? n.id,
+            }))}
+            onChange={setOwner}
+          />
+        </div>
+      )}
+      {!nfcOnly && !hsm && (
         <label className="tiv-plug__pin">
           <input
             type="checkbox"
@@ -142,7 +166,16 @@ function Form({ nodeId, onDone }: { nodeId: string; onDone: () => void }) {
           {kind === "egk" ? "PIN aktiv" : "per PIN freigeschaltet"}
         </label>
       )}
-      <Button type="submit" variant="primary">
+      {hsm && software.length === 0 && (
+        <p role="alert">
+          Das HSM-B gehört einer Software. Lege zuerst eine Software an.
+        </p>
+      )}
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={hsm && software.length === 0}
+      >
         Stecken
       </Button>
     </form>

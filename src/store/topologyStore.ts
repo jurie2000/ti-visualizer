@@ -175,7 +175,21 @@ export const useTopology = create<TopologyState>((set, get) => {
       const t = get().topology;
       commit({
         ...t,
-        nodes: t.nodes.filter((n) => n.id !== id),
+        // K-10: ein HSM-B ohne Software bleibt stecken, nur die Zuordnung entfällt
+        nodes: t.nodes
+          .filter((n) => n.id !== id)
+          .map((n) =>
+            n.cards?.some((c) => c.kind === "hsmb" && c.software === id)
+              ? {
+                  ...n,
+                  cards: n.cards.map((c) =>
+                    c.kind === "hsmb" && c.software === id
+                      ? { kind: c.kind, expires: c.expires, id: c.id }
+                      : c,
+                  ),
+                }
+              : n,
+          ),
         edges: t.edges.filter((e) => e.ends.every((end) => end.node !== id)),
       });
     },

@@ -347,6 +347,36 @@
     "status": "plausibel"
   },
   {
+    "id": "mobil",
+    "abbr": "Dienst-Smartphone",
+    "name": "Dienst-Smartphone (mobiler Arbeitsplatz)",
+    "description": "Das Dienst-Smartphone ist der mobile Arbeitsplatz für Hausbesuche. Die Software (PS-App) läuft darauf, es erreicht das Internet über das Mobilfunknetz und liest die eGK per NFC.",
+    "category": "computer",
+    "icon": "tablet",
+    "placeable": true,
+    "capabilities": ["trigger", "nfcCard"],
+    "ports": [
+      {
+        "id": "net",
+        "name": "Internet (Mobilfunk)",
+        "kind": "net",
+        "multi": false,
+        "source": ["Info_VSDM2_ZETA_PoPP"],
+        "status": "Vereinfachung"
+      },
+      {
+        "id": "soft",
+        "name": "Software",
+        "kind": "host",
+        "multi": true,
+        "source": ["gemILF_PS"],
+        "status": "Vereinfachung"
+      }
+    ],
+    "source": ["gemILF_PS", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
     "id": "kimcm",
     "abbr": "KIM-Clientmodul",
     "name": "KIM-Clientmodul",
@@ -423,6 +453,18 @@
     "ports": [],
     "source": ["gemSpec_SMC-B_ObjSys_G2_1"],
     "status": "bestätigt"
+  },
+  {
+    "id": "hsmb",
+    "abbr": "HSM-B",
+    "name": "HSM-B (Institutionsausweis im TI-Gateway)",
+    "category": "card",
+    "icon": "card",
+    "placeable": false,
+    "capabilities": [],
+    "ports": [],
+    "source": ["gemF_TI-Gateway", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
   },
   {
     "id": "kt",
@@ -735,7 +777,7 @@
     "category": "network",
     "icon": "gate",
     "placeable": true,
-    "capabilities": ["netConfig:konnektor", "zugang"],
+    "capabilities": ["netConfig:konnektor", "zugang", "hsmSlot"],
     "ports": [
       {
         "id": "lan",

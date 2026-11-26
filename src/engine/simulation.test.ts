@@ -105,30 +105,36 @@ const NO_PATH = new Set([
 ]);
 
 describe("bindFlow (Regelwerk 7, FR-8)", () => {
-  it.each(catalog.flows.map((f) => f.id))(
-    "Ablauf %s: Schrittfolge und Enden entsprechen dem Katalog",
-    (id) => {
-      const flow = catalog.flows.find((f) => f.id === id);
-      const trigger = TRIGGER[id] ?? "pvs";
-      const primary = trigger === "mkt" ? "pvs" : trigger;
-      const bound = bind(id, trigger);
-      expect(bound.map((s) => s.label)).toEqual(
-        flow?.steps.map((s) => s.label),
-      );
-      const node = (r: string) => (r === "P" ? primary : (ROLE[r] ?? r));
-      flow?.steps.forEach((s, i) => {
-        const nodes = bound[i]?.nodes ?? [];
-        if (NO_PATH.has(`${id}:${String(i)}`)) {
-          expect(nodes).toEqual([]);
-          return;
-        }
-        expect([nodes[0], nodes.at(-1)], `${id} Schritt ${String(i)}`).toEqual([
-          node(s.from),
-          node(s.to),
-        ]);
-      });
-    },
-  );
+  // `zetaHsmb` und `epaGateway` brauchen ein TI-Gateway mit HSM-B, hier gibt es nur den Konnektor: Tests in mobil.test.ts
+  it.each(
+    catalog.flows
+      .map((f) => f.id)
+      .filter((id) => !["zetaHsmb", "epaGateway"].includes(id)),
+  )("Ablauf %s: Schrittfolge und Enden entsprechen dem Katalog", (id) => {
+    const flow = catalog.flows.find((f) => f.id === id);
+    const trigger = TRIGGER[id] ?? "pvs";
+    const primary = trigger === "mkt" ? "pvs" : trigger;
+    const bound = bind(id, trigger);
+    expect(bound.map((s) => s.label)).toEqual(flow?.steps.map((s) => s.label));
+    const node = (r: string) => (r === "P" ? primary : (ROLE[r] ?? r));
+    flow?.steps.forEach((s, i) => {
+      const nodes = bound[i]?.nodes ?? [];
+      if (NO_PATH.has(`${id}:${String(i)}`)) {
+        expect(nodes).toEqual([]);
+        return;
+      }
+      expect([nodes[0], nodes.at(-1)], `${id} Schritt ${String(i)}`).toEqual([
+        node(s.from),
+        node(s.to),
+      ]);
+    });
+  });
+
+  it("[#254] PoPP-Ablauftext am Arbeitsplatz mit Kartenterminal nennt das LAN, nicht NFC", () => {
+    const text = bind("popp", "pvs")[0]?.text;
+    expect(text).toContain("LAN der Praxis");
+    expect(text).not.toContain("NFC");
+  });
 
   it("mobkt: P ist das per USB verbundene Primärsystem, nicht das mobile KT", () => {
     expect(bind("mobkt", "mkt")[1]).toMatchObject({

@@ -284,4 +284,19 @@ describe("Arbeitsplatz des Kartenterminals (Regelwerk 8, #213)", () => {
     s().setConfig(kt, { paired: false });
     expect(node(kt)?.label).toBe("eHealth-Kartenterminal AP-1");
   });
+
+  it("[K-10] Löschen einer Software entfernt die Zuordnung am HSM-B, die Karte bleibt", () => {
+    const pvs = add("pvs");
+    const kis = add("kis");
+    const [g1, g2] = [add("gateway"), add("gateway")];
+    const card = (software: string) =>
+      ({ kind: "hsmb", expires: "2029-11-23", software }) as const;
+    expect(s().plugCard(g1, card(pvs)).ok).toBe(true);
+    expect(s().plugCard(g2, card(kis)).ok).toBe(true);
+    s().removeNode(pvs);
+    const cardsOf = (id: string) =>
+      s().topology.nodes.find((n) => n.id === id)?.cards;
+    expect(cardsOf(g1)).toEqual([{ kind: "hsmb", expires: "2029-11-23" }]);
+    expect(cardsOf(g2)).toEqual([card(kis)]);
+  });
 });

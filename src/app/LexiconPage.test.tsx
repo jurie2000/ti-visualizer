@@ -77,7 +77,7 @@ describe("Lexikon-Seite (#188)", () => {
       within(screen.getByRole("region", { name: "Begriffe" })).getAllByRole(
         "button",
       ),
-    ).toHaveLength(3);
+    ).toHaveLength(4);
   });
 
   it("zeigt das Abkürzungsglossar als Tabelle", async () => {

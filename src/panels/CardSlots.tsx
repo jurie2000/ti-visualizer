@@ -1,7 +1,7 @@
 import { CardChip } from "../canvas/CardChip";
 import { missingKinds, plugCardDialog } from "../dialogs/PlugCardDialog";
-import type { Catalog, Node } from "../schema";
-import { useUi } from "../store";
+import type { AnyCard, Catalog, Node } from "../schema";
+import { useTopology, useUi } from "../store";
 import { Button } from "../ui/Button";
 
 /**
@@ -12,8 +12,20 @@ export function CardSlots({ node, catalog }: { node: Node; catalog: Catalog }) {
   const device = catalog.deviceTypes.find((d) => d.id === node.type);
   const caps = device?.capabilities ?? [];
   const nfc = caps.includes("nfcCard");
-  if (!nfc && !caps.includes("cardSlots")) return null;
+  const topology = useTopology((s) => s.topology);
+  if (!nfc && !caps.includes("cardSlots") && !caps.includes("hsmSlot"))
+    return null;
   const cards = node.cards ?? [];
+  const software = (c: AnyCard) => {
+    const id = c.kind === "hsmb" ? c.software : undefined;
+    const n = topology.nodes.find((x) => x.id === id);
+    return (
+      n &&
+      (n.label ??
+        catalog.deviceTypes.find((d) => d.id === n.type)?.name ??
+        n.id)
+    );
+  };
   return (
     <section className="tiv-cards" aria-label="Gesteckte Karten">
       <h4>Gesteckte Karten</h4>
@@ -26,6 +38,7 @@ export function CardSlots({ node, catalog }: { node: Node; catalog: Catalog }) {
             card={c}
             nfc={nfc}
             owner={node.label ?? device?.name ?? node.type}
+            software={software(c)}
           />
         ))}
       </div>

@@ -183,6 +183,8 @@ function search(
       (INTERNET_PAIRS[start.type]?.includes(goal.type) ?? false) ||
       (hasSlots(start) && roleOf(goal, catalog) === "zugang"));
   const viaCloud = internetOnly && hasSlots(start);
+  // Das Dienst-Smartphone erreicht ein TI-Gateway im Rechenzentrum über das Internet als Zugang (#254).
+  const fromMobil = [start, byId.get(origin)].some((n) => n?.type === "mobil");
   const isNetTerminal = (n: Node) =>
     capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");
   const terminal =
@@ -238,6 +240,14 @@ function search(
         if (phase === LAN) return POST;
         // Cloud-Software erreicht ein Gateway, das nicht am Cloud-Server hängt, über das Internet (#229).
         if (phase === INET && cloudInternet && !cloudGateways.has(n.id))
+          return POST;
+        // Nur über die WAN-Kante am Internet, nicht über das LAN-Netz einer Praxis.
+        if (
+          phase === INET &&
+          fromMobil &&
+          n.type === "gateway" &&
+          roleOf(from, catalog) === "internet"
+        )
           return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":

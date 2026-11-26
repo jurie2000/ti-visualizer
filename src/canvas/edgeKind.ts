@@ -84,15 +84,19 @@ export function describeEdge(
                 (types.includes("router") &&
                   ends.find((e) => e.type === "gateway")?.kind !== "wan"))
             ? "vpn" // Regelwerk 3, Regel 2a (Protokoll prot-switch-gateway); WAN-Kante alter Dateien bleibt Kabel
-            : has("net")
-              ? "inet"
-              : both("ti") || both("app")
-                ? "tcp"
-                : has("usb")
-                  ? "usb"
-                  : a && b && carriesTls([a.type, b.type], catalog)
-                    ? "tcp"
-                    : "phys";
+            : types.includes("gateway") &&
+                both("ti") &&
+                !types.includes("zentral")
+              ? "vpn" // Regelwerk 3, Regel 2b: Tunnel des Zugangsmoduls zum Fachdienst (#254)
+              : has("net")
+                ? "inet"
+                : both("ti") || both("app")
+                  ? "tcp"
+                  : has("usb")
+                    ? "usb"
+                    : a && b && carriesTls([a.type, b.type], catalog)
+                      ? "tcp"
+                      : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

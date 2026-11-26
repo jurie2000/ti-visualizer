@@ -35,7 +35,7 @@ export const ZoneShape = z.enum(["rect", "ellipse"]);
 
 const Element = z.object({ id: key, label: text(LIMITS.name).optional() });
 
-// Karten (D35): eGK als Card, HBA und SMC-B als PinCard, unterschieden über `kind`
+// Karten (D35): eGK als Card, HBA und SMC-B als PinCard, HSM-B als HsmCard, unterschieden über `kind`
 export const Card = z.object({
   kind: z.literal("egk"),
   id: key.optional(),
@@ -48,7 +48,14 @@ export const PinCard = z.object({
   expires: date,
   unlocked: z.boolean().optional(),
 });
-export const AnyCard = z.discriminatedUnion("kind", [Card, PinCard]);
+/** HSM-B (K-10): steckt im TI-Gateway und gehört einer Software (`software`), ohne PIN. */
+export const HsmCard = z.object({
+  kind: z.literal("hsmb"),
+  id: key.optional(),
+  expires: date,
+  software: key.optional(),
+});
+export const AnyCard = z.discriminatedUnion("kind", [Card, PinCard, HsmCard]);
 
 // Netzwerkeinstellungen (Regelwerk 8). Die Variante legt der Katalog über die
 // Fähigkeit `netConfig:<variante>` fest, nicht die Datei.
@@ -201,6 +208,7 @@ export type ZoneShape = z.infer<typeof ZoneShape>;
 export type Endpoint = z.infer<typeof Endpoint>;
 export type Card = z.infer<typeof Card>;
 export type PinCard = z.infer<typeof PinCard>;
+export type HsmCard = z.infer<typeof HsmCard>;
 export type AnyCard = z.infer<typeof AnyCard>;
 export type NetConfig = z.infer<typeof NetConfig>;
 export type KonnektorConfig = z.infer<typeof KonnektorConfig>;

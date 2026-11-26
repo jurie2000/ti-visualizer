@@ -44,7 +44,7 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 
 ### 1.1 Software, Rechner und Clients
 
-**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). **Auslegung (2026-11-21, Issue #221):** Der Cloud-Server steht für das Rechenzentrum des Anbieters. Dort hängt ein TI-Gateway am Cloud-Server (LAN) und am VPN-Zugangsdienst; sein WAN am Internet bleibt erlaubt, wird für den Weg des Kartenterminals aber nicht gebraucht (Auslegung 2026-11-21, Issue #221: Kartenterminal → Internet → Cloud-Server → Gateway). Die Software der Cloud erreicht die TI über dieses Gateway (TI 1.0) bzw. über das Internet zu ZETA Guard und PoPP-Service (TI 2.0). Ein Konnektor im Rechenzentrum bleibt ausgeschlossen (X-1). Der Kurzweg PC ↔ Cloud-Server (Internet-Zugriff) bleibt. Quellen: CGM_ManagedTI, Concat_TIaaS (nicht gematik, quellen.md Abschnitt 7), gemF_TI-Gateway. Status: Vereinfachung.
+**Auslegung (2026-11-13):** Software (`pvs`, `kis`, `avs`, `pflege`, `ris`, `lis`; Kategorie `primary`, Name „Software“) läuft auf einem Rechner (Kategorie `computer`, Name „Rechner“: `pc`, `server`, `tab`, `mobil`). Das Netzkabel hängt am Rechner, nicht an der Software. Die Software wird dem Rechner über „läuft auf“ (Anschlussart `host`, Abschnitt 2.1) zugeordnet. Quelle: Infomodell in gemILF_PS (Clientsystem läuft am Arbeitsplatz); die Verkabelung selbst nennt keine Quelle (Vereinfachung). Das Tablet ist ein Rechner, trägt aber keine Software (es ist nur Client des KIS, ohne `soft`-Anschluss). KIM-Clientmodul und TI-Messenger-Client zählen zur Kategorie Software, bekommen noch keinen `host`-Anschluss. **Auslegung (2026-11-13):** Beide bleiben eigenständige Komponenten ohne `host` (Vereinfachung); die Quellen nennen keinen Rechner, auf dem sie laufen. **SaaS:** Software kann auf einem Cloud-Server (`cloud`, Rechenzentrum im Internet) laufen. Der PC bekommt sie über „Internet-Zugriff“ (`web`). Die gematik spezifiziert Primärsysteme nicht; Anbieter von TI-as-a-Service betreiben die Anbindung im Rechenzentrum (Quellen nicht gematik, quellen.md Abschnitt 7). **Auslegung (2026-11-21, Issue #221):** Der Cloud-Server steht für das Rechenzentrum des Anbieters. Dort hängt ein TI-Gateway am Cloud-Server (LAN) und am VPN-Zugangsdienst; sein WAN am Internet bleibt erlaubt, wird für den Weg des Kartenterminals aber nicht gebraucht (Auslegung 2026-11-21, Issue #221: Kartenterminal → Internet → Cloud-Server → Gateway). Die Software der Cloud erreicht die TI über dieses Gateway (TI 1.0) bzw. über das Internet zu ZETA Guard und PoPP-Service (TI 2.0). Ein Konnektor im Rechenzentrum bleibt ausgeschlossen (X-1). Der Kurzweg PC ↔ Cloud-Server (Internet-Zugriff) bleibt. Quellen: CGM_ManagedTI, Concat_TIaaS (nicht gematik, quellen.md Abschnitt 7), gemF_TI-Gateway. Status: Vereinfachung.
 
 | Schlüssel | Name | Status | Quelle |
 |---|---|---|---|
@@ -58,8 +58,18 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 | `server` | Server, neu | plausibel | gemILF_PS, DVO |
 | `cloud` | Cloud-Server (SaaS), neu | Vereinfachung | gemILF_PS, CGM_ManagedTI, Concat_TIaaS |
 | `tab` | Visite-Tablet (KIS-Client per WLAN) | plausibel | gemILF_PS, KH |
+| `mobil` | Dienst-Smartphone (mobiler Arbeitsplatz, PS-App mit NFC), neu | plausibel | gemILF_PS, Info_VSDM2_ZETA_PoPP |
 | `kimcm` | KIM-Clientmodul, neu | bestätigt | gemSpec_CM_KOMLE |
 | `timc` | TI-Messenger-Client, neu | bestätigt | gemSpec_TI-M_Basis |
+
+**Auslegung (2026-11-26, Issue #254):** Das Dienst-Smartphone (`mobil`) ist ein
+Rechner mit den Fähigkeiten `trigger` und `nfcCard`, ohne `workplace` (sonst
+meldete P-29 einen Fehler) und ohne Konfiguration. Die Software (PS-App)
+läuft darauf („läuft auf“), seine Netzverbindung ist nur das Internet
+(Mobilfunk). Die eGK steckt per NFC im Smartphone (K-6: nur eGK, ohne PIN).
+Ein Standard-Kartenleser ist nicht abgebildet. Der Typ ist neu, weil das
+Visite-Tablet weder Software trägt noch NFC liest und per WLAN am Konnektor
+hängt. Status: plausibel.
 
 ### 1.2 Smartcards
 
@@ -68,9 +78,10 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 | `egk` | elektronische Gesundheitskarte | bestätigt | gemSpec_eGK_ObjSys_G2_1 |
 | `hba` | Heilberufsausweis | bestätigt | gemSpec_HBA_ObjSys |
 | `smcb` | Institutionskarte SMC-B | bestätigt | gemSpec_SMC-B_ObjSys_G2_1 |
+| `hsmb` | HSM-B (Institutionsausweis im TI-Gateway), neu | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 
 Smartcards sind **keine Knoten** auf der Fläche. Sie stecken in
-Geräten mit der Fähigkeit `cardSlots` oder `nfcCard` (Abschnitt 5). Die
+Geräten mit der Fähigkeit `cardSlots`, `nfcCard` oder `hsmSlot` (Abschnitt 5). Die
 Tabelle nennt die Kartenarten.
 
 Technische Karten sind ebenfalls keine Knoten, sondern Eigenschaften:
@@ -149,12 +160,12 @@ Regel-Engine und das Dateischema prüfen dagegen.
 | Fähigkeit | Bedeutung | Gerätetypen |
 |---|---|---|
 | `cardSlots` | nimmt gesteckte Karten auf | `kt`, `mkt` |
-| `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp` |
+| `nfcCard` | liest die eGK kontaktlos | `cardlink`, `erpapp`, `epaapp`, `mobil` |
 | `netConfig:konnektor` | Einstellungen als KonnektorConfig | `kon`, `gateway` |
 | `netConfig:terminal` | Einstellungen als TerminalConfig | `kt`, `cardlink` |
 | `netConfig:client` | Einstellungen als ClientConfig (IP, Gateway, Route, VLAN gehören dem Rechner, nicht der Software) | `pc`, `server`, `tab`, `kimcm` |
 | `workplace` | hat einen Arbeitsplatz im Sinne von P-29 und bietet die Aktionen der Software an | `pc`, `tab` |
-| `trigger` | startet die Aktionen der Software, die auf ihm läuft (der Cloud-Server hat sie nicht) | `pc`, `server`, `tab` |
+| `trigger` | startet die Aktionen der Software, die auf ihm läuft (der Cloud-Server hat sie nicht) | `pc`, `server`, `tab`, `mobil` |
 | `netConfig:router` | Einstellungen als RouterConfig | `router` |
 | `netConfig:infra` | Einstellungen als InfraConfig (nur Grundfelder) | `switch`, `ap`, `fw` |
 | `zugang` | gehört zur Gruppe „Zugang“ in Abschnitt 4 und 6 | `kon`, `gateway` |
@@ -211,6 +222,7 @@ Abschnitt 5.
 | KIS | Anwendung (`app`, mehrfach: Konnektor, RIS, LIS, mobiles KT), Läuft auf (`host`, mehrfach) | Vereinfachung | KH, gemILF_PS |
 | RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
+| Dienst-Smartphone | Internet (`net`), Software (`host`, mehrfach) | Vereinfachung (Issue #254) | gemILF_PS, Info_VSDM2_ZETA_PoPP |
 | KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang) | Vereinfachung | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | WAN (Internet) | plausibel | gemSpec_TI-M_Basis |
 | eHealth-KT | LAN0 | bestätigt | gemSpec_KT |
@@ -268,6 +280,7 @@ eigene Regel-ID):
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
+2b. TI-Gateway (`ti`) ↔ Gerät mit `ti`-Anschluss (Fachdienst), außer Zentrales Netz: `vpn` (Auslegung 2026-11-26, Issue #254, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -289,6 +302,8 @@ zeigt daher den Tunnel (`vpn`, Regel 2a) und nicht das Kabel. Eine Kante
 Switch ↔ Konnektor bleibt `phys`. Status: plausibel.
 
 Auslegung (2026-11-23, Issue #241): Regel 2a gilt auch für Router ↔ TI-Gateway (LAN-Anschluss des Gateways), weil auch diese Kante den Tunnel des Gateways zeigt.
+
+Auslegung (2026-11-26, Issue #254): Regel 2b: Der Weg des Zugangsmoduls im TI-Gateway zum Fachdienst (z. B. ePA) ist sein VPN-Tunnel; die Kante zeigt `vpn`. Ein VPN-Zugangsdienst-Knoten steht nicht im Pfad (Auslegung #241), nur die Kantenart ändert sich. Die Kante zum Zentralen Netz bleibt `tcp`: sein Anschluss „Netz“ hat die Art `ti`, Regel 4 greift, Regel 2b nimmt es aus (#241). Regel 2b gilt in allen Presets mit so einer Kante und wechselt dort von `tcp` auf `vpn`: Praxis TI 2.0 (VSDM), Krankenhaus und Klinikum (je VSDM, E-Rezept, KIM, ePA) und Hebamme mobil (ePA). Status: Vereinfachung.
 
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
@@ -394,12 +409,13 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 |---|---|---|---|
 | PVS, KIS, AVS, Pflege | Zugang | bestätigt | gemILF_PS, KH |
 | PC, Server | Switch, Router-LAN | plausibel | DVO |
-| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server (läuft auf) | Vereinfachung | gemILF_PS |
+| PVS, KIS, AVS, Pflege, RIS, LIS | PC, Server, Cloud-Server, Dienst-Smartphone (läuft auf) | Vereinfachung | gemILF_PS |
 | PC | Cloud-Server (Zugriff über das Internet, SaaS) | Vereinfachung | gemILF_PS |
 | Cloud-Server | Internet | Vereinfachung (Issue #221) | CGM_ManagedTI, Concat_TIaaS |
 | Cloud-Server (LAN) | TI-Gateway (LAN), nicht Konnektor, nicht Switch | Vereinfachung (Issue #221) | CGM_ManagedTI, Concat_TIaaS, gemF_TI-Gateway |
 | TI-Gateway (WAN) | Internet, nur TI-Gateway, nicht Konnektor | Vereinfachung (Issue #221) | gemF_TI-Gateway, Arch |
 | Visite-Tablet | Access Point, Router-WLAN | plausibel | KH |
+| Dienst-Smartphone | Internet (Mobilfunk, Issue #254) | plausibel | Info_VSDM2_ZETA_PoPP, gemSpec_ZETA |
 | RIS, LIS | KIS (HL7-Schnittstelle) | plausibel | KH |
 | PVS, KIS, AVS, Pflege | KIM-Clientmodul | bestätigt | gemSpec_CM_KOMLE |
 | KIM-Clientmodul | Zugang | bestätigt | gemSpec_CM_KOMLE |
@@ -464,14 +480,14 @@ und K-6 in Abschnitt 5.
 
 | ID | Fehlversuch | Meldung | Status | Quelle |
 |---|---|---|---|---|
-| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Zugang zur TI läuft über Konnektor oder TI-Gateway. | bestätigt | Arch, gemILF_PS |
+| V-4 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, Dienst-Smartphone, RIS, LIS) direkt an Fachdienst oder zentralen Dienst | Ein Primärsystem darf nicht direkt mit einem Fachdienst verbunden werden. Der Zugang zur TI läuft über Konnektor oder TI-Gateway. | bestätigt | Arch, gemILF_PS |
 | V-5 | Kartenterminal direkt an Fachdienst | Kartenterminals sprechen nie direkt mit einem Fachdienst. Dazwischen steht immer der Konnektor. | bestätigt | gemSpec_KT, Arch |
-| V-6 | Primärsysteme untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. | plausibel | gemILF_PS, KH |
+| V-6 | Primärsysteme (auch Dienst-Smartphone) untereinander außerhalb der erlaubten Paare | Diese Systeme werden nicht direkt verkabelt. | plausibel | gemILF_PS, KH |
 | V-7 | Lokales Netz direkt an Fachdienst | Das lokale Netz erreicht Fachdienste nur über Konnektor oder TI-Gateway. | bestätigt | Arch |
 | V-8 | Switch oder Access Point an VPN-Zugangsdienst oder Internet | Nur der Router führt ins Internet. Switch und Access Point bleiben im lokalen Netz. | plausibel | Betriebsarten |
 | V-9 | Fachdienste untereinander | Fachdienste werden nicht direkt miteinander verbunden. Sie hängen am Zentralen Netz. | bestätigt | Arch |
 | V-10 | Konnektor an TI-Gateway | Konnektor und TI-Gateway kommen in diesem Lernmodell nicht im selben System vor. | Vereinfachung | siehe X-1 |
-| V-12 | Primärsystem oder Kartenterminal direkt an VPN-Zugangsdienst | Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf. | bestätigt | Arch, gemSpec_VPN_ZugD |
+| V-12 | Primärsystem (auch Dienst-Smartphone) oder Kartenterminal direkt an VPN-Zugangsdienst | Den VPN-Tunnel in die TI baut nur der Konnektor bzw. das TI-Gateway auf. | bestätigt | Arch, gemSpec_VPN_ZugD |
 | V-14 | Mobiles KT an Zugang oder Netzwerk | Das mobile Kartenterminal arbeitet offline, etwa beim Hausbesuch. | bestätigt | gemSpec_MobKT |
 | V-15 | Versicherten-App an Zugang oder Primärsystem | Versicherte nutzen ihre Apps über das Internet, nicht über die Infrastruktur der Praxis. | bestätigt | gemSpec_eRp_FdV |
 | V-16 | Zentrale Dienste direkt ins lokale Netz | Zentrale Dienste der TI liegen im Zentralen Netz und sind nur über den VPN-Zugangsdienst erreichbar. | bestätigt | Arch, gemSpec_Net |
@@ -479,7 +495,7 @@ und K-6 in Abschnitt 5.
 | V-18 | Kartenterminal an Kartenterminal | Kartenterminals werden nicht hintereinander geschaltet. Jedes spricht direkt mit dem Konnektor. | bestätigt | gemSpec_KT |
 | V-19 | TI-Messenger-FD an VPN-Zugangsdienst oder Zentrales Netz | Der TI-Messenger läuft über das Internet, nicht über den VPN-Zugangsdienst. | plausibel | gemSpec_TI-M_Basis |
 | V-20 | Router an Router | Eine Einrichtung hat in diesem Modell einen Internet-Router. Weitere Netzgeräte hängen am Switch. | Vereinfachung | DVO |
-| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service, IDP oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt, sondern nur über Router und Internet. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
+| V-21 | Primärsystem (PVS, KIS, AVS, Pflege, PC, Server, Cloud-Server, Tablet, Dienst-Smartphone, RIS, LIS), Kartenterminal (auch mobil, CardLink) oder Gerät des lokalen Netzes (Switch, Router, Access Point, Firewall) direkt an ZETA Guard, PoPP-Service, IDP oder VSDM 2.0 | Dienste der TI 2.0 erreicht kein Gerät der Einrichtung direkt, sondern nur über Router und Internet. | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_PoPP_Service |
 
 ### 4.4 Ausschlüsse
 
@@ -496,15 +512,16 @@ Verbindungsregeln aus Abschnitt 4.
 
 | ID | Regel | Meldung bei Verstoß | Status | Quelle |
 |---|---|---|---|---|
-| K-1 | Karten stecken nur in Geräten mit der Fähigkeit `cardSlots` (eHealth-KT, mobiles KT). Je Gerät eine Karte pro Kartenart | keine | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT, gemSpec_MobKT |
+| K-1 | Karten stecken nur in Geräten mit der Fähigkeit `cardSlots` (eHealth-KT, mobiles KT); das HSM-B ausgenommen (K-10). Je Gerät eine Karte pro Kartenart | keine | Vereinfachung (Anzahl der Slots ist herstellerabhängig) | gemSpec_KT, gemSpec_MobKT |
 | K-2 | „Karte stecken“ legt eine neue Karte einer Art an, die im Gerät noch fehlt. Der Kartenvorrat ist unbegrenzt. „Karte ziehen“ entfernt die Karte | Alle Kartenarten stecken bereits in diesem Terminal. | Vereinfachung | gemSpec_KT |
 | K-3 | Jede Karte hat ein Ablaufdatum (Zertifikatslaufzeit). Verglichen wird mit dem Simulationsdatum der Topologie (`simDate`), nicht mit der echten Uhr. Eine abgelaufene Karte zählt als nicht gesteckt | ‹Karte› ist seit ‹Datum› abgelaufen. | bestätigt | gemSpec_PKI |
 | K-4 | HBA und SMC-B müssen per PIN freigeschaltet sein („erhöhter Sicherheitszustand“), sonst schlagen PIN-pflichtige Aktionen fehl | ‹Karte› ist nicht freigeschaltet. | bestätigt | gemILF_PS_AMTS, gemILF_PS |
 | K-5 | Die SMC-B ist im Infomodell einem Mandanten zugeordnet und steckt dauerhaft | keine | bestätigt | gemILF_PS |
 | K-6 | Geräte mit der Fähigkeit `nfcCard` (CardLink, Versicherten-Apps) lesen nur die eGK, ohne PIN, mit CAN | Über eHealth-CardLink wird nur die eGK gelesen, ohne PIN. HBA und SMC-B gehören in ein stationäres Kartenterminal. | bestätigt | gemSpec_eHealth-CardLink |
 | K-7 | Die eGK-PIN dient als Einwilligung für eMP/AMTS, sofern die versicherte Person sie nicht abgeschaltet hat (Feld `pinActive` an der eGK) | Für den Medikationsplan ist die PIN der eGK nötig. | bestätigt | gemILF_PS_AMTS |
-| K-8 | Karten gehören nie an Konnektor, Primärsystem oder Fachdienst | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch |
+| K-8 | Karten gehören nie an Konnektor, Primärsystem oder Fachdienst; das HSM-B steckt im TI-Gateway (K-10) | Smartcards werden nur in ein Kartenterminal gesteckt, nie direkt an Konnektor, Primärsystem oder Fachdienst. | bestätigt | Arch |
 | K-9 | Eine Karte steckt in genau einem Gerät | Diese Karte steckt bereits in einem anderen Terminal. | bestätigt (physisch) | gemSpec_KT |
+| K-10 | Das HSM-B steckt nur in einem Gerät mit der Fähigkeit `hsmSlot` (TI-Gateway), dort steckt nur das HSM-B (andere Karten: „Im TI-Gateway steckt nur das HSM-B.“). Es hat keinen PIN-Zustand (K-4 gilt nicht) und ist genau einer Software zugeordnet (Kartenfeld `software`). Darstellung: „im TI-Gateway · für ‹Software›“ | Das HSM-B steckt nur im TI-Gateway. | plausibel | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 
 Darstellung: Eine gesteckte Karte erscheint als Chip im Terminal mit der
 Beschriftung „gesteckt · ISO 7816“, eine per NFC gelesene eGK mit
@@ -530,6 +547,16 @@ ihn weiter. Alte Dateien mit Gateway und VPN-Zugangsdienst laden ohne Warnung.
 Das Zugangsmodul ist Teil des TI-Gateways. Offen: Bei mehreren Praxen an einem
 Gateway trennt das Modell fremde Praxen noch nicht. Quelle: gemF_TI-Gateway.
 Status: Vereinfachung.
+
+**Dienst-Smartphone → TI-Gateway** (Auslegung 2026-11-26, Issue #254): Das
+Dienst-Smartphone erreicht ein TI-Gateway über das Internet (Gerät →
+Internet → TI-Gateway-WAN) und nutzt es als **Zugang** zur TI 1.0: Gerät →
+Internet → TI-Gateway → Dienst (z. B. ePA), ohne VPN-Zugangsdienst wie beim
+TI-Gateway-Pfad oben; der letzte Abschnitt ist der VPN-Tunnel des
+Zugangsmoduls. Nur über die WAN-Kante des Gateways am Internet, nicht über das
+LAN einer Praxis. Das gilt nur für das Dienst-Smartphone; Rechner einer
+Praxis erreichen ein Gateway nicht über das Internet. Das Gateway ist dort
+auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
@@ -627,6 +654,7 @@ Status: Vereinfachung.
 | **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet). Beim TI-Gateway entfällt die Bedingung (Issue #241) | Arch |
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4). Bei Aktionen ohne Baustein „Zugang“ (TI 2.0) zählt auch ein Netz-Kartenterminal, das der Auslöser über das LAN ohne Zugang erreicht (#215) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
+| **HSM-B** | Ein gültiges HSM-B (K-3) steckt in einem TI-Gateway, ist einer Software des Auslösers zugeordnet (K-10), und das Gateway ist als Zugang erreichbar (6.0, nicht ausgefallen) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
@@ -690,6 +718,29 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | ZETA-Anmeldung (SMC-B) | SMC-B (freigeschaltet), IDP erreichbar, ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zeta` | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 | PoPP-Token beantragen (eGK) | eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
 | VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ZETA-Anmeldung (HSM-B) | HSM-B, ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zetaHsmb` | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ePA-Zugriff über TI-Gateway (PoPP) | HSM-B, Zugang, TI, PoPP-Token, ePA erreichbar | `epaGateway` | gemSpec_Aktensystem_ePAfueralle, gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
+
+**Auslegung (2026-11-26, Issue #254):** Mobiler Zugriff einer Hebamme. Das
+Dienst-Smartphone bietet die Aktionen der PS-App an. Reihenfolge:
+ZETA-Anmeldung (HSM-B), PoPP-Token beantragen, VSDM-2.0-Prüfung, ePA-Zugriff
+über das TI-Gateway, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
+per HSM-B hat keinen IDP-Schritt; die SMC-B-Aktion `zeta-anmelden` bleibt.
+Das HSM-B ist eine Karte (Kartenart `hsmb`, K-10) im TI-Gateway, einer
+Software zugeordnet. Es ersetzt die SMC-B bei der ZETA-Anmeldung und beim ePA-Zugriff
+über das TI-Gateway; alle anderen Aktionen, auch die klassischen ePA-Aktionen
+und `vsdm-pruefen`, brauchen weiter SMC-B oder HBA (offen, ob das HSM-B dort
+ebenfalls gelten soll). Gründe in dieser
+Reihenfolge: abgelaufen, kein HSM-B gesteckt, keiner Software dieses Geräts
+zugeordnet, Gateway nicht erreichbar. Löscht man die Software, entfernt das Löschen die Zuordnung an allen HSM-B
+(das HSM-B bleibt stecken, ohne Software). Eine `software`-Angabe, die in einer
+Datei auf keinen Knoten zeigt, ist nur an diesem Sperrgrund sichtbar (kein
+eigener Check). Alte Zwischenstände mit `config.hsmb` am Gateway verlieren das
+Feld ohne Migration (das Schema ignoriert unbekannte Felder).
+Die ePA erreicht das Smartphone über das TI-Gateway (TI 1.0), der Zugriff läuft
+mit dem PoPP-Token, ohne ZETA Guard (Rückmeldung des Prüfers).
+Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
+Internet. Der HBA ist nicht nötig. Status: plausibel.
 
 **Auslegung (2026-11-19, TI-2.0-Aktionen):** (a) Die Token werden am Ende
 des Ablaufs ausgestellt, nicht beim Start, und nur, wenn kein Schritt ein
@@ -739,6 +790,7 @@ KH).
 | Gerät | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|---|
 | eHealth-KT, mobiles KT | Karte stecken / ziehen | K-1, K-2 | Dialog | gemSpec_KT |
+| TI-Gateway | HSM-B stecken / ziehen | K-2, K-10 | Dialog | gemF_TI-Gateway |
 | Mobiles KT | eGK offline einlesen | eGK, dazu HBA oder SMC-B im mobilen KT | `mobkt` | gemSpec_MobKT (plausibel, Kapitel zur Authentisierung nachlesen) |
 | Mobiles KT | Daten ans Primärsystem übergeben | USB-Verbindung zum Primärsystem | `mobkt` | gemSpec_MobKT |
 | CardLink | eGK per Smartphone prüfen (VSDM) | eGK per NFC, CardLink am Zugang, SMC-B, VSDM | `cardlinkVsdm` | gemSpec_eHealth-CardLink |
@@ -780,7 +832,9 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | Vereinfachung | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
 | `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→IDP Signatur der SMC-B, Identity-Token holen (über das Internet) · IDP→P Identity-/Refresh-Token · P→ZETA Guard Token vorlegen (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, gemSpec_IDP_FD, Info_VSDM2_ZETA_PoPP |
-| `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `popp` | T→P eGK-Daten (je nach Auslöser: Kartenterminal im Praxisnetz über das LAN, aus der Cloud über Router, Internet und Cloud-Server, am Dienst-Smartphone liest die PS-App die eGK per NFC und reicht die Kartenkommunikation an den PoPP-Service durch) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `zetaHsmb` | P→K Signatur mit dem HSM-B anfordern (über das Internet) · K→P Signatur · P→ZETA Guard Anmelden (über das Internet) · ZETA Guard→P Access Token | plausibel | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `epaGateway` | P→K Authentisierung mit dem HSM-B (über das Internet) · P→ePA Zugriff mit PoPP-Token (über das Internet zum TI-Gateway, dann durch den VPN-Tunnel seines Zugangsmoduls zur ePA) · ePA→P Akteninhalt | plausibel | gemSpec_Aktensystem_ePAfueralle, gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 | `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
@@ -808,7 +862,7 @@ an den Einzelschritten).
 Auslegung (2026-11-22, Issue #237): Der IDP gehört zur TI 2.0 und ist nur über
 das Internet erreichbar, auch aus der Cloud. `zeta` holt vor dem Access Token
 den Identity-Token beim IDP. Die Signatur macht im Modell die SMC-B im
-Kartenterminal der Praxis (das HSM-B im Rechenzentrum ist nicht modelliert).
+Kartenterminal der Praxis (das HSM-B im TI-Gateway ist für diese Aktion nicht modelliert; `zetaHsmb` (Issue #254) nutzt es).
 Alte Dateien mit einer Kante am entfallenen Anschluss `ti` laden weiter, die
 Kante entfällt mit Hinweis. Status: plausibel (gemSpec_IDP_FD, gemSpec_ZETA).
 
@@ -1085,6 +1139,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Router (LAN) ohne VPN-Zugangsdienst, direkt an den Diensten (#241). TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Praxis TI 2.0 | Praxis, TI 2.0 im Parallelbetrieb | 1 PC (AP-1) mit 1 PVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 TI-Gateway (LAN an Router und Cloud), Cloud. Dienste: VSDM (TI 1.0), IDP, ZETA, PoPP, VSDM 2 (TI 2.0). Vier Zonen. Nur in der Bibliothek | KT: eGK, HBA, SMC-B | kein Mockup-Preset, im Editor gebaut (#244). `simDate` und ZETA-Token auf 2026-11-01 gesetzt |
+| Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ePA (am TI-Gateway), ZETA Guard, PoPP-Service, VSDM 2.0. Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

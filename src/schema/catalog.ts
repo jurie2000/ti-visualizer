@@ -40,7 +40,8 @@ export type Expr =
         | "pruefungsnachweis"
         | "befugnis"
         | "zetaToken"
-        | "poppToken";
+        | "poppToken"
+        | "hsmb";
     }
   | { service: string }
   | { present: string }
@@ -69,6 +70,7 @@ export const Expr: z.ZodType<Expr> = z.lazy(() =>
         "befugnis",
         "zetaToken",
         "poppToken",
+        "hsmb",
       ]),
     }),
     z.strictObject({ service: Id }),
@@ -231,6 +233,9 @@ export const flows = z.array(
         to: Id,
         label: Text,
         text: Text,
+        /** Text für Auslöser mit NFC (Dienst-Smartphone) bzw. Software im Rechenzentrum; sonst gilt `text`. */
+        textNfc: Text.optional(),
+        textCloud: Text.optional(),
         protocol: Id.optional(),
       }),
     ),

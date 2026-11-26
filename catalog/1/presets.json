@@ -2519,5 +2519,254 @@
     },
     "source": ["editor"],
     "status": "Vereinfachung"
+  },
+  {
+    "id": "hebamme-mobil",
+    "topology": {
+      "name": "Hebamme, mobiler Zugriff (TI 2.0)",
+      "description": "Dienst-Smartphone mit PS-App und eGK per NFC. Das TI-Gateway im Rechenzentrum mit HSM-B ist der Zugang zur ePA (PoPP-Token), ZETA Guard und PoPP-Service stehen im Internet, VSDM 2.0 hängt am ZETA Guard.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "mobil-1",
+          "type": "mobil",
+          "position": {
+            "x": 80,
+            "y": 200
+          },
+          "fault": false,
+          "label": "Dienst-Smartphone",
+          "cards": [
+            {
+              "kind": "egk",
+              "expires": "2029-11-23",
+              "pinActive": false
+            }
+          ]
+        },
+        {
+          "id": "pvs-1",
+          "type": "pvs",
+          "position": {
+            "x": 80,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "internet-1",
+          "type": "internet",
+          "position": {
+            "x": 520,
+            "y": 200
+          },
+          "fault": false
+        },
+        {
+          "id": "gateway-1",
+          "type": "gateway",
+          "position": {
+            "x": 520,
+            "y": 420
+          },
+          "fault": false,
+          "config": {
+            "mask": "255.255.255.0",
+            "mode": "reihe",
+            "dhcp": false,
+            "dhcpServer": false,
+            "vlan": "TI",
+            "certExpires": "2029-03-31",
+            "timeOffset": 0,
+            "updateOk": true,
+            "ip": "192.168.10.2",
+            "lastTimeSync": "2026-11-01"
+          },
+          "cards": [
+            {
+              "kind": "hsmb",
+              "expires": "2029-11-23",
+              "software": "pvs-1"
+            }
+          ]
+        },
+        {
+          "id": "zeta-1",
+          "type": "zeta",
+          "position": {
+            "x": 960,
+            "y": 200
+          },
+          "fault": false
+        },
+        {
+          "id": "popp-1",
+          "type": "popp",
+          "position": {
+            "x": 960,
+            "y": 40
+          },
+          "fault": false
+        },
+        {
+          "id": "vsdm2-1",
+          "type": "vsdm2",
+          "position": {
+            "x": 1300,
+            "y": 120
+          },
+          "fault": false
+        },
+        {
+          "id": "epa-1",
+          "type": "epa",
+          "position": {
+            "x": 900,
+            "y": 520
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-1",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pvs-1",
+              "port": "host"
+            },
+            {
+              "node": "mobil-1",
+              "port": "soft"
+            }
+          ]
+        },
+        {
+          "id": "e-2",
+          "fault": false,
+          "ends": [
+            {
+              "node": "mobil-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-3",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "wan"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-4",
+          "fault": false,
+          "ends": [
+            {
+              "node": "zeta-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-5",
+          "fault": false,
+          "ends": [
+            {
+              "node": "popp-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-6",
+          "fault": false,
+          "ends": [
+            {
+              "node": "zeta-1",
+              "port": "net"
+            },
+            {
+              "node": "vsdm2-1",
+              "port": "net"
+            }
+          ]
+        },
+        {
+          "id": "e-7",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "ti"
+            },
+            {
+              "node": "epa-1",
+              "port": "ti"
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "id": "zone-1",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 20,
+            "y": -20,
+            "w": 360,
+            "h": 360
+          },
+          "label": "Unterwegs"
+        },
+        {
+          "id": "zone-2",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 440,
+            "y": 360,
+            "w": 300,
+            "h": 200
+          },
+          "label": "Rechenzentrum"
+        },
+        {
+          "id": "zone-3",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 880,
+            "y": -20,
+            "w": 560,
+            "h": 460
+          },
+          "label": "TI 2.0"
+        }
+      ]
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
   }
 ]

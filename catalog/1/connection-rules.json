@@ -344,6 +344,17 @@
     "status": "plausibel"
   },
   {
+    "id": "erl-mobil-internet",
+    "a": {
+      "types": ["mobil"]
+    },
+    "b": {
+      "types": ["internet"]
+    },
+    "source": ["Info_VSDM2_ZETA_PoPP", "gemSpec_ZETA"],
+    "status": "plausibel"
+  },
+  {
     "id": "erl-zeta-vsdm2",
     "a": {
       "types": ["zeta"]
@@ -393,7 +404,7 @@
       "types": ["pvs", "kis", "avs", "pflege", "ris", "lis"]
     },
     "b": {
-      "types": ["pc", "server", "cloud"]
+      "types": ["pc", "server", "cloud", "mobil"]
     },
     "kinds": {
       "a": ["host"],

@@ -41,7 +41,8 @@ export type Expr =
         | "befugnis"
         | "zetaToken"
         | "poppToken"
-        | "hsmb";
+        | "hsmb"
+        | "kimNachricht";
     }
   | { service: string }
   | { present: string }
@@ -71,6 +72,7 @@ export const Expr: z.ZodType<Expr> = z.lazy(() =>
         "zetaToken",
         "poppToken",
         "hsmb",
+        "kimNachricht",
       ]),
     }),
     z.strictObject({ service: Id }),
@@ -214,8 +216,8 @@ export const actions = z.array(
     offeredBy: Selector,
     requires: Expr,
     flow: Id,
-    /** Token, den die Aktion nach dem Ablauf ausstellt (Regelwerk 6.2). */
-    issues: z.enum(["zeta", "popp"]).optional(),
+    /** Token oder KIM-Nachricht, die die Aktion nach dem Ablauf ausstellt, ablegt bzw. abholt (Regelwerk 6.2). */
+    issues: z.enum(["zeta", "popp", "kimAblegen", "kimAbholen"]).optional(),
     ...sourced,
   }),
 );

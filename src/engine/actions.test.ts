@@ -304,15 +304,18 @@ const cases: [
 
 describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
   it("deckt jede Katalogaktion ab", () => {
-    // `vsdm2-pruefen` braucht Token und hat eigene Tests unten; die Aktionen des Dienst-Smartphones stehen in mobil.test.ts
+    // `vsdm2-pruefen` braucht Token und hat eigene Tests unten; die Aktionen des Dienst-Smartphones stehen in mobil.test.ts, KIM abholen braucht eine Nachricht (kim.test.ts)
     expect(cases.map((c) => c[0]).sort()).toEqual(
       catalog.actions
         .map((a) => a.id)
         .filter(
           (id) =>
-            !["vsdm2-pruefen", "zeta-anmelden-hsmb", "epa-gateway"].includes(
-              id,
-            ),
+            ![
+              "vsdm2-pruefen",
+              "zeta-anmelden-hsmb",
+              "epa-gateway",
+              "kim-abholen",
+            ].includes(id),
         )
         .sort(),
     );
@@ -379,7 +382,7 @@ describe("T-402 Pfad, Karten, Terminal", () => {
       c.map((x) => (x.kind === "smcb" ? { ...x, unlocked: false } : x)),
     );
     expect(state(t, "pvs", "kim-senden")?.disabledReason).toBe(
-      "SMC-B ist nicht freigeschaltet.",
+      "SMC-B ist nicht freigeschaltet. Oder: Kein HSM-B im TI-Gateway gesteckt.",
     );
   });
 

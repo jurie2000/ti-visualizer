@@ -237,6 +237,13 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
               "Das TI-Gateway mit HSM-B ist nicht erreichbar.",
             );
       }
+      case "kimNachricht": {
+        // Regelwerk 6.1: auf dem KIM-Fachdienst liegt eine Nachricht eines anderen Absenders (#256)
+        const own = ownIds(ctx.topology, ctx.trigger, ctx.catalog);
+        return ctx.topology.tokens?.kim?.some((s) => !own.includes(s))
+          ? undefined
+          : "Keine KIM-Nachricht für dieses System auf dem KIM-Fachdienst.";
+      }
       case "pruefungsnachweis":
         return unmet(ctx, {
           all: [
@@ -255,16 +262,19 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
   return "Diese Bedingung ist nicht prüfbar.";
 }
 
+/** Auslöser und die Software darauf: so erkennt der Fachdienst „eigene“ Einträge. */
+const ownIds = (topology: Topology, trigger: Node, catalog: Cat) => [
+  trigger.id,
+  ...softwareOn(topology, trigger.id, catalog).map((s) => s.node.id),
+];
+
 /** TI-Gateways mit gültigem HSM-B, das einer Software des Auslösers zugeordnet ist (K-10). */
 export function hsmbGateways(
   topology: Topology,
   trigger: Node,
   catalog: Cat,
 ): Node[] {
-  const software = [
-    trigger.id,
-    ...softwareOn(topology, trigger.id, catalog).map((s) => s.node.id),
-  ];
+  const software = ownIds(topology, trigger, catalog);
   return topology.nodes.filter((n) => {
     const { plugged, card } = cardState(topology, n.id, "hsmb");
     return (
@@ -407,6 +417,7 @@ export function availableActions(
 /**
  * Topologie nach einem Ablauf, der einen Token ausstellt (Regelwerk 6.2): ZETA am
  * `simDate`, PoPP für die eGK des Auslösers oder Terminals (ohne `id` bekommt sie eine).
+ * KIM legt die Nachricht der ersten Software des Auslösers ab bzw. holt die erste fremde (#256).
  */
 export function issueToken(
   issues: NonNullable<Catalog["actions"][number]["issues"]>,
@@ -415,6 +426,21 @@ export function issueToken(
   catalog: Cat,
   terminal?: string,
 ): Topology {
+  if (issues === "kimAblegen" || issues === "kimAbholen") {
+    const own = ownIds(topology, trigger, catalog);
+    const kim = topology.tokens?.kim ?? [];
+    const fremd = kim.find((s) => !own.includes(s));
+    return {
+      ...topology,
+      tokens: {
+        ...topology.tokens,
+        kim:
+          issues === "kimAblegen"
+            ? [...new Set([...kim, own[1] ?? own[0] ?? trigger.id])]
+            : kim.filter((s) => s !== fremd),
+      },
+    };
+  }
   if (issues === "zeta")
     return {
       ...topology,

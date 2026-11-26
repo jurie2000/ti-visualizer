@@ -152,6 +152,15 @@ function roleBinder(
           )?.category ?? "",
         ),
       );
+  // Das Gerät mit direkter Kante zu P geht vor (z. B. KIM-Clientmodul beim Gateway, #256).
+  const direct = (candidates: Node[], p: string | undefined) =>
+    candidates.find((c) =>
+      topology.edges.some(
+        (e) =>
+          e.ends.some((x) => x.node === c.id) &&
+          e.ends.some((x) => x.node === p),
+      ),
+    );
   const reached = (candidates: Node[], anchors: (string | undefined)[]) =>
     candidates.find((c) =>
       anchors.some(
@@ -176,13 +185,12 @@ function roleBinder(
         return term;
       case "K":
         return k;
-      default:
-        return trigger.type === role
-          ? trigger.id
-          : reached(
-              topology.nodes.filter((n) => n.type === role),
-              [trigger.id, k],
-            )?.id;
+      default: {
+        if (trigger.type === role) return trigger.id;
+        const same = topology.nodes.filter((n) => n.type === role);
+        const p = primary || senderOn(trigger, topology, catalog, flowId);
+        return (direct(same, p) ?? reached(same, [trigger.id, k]))?.id;
+      }
     }
   };
 }

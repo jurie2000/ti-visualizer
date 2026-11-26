@@ -143,10 +143,11 @@ export const Zone = Element.extend({
   description: text(LIMITS.description).optional(),
 });
 
-/** Token-Zustand der Simulation (Regelwerk 6.1): ZETA-Token mit Ausstellungstag, PoPP-Token je eGK-ID. */
+/** Zustand der Simulation (Regelwerk 6.1): ZETA-Token mit Ausstellungstag, PoPP-Token je eGK-ID, KIM-Nachrichten je Absender-ID. */
 export const Tokens = z.object({
   zeta: date.optional(),
   popp: z.array(key).max(LIMITS.nodes).optional(),
+  kim: z.array(key).max(LIMITS.nodes).optional(),
 });
 
 export const Topology = z

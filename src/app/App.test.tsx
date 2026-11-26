@@ -53,7 +53,7 @@ describe("App-Shell", () => {
       await screen.findByRole("heading", { name: "Preset-Bibliothek" }),
     ).toBeInTheDocument();
     expect(location.hash).toBe("#/presets");
-    expect(screen.getAllByRole("listitem")).toHaveLength(6);
+    expect(screen.getAllByRole("listitem")).toHaveLength(7);
     expect(
       screen.getByRole("button", {
         name: /^Praxis, TI 2\.0 im Parallelbetrieb/,

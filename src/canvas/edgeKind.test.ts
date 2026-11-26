@@ -109,6 +109,7 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
       krankenhaus: 4,
       klinikum: 4,
       "hebamme-mobil": 1,
+      "kim-hebamme-krankenhaus": 1,
     });
   });
   it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {

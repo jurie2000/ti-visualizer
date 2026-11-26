@@ -719,7 +719,7 @@ Dienst-Smartphone bietet die Aktionen der PS-App an. Reihenfolge:
 ZETA-Anmeldung (HSM-B), PoPP-Token beantragen, VSDM-2.0-Prüfung, ePA-Zugriff
 über ZETA, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
 per HSM-B hat keinen IDP-Schritt; die SMC-B-Aktion `zeta-anmelden` bleibt.
-Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA). Der
+Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA).
 Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
 Internet. Der HBA ist nicht nötig. Status: plausibel.
 

@@ -144,6 +144,18 @@
     "status": "plausibel"
   },
   {
+    "id": "mobil",
+    "short": "Das Smartphone oder Tablet für Hausbesuche, auf dem die Software der Praxis läuft.",
+    "purpose": "Trägt die PS-App und liest die eGK per NFC (Nahfunk). Es erreicht ZETA Guard, PoPP-Service und das TI-Gateway für die Signatur über das Internet, nicht über das Netz der Praxis.",
+    "where": "Unterwegs, zum Beispiel bei der Hebamme im Wochenbett zu Hause.",
+    "connected": "Internet (Mobilfunk), Software (läuft auf).",
+    "fault": "Keine TI-2.0-Aktion möglich, wenn das Internet ausfällt oder die eGK nicht gesteckt ist.",
+    "confusion": "Visite-Tablet (WLAN im Krankenhaus, nutzt den Konnektor) und mobiles Kartenterminal (liest die Karte offline, ohne Netz).",
+    "related": ["tab", "mkt"],
+    "source": ["gemILF_PS", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
     "id": "egk",
     "short": "Die Versichertenkarte der Patientinnen und Patienten.",
     "purpose": "Weist die versicherte Person aus und liefert die Stammdaten (VSDM). Sie ist der Schlüssel für Zugriffe auf Versichertendaten: E-Rezept einlösen, ePA-Befugnis erteilen, Notfalldaten und Medikationsplan. Die eGK-PIN dient als Einwilligung für den Medikationsplan.",

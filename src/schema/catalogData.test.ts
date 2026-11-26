@@ -101,7 +101,12 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
         .map((t) => t.id)
         .sort();
     expect(owners("cardSlots")).toEqual(["kt", "mkt"]);
-    expect(owners("nfcCard")).toEqual(["cardlink", "epaapp", "erpapp"]);
+    expect(owners("nfcCard")).toEqual([
+      "cardlink",
+      "epaapp",
+      "erpapp",
+      "mobil",
+    ]);
     expect(owners("zugang")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:konnektor")).toEqual(["gateway", "kon"]);
     expect(owners("netConfig:terminal")).toEqual(["cardlink", "kt"]);
@@ -111,7 +116,7 @@ describe("Echter Katalog: Geräte, Anschlüsse, Quellen (T-103)", () => {
       ["kimcm", "pc", "server", "tab"].sort(),
     );
     expect(owners("workplace")).toEqual(["pc", "tab"]);
-    expect(owners("trigger")).toEqual(["pc", "server", "tab"]);
+    expect(owners("trigger")).toEqual(["mobil", "pc", "server", "tab"]);
   });
 });
 

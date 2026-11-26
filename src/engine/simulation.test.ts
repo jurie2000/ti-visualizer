@@ -45,6 +45,7 @@ const LINKS: [string, string][] = [
   ["internet", "popp"],
   ["internet", "zeta"],
   ["zeta", "vsdm2"],
+  ["zeta", "epa"],
   ["internet", "epa"],
   ...["vsdm", "erp", "kim", "epa", "vzd", "kk"].map((s): [string, string] => [
     "zentral",

@@ -45,6 +45,7 @@ beforeEach(() => {
     edges: [],
     nodes: [
       ADD("kon", "kon-1", "<i>Zugang</i>"),
+      ADD("gateway", "gateway-1"),
       ADD("kt", "kt-1"),
       ADD("pc", "pc-1"),
       ADD("router", "router-1"),
@@ -53,6 +54,7 @@ beforeEach(() => {
   });
   for (const [i, id] of [
     "kon-1",
+    "gateway-1",
     "kt-1",
     "pc-1",
     "router-1",
@@ -65,7 +67,14 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
   it("[Regelwerk 8] jedes Feld kommt im Formular einer Variante vor, mit Standard-Hinweis", () => {
     const found = new Set<string>();
     render(<DetailPanel />);
-    for (const id of ["kon-1", "kt-1", "pc-1", "router-1", "switch-1"]) {
+    for (const id of [
+      "kon-1",
+      "gateway-1",
+      "kt-1",
+      "pc-1",
+      "router-1",
+      "switch-1",
+    ]) {
       open(id);
       for (const e of catalog.configDefaults)
         if (document.querySelector(`[id^="cfg-${id}-${e.field}"]`))

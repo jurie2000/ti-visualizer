@@ -503,5 +503,38 @@
     "flow": "vsdm2",
     "source": ["gemSpec_VSDM_2", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
     "status": "plausibel"
+  },
+  {
+    "id": "zeta-anmelden-hsmb",
+    "name": "ZETA-Anmeldung (HSM-B)",
+    "category": "TI 2.0",
+    "section": "lokal",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": { "all": [{ "need": "hsmb" }, { "service": "zeta" }] },
+    "flow": "zetaHsmb",
+    "issues": "zeta",
+    "source": ["gemF_TI-Gateway", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "epa-zeta",
+    "name": "ePA-Zugriff über ZETA",
+    "category": "TI 2.0",
+    "section": "lokal",
+    "offeredBy": { "types": ["pvs", "kis"] },
+    "requires": {
+      "all": [
+        { "need": "zetaToken" },
+        { "need": "poppToken" },
+        { "service": "epa" }
+      ]
+    },
+    "flow": "epaZeta",
+    "source": [
+      "gemSpec_Aktensystem_ePAfueralle",
+      "gemSpec_ZETA",
+      "Info_VSDM2_ZETA_PoPP"
+    ],
+    "status": "plausibel"
   }
 ]

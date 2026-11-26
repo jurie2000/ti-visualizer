@@ -549,7 +549,7 @@
         "from": "T",
         "to": "P",
         "label": "eGK-Daten",
-        "text": "Das Kartenterminal liefert die Daten der eGK an das Primärsystem: im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet."
+        "text": "Das Kartenterminal liefert die Daten der eGK an das Primärsystem: im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet. Beim Dienst-Smartphone liest die PS-App die eGK per NFC und reicht die Kartenkommunikation an den PoPP-Service durch."
       },
       {
         "from": "P",
@@ -591,6 +591,68 @@
       }
     ],
     "source": ["gemSpec_VSDM_2", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "zetaHsmb",
+    "name": "ZETA-Anmeldung (HSM-B)",
+    "steps": [
+      {
+        "from": "P",
+        "to": "K",
+        "label": "Signatur anfordern (über das Internet)",
+        "text": "Das Primärsystem schickt den Signaturauftrag über das Internet an das TI-Gateway. Das TI-Gateway signiert nur, es ist hier kein Zugang in die TI."
+      },
+      {
+        "from": "K",
+        "to": "P",
+        "label": "Signatur des HSM-B",
+        "text": "Das TI-Gateway signiert mit dem HSM-B der Betriebsstätte und liefert die Signatur zurück."
+      },
+      {
+        "from": "P",
+        "to": "zeta",
+        "label": "Anmelden (über das Internet)",
+        "text": "Das Primärsystem meldet die Betriebsstätte mit der Signatur über das Internet beim ZETA Guard an."
+      },
+      {
+        "from": "zeta",
+        "to": "P",
+        "label": "Access Token",
+        "text": "Der ZETA Guard prüft die Signatur und stellt einen Access Token aus. Er gilt bis Tagesende."
+      }
+    ],
+    "source": ["gemF_TI-Gateway", "gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
+  },
+  {
+    "id": "epaZeta",
+    "name": "ePA-Zugriff über ZETA",
+    "steps": [
+      {
+        "from": "P",
+        "to": "zeta",
+        "label": "Zugriff (über das Internet)",
+        "text": "Das Primärsystem schickt die Anfrage mit Access Token und PoPP-Token über das Internet an den ZETA Guard."
+      },
+      {
+        "from": "zeta",
+        "to": "epa",
+        "label": "Abfrage",
+        "text": "Der ZETA Guard prüft beide Token und lässt die Anfrage zur ePA durch."
+      },
+      {
+        "from": "epa",
+        "to": "P",
+        "label": "Akteninhalt",
+        "text": "Die ePA antwortet mit den Inhalten der Akte."
+      }
+    ],
+    "source": [
+      "gemSpec_Aktensystem_ePAfueralle",
+      "gemSpec_ZETA",
+      "Info_VSDM2_ZETA_PoPP"
+    ],
     "status": "plausibel"
   }
 ]

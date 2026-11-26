@@ -68,6 +68,7 @@ export const KonnektorConfig = NetConfig.extend({
   updateOk: z.boolean().optional(),
   lastTimeSync: date.optional(),
   dhcpServer: z.boolean().optional(),
+  hsmb: z.boolean().optional(),
 });
 export const TerminalConfig = NetConfig.extend({
   paired: z.boolean().optional(),

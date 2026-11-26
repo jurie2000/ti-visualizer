@@ -32,6 +32,7 @@ const KIND: Record<string, Kind> = {
   dhcpServer: "bool",
   sis: "bool",
   routeTI: "bool",
+  hsmb: "bool",
   paired: "bool",
   updateOk: "bool",
   ipsecAllowed: "bool",
@@ -285,7 +286,8 @@ export function ConfigForm({ node }: { node: Node }) {
   const fields = Object.keys(configVariants[variant].shape).filter(
     (f) =>
       (advanced || f === "workplace" || f === "pairedWith") &&
-      (f !== "workplace" || terminal || hasWorkplace),
+      (f !== "workplace" || terminal || hasWorkplace) &&
+      (f !== "hsmb" || node.type === "gateway"),
   );
   if (fields.length === 0) return null;
   const zugaenge = topology.nodes.filter((n) =>

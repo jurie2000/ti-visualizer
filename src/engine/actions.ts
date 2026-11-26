@@ -214,6 +214,20 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
           ? undefined
           : "Kein PoPP-Token für diese eGK ausgestellt.";
       }
+      case "hsmb": {
+        // Regelwerk 6.1: das TI-Gateway signiert mit dem HSM-B (#254)
+        const gateways = ctx.topology.nodes.filter(
+          (n) => caps(ctx.catalog, n).includes("zugang") && n.config?.hsmb,
+        );
+        return gateways.length === 0
+          ? "Kein TI-Gateway mit HSM-B im Netz."
+          : reach(
+              ctx,
+              ctx.trigger.id,
+              gateways.map((n) => n.id),
+              "Das TI-Gateway mit HSM-B ist nicht erreichbar.",
+            );
+      }
       case "pruefungsnachweis":
         return unmet(ctx, {
           all: [

@@ -142,5 +142,13 @@
     "rule": "UDP 500/4500 für den VPN-Tunnel",
     "source": ["gemSpec_VPN_ZugD"],
     "status": "plausibel"
+  },
+  {
+    "field": "hsmb",
+    "name": "HSM-B",
+    "default": false,
+    "rule": "das TI-Gateway signiert mit dem HSM-B der Betriebsstätte, nur beim TI-Gateway",
+    "source": ["gemF_TI-Gateway", "Info_VSDM2_ZETA_PoPP"],
+    "status": "plausibel"
   }
 ]

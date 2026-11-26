@@ -84,6 +84,7 @@ export function defaultConfig(
     if (fields.includes(d.field) && d.default !== null)
       config[d.field] = d.default;
   if (WITHOUT_SIS.has(type)) delete config["sis"];
+  if (type !== "gateway") delete config["hsmb"];
 
   const ip = freeIp(variant, topology);
   if (ip) config["ip"] = ip;

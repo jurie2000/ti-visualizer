@@ -664,6 +664,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
             : link("zen", "netz", `${s}1`, "ti"),
         );
       }
+      t.edges.push(link("zeta1", "net", "epa1", "net"));
       t.nodes.push(
         node("kimcm1", "kimcm"),
         node("avs1", "avs"),
@@ -758,7 +759,7 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
         const ort = flowSteps(vorOrt(), flowId, "pc1");
         const rzAll = flowSteps(withPraxisB(cloud()), flowId, "pc1");
         // Zusätzlich zeigt die Cloud-Software das Ergebnis am Arbeitsplatz an (#229)
-        const anzeige = !["zeta", "popp"].includes(flowId);
+        const anzeige = !["zeta", "zetaHsmb", "popp"].includes(flowId);
         expect(rzAll.at(-1)?.label === "Anzeige am Arbeitsplatz").toBe(anzeige);
         const rzSteps = anzeige ? rzAll.slice(0, -1) : rzAll;
         const flow = catalog.flows.find((f) => f.id === flowId);

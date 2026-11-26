@@ -40,7 +40,8 @@ export type Expr =
         | "pruefungsnachweis"
         | "befugnis"
         | "zetaToken"
-        | "poppToken";
+        | "poppToken"
+        | "hsmb";
     }
   | { service: string }
   | { present: string }
@@ -69,6 +70,7 @@ export const Expr: z.ZodType<Expr> = z.lazy(() =>
         "befugnis",
         "zetaToken",
         "poppToken",
+        "hsmb",
       ]),
     }),
     z.strictObject({ service: Id }),

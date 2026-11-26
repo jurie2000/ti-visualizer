@@ -38,7 +38,7 @@ type Path = { nodes: string[]; edges: string[] };
 const DIRECT: Record<string, string[]> = {
   mkt: ["pvs", "kis", "avs", "pflege", "pc"],
   kim: ["kk"],
-  zeta: ["vsdm2"],
+  zeta: ["vsdm2", "epa"],
 };
 
 /** Der Teil des Wegs bis zur Störung: Gerät bis einschließlich, bei einer Kante bis zu ihr. */
@@ -117,7 +117,7 @@ function between(
 }
 
 // Token-Abläufe zeigen nichts am Arbeitsplatz an.
-const TOKEN_FLOWS = ["zeta", "popp"];
+const TOKEN_FLOWS = ["zeta", "zetaHsmb", "popp"];
 
 // Rollen P (Auslöser), K (Zugang), T (Terminal) und Typ-IDs als Knoten-IDs.
 function roleBinder(
@@ -131,7 +131,9 @@ function roleBinder(
   const own = caps(catalog, trigger);
   const choice = terminalOf(topology, trigger.id, catalog);
   const term =
-    own.includes("cardSlots") || own.includes("netConfig:terminal")
+    own.includes("cardSlots") ||
+    own.includes("netConfig:terminal") ||
+    own.includes("nfcCard") // die eGK steckt im Auslöser (NFC, #254)
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
   // Ohne Pfad zählt das einzige Gerät des Typs; das ist eindeutig, anders als „erstes Gerät“.

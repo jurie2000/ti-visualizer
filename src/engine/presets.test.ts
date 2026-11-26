@@ -21,6 +21,7 @@ describe("Presets (Regelwerk 13)", () => {
       "krankenhaus",
       "klinikum",
       "praxis-parallel",
+      "hebamme-mobil",
     ]);
     for (const { id, topology } of catalog.presets) {
       expect(topology.simDate, id).toBe("2026-11-01");

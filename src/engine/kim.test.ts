@@ -96,10 +96,10 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
 
   it("ohne KIM-Fachdienst oder ohne Clientmodule gesperrt, mit Begründung", () => {
     const t = { ...preset, tokens: { kim: ["pvs-1"] } };
-    for (const [ohne, trigger] of [
-      [["kim-1"], "pc-1"],
-      [["kimcm-1", "kimcm-2"], "pc-1"],
-      [["kimcm-1", "kimcm-2"], "mobil-1"],
+    for (const [ohne, trigger, text] of [
+      [["kim-1"], "pc-1", "KIM-Fachdienst fehlt"],
+      [["kimcm-1", "kimcm-2"], "pc-1", "KIM-Clientmodul fehlt"],
+      [["kimcm-1", "kimcm-2"], "mobil-1", "KIM-Clientmodul fehlt"],
     ] as const) {
       const a = run(
         without(t, ...ohne),
@@ -107,7 +107,7 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
         trigger === "pc-1" ? "kim-abholen" : "kim-senden",
       );
       expect(a.enabled).toBe(false);
-      expect(a.disabledReason).toBeTruthy();
+      expect(a.disabledReason).toContain(text);
     }
   });
 
@@ -118,6 +118,13 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
     ]);
     const zwei = { ...preset, tokens: { kim: ["pvs-1", "mobil-1"] } };
     expect(issue(zwei, "pc-1", "kim-abholen").tokens?.kim).toEqual(["mobil-1"]);
+    const gemischt = {
+      ...preset,
+      tokens: { kim: ["gibt-es-nicht", "mobil-1"] },
+    };
+    expect(issue(gemischt, "pc-1", "kim-abholen").tokens?.kim).toEqual([
+      "gibt-es-nicht",
+    ]);
     const eigene = { ...preset, tokens: { kim: ["kis-1"] } };
     expect(issue(eigene, "pc-1", "kim-abholen").tokens?.kim).toEqual(["kis-1"]);
   });

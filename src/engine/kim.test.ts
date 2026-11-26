@@ -64,8 +64,9 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
       expect(versand.map((s) => s.problem)).toEqual(
         versand.map(() => undefined),
       );
+      // Hebamme: VPN des Clientmoduls über das Internet zum Gateway, nicht am Gateway-LAN
       expect(versand.at(-1)?.nodes).toEqual(
-        expect.arrayContaining(["kimcm-1", "gateway-1", "kim-1"]),
+        expect.arrayContaining(["kimcm-1", "internet-1", "gateway-1", "kim-1"]),
       );
 
       t = issue(t, "mobil-1", "kim-senden");
@@ -79,6 +80,10 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
       expect(weg[0]?.nodes[0]).toBe("kis-1");
       expect(weg[1]?.nodes).toEqual(
         expect.arrayContaining(["kim-1", "gateway-1", "kimcm-2"]),
+      );
+      // Krankenhaus: Clientmodul → Router → Internet → Gateway
+      expect(weg[1]?.nodes).toEqual(
+        expect.arrayContaining(["router-1", "internet-1"]),
       );
 
       t = issue(t, "pc-1", "kim-abholen");
@@ -98,7 +103,8 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
     const t = { ...preset, tokens: { kim: ["pvs-1"] } };
     for (const [ohne, trigger, text] of [
       [["kim-1"], "pc-1", "KIM-Fachdienst fehlt"],
-      [["kimcm-1", "kimcm-2"], "pc-1", "KIM-Clientmodul fehlt"],
+      // ohne Clientmodul im Krankenhausnetz fehlt dort auch der VPN-Weg zum Gateway
+      [["kimcm-1", "kimcm-2"], "pc-1", "Kein Zugang erreichbar"],
       [["kimcm-1", "kimcm-2"], "mobil-1", "KIM-Clientmodul fehlt"],
     ] as const) {
       const a = run(

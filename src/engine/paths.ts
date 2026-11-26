@@ -184,7 +184,10 @@ function search(
       (hasSlots(start) && roleOf(goal, catalog) === "zugang"));
   const viaCloud = internetOnly && hasSlots(start);
   // Das Dienst-Smartphone erreicht ein TI-Gateway im Rechenzentrum über das Internet als Zugang (#254).
-  const fromMobil = [start, byId.get(origin)].some((n) => n?.type === "mobil");
+  // Ebenso ein KIM-Clientmodul im eigenen Netz: sein VPN läuft über den Router und das Internet zum Gateway (#256).
+  const fromMobil =
+    [start, byId.get(origin)].some((n) => n?.type === "mobil") ||
+    [...home].some((id) => byId.get(id)?.type === "kimcm");
   const isNetTerminal = (n: Node) =>
     capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");
   const terminal =

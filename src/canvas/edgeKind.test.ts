@@ -112,6 +112,12 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
       "kim-hebamme-krankenhaus": 1,
     });
   });
+  it("[#256] KIM-Clientmodul ↔ Internet, Router oder Switch ergibt VPN", () => {
+    expect(kindOf(["kimcm", "net"], ["internet", "netz"])).toBe("vpn");
+    expect(kindOf(["kimcm", "lan0"], ["router", "lan3"])).toBe("vpn");
+    expect(kindOf(["kimcm", "lan0"], ["switch", "p1"])).toBe("vpn");
+    expect(kindOf(["pvs", "app"], ["kimcm", "lan0"])).toBe("tcp");
+  });
   it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {
     expect(kindOf(["gateway", "ti"], ["zentral", "netz"])).toBe("tcp");
   });

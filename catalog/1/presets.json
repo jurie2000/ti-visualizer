@@ -2773,7 +2773,7 @@
     "id": "kim-hebamme-krankenhaus",
     "topology": {
       "name": "KIM: Hebamme und Krankenhaus",
-      "description": "Die Hebamme legt vom Dienst-Smartphone eine KIM-Nachricht ab, das Krankenhaus holt sie ab. Beide Clientmodule hängen am TI-Gateway im Rechenzentrum, die Hebamme über das HSM-B, das Krankenhaus über die SMC-B im Kartenterminal.",
+      "description": "Die Hebamme legt vom Dienst-Smartphone eine KIM-Nachricht ab, das Krankenhaus holt sie ab. Beide Clientmodule bauen per VPN über das Internet den Tunnel zum TI-Gateway im Rechenzentrum auf, bei der Hebamme direkt, im Krankenhaus über den Router. Die Hebamme nutzt das HSM-B, das Krankenhaus die SMC-B im Kartenterminal.",
       "simDate": "2026-11-01",
       "nodes": [
         {
@@ -3020,11 +3020,11 @@
           "ends": [
             {
               "node": "kimcm-1",
-              "port": "lan0"
+              "port": "net"
             },
             {
-              "node": "gateway-1",
-              "port": "lan"
+              "node": "internet-1",
+              "port": "netz"
             }
           ]
         },
@@ -3090,11 +3090,11 @@
           "ends": [
             {
               "node": "router-1",
-              "port": "lan1"
+              "port": "wan"
             },
             {
-              "node": "gateway-1",
-              "port": "lan"
+              "node": "internet-1",
+              "port": "netz"
             }
           ]
         },
@@ -3135,8 +3135,8 @@
               "port": "lan0"
             },
             {
-              "node": "gateway-1",
-              "port": "lan"
+              "node": "router-1",
+              "port": "lan3"
             }
           ]
         },

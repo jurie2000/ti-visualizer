@@ -88,15 +88,20 @@ export function describeEdge(
                 both("ti") &&
                 !types.includes("zentral")
               ? "vpn" // Regelwerk 3, Regel 2b: Tunnel des Zugangsmoduls zum Fachdienst (#254)
-              : has("net")
-                ? "inet"
-                : both("ti") || both("app")
-                  ? "tcp"
-                  : has("usb")
-                    ? "usb"
-                    : a && b && carriesTls([a.type, b.type], catalog)
-                      ? "tcp"
-                      : "phys";
+              : types.includes("kimcm") &&
+                  ["internet", "switch", "router"].some((t) =>
+                    types.includes(t),
+                  )
+                ? "vpn" // Regelwerk 3, Regel 2c: Tunnel des KIM-Clientmoduls zum TI-Gateway (#256)
+                : has("net")
+                  ? "inet"
+                  : both("ti") || both("app")
+                    ? "tcp"
+                    : has("usb")
+                      ? "usb"
+                      : a && b && carriesTls([a.type, b.type], catalog)
+                        ? "tcp"
+                        : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

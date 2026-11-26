@@ -501,7 +501,9 @@
     "category": "TI 2.0",
     "section": "lokal",
     "offeredBy": { "types": ["pvs", "kis"] },
-    "requires": { "all": [{ "card": "egk" }, { "service": "popp" }] },
+    "requires": {
+      "all": [{ "card": "egk" }, { "service": "popp" }]
+    },
     "flow": "popp",
     "issues": "popp",
     "source": ["gemSpec_PoPP_Service", "Info_VSDM2_ZETA_PoPP"],

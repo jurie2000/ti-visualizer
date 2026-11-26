@@ -110,4 +110,43 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
       expect(a.disabledReason).toBeTruthy();
     }
   });
+
+  it("Zustand: je Absender eine Nachricht, zwei Absender nacheinander, nichts zu holen", () => {
+    const einmal = issue(preset, "mobil-1", "kim-senden");
+    expect(issue(einmal, "mobil-1", "kim-senden").tokens?.kim).toEqual([
+      "pvs-1",
+    ]);
+    const zwei = { ...preset, tokens: { kim: ["pvs-1", "mobil-1"] } };
+    expect(issue(zwei, "pc-1", "kim-abholen").tokens?.kim).toEqual(["mobil-1"]);
+    const eigene = { ...preset, tokens: { kim: ["kis-1"] } };
+    expect(issue(eigene, "pc-1", "kim-abholen").tokens?.kim).toEqual(["kis-1"]);
+  });
+
+  it("Absender, den es nicht mehr gibt, zählt nicht als Nachricht", () => {
+    const t = { ...preset, tokens: { kim: ["gibt-es-nicht"] } };
+    expect(run(t, "pc-1", "kim-abholen").enabled).toBe(false);
+  });
+
+  it("ohne HSM-B und SMC-B ist Senden gesperrt, mit SMC-B am Krankenhaus offen", () => {
+    const ohne = (kinds: string[]): Topology => ({
+      ...preset,
+      nodes: preset.nodes.map((n) => ({
+        ...n,
+        cards: n.cards?.filter((c) => !kinds.includes(c.kind)),
+      })),
+    });
+    const keine = run(ohne(["hsmb", "smcb"]), "mobil-1", "kim-senden");
+    expect(keine.enabled).toBe(false);
+    expect(keine.disabledReason).toContain("HSM-B");
+    expect(run(ohne(["hsmb"]), "pc-1", "kim-senden").enabled).toBe(true);
+  });
+
+  it("Rollenbindung: das Clientmodul mit direkter Kante zum PS gewinnt", () => {
+    const hebamme = steps(preset, "mobil-1", "kim-senden")[0]?.nodes;
+    expect(hebamme).toContain("kimcm-1");
+    expect(hebamme).not.toContain("kimcm-2");
+    const klinik = steps(preset, "pc-1", "kim-abholen")[0]?.nodes;
+    expect(klinik).toContain("kimcm-2");
+    expect(klinik).not.toContain("kimcm-1");
+  });
 });

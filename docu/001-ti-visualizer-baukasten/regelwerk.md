@@ -842,7 +842,7 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur mit HBA (QES) über T · CM→K Verschlüsselung mit der SMC-B · CM→KIM (mTLS, über K→V) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |
-| `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief. Verschlüsselung mit SMC-B oder HSM-B, Versand durch den VPN-Tunnel des Zugangs (beim TI-Gateway das integrierte Zugangsmodul) | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
+| `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief. Verschlüsselung mit der SMC-B (bei der KIM-Nachricht auch mit dem HSM-B), Versand durch den VPN-Tunnel des Zugangs (beim TI-Gateway das integrierte Zugangsmodul) | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
 | `kimAbholen` | P→CM Abruf (POP3) · KIM→CM Nachricht durch den VPN-Tunnel, der Fachdienst löscht sie · CM→K Entschlüsseln mit SMC-B oder HSM-B · CM→P Übergabe | plausibel | gemSpec_CM_KOMLE, gemSpec_FD_KOMLE |
 | `epa` | P→K Authentisierung mit der SMC-B · Befugnis prüfen (Prüfungsnachweis oder PoPP) · P→ePA Dokument bzw. Abfrage (VAU, FHIR, über K→V) · ePA→P | Vereinfachung | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
 | `tim` | Client→TI-Messenger-FD (Matrix, Internet) · FD→FD des Empfängers (Föderation über VZD) · Zustellung | plausibel | gemSpec_TI-M_Basis |
@@ -894,15 +894,19 @@ und „Tutorial beenden“ sind gesperrt, solange die Aufgabe des Schritts
 nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #160.
 Ausnahmen sind die Token (6.1) und die KIM-Nachricht (Issue #256).
 
-**Auslegung (2026-11-26, Issue #256), KIM senden und abholen:** Zwei Aktionen,
-verknüpft über `tokens.kim`: „KIM-Nachricht senden“ legt die Nachricht der
-ersten Software des Auslösers ab, „KIM-Nachricht abholen“ ist offen, wenn eine
-Nachricht eines anderen Absenders liegt, und löscht sie (POP3). Es gibt keine
-KIM-Adressen, je Absender höchstens eine Nachricht. Status: Vereinfachung.
-KIM gilt mit SMC-B oder HSM-B (gemF_TI-Gateway); eAU und eArztbrief
-bleiben unverändert bei der SMC-B. Status: plausibel. Das KIM-Clientmodul bleibt eigenständig
-ohne `host` und steht beim TI-Gateway; die Zuordnung zum Primärsystem
-läuft über die direkte Kante (4.2, A-6). Status: Vereinfachung.
+**Auslegung (2026-11-26, Issue #256), KIM senden und abholen:**
+
+- Zwei Aktionen, verknüpft über `tokens.kim`: Senden legt die Nachricht der
+  ersten Software des Auslösers ab, Abholen ist offen, wenn eine Nachricht eines
+  anderen Absenders liegt, und löscht sie (POP3). Keine KIM-Adressen, je
+  Absender höchstens eine Nachricht, ein gelöschter Absender zählt nicht.
+  Status: Vereinfachung.
+- KIM gilt mit SMC-B oder HSM-B (gemF_TI-Gateway); eAU und eArztbrief bleiben
+  bei der SMC-B. Status: plausibel.
+- Das KIM-Clientmodul bleibt eigenständig ohne `host` und steht beim
+  TI-Gateway; die Zuordnung zum Primärsystem läuft über die direkte Kante
+  (4.2, A-6). Die Bevorzugung der direkten Kante gilt für alle Rollen.
+  Status: Vereinfachung.
 
 ## 8. Konfiguration im Modus Erweitert
 

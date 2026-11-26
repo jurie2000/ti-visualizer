@@ -239,8 +239,7 @@ function unmet(ctx: Ctx, e: Expr): string | undefined {
       }
       case "kimNachricht": {
         // Regelwerk 6.1: auf dem KIM-Fachdienst liegt eine Nachricht eines anderen Absenders (#256)
-        const own = ownIds(ctx.topology, ctx.trigger, ctx.catalog);
-        return ctx.topology.tokens?.kim?.some((s) => !own.includes(s))
+        return fremdeKim(ctx.topology, ctx.trigger, ctx.catalog)
           ? undefined
           : "Keine KIM-Nachricht für dieses System auf dem KIM-Fachdienst.";
       }
@@ -267,6 +266,14 @@ const ownIds = (topology: Topology, trigger: Node, catalog: Cat) => [
   trigger.id,
   ...softwareOn(topology, trigger.id, catalog).map((s) => s.node.id),
 ];
+
+/** Erste KIM-Nachricht eines Absenders, den es im Plan gibt und der nicht der Auslöser ist (verwaiste IDs zählen nicht). */
+const fremdeKim = (topology: Topology, trigger: Node, catalog: Cat) => {
+  const own = ownIds(topology, trigger, catalog);
+  return topology.tokens?.kim?.find(
+    (s) => !own.includes(s) && topology.nodes.some((n) => n.id === s),
+  );
+};
 
 /** TI-Gateways mit gültigem HSM-B, das einer Software des Auslösers zugeordnet ist (K-10). */
 export function hsmbGateways(
@@ -427,17 +434,20 @@ export function issueToken(
   terminal?: string,
 ): Topology {
   if (issues === "kimAblegen" || issues === "kimAbholen") {
-    const own = ownIds(topology, trigger, catalog);
     const kim = topology.tokens?.kim ?? [];
-    const fremd = kim.find((s) => !own.includes(s));
     return {
       ...topology,
       tokens: {
         ...topology.tokens,
         kim:
           issues === "kimAblegen"
-            ? [...new Set([...kim, own[1] ?? own[0] ?? trigger.id])]
-            : kim.filter((s) => s !== fremd),
+            ? [
+                ...new Set([
+                  ...kim,
+                  ownIds(topology, trigger, catalog)[1] ?? trigger.id,
+                ]),
+              ]
+            : kim.filter((s) => s !== fremdeKim(topology, trigger, catalog)),
       },
     };
   }

@@ -220,8 +220,8 @@
       {
         "from": "kimcm",
         "to": "K",
-        "label": "Verschlüsselung mit der SMC-B oder dem HSM-B",
-        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B oder, beim TI-Gateway, mit dem HSM-B."
+        "label": "Verschlüsselung mit der SMC-B (KIM-Nachricht auch mit dem HSM-B)",
+        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B. Eine einfache KIM-Nachricht kann beim TI-Gateway stattdessen das HSM-B verschlüsseln, der eArztbrief bleibt bei der SMC-B."
       },
       {
         "from": "kimcm",

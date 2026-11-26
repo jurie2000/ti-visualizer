@@ -103,8 +103,7 @@ describe("KIM-Nachricht senden und abholen (#256)", () => {
     const t = { ...preset, tokens: { kim: ["pvs-1"] } };
     for (const [ohne, trigger, text] of [
       [["kim-1"], "pc-1", "KIM-Fachdienst fehlt"],
-      // ohne Clientmodul im Krankenhausnetz fehlt dort auch der VPN-Weg zum Gateway
-      [["kimcm-1", "kimcm-2"], "pc-1", "Kein Zugang erreichbar"],
+      [["kimcm-1", "kimcm-2"], "pc-1", "KIM-Clientmodul fehlt"],
       [["kimcm-1", "kimcm-2"], "mobil-1", "KIM-Clientmodul fehlt"],
     ] as const) {
       const a = run(

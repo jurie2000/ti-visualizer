@@ -223,7 +223,7 @@ Abschnitt 5.
 | RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
 | Dienst-Smartphone | Internet (`net`), Software (`host`, mehrfach) | Vereinfachung (Issue #254) | gemILF_PS, Info_VSDM2_ZETA_PoPP |
-| KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang), Internet (`net`, für den VPN-Tunnel zum TI-Gateway, Auslegung 2026-11-26, Issue #256) | Vereinfachung | gemSpec_CM_KOMLE |
+| KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang), Internet (`net`, für ein Clientmodul ohne Router, Auslegung 2026-11-26, Issue #256) | Vereinfachung | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | WAN (Internet) | plausibel | gemSpec_TI-M_Basis |
 | eHealth-KT | LAN0 | bestätigt | gemSpec_KT |
 | Mobiles KT | USB0 | bestätigt | gemSpec_MobKT |
@@ -281,7 +281,6 @@ eigene Regel-ID):
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
 2b. TI-Gateway (`ti`) ↔ Gerät mit `ti`-Anschluss (Fachdienst), außer Zentrales Netz: `vpn` (Auslegung 2026-11-26, Issue #254, unten)
-2c. KIM-Clientmodul ↔ Internet, Router oder Switch: `vpn` (Auslegung 2026-11-26, Issue #256, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -555,9 +554,14 @@ Internet → TI-Gateway-WAN) und nutzt es als **Zugang** zur TI 1.0: Gerät →
 Internet → TI-Gateway → Dienst (z. B. ePA), ohne VPN-Zugangsdienst wie beim
 TI-Gateway-Pfad oben; der letzte Abschnitt ist der VPN-Tunnel des
 Zugangsmoduls. Nur über die WAN-Kante des Gateways am Internet, nicht über das
-LAN einer Praxis. Das gilt nur für das Dienst-Smartphone; Rechner einer
-Praxis erreichen ein Gateway nicht über das Internet. Das Gateway ist dort
-auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
+LAN einer Praxis. **Auslegung (2026-11-26, Issue #256):** Das Smartphone
+bleibt ein gleichberechtigter Weg: Es hängt direkt am Internet, weil es nicht
+stationär ist. Stationäre Systeme (Praxis- oder Krankenhaus-PS) erreichen ein
+Gateway im Rechenzentrum immer über Switch, Router und Internet, ohne
+zusätzliche Komponente. Das KIM-Clientmodul sendet normale IP-Pakete; der VPN-Tunnel
+besteht erst auf der Strecke Internet → TI-Gateway. Die Kante zeigt weiter
+`inet` (Auslegung 2026-11-21, Issue #221). Das Gateway
+ist auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
@@ -904,13 +908,14 @@ Ausnahmen sind die Token (6.1) und die KIM-Nachricht (Issue #256).
   Status: Vereinfachung.
 - KIM gilt mit SMC-B oder HSM-B (gemF_TI-Gateway); eAU und eArztbrief bleiben
   bei der SMC-B. Status: plausibel.
-- Das KIM-Clientmodul bleibt eigenständig ohne `host`. Es baut den VPN-Tunnel
-  zum TI-Gateway über das Internet auf: bei der Hebamme direkt am Internet
-  (neuer Anschluss „Internet“ am Clientmodul), im Krankenhaus über den Router.
-  Regel 2c zeigt diese Kanten als `vpn`, wie Regel 2a die Kante zum Gateway.
-  Das Gateway steht im Rechenzentrum und ist nur über sein WAN am Internet
-  erreichbar; ein Clientmodul im eigenen Netz öffnet diesen Weg wie das
-  Dienst-Smartphone (Pfadsuche). Die Zuordnung zum Primärsystem läuft über
+- Das KIM-Clientmodul bleibt eigenständig ohne `host`. Es sendet normale
+  IP-Pakete: bei der Hebamme direkt am Internet (neuer Anschluss „Internet“
+  am Clientmodul), im Krankenhaus über Switch und Router. Den VPN-Tunnel
+  zum TI-Gateway gibt es erst auf der Strecke Internet → TI-Gateway-WAN; das
+  Modell zeichnet ihn nicht als eigene Kantenart (`inet`, #221). Das
+  Gateway steht im Rechenzentrum und ist nur über sein WAN am Internet
+  erreichbar; jedes System kommt über seinen Router dorthin (#254), ein
+  Clientmodul ist dafür nicht nötig. Die Zuordnung zum Primärsystem läuft über
   die direkte Kante (4.2, A-6). Die Bevorzugung der direkten Kante gilt für alle Rollen.
   Status: Vereinfachung.
 

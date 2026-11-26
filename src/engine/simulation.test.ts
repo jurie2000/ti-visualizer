@@ -130,6 +130,12 @@ describe("bindFlow (Regelwerk 7, FR-8)", () => {
     });
   });
 
+  it("[#254] PoPP-Ablauftext am Arbeitsplatz mit Kartenterminal nennt das LAN, nicht NFC", () => {
+    const text = bind("popp", "pvs")[0]?.text;
+    expect(text).toContain("LAN der Praxis");
+    expect(text).not.toContain("NFC");
+  });
+
   it("mobkt: P ist das per USB verbundene Primärsystem, nicht das mobile KT", () => {
     expect(bind("mobkt", "mkt")[1]).toMatchObject({
       nodes: ["mkt", "pvs"],

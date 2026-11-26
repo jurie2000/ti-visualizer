@@ -220,8 +220,14 @@ export function bindFlow(
   const bind = roleBinder(trigger, topology, catalog, terminal, flow.id, lan);
   const choosing =
     !terminal && terminalOf(topology, trigger.id, catalog).status === "choose";
+  const p = bind("P");
+  const nfc = caps(catalog, trigger).includes("nfcCard");
+  const cloud = p !== undefined && isCloudHosted(topology, p, catalog);
   const steps = flow.steps.map((s) => {
-    const base = { label: s.label, text: s.text };
+    const base = {
+      label: s.label,
+      text: (nfc && s.textNfc) || (cloud && s.textCloud) || s.text,
+    };
     if (s.from === "E" || s.to === "E") {
       const anchor = bind(s.from === "E" ? s.to : s.from);
       return { ...base, nodes: [], edges: [], ...(anchor && { anchor }) };
@@ -242,7 +248,6 @@ export function bindFlow(
         };
   });
   // Läuft die Software in der Cloud, zeigt sie die Daten am Arbeitsplatz an, über das Internet (#229).
-  const p = bind("P");
   if (
     !p ||
     p === trigger.id ||

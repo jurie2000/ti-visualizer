@@ -241,7 +241,14 @@ function search(
         // Cloud-Software erreicht ein Gateway, das nicht am Cloud-Server hängt, über das Internet (#229).
         if (phase === INET && cloudInternet && !cloudGateways.has(n.id))
           return POST;
-        if (phase === INET && fromMobil && n.type === "gateway") return POST;
+        // Nur über die WAN-Kante am Internet, nicht über das LAN-Netz einer Praxis.
+        if (
+          phase === INET &&
+          fromMobil &&
+          n.type === "gateway" &&
+          roleOf(from, catalog) === "internet"
+        )
+          return POST;
         return phase === INET && isGoal && internetOnly ? INET : -1;
       case "internet":
         // Der LAN-Weg endet am Router: über das Internet käme man in fremde Netze (#221).

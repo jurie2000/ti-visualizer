@@ -233,6 +233,9 @@ export const flows = z.array(
         to: Id,
         label: Text,
         text: Text,
+        /** Text für Auslöser mit NFC (Dienst-Smartphone) bzw. Software im Rechenzentrum; sonst gilt `text`. */
+        textNfc: Text.optional(),
+        textCloud: Text.optional(),
         protocol: Id.optional(),
       }),
     ),

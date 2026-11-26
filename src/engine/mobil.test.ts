@@ -229,6 +229,138 @@ describe("Dienst-Smartphone (#254)", () => {
     expect(run(without(nurPopp, "epa-1"), "epa-gateway").enabled).toBe(false);
   });
 
+  it("epa-gateway: Negativfälle nennen ihren Grund, das ZETA-Token fehlt nie als Grund", () => {
+    const basis = tokens(preset, { popp: ["egk-1"] });
+    expect(basis.tokens?.zeta).toBeUndefined();
+    const hsmbEdit = (f: (c: AnyCard) => AnyCard) =>
+      hsmbCard(basis, (c) => [f(c as AnyCard)]);
+    const faulty: Topology = {
+      ...basis,
+      nodes: basis.nodes.map((n) =>
+        n.id === "gateway-1" ? { ...n, fault: true } : n,
+      ),
+    };
+    const faelle: [string, Topology, string][] = [
+      [
+        "abgelaufenes HSM-B",
+        hsmbEdit((c) => ({ ...c, expires: "2026-10-31" })),
+        "HSM-B ist seit 31.10.2026 abgelaufen.",
+      ],
+      [
+        "HSM-B ohne Software",
+        hsmbEdit((c) => ({ kind: "hsmb", expires: c.expires })),
+        "Das HSM-B ist keiner Software dieses Geräts zugeordnet.",
+      ],
+      ["Gateway ausgefallen", faulty, "ist ausgefallen."],
+      [
+        "Gateway ohne Internetkante",
+        cutAt(basis, "gateway-1"),
+        "Das TI-Gateway mit HSM-B ist nicht erreichbar.",
+      ],
+    ];
+    for (const [name, t, grund] of faelle) {
+      const a = run(t, "epa-gateway");
+      expect(a.enabled, name).toBe(false);
+      expect(a.disabledReason, name).toContain(grund);
+      expect(a.disabledReason, name).not.toContain("ZETA");
+    }
+  });
+
+  // Praxis-Rechner und Gateway hängen beide am Internet; ohne Smartphone führt kein Weg durchs Gateway
+  const praxisAmInternet = (): Topology => {
+    const at = (id: string, type: string) => ({
+      id,
+      type,
+      fault: false,
+      position: { x: 0, y: 0 },
+    });
+    const edge = (id: string, a: [string, string], b: [string, string]) => ({
+      id,
+      fault: false,
+      ends: [
+        { node: a[0], port: a[1] },
+        { node: b[0], port: b[1] },
+      ] as [{ node: string; port: string }, { node: string; port: string }],
+    });
+    return {
+      name: "t",
+      description: "",
+      simDate: "2026-11-01",
+      zones: [],
+      nodes: [
+        at("pc-1", "pc"),
+        at("router-1", "router"),
+        at("internet-1", "internet"),
+        at("gateway-1", "gateway"),
+        at("epa-1", "epa"),
+      ],
+      edges: [
+        edge("e1", ["pc-1", "eth0"], ["router-1", "lan1"]),
+        edge("e2", ["router-1", "wan"], ["internet-1", "netz"]),
+        edge("e3", ["gateway-1", "wan"], ["internet-1", "netz"]),
+        edge("e4", ["gateway-1", "ti"], ["epa-1", "ti"]),
+      ],
+    };
+  };
+
+  it("ohne Smartphone führt vom Praxis-Rechner kein Weg über das Internet ins Gateway", () => {
+    const t = praxisAmInternet();
+    for (const goal of ["gateway-1", "epa-1"])
+      expect(resolvePath(t, "pc-1", goal, catalog, "ti").ok, goal).toBe(false);
+  });
+
+  it("das Smartphone erreicht ein Gateway im LAN einer Praxis nicht", () => {
+    // gateway-1 hängt nur am Router (LAN), das Smartphone nur am Internet
+    const t = {
+      ...preset,
+      nodes: [
+        ...preset.nodes,
+        {
+          id: "router-1",
+          type: "router",
+          fault: false,
+          position: { x: 0, y: 0 },
+        },
+      ],
+      edges: [
+        ...preset.edges.filter((e) =>
+          e.ends.every((x) => x.node !== "gateway-1" || x.port !== "wan"),
+        ),
+        {
+          id: "e-r1",
+          fault: false,
+          ends: [
+            { node: "router-1", port: "wan" },
+            { node: "internet-1", port: "netz" },
+          ],
+        },
+        {
+          id: "e-r2",
+          fault: false,
+          ends: [
+            { node: "router-1", port: "lan1" },
+            { node: "gateway-1", port: "lan" },
+          ],
+        },
+      ],
+    } satisfies Topology;
+    expect(resolvePath(t, "mobil-1", "gateway-1", catalog, "ti").ok).toBe(
+      false,
+    );
+    expect(resolvePath(t, "mobil-1", "epa-1", catalog, "ti").ok).toBe(false);
+  });
+
+  it("[popp] Ablauftext passt zum Auslöser: NFC am Smartphone, sonst Kartenterminal", () => {
+    const text = bindFlow(
+      flowOf("popp"),
+      node(preset, "mobil-1"),
+      preset,
+      catalog,
+    )[0]?.text;
+    expect(text).toContain("per NFC");
+    expect(text).not.toContain("Kartenterminal");
+  });
+
   it("ein PoPP-Token einer fremden eGK genügt nicht", () => {
     const t = tokens(preset, { zeta: preset.simDate, popp: ["egk-9"] });
     expect(run(t, "vsdm2-pruefen").disabledReason).toBe(

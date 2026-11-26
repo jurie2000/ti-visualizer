@@ -280,6 +280,7 @@ eigene Regel-ID):
 1. über `wifi` (A-4): `wlan`
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
+2b. TI-Gateway (`ti`) ↔ Fachdienst (nicht Zentrales Netz): `vpn` (Auslegung 2026-11-26, Issue #254, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -301,6 +302,8 @@ zeigt daher den Tunnel (`vpn`, Regel 2a) und nicht das Kabel. Eine Kante
 Switch ↔ Konnektor bleibt `phys`. Status: plausibel.
 
 Auslegung (2026-11-23, Issue #241): Regel 2a gilt auch für Router ↔ TI-Gateway (LAN-Anschluss des Gateways), weil auch diese Kante den Tunnel des Gateways zeigt.
+
+Auslegung (2026-11-26, Issue #254): Regel 2b: Der Weg des Zugangsmoduls im TI-Gateway zum Fachdienst (z. B. ePA) ist sein VPN-Tunnel; die Kante zeigt `vpn`. Ein VPN-Zugangsdienst-Knoten steht nicht im Pfad (Auslegung #241), nur die Kantenart ändert sich. Die Kante zum Zentralen Netz bleibt `tcp` (Regel 4). Das gilt auch für die Presets Krankenhaus und Klinikum. Status: Vereinfachung.
 
 Status: **Vereinfachung** (2026-11-06). Eine Kante steht für die
 Strecke zwischen zwei Geräten. Ist ein Endpunkt ein Netzgerät, ist die
@@ -549,7 +552,9 @@ Status: Vereinfachung.
 Dienst-Smartphone erreicht ein TI-Gateway über das Internet (Gerät →
 Internet → TI-Gateway-WAN) und nutzt es als **Zugang** zur TI 1.0: Gerät →
 Internet → TI-Gateway → Dienst (z. B. ePA), ohne VPN-Zugangsdienst wie beim
-TI-Gateway-Pfad oben. Das gilt nur für das Dienst-Smartphone; Rechner einer
+TI-Gateway-Pfad oben; der letzte Abschnitt ist der VPN-Tunnel des
+Zugangsmoduls. Nur über die WAN-Kante des Gateways am Internet, nicht über das
+LAN einer Praxis. Das gilt nur für das Dienst-Smartphone; Rechner einer
 Praxis erreichen ein Gateway nicht über das Internet. Das Gateway ist dort
 auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
@@ -827,9 +832,9 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `erezept` | P→K Signaturauftrag (SOAP) · K→T HBA signiert, QES (SICCT, ISO 7816) · K→P signierte Verordnung · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Verordnung einstellen (VAU, FHIR, über K→V) · E-Rezept-FD→P Rezept-ID | Vereinfachung | gemILF_PS_eRp, gemSpec_FD_eRp, gemSpec_KT |
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
 | `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→IDP Signatur der SMC-B, Identity-Token holen (über das Internet) · IDP→P Identity-/Refresh-Token · P→ZETA Guard Token vorlegen (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, gemSpec_IDP_FD, Info_VSDM2_ZETA_PoPP |
-| `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet; beim Dienst-Smartphone liest die PS-App die eGK per NFC und reicht die Kartenkommunikation an den PoPP-Service durch) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
+| `popp` | T→P eGK-Daten (je nach Auslöser: Kartenterminal im Praxisnetz über das LAN, aus der Cloud über Router, Internet und Cloud-Server, am Dienst-Smartphone liest die PS-App die eGK per NFC und reicht die Kartenkommunikation an den PoPP-Service durch) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
 | `zetaHsmb` | P→K Signatur mit dem HSM-B anfordern (über das Internet) · K→P Signatur · P→ZETA Guard Anmelden (über das Internet) · ZETA Guard→P Access Token | plausibel | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
-| `epaGateway` | P→K Authentisierung mit dem HSM-B (über das Internet) · P→ePA Zugriff mit PoPP-Token (über K) · ePA→P Akteninhalt | plausibel | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `epaGateway` | P→K Authentisierung mit dem HSM-B (über das Internet) · P→ePA Zugriff mit PoPP-Token (über das Internet zum TI-Gateway, dann durch den VPN-Tunnel seines Zugangsmoduls zur ePA) · ePA→P Akteninhalt | plausibel | gemSpec_Aktensystem_ePAfueralle, gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP |
 | `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |

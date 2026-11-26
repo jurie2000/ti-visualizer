@@ -580,6 +580,10 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
     return bindFlow(flow, from, t, catalog);
   };
 
+  it("[#254] PoPP-Ablauftext: Cloud-Software nennt den Weg über den Cloud-Server", () => {
+    expect(flowSteps(rz(), "popp", "pc1")[0]?.text).toContain("Cloud-Server");
+  });
+
   it("#226: Cloud-PVS erreicht das Kartenterminal für ZETA und PoPP über das Internet, ohne TI-Gateway", () => {
     const t = rz();
     for (const id of ["zeta", "popp"]) {

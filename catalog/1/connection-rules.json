@@ -127,22 +127,6 @@
     "status": "bestätigt"
   },
   {
-    "id": "erl-kimcm-internet",
-    "a": { "types": ["kimcm"] },
-    "b": { "types": ["internet"] },
-    "kinds": { "a": ["net"] },
-    "source": ["gemSpec_CM_KOMLE"],
-    "status": "Vereinfachung"
-  },
-  {
-    "id": "erl-kimcm-netz",
-    "a": { "types": ["kimcm"] },
-    "b": { "types": ["switch", "router"] },
-    "kinds": { "a": ["eth"], "b": ["eth"] },
-    "source": ["gemSpec_CM_KOMLE", "DVO"],
-    "status": "Vereinfachung"
-  },
-  {
     "id": "erl-kimcm-zugang",
     "a": {
       "types": ["kimcm"]

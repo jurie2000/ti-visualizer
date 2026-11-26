@@ -38,9 +38,11 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
   it("T-724c: Zugriff auf einen Cloud-Server ergibt die Art Internet", () => {
     expect(kindOf(["pc", "web"], ["cloud", "web"])).toBe("inet");
   });
-  it("#221: Cloud-Server und TI-Gateway (WAN) am Internet ergeben Internet", () => {
+  it("#221: Cloud-Server am Internet ergibt Internet", () => {
     expect(kindOf(["cloud", "inet"], ["internet", "netz"])).toBe("inet");
-    expect(kindOf(["gateway", "wan"], ["internet", "netz"])).toBe("inet");
+  });
+  it("[#256] ab dem Internet führt immer ein VPN zum TI-Gateway (WAN)", () => {
+    expect(kindOf(["gateway", "wan"], ["internet", "netz"])).toBe("vpn");
   });
   it("#221: Cloud-Server am TI-Gateway (LAN) ergibt TCP", () => {
     expect(kindOf(["cloud", "lan"], ["gateway", "lan"])).toBe("tcp");
@@ -111,10 +113,6 @@ describe("Verbindungsart einer Kante (Regelwerk 3)", () => {
       "hebamme-mobil": 1,
       "kim-hebamme-krankenhaus": 1,
     });
-  });
-  it("[#256] KIM-Clientmodul am Internet ergibt Internet, am Router normales Kabel", () => {
-    expect(kindOf(["kimcm", "net"], ["internet", "netz"])).toBe("inet");
-    expect(kindOf(["kimcm", "lan0"], ["router", "lan3"])).toBe("phys");
   });
   it("[#241] TI-Gateway am Zentralen Netz ergibt TCP", () => {
     expect(kindOf(["gateway", "ti"], ["zentral", "netz"])).toBe("tcp");

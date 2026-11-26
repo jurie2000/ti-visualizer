@@ -223,7 +223,7 @@ Abschnitt 5.
 | RIS, LIS | KIS-Schnittstelle (`app`), Läuft auf (`host`, mehrfach) | Vereinfachung | KH |
 | Visite-Tablet | WLAN0, USB-C | Mockup, plausibel | KH |
 | Dienst-Smartphone | Internet (`net`), Software (`host`, mehrfach) | Vereinfachung (Issue #254) | gemILF_PS, Info_VSDM2_ZETA_PoPP |
-| KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang), Internet (`net`, für ein Clientmodul ohne Router, Auslegung 2026-11-26, Issue #256) | Vereinfachung | gemSpec_CM_KOMLE |
+| KIM-Clientmodul | LAN0 (`eth`, mehrfach, spricht mit Primärsystem und Zugang) | Vereinfachung | gemSpec_CM_KOMLE |
 | TI-Messenger-Client | WAN (Internet) | plausibel | gemSpec_TI-M_Basis |
 | eHealth-KT | LAN0 | bestätigt | gemSpec_KT |
 | Mobiles KT | USB0 | bestätigt | gemSpec_MobKT |
@@ -281,6 +281,7 @@ eigene Regel-ID):
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
 2b. TI-Gateway (`ti`) ↔ Gerät mit `ti`-Anschluss (Fachdienst), außer Zentrales Netz: `vpn` (Auslegung 2026-11-26, Issue #254, unten)
+2c. Internet ↔ TI-Gateway (WAN): `vpn` (Auslegung 2026-11-26, Issue #256, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -558,9 +559,10 @@ LAN einer Praxis. **Auslegung (2026-11-26, Issue #256):** Das Smartphone
 bleibt ein gleichberechtigter Weg: Es hängt direkt am Internet, weil es nicht
 stationär ist. Stationäre Systeme (Praxis- oder Krankenhaus-PS) erreichen ein
 Gateway im Rechenzentrum immer über Switch, Router und Internet, ohne
-zusätzliche Komponente. Das KIM-Clientmodul sendet normale IP-Pakete; der VPN-Tunnel
-besteht erst auf der Strecke Internet → TI-Gateway. Die Kante zeigt weiter
-`inet` (Auslegung 2026-11-21, Issue #221). Das Gateway
+zusätzliche Komponente. Ab dem Internet läuft immer ein VPN zum Gateway,
+das Internet ist nur das Transportmedium; die Kante Internet ↔ Gateway-WAN
+zeigt daher `vpn` (Regel 2c, ersetzt `inet` aus Auslegung 2026-11-21, Issue
+#221, für diese Kante). Das Gateway
 ist auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
@@ -908,16 +910,12 @@ Ausnahmen sind die Token (6.1) und die KIM-Nachricht (Issue #256).
   Status: Vereinfachung.
 - KIM gilt mit SMC-B oder HSM-B (gemF_TI-Gateway); eAU und eArztbrief bleiben
   bei der SMC-B. Status: plausibel.
-- Das KIM-Clientmodul bleibt eigenständig ohne `host`. Es sendet normale
-  IP-Pakete: bei der Hebamme direkt am Internet (neuer Anschluss „Internet“
-  am Clientmodul), im Krankenhaus über Switch und Router. Den VPN-Tunnel
-  zum TI-Gateway gibt es erst auf der Strecke Internet → TI-Gateway-WAN; das
-  Modell zeichnet ihn nicht als eigene Kantenart (`inet`, #221). Das
-  Gateway steht im Rechenzentrum und ist nur über sein WAN am Internet
-  erreichbar; jedes System kommt über seinen Router dorthin (#254), ein
-  Clientmodul ist dafür nicht nötig. Die Zuordnung zum Primärsystem läuft über
-  die direkte Kante (4.2, A-6). Die Bevorzugung der direkten Kante gilt für alle Rollen.
-  Status: Vereinfachung.
+- Das KIM-Clientmodul bleibt eigenständig ohne `host` und spricht nicht selbst
+  mit dem Internet: mobil läuft der Weg über das Dienst-Smartphone,
+  stationär über PC, Switch und Router. Ab dem Internet führt immer ein VPN
+  zum TI-Gateway (Regel 2c). Die Zuordnung zum Primärsystem läuft über die
+  direkte Kante (4.2, A-6). Die Bevorzugung der direkten Kante gilt für alle
+  Rollen. Status: Vereinfachung.
 
 ## 8. Konfiguration im Modus Erweitert
 
@@ -1172,7 +1170,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Praxis TI 2.0 | Praxis, TI 2.0 im Parallelbetrieb | 1 PC (AP-1) mit 1 PVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 TI-Gateway (LAN an Router und Cloud), Cloud. Dienste: VSDM (TI 1.0), IDP, ZETA, PoPP, VSDM 2 (TI 2.0). Vier Zonen. Nur in der Bibliothek | KT: eGK, HBA, SMC-B | kein Mockup-Preset, im Editor gebaut (#244). `simDate` und ZETA-Token auf 2026-11-01 gesetzt |
 | Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ePA (am TI-Gateway), ZETA Guard, PoPP-Service, VSDM 2.0. Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
-| KIM Hebamme–Krankenhaus | KIM: Hebamme und Krankenhaus | Hebamme: 1 Dienst-Smartphone mit 1 PVS, 1 KIM-Clientmodul (am Internet), Internet. Rechenzentrum: 1 TI-Gateway (WAN am Internet, HSM-B für das PVS). Krankenhaus: 1 PC (AP-1), 1 KT (SMC-B), 1 Switch, 1 Router (WAN am Internet), 1 Server mit KIS, 1 KIM-Clientmodul (am Router). TI: KIM-Fachdienst am TI-Gateway, Zentrales Netz mit VZD. Vier Zonen. Nur in der Bibliothek | SMC-B im KT, HSM-B im TI-Gateway, eGK im Smartphone (NFC) | kein Mockup-Preset (#256). Ohne Token und Nachricht, `simDate` 2026-11-01 |
+| KIM Hebamme–Krankenhaus | KIM: Hebamme und Krankenhaus | Hebamme: 1 Dienst-Smartphone mit 1 PVS, 1 KIM-Clientmodul (am PVS), Internet. Rechenzentrum: 1 TI-Gateway (WAN am Internet, HSM-B für das PVS). Krankenhaus: 1 PC (AP-1), 1 KT (SMC-B), 1 Switch, 1 Router (WAN am Internet), 1 Server mit KIS, 1 KIM-Clientmodul (am KIS). TI: KIM-Fachdienst am TI-Gateway, Zentrales Netz mit VZD. Vier Zonen. Nur in der Bibliothek | SMC-B im KT, HSM-B im TI-Gateway, eGK im Smartphone (NFC) | kein Mockup-Preset (#256). Ohne Token und Nachricht, `simDate` 2026-11-01 |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

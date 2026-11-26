@@ -392,14 +392,6 @@
         "multi": true,
         "source": ["gemSpec_CM_KOMLE"],
         "status": "Vereinfachung"
-      },
-      {
-        "id": "net",
-        "name": "Internet",
-        "kind": "net",
-        "multi": false,
-        "source": ["gemSpec_CM_KOMLE"],
-        "status": "Vereinfachung"
       }
     ],
     "source": ["gemSpec_CM_KOMLE"],

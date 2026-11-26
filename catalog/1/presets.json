@@ -2768,5 +2768,445 @@
     },
     "source": ["editor"],
     "status": "Vereinfachung"
+  },
+  {
+    "id": "kim-hebamme-krankenhaus",
+    "topology": {
+      "name": "KIM: Hebamme und Krankenhaus",
+      "description": "Die Hebamme legt vom Dienst-Smartphone eine KIM-Nachricht ab, das Krankenhaus holt sie ab. Die Clientmodule sprechen nicht selbst mit dem Internet: bei der Hebamme läuft der Weg über das Dienst-Smartphone, im Krankenhaus über PC, Switch und Router. Ab dem Internet führt immer ein VPN zum TI-Gateway im Rechenzentrum. Die Hebamme nutzt das HSM-B, das Krankenhaus die SMC-B im Kartenterminal.",
+      "simDate": "2026-11-01",
+      "nodes": [
+        {
+          "id": "mobil-1",
+          "type": "mobil",
+          "position": {
+            "x": 80,
+            "y": 200
+          },
+          "fault": false,
+          "label": "Dienst-Smartphone der Hebamme",
+          "cards": [
+            {
+              "kind": "egk",
+              "expires": "2029-11-23",
+              "pinActive": false
+            }
+          ]
+        },
+        {
+          "id": "pvs-1",
+          "type": "pvs",
+          "position": {
+            "x": 80,
+            "y": 60
+          },
+          "fault": false
+        },
+        {
+          "id": "kimcm-1",
+          "type": "kimcm",
+          "position": {
+            "x": 340,
+            "y": 60
+          },
+          "fault": false,
+          "label": "KIM-Clientmodul Hebamme"
+        },
+        {
+          "id": "internet-1",
+          "type": "internet",
+          "position": {
+            "x": 620,
+            "y": 200
+          },
+          "fault": false
+        },
+        {
+          "id": "gateway-1",
+          "type": "gateway",
+          "position": {
+            "x": 620,
+            "y": 420
+          },
+          "fault": false,
+          "config": {
+            "mask": "255.255.255.0",
+            "mode": "reihe",
+            "dhcp": false,
+            "dhcpServer": false,
+            "vlan": "TI",
+            "certExpires": "2029-03-31",
+            "timeOffset": 0,
+            "updateOk": true,
+            "ip": "192.168.10.2",
+            "lastTimeSync": "2026-11-01"
+          },
+          "cards": [
+            {
+              "kind": "hsmb",
+              "expires": "2029-11-23",
+              "software": "pvs-1"
+            }
+          ]
+        },
+        {
+          "id": "pc-1",
+          "type": "pc",
+          "position": {
+            "x": 80,
+            "y": 520
+          },
+          "fault": false,
+          "config": {
+            "workplace": "AP-1"
+          },
+          "label": "Arbeitsplatz-PC AP-1"
+        },
+        {
+          "id": "kt-1",
+          "type": "kt",
+          "position": {
+            "x": 80,
+            "y": 720
+          },
+          "fault": false,
+          "cards": [
+            {
+              "kind": "smcb",
+              "id": "kt-1-smcb",
+              "expires": "2030-06-30",
+              "unlocked": true
+            }
+          ],
+          "config": {
+            "workplace": "AP-1"
+          },
+          "label": "eHealth-Kartenterminal AP-1"
+        },
+        {
+          "id": "switch-1",
+          "type": "switch",
+          "position": {
+            "x": 340,
+            "y": 620
+          },
+          "fault": false
+        },
+        {
+          "id": "router-1",
+          "type": "router",
+          "position": {
+            "x": 620,
+            "y": 620
+          },
+          "fault": false
+        },
+        {
+          "id": "server-1",
+          "type": "server",
+          "position": {
+            "x": 80,
+            "y": 920
+          },
+          "fault": false
+        },
+        {
+          "id": "kis-1",
+          "type": "kis",
+          "position": {
+            "x": 80,
+            "y": 1100
+          },
+          "fault": false
+        },
+        {
+          "id": "kimcm-2",
+          "type": "kimcm",
+          "position": {
+            "x": 340,
+            "y": 920
+          },
+          "fault": false,
+          "label": "KIM-Clientmodul Krankenhaus"
+        },
+        {
+          "id": "kim-1",
+          "type": "kim",
+          "position": {
+            "x": 1000,
+            "y": 420
+          },
+          "fault": false
+        },
+        {
+          "id": "zentral-1",
+          "type": "zentral",
+          "position": {
+            "x": 1000,
+            "y": 240
+          },
+          "fault": false
+        },
+        {
+          "id": "vzd-1",
+          "type": "vzd",
+          "position": {
+            "x": 1300,
+            "y": 240
+          },
+          "fault": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "e-1",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pvs-1",
+              "port": "host"
+            },
+            {
+              "node": "mobil-1",
+              "port": "soft"
+            }
+          ]
+        },
+        {
+          "id": "e-2",
+          "fault": false,
+          "ends": [
+            {
+              "node": "mobil-1",
+              "port": "net"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-3",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "wan"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-4",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pvs-1",
+              "port": "app"
+            },
+            {
+              "node": "kimcm-1",
+              "port": "lan0"
+            }
+          ]
+        },
+        {
+          "id": "e-6",
+          "fault": false,
+          "ends": [
+            {
+              "node": "pc-1",
+              "port": "eth0"
+            },
+            {
+              "node": "switch-1",
+              "port": "p1"
+            }
+          ]
+        },
+        {
+          "id": "e-7",
+          "fault": false,
+          "ends": [
+            {
+              "node": "kt-1",
+              "port": "lan0"
+            },
+            {
+              "node": "switch-1",
+              "port": "p2"
+            }
+          ]
+        },
+        {
+          "id": "e-8",
+          "fault": false,
+          "ends": [
+            {
+              "node": "server-1",
+              "port": "eth0"
+            },
+            {
+              "node": "switch-1",
+              "port": "p3"
+            }
+          ]
+        },
+        {
+          "id": "e-9",
+          "fault": false,
+          "ends": [
+            {
+              "node": "switch-1",
+              "port": "p4"
+            },
+            {
+              "node": "router-1",
+              "port": "lan2"
+            }
+          ]
+        },
+        {
+          "id": "e-10",
+          "fault": false,
+          "ends": [
+            {
+              "node": "router-1",
+              "port": "wan"
+            },
+            {
+              "node": "internet-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-11",
+          "fault": false,
+          "ends": [
+            {
+              "node": "kis-1",
+              "port": "host"
+            },
+            {
+              "node": "server-1",
+              "port": "soft"
+            }
+          ]
+        },
+        {
+          "id": "e-12",
+          "fault": false,
+          "ends": [
+            {
+              "node": "kis-1",
+              "port": "app"
+            },
+            {
+              "node": "kimcm-2",
+              "port": "lan0"
+            }
+          ]
+        },
+        {
+          "id": "e-14",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "ti"
+            },
+            {
+              "node": "kim-1",
+              "port": "ti"
+            }
+          ]
+        },
+        {
+          "id": "e-15",
+          "fault": false,
+          "ends": [
+            {
+              "node": "gateway-1",
+              "port": "ti"
+            },
+            {
+              "node": "zentral-1",
+              "port": "netz"
+            }
+          ]
+        },
+        {
+          "id": "e-16",
+          "fault": false,
+          "ends": [
+            {
+              "node": "zentral-1",
+              "port": "netz"
+            },
+            {
+              "node": "vzd-1",
+              "port": "ti"
+            }
+          ]
+        }
+      ],
+      "zones": [
+        {
+          "id": "zone-1",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 20,
+            "y": -20,
+            "w": 560,
+            "h": 360
+          },
+          "label": "Hebamme unterwegs"
+        },
+        {
+          "id": "zone-2",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 20,
+            "y": 460,
+            "w": 660,
+            "h": 780
+          },
+          "label": "Krankenhaus"
+        },
+        {
+          "id": "zone-3",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 560,
+            "y": 360,
+            "w": 300,
+            "h": 200
+          },
+          "label": "Rechenzentrum"
+        },
+        {
+          "id": "zone-4",
+          "shape": "rect",
+          "tone": "sage",
+          "area": {
+            "x": 940,
+            "y": 180,
+            "w": 520,
+            "h": 380
+          },
+          "label": "TI"
+        }
+      ]
+    },
+    "source": ["editor"],
+    "status": "Vereinfachung"
   }
 ]

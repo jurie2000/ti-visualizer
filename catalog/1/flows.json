@@ -220,17 +220,49 @@
       {
         "from": "kimcm",
         "to": "K",
-        "label": "Verschlüsselung mit der SMC-B",
-        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B."
+        "label": "Verschlüsselung mit der SMC-B (KIM-Nachricht auch mit dem HSM-B)",
+        "text": "Das Clientmodul verschlüsselt die Nachricht mit der SMC-B. Eine einfache KIM-Nachricht kann beim TI-Gateway stattdessen das HSM-B verschlüsseln, der eArztbrief bleibt bei der SMC-B."
       },
       {
         "from": "kimcm",
         "to": "kim",
         "label": "Versand (mTLS, über K→V)",
-        "text": "Über den VPN-Tunnel stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
+        "text": "Durch den VPN-Tunnel des Zugangs (beim TI-Gateway das integrierte Zugangsmodul) stellt das Clientmodul die Nachricht beim KIM-Fachdienst ein."
       }
     ],
     "source": ["gemSpec_CM_KOMLE", "gemSpec_VZD_FHIR_Directory"],
+    "status": "plausibel"
+  },
+  {
+    "id": "kimAbholen",
+    "name": "KIM-Nachricht abholen",
+    "steps": [
+      {
+        "from": "P",
+        "to": "kimcm",
+        "label": "Abruf (POP3)",
+        "text": "Das Primärsystem ruft beim KIM-Clientmodul neue Nachrichten ab."
+      },
+      {
+        "from": "kim",
+        "to": "kimcm",
+        "label": "Nachricht (mTLS, durch den VPN-Tunnel)",
+        "text": "Das Clientmodul holt die Nachricht durch den VPN-Tunnel des Zugangs vom KIM-Fachdienst ab. Der Fachdienst löscht sie danach."
+      },
+      {
+        "from": "kimcm",
+        "to": "K",
+        "label": "Entschlüsseln mit der SMC-B oder dem HSM-B",
+        "text": "Das Clientmodul lässt die Nachricht mit der SMC-B oder, beim TI-Gateway, mit dem HSM-B entschlüsseln."
+      },
+      {
+        "from": "kimcm",
+        "to": "P",
+        "label": "Übergabe an das Primärsystem",
+        "text": "Das Clientmodul übergibt die entschlüsselte Nachricht an das Primärsystem."
+      }
+    ],
+    "source": ["gemSpec_CM_KOMLE", "gemSpec_FD_KOMLE"],
     "status": "plausibel"
   },
   {

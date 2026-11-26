@@ -88,15 +88,19 @@ export function describeEdge(
                 both("ti") &&
                 !types.includes("zentral")
               ? "vpn" // Regelwerk 3, Regel 2b: Tunnel des Zugangsmoduls zum Fachdienst (#254)
-              : has("net")
-                ? "inet"
-                : both("ti") || both("app")
-                  ? "tcp"
-                  : has("usb")
-                    ? "usb"
-                    : a && b && carriesTls([a.type, b.type], catalog)
-                      ? "tcp"
-                      : "phys";
+              : types.includes("gateway") &&
+                  types.includes("internet") &&
+                  has("wan")
+                ? "vpn" // Regelwerk 3, Regel 2c: ab dem Internet immer VPN zum Gateway (#256)
+                : has("net")
+                  ? "inet"
+                  : both("ti") || both("app")
+                    ? "tcp"
+                    : has("usb")
+                      ? "usb"
+                      : a && b && carriesTls([a.type, b.type], catalog)
+                        ? "tcp"
+                        : "phys";
 
   const ports = a && b ? `${a.port} ↔ ${b.port}` : "";
   const label =

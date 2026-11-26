@@ -68,13 +68,35 @@
       "all": [
         { "need": "zugang" },
         { "need": "ti" },
-        { "card": "smcb", "unlocked": true },
+        { "any": [{ "card": "smcb", "unlocked": true }, { "need": "hsmb" }] },
         { "present": "kimcm" },
         { "service": "kim" }
       ]
     },
     "flow": "kim",
+    "issues": "kimAblegen",
     "source": ["gemSpec_CM_KOMLE", "Pflege-FAQ"],
+    "status": "plausibel"
+  },
+  {
+    "id": "kim-abholen",
+    "name": "KIM-Nachricht abholen",
+    "category": "KIM",
+    "section": "online",
+    "offeredBy": { "types": ["pvs", "kis", "pflege"] },
+    "requires": {
+      "all": [
+        { "need": "zugang" },
+        { "need": "ti" },
+        { "any": [{ "card": "smcb", "unlocked": true }, { "need": "hsmb" }] },
+        { "present": "kimcm" },
+        { "service": "kim" },
+        { "need": "kimNachricht" }
+      ]
+    },
+    "flow": "kimAbholen",
+    "issues": "kimAbholen",
+    "source": ["gemSpec_CM_KOMLE", "gemSpec_FD_KOMLE"],
     "status": "plausibel"
   },
   {

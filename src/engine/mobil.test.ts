@@ -266,7 +266,7 @@ describe("Dienst-Smartphone (#254)", () => {
     }
   });
 
-  // Praxis-Rechner und Gateway hängen beide am Internet; ohne Smartphone führt kein Weg durchs Gateway
+  // Praxis-Rechner und Gateway hängen beide am Internet
   const praxisAmInternet = (): Topology => {
     const at = (id: string, type: string) => ({
       id,
@@ -303,11 +303,11 @@ describe("Dienst-Smartphone (#254)", () => {
     };
   };
 
-  it("ohne Smartphone führt vom Praxis-Rechner kein Weg über das Internet ins Gateway", () => {
+  it("der Praxis-Rechner erreicht das Gateway über Router und Internet, wie das Smartphone (#256)", () => {
     const t = praxisAmInternet();
     for (const goal of ["gateway-1", "epa-1"])
-      expect(resolvePath(t, "pc-1", goal, catalog, "ti").ok, goal).toBe(false);
-    // Positivfall: dieselbe Topologie mit einem Smartphone am Internet erreicht das Gateway
+      expect(resolvePath(t, "pc-1", goal, catalog, "ti").ok, goal).toBe(true);
+    // dieselbe Topologie mit einem Smartphone am Internet erreicht das Gateway ebenso
     const mitHandy: Topology = {
       ...t,
       nodes: [

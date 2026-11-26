@@ -281,6 +281,7 @@ eigene Regel-ID):
 2. beide Enden `tun`: `vpn`
 2a. Switch oder Router ↔ TI-Gateway: `vpn` (Auslegung 2026-11-19, Issue #211 und 2026-11-23, Issue #241, unten)
 2b. TI-Gateway (`ti`) ↔ Gerät mit `ti`-Anschluss (Fachdienst), außer Zentrales Netz: `vpn` (Auslegung 2026-11-26, Issue #254, unten)
+2c. Internet ↔ TI-Gateway (WAN): `vpn` (Auslegung 2026-11-26, Issue #256, unten)
 3. ein Ende `net`: `inet`
 4. beide Enden `ti`: `tcp`
 5. ein Ende `usb`: `usb`
@@ -554,9 +555,15 @@ Internet → TI-Gateway-WAN) und nutzt es als **Zugang** zur TI 1.0: Gerät →
 Internet → TI-Gateway → Dienst (z. B. ePA), ohne VPN-Zugangsdienst wie beim
 TI-Gateway-Pfad oben; der letzte Abschnitt ist der VPN-Tunnel des
 Zugangsmoduls. Nur über die WAN-Kante des Gateways am Internet, nicht über das
-LAN einer Praxis. Das gilt nur für das Dienst-Smartphone; Rechner einer
-Praxis erreichen ein Gateway nicht über das Internet. Das Gateway ist dort
-auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
+LAN einer Praxis. **Auslegung (2026-11-26, Issue #256):** Das Smartphone
+bleibt ein gleichberechtigter Weg: Es hängt direkt am Internet, weil es nicht
+stationär ist. Stationäre Systeme (Praxis- oder Krankenhaus-PS) erreichen ein
+Gateway im Rechenzentrum immer über Switch, Router und Internet, ohne
+zusätzliche Komponente. Ab dem Internet läuft immer ein VPN zum Gateway,
+das Internet ist nur das Transportmedium; die Kante Internet ↔ Gateway-WAN
+zeigt daher `vpn` (Regel 2c, ersetzt `inet` aus Auslegung 2026-11-21, Issue
+#221, für diese Kante). Das Gateway
+ist auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
@@ -656,6 +663,7 @@ Status: Vereinfachung.
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
 | **HSM-B** | Ein gültiges HSM-B (K-3) steckt in einem TI-Gateway, ist einer Software des Auslösers zugeordnet (K-10), und das Gateway ist als Zugang erreichbar (6.0, nicht ausgefallen) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
+| **KIM-Nachricht** | Auf dem KIM-Fachdienst liegt eine Nachricht, deren Absender keine Software des Auslösers ist. Stand in der Topologie: `tokens.kim` (Absender-IDs, je Absender höchstens eine Nachricht) | gemSpec_CM_KOMLE, gemSpec_FD_KOMLE (plausibel) |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
 | **PoPP-Token** | Für eine eGK im Terminal des Zugangs oder im Auslöser wurde ein PoPP-Token ausgestellt (Vereinfachung: irgendeine dieser eGK genügt). Er gilt für den Behandlungsfall dieser eGK und hängt an ihrer `id`. Stand in der Topologie: `tokens.popp` (eGK-IDs), eine eGK ohne `id` trägt erst nach der Ausstellung einen Token (Auslegung TI-2.0-Aktionen, 6.2) | gemSpec_PoPP_Service, gemSpec_VSDM_2 (plausibel) |
@@ -705,7 +713,8 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | eRezept ausstellen | Zugang, TI, HBA (QES), SMC-B, E-Rezept | `erezept` | gemILF_PS_eRp, gemSpec_FD_eRp, KH (HBA für QES) |
 | eAU ausstellen und per KIM senden | Zugang, TI, HBA (QES), SMC-B, KIM-Clientmodul\*, KIM | `eau` | PM eAU, gemSpec_CM_KOMLE |
 | eArztbrief per KIM senden | Zugang, TI, HBA (QES), SMC-B, KIM-Clientmodul\*, KIM | `kim` | gemSpec_CM_KOMLE, KIM-DK |
-| KIM-Nachricht senden | Zugang, TI, SMC-B, KIM-Clientmodul\*, KIM | `kim` | gemSpec_CM_KOMLE |
+| KIM-Nachricht senden | Zugang, TI, SMC-B oder HSM-B, KIM-Clientmodul\*, KIM. Legt die Nachricht ab (6.1 „KIM-Nachricht“) | `kim` | gemSpec_CM_KOMLE, gemF_TI-Gateway |
+| KIM-Nachricht abholen | wie Senden, dazu KIM-Nachricht eines anderen Absenders. Löscht sie auf dem Fachdienst | `kimAbholen` | gemSpec_CM_KOMLE, gemSpec_FD_KOMLE |
 | eAU-Kopie in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemILF_PS_ePA, KBV (nur auf Wunsch) |
 | Befund in die ePA hochladen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemILF_PS_ePA |
 | ePA-Medikationsliste einsehen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gemSpec_Aktensystem_ePAfueralle |
@@ -783,7 +792,8 @@ KH).
 | Aktion | Voraussetzungen | Ablauf | Quelle |
 |---|---|---|---|
 | Dokument in die ePA hochladen / einsehen | Zugang, TI, SMC-B, Befugnis, ePA | `epa` | gematik Pflege-FAQ, gemSpec_Aktensystem_ePAfueralle |
-| KIM-Nachricht senden | Zugang, TI, SMC-B, KIM-Clientmodul\*, KIM | `kim` | gematik Pflege-FAQ, gemSpec_CM_KOMLE |
+| KIM-Nachricht senden | Zugang, TI, SMC-B oder HSM-B, KIM-Clientmodul\*, KIM | `kim` | gematik Pflege-FAQ, gemSpec_CM_KOMLE |
+| KIM-Nachricht abholen | wie Senden, dazu KIM-Nachricht eines anderen Absenders | `kimAbholen` | gemSpec_CM_KOMLE, gemSpec_FD_KOMLE |
 
 ### 6.5 Kartenterminals, CardLink und TI-Messenger-Client
 
@@ -839,7 +849,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
 | `eau` | P→CM eAU (SMTP) · CM→K Signatur mit HBA (QES) über T · CM→K Verschlüsselung mit der SMC-B · CM→KIM (mTLS, über K→V) · KIM→Krankenkasse · Krankenkasse→KIM→P Quittung | bestätigt | gemSpec_CM_KOMLE, PM eAU, KIM-DK |
-| `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
+| `kim` | wie `eau`, Empfänger aus dem VZD. HBA-Signatur nur beim eArztbrief. Verschlüsselung mit der SMC-B (bei der KIM-Nachricht auch mit dem HSM-B), Versand durch den VPN-Tunnel des Zugangs (beim TI-Gateway das integrierte Zugangsmodul) | plausibel | gemSpec_CM_KOMLE, gemSpec_VZD_FHIR_Directory |
+| `kimAbholen` | P→CM Abruf (POP3) · KIM→CM Nachricht durch den VPN-Tunnel, der Fachdienst löscht sie · CM→K Entschlüsseln mit SMC-B oder HSM-B · CM→P Übergabe | plausibel | gemSpec_CM_KOMLE, gemSpec_FD_KOMLE |
 | `epa` | P→K Authentisierung mit der SMC-B · Befugnis prüfen (Prüfungsnachweis oder PoPP) · P→ePA Dokument bzw. Abfrage (VAU, FHIR, über K→V) · ePA→P | Vereinfachung | gemILF_PS_ePA, gemSpec_Aktensystem_ePAfueralle |
 | `tim` | Client→TI-Messenger-FD (Matrix, Internet) · FD→FD des Empfängers (Föderation über VZD) · Zustellung | plausibel | gemSpec_TI-M_Basis |
 | `erezeptEinloesen` | eGK-Weg: P→K ReadVSD mit eGK · K→V→VSDM Prüfungsnachweis · P→K Authentisierung mit der SMC-B · P→E-Rezept-FD Abruf mit Prüfungsnachweis (über K→V) · E-Rezept-FD→P Verordnung | Vereinfachung | gemF_eRp_Autorisierung_Apo, FP eHealth-CardLink |
@@ -867,7 +878,9 @@ Alte Dateien mit einer Kante am entfallenen Anschluss `ti` laden weiter, die
 Kante entfällt mit Hinweis. Status: plausibel (gemSpec_IDP_FD, gemSpec_ZETA).
 
 Rollenbindung: Knoten werden über den Pfad nach 6.0 bestimmt, nicht
-über „erstes passendes Gerät der Topologie“ wie im Mockup.
+über „erstes passendes Gerät der Topologie“ wie im Mockup. Gibt es mehrere
+Geräte eines Typs (z. B. KIM-Clientmodule), geht das mit direkter Kante zum
+Primärsystem vor, sonst gilt der Pfad (Issue #256).
 
 **Anzeige am Arbeitsplatz (Vereinfachung, Auslegung 2026-11-21, Issue #229):**
 Läuft die Software eines Ablaufs auf einem Cloud-Server und wird er am
@@ -886,6 +899,23 @@ ob ein Rezept ausgestellt oder ein Medikationsplan geschrieben wurde.
 Das Tutorial führt die Schritte in der richtigen Reihenfolge: „Weiter“
 und „Tutorial beenden“ sind gesperrt, solange die Aufgabe des Schritts
 nicht erledigt ist; „Zurück“ bleibt frei. Auslegung (2026-11-15): Issue #160.
+Ausnahmen sind die Token (6.1) und die KIM-Nachricht (Issue #256).
+
+**Auslegung (2026-11-26, Issue #256), KIM senden und abholen:**
+
+- Zwei Aktionen, verknüpft über `tokens.kim`: Senden legt die Nachricht der
+  ersten Software des Auslösers ab, Abholen ist offen, wenn eine Nachricht eines
+  anderen Absenders liegt, und löscht sie (POP3). Keine KIM-Adressen, je
+  Absender höchstens eine Nachricht, ein gelöschter Absender zählt nicht.
+  Status: Vereinfachung.
+- KIM gilt mit SMC-B oder HSM-B (gemF_TI-Gateway); eAU und eArztbrief bleiben
+  bei der SMC-B. Status: plausibel.
+- Das KIM-Clientmodul bleibt eigenständig ohne `host` und spricht nicht selbst
+  mit dem Internet: mobil läuft der Weg über das Dienst-Smartphone,
+  stationär über PC, Switch und Router. Ab dem Internet führt immer ein VPN
+  zum TI-Gateway (Regel 2c). Die Zuordnung zum Primärsystem läuft über die
+  direkte Kante (4.2, A-6). Die Bevorzugung der direkten Kante gilt für alle
+  Rollen. Status: Vereinfachung.
 
 ## 8. Konfiguration im Modus Erweitert
 
@@ -1140,6 +1170,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Praxis TI 2.0 | Praxis, TI 2.0 im Parallelbetrieb | 1 PC (AP-1) mit 1 PVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 TI-Gateway (LAN an Router und Cloud), Cloud. Dienste: VSDM (TI 1.0), IDP, ZETA, PoPP, VSDM 2 (TI 2.0). Vier Zonen. Nur in der Bibliothek | KT: eGK, HBA, SMC-B | kein Mockup-Preset, im Editor gebaut (#244). `simDate` und ZETA-Token auf 2026-11-01 gesetzt |
 | Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ePA (am TI-Gateway), ZETA Guard, PoPP-Service, VSDM 2.0. Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
+| KIM Hebamme–Krankenhaus | KIM: Hebamme und Krankenhaus | Hebamme: 1 Dienst-Smartphone mit 1 PVS, 1 KIM-Clientmodul (am PVS), Internet. Rechenzentrum: 1 TI-Gateway (WAN am Internet, HSM-B für das PVS). Krankenhaus: 1 PC (AP-1), 1 KT (SMC-B), 1 Switch, 1 Router (WAN am Internet), 1 Server mit KIS, 1 KIM-Clientmodul (am KIS). TI: KIM-Fachdienst am TI-Gateway, Zentrales Netz mit VZD. Vier Zonen. Nur in der Bibliothek | SMC-B im KT, HSM-B im TI-Gateway, eGK im Smartphone (NFC) | kein Mockup-Preset (#256). Ohne Token und Nachricht, `simDate` 2026-11-01 |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

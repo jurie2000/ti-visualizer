@@ -526,6 +526,7 @@
       "all": [
         { "need": "zetaToken" },
         { "need": "poppToken" },
+        { "service": "zeta" },
         { "service": "epa" }
       ]
     },

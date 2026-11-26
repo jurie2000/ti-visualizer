@@ -106,7 +106,8 @@ const NO_PATH = new Set([
 ]);
 
 describe("bindFlow (Regelwerk 7, FR-8)", () => {
-  it.each(catalog.flows.map((f) => f.id))(
+  // `zetaHsmb` braucht ein TI-Gateway mit HSM-B, hier gibt es nur den Konnektor: Test in mobil.test.ts
+  it.each(catalog.flows.map((f) => f.id).filter((id) => id !== "zetaHsmb"))(
     "Ablauf %s: Schrittfolge und Enden entsprechen dem Katalog",
     (id) => {
       const flow = catalog.flows.find((f) => f.id === id);

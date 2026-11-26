@@ -59,6 +59,8 @@ sichtbar (Abschnitt 11). „neu“ = nicht im Mockup.
 | `cloud` | Cloud-Server (SaaS), neu | Vereinfachung | gemILF_PS, CGM_ManagedTI, Concat_TIaaS |
 | `tab` | Visite-Tablet (KIS-Client per WLAN) | plausibel | gemILF_PS, KH |
 | `mobil` | Dienst-Smartphone (mobiler Arbeitsplatz, PS-App mit NFC), neu | plausibel | gemILF_PS, Info_VSDM2_ZETA_PoPP |
+| `kimcm` | KIM-Clientmodul, neu | bestätigt | gemSpec_CM_KOMLE |
+| `timc` | TI-Messenger-Client, neu | bestätigt | gemSpec_TI-M_Basis |
 
 **Auslegung (2026-11-26, Issue #254):** Das Dienst-Smartphone (`mobil`) ist ein
 Rechner mit den Fähigkeiten `trigger` und `nfcCard`, ohne `workplace` (sonst
@@ -68,8 +70,6 @@ läuft darauf („läuft auf“), seine Netzverbindung ist nur das Internet
 Ein Standard-Kartenleser ist nicht abgebildet. Der Typ ist neu, weil das
 Visite-Tablet weder Software trägt noch NFC liest und per WLAN am Konnektor
 hängt. Status: plausibel.
-| `kimcm` | KIM-Clientmodul, neu | bestätigt | gemSpec_CM_KOMLE |
-| `timc` | TI-Messenger-Client, neu | bestätigt | gemSpec_TI-M_Basis |
 
 ### 1.2 Smartcards
 
@@ -712,7 +712,7 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | PoPP-Token beantragen (eGK) | eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
 | VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 | ZETA-Anmeldung (HSM-B) | HSM-B, ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zetaHsmb` | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
-| ePA-Zugriff über ZETA | ZETA-Token, PoPP-Token, ePA erreichbar | `epaZeta` | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ePA-Zugriff über ZETA | ZETA-Token, PoPP-Token, ZETA Guard und ePA erreichbar | `epaZeta` | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 
 **Auslegung (2026-11-26, Issue #254):** Mobiler Zugriff einer Hebamme. Das
 Dienst-Smartphone bietet die Aktionen der PS-App an. Reihenfolge:
@@ -720,7 +720,6 @@ ZETA-Anmeldung (HSM-B), PoPP-Token beantragen, VSDM-2.0-Prüfung, ePA-Zugriff
 über ZETA, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
 per HSM-B hat keinen IDP-Schritt; die SMC-B-Aktion `zeta-anmelden` bleibt.
 Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA). Der
-Baustein „Dienst ePA“ ist auch über den TI-1.0-Weg erfüllt (Vereinfachung).
 Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
 Internet. Der HBA ist nicht nötig. Status: plausibel.
 

@@ -185,7 +185,7 @@ function search(
   const viaCloud = internetOnly && hasSlots(start);
   // Vom Dienst-Smartphone aus ist ein TI-Gateway nur Signaturziel über das Internet, kein Zugang (#254).
   const signaturZiel =
-    roleOf(goal, catalog) === "zugang" &&
+    goal.type === "gateway" &&
     [start, byId.get(origin)].some((n) => n?.type === "mobil");
   const isNetTerminal = (n: Node) =>
     capsOf(n).includes("cardSlots") && capsOf(n).includes("netConfig:terminal");

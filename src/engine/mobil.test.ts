@@ -3,6 +3,7 @@ import type { Node, Topology } from "../schema";
 import { loadCatalog } from "../schema/loadCatalog";
 import { availableActions, issueToken } from "./actions";
 import { runChecks } from "./checks";
+import { defaultConfig } from "./config";
 import { resolvePath } from "./paths";
 import { validateConnection } from "./rules";
 import { bindFlow } from "./simulation";
@@ -170,5 +171,148 @@ describe("Dienst-Smartphone (#254)", () => {
       (d) => d.id === "mobil",
     )?.capabilities;
     expect(caps).toEqual(["trigger", "nfcCard"]);
+  });
+
+  const withEgk = (t: Topology, id: string): Topology => ({
+    ...t,
+    nodes: t.nodes.map((n) =>
+      n.id === "mobil-1"
+        ? { ...n, cards: n.cards?.map((c) => ({ ...c, id })) }
+        : n,
+    ),
+  });
+  const tokens = (t: Topology, tk: Topology["tokens"]): Topology => ({
+    ...withEgk(t, "egk-1"),
+    tokens: tk,
+  });
+  // Die Internetkante des Geräts entfernen, nicht seine anderen Kanten
+  const cut = (t: Topology, id: string): Topology => ({
+    ...t,
+    edges: t.edges.filter(
+      (e) =>
+        !(
+          e.ends.some((x) => x.node === id) &&
+          e.ends.some((x) => x.node === "internet-1")
+        ),
+    ),
+  });
+
+  it("epa-zeta braucht beide Token, ZETA Guard und ePA", () => {
+    const nurZeta = tokens(preset, { zeta: preset.simDate });
+    expect(run(nurZeta, "epa-zeta").disabledReason).toBe(
+      "Kein PoPP-Token für diese eGK ausgestellt.",
+    );
+    const nurPopp = tokens(preset, { popp: ["egk-1"] });
+    expect(run(nurPopp, "epa-zeta").disabledReason).toBe(
+      "Kein gültiger ZETA-Token für diesen Simulationstag.",
+    );
+    const bereit = tokens(preset, { zeta: preset.simDate, popp: ["egk-1"] });
+    expect(run(bereit, "epa-zeta").enabled).toBe(true);
+    expect(run(without(bereit, "zeta-1"), "epa-zeta").enabled).toBe(false);
+  });
+
+  it("ein PoPP-Token einer fremden eGK genügt nicht", () => {
+    const t = tokens(preset, { zeta: preset.simDate, popp: ["egk-9"] });
+    expect(run(t, "vsdm2-pruefen").disabledReason).toBe(
+      "Kein PoPP-Token für diese eGK ausgestellt.",
+    );
+  });
+
+  it("ein abgelaufener ZETA-Token sperrt VSDM 2.0", () => {
+    const t = tokens(preset, { zeta: "2026-10-31", popp: ["egk-1"] });
+    expect(run(t, "vsdm2-pruefen")).toMatchObject({
+      enabled: false,
+      disabledReason: "Kein gültiger ZETA-Token für diesen Simulationstag.",
+    });
+  });
+
+  it("ohne Internetkante ist das Gateway nicht erreichbar", () => {
+    expect(
+      run(cut(preset, "gateway-1"), "zeta-anmelden-hsmb").disabledReason,
+    ).toBe("Das TI-Gateway mit HSM-B ist nicht erreichbar.");
+  });
+
+  it("ohne Internetkante sind alle vier Aktionen gesperrt", () => {
+    const t = {
+      ...cut(preset, "mobil-1"),
+      tokens: { zeta: preset.simDate, popp: ["egk-1"] },
+    };
+    for (const id of [
+      "zeta-anmelden-hsmb",
+      "popp-token-beantragen",
+      "vsdm2-pruefen",
+      "epa-zeta",
+    ])
+      expect(run(withEgk(t, "egk-1"), id).enabled, id).toBe(false);
+  });
+
+  it("HSM-B zählt nur am TI-Gateway, nicht am Konnektor", () => {
+    const kon = (t: Topology): Topology => ({
+      ...t,
+      nodes: t.nodes.map((n) =>
+        n.id === "gateway-1" ? { ...n, type: "kon" } : n,
+      ),
+    });
+    expect(run(kon(preset), "zeta-anmelden-hsmb").disabledReason).toBe(
+      "Kein TI-Gateway mit HSM-B im Netz.",
+    );
+  });
+
+  it("zetaHsmb bindet K an das Gateway mit HSM-B, nicht an ein anderes", () => {
+    const gw = node(preset, "gateway-1");
+    const zweites: Topology = {
+      ...preset,
+      nodes: [
+        { ...gw, id: "gateway-0", config: { ...gw.config, hsmb: false } },
+        ...preset.nodes,
+      ],
+      edges: [
+        ...preset.edges,
+        {
+          id: "e-0",
+          fault: false,
+          ends: [
+            { node: "gateway-0", port: "wan" },
+            { node: "internet-1", port: "netz" },
+          ],
+        },
+      ],
+    };
+    const steps = bindFlow(
+      flowOf("zetaHsmb"),
+      node(zweites, "mobil-1"),
+      zweites,
+      catalog,
+    );
+    expect(steps[0]?.nodes.at(-1)).toBe("gateway-1");
+    expect(steps.flatMap((s) => s.nodes)).not.toContain("gateway-0");
+  });
+
+  it("Versicherten-Apps binden T nicht an sich selbst (nur Auslöser mit trigger)", () => {
+    const app: Topology = {
+      ...preset,
+      nodes: [
+        ...preset.nodes,
+        {
+          id: "erpapp-1",
+          type: "erpapp",
+          fault: false,
+          position: { x: 0, y: 0 },
+        },
+      ],
+    };
+    const [first] = bindFlow(
+      flowOf("popp"),
+      node(app, "erpapp-1"),
+      app,
+      catalog,
+    );
+    expect(first?.nodes).toEqual([]);
+    expect(first?.problem).toEqual({ kind: "fehlt" });
+  });
+
+  it("Standardwerte: hsmb nur am TI-Gateway, dort aus", () => {
+    expect(defaultConfig("gateway", preset, catalog)?.hsmb).toBe(false);
+    expect(defaultConfig("kon", preset, catalog)).not.toHaveProperty("hsmb");
   });
 });

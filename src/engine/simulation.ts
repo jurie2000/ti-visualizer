@@ -133,7 +133,7 @@ function roleBinder(
   const term =
     own.includes("cardSlots") ||
     own.includes("netConfig:terminal") ||
-    own.includes("nfcCard") // die eGK steckt im Auslöser (NFC, #254)
+    (own.includes("nfcCard") && own.includes("trigger")) // die eGK steckt im Dienst-Smartphone (NFC, #254), nicht in den Apps der Versicherten
       ? trigger.id
       : (terminal ?? (choice.status === "one" ? choice.terminal : undefined));
   // Ohne Pfad zählt das einzige Gerät des Typs; das ist eindeutig, anders als „erstes Gerät“.
@@ -159,11 +159,15 @@ function roleBinder(
           a && "nodes" in between(topology, a, c.id, catalog, lan, trigger.id),
       ),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
-  const zugaenge = topology.nodes.filter((n) =>
-    caps(catalog, n).includes("zugang"),
+  // Die Signatur macht nur ein TI-Gateway mit HSM-B (#254), das Terminal bestimmt K dort nicht.
+  const hsmbFlow = flowId === "zetaHsmb";
+  const zugaenge = topology.nodes.filter(
+    (n) =>
+      caps(catalog, n).includes("zugang") &&
+      (!hsmbFlow || (n.type === "gateway" && n.config?.hsmb)),
   );
   const k =
-    (term && zugangOf(topology, term, catalog)) ||
+    (!hsmbFlow && term && zugangOf(topology, term, catalog)) ||
     reached(zugaenge, [trigger.id])?.id;
   return (role) => {
     switch (role) {

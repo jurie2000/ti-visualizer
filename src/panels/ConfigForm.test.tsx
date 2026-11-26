@@ -84,6 +84,14 @@ describe("T-502b Formular Geräteeinstellungen (Regelwerk 8)", () => {
     for (const f of regelwerkFields) expect([...found], f).toContain(f);
   });
 
+  it("[#254] das Feld HSM-B erscheint am TI-Gateway, nicht am Konnektor", () => {
+    render(<DetailPanel />);
+    open("kon-1");
+    expect(document.querySelector('[id^="cfg-kon-1-hsmb"]')).toBeNull();
+    open("gateway-1");
+    expect(document.querySelector('[id^="cfg-gateway-1-hsmb"]')).not.toBeNull();
+  });
+
   it("[Regelwerk 8] zeigt bei abgeleiteten Feldern die Standard-Beschreibung", () => {
     render(<DetailPanel />);
     open("pc-1");

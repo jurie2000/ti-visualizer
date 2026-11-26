@@ -458,7 +458,6 @@ Regel in `kinds` fest. Ohne Angabe zählt jedes verträgliche Anschlusspaar
 | Internet | ZETA Guard | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | Internet | IDP | plausibel | gemSpec_IDP_FD, gemSpec_ZETA |
 | ZETA Guard | VSDM 2.0 | plausibel | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP, gemSpec_VSDM_2 |
-| ZETA Guard | ePA (Zielbild hinter dem ZETA Guard, Issue #254) | Vereinfachung | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 
 Internet ↔ PoPP steht schon in der Zeile der Dienste mit Internetzugang
 (oben), Internet ↔ IDP ist die Zeile in der Tabelle. Auslegung (2026-11-19): ZETA Guard und PoPP sind ohne VPN über
@@ -548,10 +547,11 @@ Status: Vereinfachung.
 
 **Dienst-Smartphone → TI-Gateway** (Auslegung 2026-11-26, Issue #254): Das
 Dienst-Smartphone erreicht ein TI-Gateway über das Internet (Gerät →
-Internet → TI-Gateway-WAN) nur als **Signaturziel** für das HSM-B, nicht als
-Zugang. Der Weg endet am Gateway und führt nicht weiter in die TI: VSDM 1.0
-und andere Dienste hinter dem Gateway bleiben vom Smartphone aus
-unerreichbar. Status: Vereinfachung.
+Internet → TI-Gateway-WAN) und nutzt es als **Zugang** zur TI 1.0: Gerät →
+Internet → TI-Gateway → Dienst (z. B. ePA), ohne VPN-Zugangsdienst wie beim
+TI-Gateway-Pfad oben. Das gilt nur für das Dienst-Smartphone; Rechner einer
+Praxis erreichen ein Gateway nicht über das Internet. Das Gateway ist dort
+auch Ziel der Signatur mit dem HSM-B. Status: Vereinfachung.
 
 **TI-2.0-Pfad** (ZETA-Anmeldung, PoPP, VSDM 2.0): Primärsystem oder Rechner
 → LAN → (**Zugang** optional) → Router und Internet (beliebig viele) →
@@ -649,7 +649,7 @@ Status: Vereinfachung.
 | **TI** | Der Zugang hat einen Weg zum VPN-Zugangsdienst (direkt oder über Router und Internet). Beim TI-Gateway entfällt die Bedingung (Issue #241) | Arch |
 | **Karte X** | Karte steckt in einem Terminal dieses Zugangs, ist zum `simDate` gültig (K-3) und, bei HBA/SMC-B, freigeschaltet (K-4). Bei Aktionen ohne Baustein „Zugang“ (TI 2.0) zählt auch ein Netz-Kartenterminal, das der Auslöser über das LAN ohne Zugang erreicht (#215) | gemSpec_KT, gemILF_PS |
 | **Dienst X** | Dienst X ist über einen TI-Pfad erreichbar | Arch |
-| **HSM-B** | Ein gültiges HSM-B (K-3) steckt in einem TI-Gateway, ist einer Software des Auslösers zugeordnet (K-10), und das Gateway ist als Signaturziel erreichbar (6.0, nicht ausgefallen) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
+| **HSM-B** | Ein gültiges HSM-B (K-3) steckt in einem TI-Gateway, ist einer Software des Auslösers zugeordnet (K-10), und das Gateway ist als Zugang erreichbar (6.0, nicht ausgefallen) | gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 | **Prüfungsnachweis** | VSDM-Prüfung mit eGK und SMC-B über die TI ist möglich, der VSDM-Fachdienst ist erreichbar | gemSysL_VSDM, FP eHealth-CardLink |
 | **Gerät vorhanden** | Ein Gerät des Typs existiert in der Topologie, ohne Prüfung auf Verbindung oder Zugang (Vereinfachung; betrifft Aktionen mit KIM-Clientmodul, CardLink und Primärsystem am mobilen KT) | Arch |
 | **ZETA-Token** | Ein Access Token wurde am `simDate` ausgestellt. Er gilt bis Tagesende von `simDate` und ist nach dem Tageswechsel nicht mehr erfüllt. Stand in der Topologie: `tokens.zeta` (Ausstellungstag) | gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel, Laufzeit in den Quellen nicht belegt) |
@@ -714,23 +714,26 @@ der sektorale IDP als Teil der Versicherten-App (Vereinfachung).
 | PoPP-Token beantragen (eGK) | eGK, PoPP-Service erreichbar. Stellt den PoPP-Token für die eGK aus | `popp` | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP (plausibel) |
 | VSDM-2.0-Prüfung | ZETA-Token, PoPP-Token, VSDM 2.0 erreichbar | `vsdm2` | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
 | ZETA-Anmeldung (HSM-B) | HSM-B, ZETA Guard erreichbar. Stellt den ZETA-Token aus | `zetaHsmb` | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
-| ePA-Zugriff über ZETA | ZETA-Token, PoPP-Token, ZETA Guard und ePA erreichbar | `epaZeta` | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP (plausibel) |
+| ePA-Zugriff über TI-Gateway (PoPP) | HSM-B, Zugang, TI, PoPP-Token, ePA erreichbar | `epaGateway` | gemSpec_Aktensystem_ePAfueralle, gemF_TI-Gateway, Info_VSDM2_ZETA_PoPP (plausibel) |
 
 **Auslegung (2026-11-26, Issue #254):** Mobiler Zugriff einer Hebamme. Das
 Dienst-Smartphone bietet die Aktionen der PS-App an. Reihenfolge:
 ZETA-Anmeldung (HSM-B), PoPP-Token beantragen, VSDM-2.0-Prüfung, ePA-Zugriff
-über ZETA, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
+über das TI-Gateway, jede gesperrt, solange ihre Voraussetzung fehlt. Die ZETA-Anmeldung
 per HSM-B hat keinen IDP-Schritt; die SMC-B-Aktion `zeta-anmelden` bleibt.
 Das HSM-B ist eine Karte (Kartenart `hsmb`, K-10) im TI-Gateway, einer
-Software zugeordnet. Es ersetzt die SMC-B bei der ZETA-Anmeldung und nur dort;
-alle anderen Aktionen brauchen weiter SMC-B oder HBA. Gründe in dieser
+Software zugeordnet. Es ersetzt die SMC-B bei der ZETA-Anmeldung und beim ePA-Zugriff
+über das TI-Gateway; alle anderen Aktionen, auch die klassischen ePA-Aktionen
+und `vsdm-pruefen`, brauchen weiter SMC-B oder HBA (offen, ob das HSM-B dort
+ebenfalls gelten soll). Gründe in dieser
 Reihenfolge: abgelaufen, kein HSM-B gesteckt, keiner Software dieses Geräts
 zugeordnet, Gateway nicht erreichbar. Löscht man die Software, entfernt das Löschen die Zuordnung an allen HSM-B
 (das HSM-B bleibt stecken, ohne Software). Eine `software`-Angabe, die in einer
 Datei auf keinen Knoten zeigt, ist nur an diesem Sperrgrund sichtbar (kein
 eigener Check). Alte Zwischenstände mit `config.hsmb` am Gateway verlieren das
 Feld ohne Migration (das Schema ignoriert unbekannte Felder).
-Die ePA steht im Zielbild hinter dem ZETA Guard (Kante ZETA Guard ↔ ePA).
+Die ePA erreicht das Smartphone über das TI-Gateway (TI 1.0), der Zugriff läuft
+mit dem PoPP-Token, ohne ZETA Guard (Rückmeldung des Prüfers).
 Das PoPP-Token holt das PS wie bisher direkt beim PoPP-Service über das
 Internet. Der HBA ist nicht nötig. Status: plausibel.
 
@@ -825,8 +828,8 @@ Schritt stehen im Mockup und werden in den Katalog übernommen.
 | `vsdm` | P→K ReadVSD (SOAP) · K→T eGK lesen (SICCT) · T→K Kartendaten · K→V→VSDM Abgleich, Prüfziffer · K→P Daten und Prüfungsnachweis | bestätigt | gemSysL_VSDM, gemILF_PS |
 | `zeta` | P→T Authentisierung mit der SMC-B anfordern (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet) · T→P SMC-B bestätigt · P→IDP Signatur der SMC-B, Identity-Token holen (über das Internet) · IDP→P Identity-/Refresh-Token · P→ZETA Guard Token vorlegen (über das Internet) · ZETA Guard→P Access Token | plausibel | gemSpec_ZETA, gemSpec_IDP_FD, Info_VSDM2_ZETA_PoPP |
 | `popp` | T→P eGK-Daten (im Praxisnetz über das LAN, aus der Cloud über Cloud-Server und Internet; beim Dienst-Smartphone liest die PS-App die eGK per NFC und reicht die Kartenkommunikation an den PoPP-Service durch) · P→PoPP-Service Token anfordern (über das Internet) · PoPP-Service→P PoPP-Token | plausibel | gemSpec_PoPP_Service, Info_VSDM2_ZETA_PoPP |
-| `zetaHsmb` | P→K Signatur mit dem HSM-B anfordern (über das Internet, K nur Signaturziel) · K→P Signatur · P→ZETA Guard Anmelden (über das Internet) · ZETA Guard→P Access Token | plausibel | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
-| `epaZeta` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→ePA Abfrage · ePA→P Akteninhalt | plausibel | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `zetaHsmb` | P→K Signatur mit dem HSM-B anfordern (über das Internet) · K→P Signatur · P→ZETA Guard Anmelden (über das Internet) · ZETA Guard→P Access Token | plausibel | gemF_TI-Gateway, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
+| `epaGateway` | P→K Authentisierung mit dem HSM-B (über das Internet) · P→ePA Zugriff mit PoPP-Token (über K) · ePA→P Akteninhalt | plausibel | gemSpec_Aktensystem_ePAfueralle, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `vsdm2` | P→ZETA Guard Zugriff mit Access Token und PoPP-Token (über das Internet) · ZETA Guard→VSDM 2.0 Abfrage · VSDM 2.0→P Versichertenstammdaten | plausibel | gemSpec_VSDM_2, gemSpec_ZETA, Info_VSDM2_ZETA_PoPP |
 | `notfalldaten` | P→K Fachmodul NFDM (SOAP) · K→T Schreib-/Leseauftrag (SICCT) · T→K eGK bestätigt · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSpec_FM_NFDM |
 | `emp` | P→K Fachmodul AMTS (ReadMP/WriteMP) · K→T C2C-Authentisierung HBA/SMC-B mit eGK, eGK-PIN · T→K · K→P, **ohne VPN und ohne Fachdienst** | bestätigt | gemSysL_AMTS_A, gemILF_PS_AMTS |
@@ -1131,7 +1134,7 @@ Grundlage ist das Mockup, Abweichungen sind markiert.
 | Krankenhaus | Kreiskrankenhaus Nord, TI 2.0 | 1 Server mit 1 KIS, 2 Arbeitsplatz-PCs (AP-1, AP-2), 2 eHealth-KT (je ein Arbeitsplatz), 2 Switches, **1 Router**, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA | KT 1: eGK, SMC-B, HBA. KT 2: HBA, eGK, SMC-B | ein Router statt zwei (V-20). TI-Gateway am Router (LAN) ohne VPN-Zugangsdienst, direkt an den Diensten (#241). TI-Messenger-Client ergänzt. Zeigt das TI-Gateway statt Konnektor (X-1). Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Klinikum | Klinikum St. Anna | 3 Server (je einer für KIS, RIS und LIS), 6 Arbeitsplatz-PCs, 1 Visite-Tablet (AP-1 bis AP-7), 7 eHealth-KT (eines je Arbeitsplatz), 6 Switches, 1 Access Point, 1 Router, 1 TI-Gateway, 1 TI-Messenger-Client. Dienste: VSDM, E-Rezept, KIM, TI-Messenger, ePA. Zonen: Notaufnahme, Station Innere (WLAN), Radiologie, Labor | je KT eGK, HBA, SMC-B | Das TI-Gateway hängt per LAN am Router und direkt an den Diensten, ohne VPN-Zugangsdienst (#241). TI-Messenger-Client ergänzt. Je Arbeitsplatz ein KT ergänzt (4 neue) und Karten je KT ergänzt, damit die Aktionen jedes Arbeitsplatzes möglich bleiben (#213) |
 | Praxis TI 2.0 | Praxis, TI 2.0 im Parallelbetrieb | 1 PC (AP-1) mit 1 PVS, 1 eHealth-KT, 1 Switch, 1 Router, 1 TI-Gateway (LAN an Router und Cloud), Cloud. Dienste: VSDM (TI 1.0), IDP, ZETA, PoPP, VSDM 2 (TI 2.0). Vier Zonen. Nur in der Bibliothek | KT: eGK, HBA, SMC-B | kein Mockup-Preset, im Editor gebaut (#244). `simDate` und ZETA-Token auf 2026-11-01 gesetzt |
-| Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ZETA Guard, PoPP-Service, VSDM 2.0, ePA (an ZETA Guard). Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
+| Hebamme mobil | Hebamme, mobiler Zugriff (TI 2.0) | 1 Dienst-Smartphone mit 1 PVS, Internet, 1 TI-Gateway (nur WAN, HSM-B für das PVS), ePA (am TI-Gateway), ZETA Guard, PoPP-Service, VSDM 2.0. Drei Zonen. Nur in der Bibliothek | eGK im Smartphone (NFC), HSM-B im TI-Gateway | kein Mockup-Preset (#254). Ohne Token, `simDate` 2026-11-01 |
 
 Auslegung (2026-11-21, #225), Startansicht und Bibliothek: Die Startansicht
 zeigt „Leer starten“, die ersten drei Presets aus `presets.json` und die

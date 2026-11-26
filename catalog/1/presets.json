@@ -2524,7 +2524,7 @@
     "id": "hebamme-mobil",
     "topology": {
       "name": "Hebamme, mobiler Zugriff (TI 2.0)",
-      "description": "Dienst-Smartphone mit PS-App und eGK per NFC. Das TI-Gateway im Rechenzentrum signiert mit dem HSM-B, ZETA Guard und PoPP-Service entscheiden über den Zugriff auf VSDM 2.0 und ePA.",
+      "description": "Dienst-Smartphone mit PS-App und eGK per NFC. Das TI-Gateway im Rechenzentrum mit HSM-B ist der Zugang zur ePA (PoPP-Token), ZETA Guard und PoPP-Service stehen im Internet, VSDM 2.0 hängt am ZETA Guard.",
       "simDate": "2026-11-01",
       "nodes": [
         {
@@ -2621,8 +2621,8 @@
           "id": "epa-1",
           "type": "epa",
           "position": {
-            "x": 1300,
-            "y": 300
+            "x": 900,
+            "y": 520
           },
           "fault": false
         }
@@ -2717,12 +2717,12 @@
           "fault": false,
           "ends": [
             {
-              "node": "zeta-1",
-              "port": "net"
+              "node": "gateway-1",
+              "port": "ti"
             },
             {
               "node": "epa-1",
-              "port": "net"
+              "port": "ti"
             }
           ]
         }

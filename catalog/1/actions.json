@@ -517,23 +517,24 @@
     "status": "plausibel"
   },
   {
-    "id": "epa-zeta",
-    "name": "ePA-Zugriff über ZETA",
-    "category": "TI 2.0",
-    "section": "lokal",
+    "id": "epa-gateway",
+    "name": "ePA-Zugriff über TI-Gateway (PoPP)",
+    "category": "ePA",
+    "section": "online",
     "offeredBy": { "types": ["pvs", "kis"] },
     "requires": {
       "all": [
-        { "need": "zetaToken" },
+        { "need": "hsmb" },
+        { "need": "zugang" },
+        { "need": "ti" },
         { "need": "poppToken" },
-        { "service": "zeta" },
         { "service": "epa" }
       ]
     },
-    "flow": "epaZeta",
+    "flow": "epaGateway",
     "source": [
       "gemSpec_Aktensystem_ePAfueralle",
-      "gemSpec_ZETA",
+      "gemF_TI-Gateway",
       "Info_VSDM2_ZETA_PoPP"
     ],
     "status": "plausibel"

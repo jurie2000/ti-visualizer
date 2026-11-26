@@ -626,20 +626,20 @@
     "status": "plausibel"
   },
   {
-    "id": "epaZeta",
-    "name": "ePA-Zugriff über ZETA",
+    "id": "epaGateway",
+    "name": "ePA-Zugriff über das TI-Gateway (PoPP)",
     "steps": [
       {
         "from": "P",
-        "to": "zeta",
-        "label": "Zugriff (über das Internet)",
-        "text": "Das Primärsystem schickt die Anfrage mit Access Token und PoPP-Token über das Internet an den ZETA Guard."
+        "to": "K",
+        "label": "Authentisierung mit dem HSM-B (über das Internet)",
+        "text": "Das Primärsystem weist die Betriebsstätte über das Internet mit dem HSM-B im TI-Gateway aus. Das HSM-B ersetzt die SMC-B."
       },
       {
-        "from": "zeta",
+        "from": "P",
         "to": "epa",
-        "label": "Abfrage",
-        "text": "Der ZETA Guard prüft beide Token und lässt die Anfrage zur ePA durch."
+        "label": "Zugriff mit PoPP-Token (über das TI-Gateway)",
+        "text": "Das Primärsystem greift mit dem PoPP-Token auf die ePA zu. Der Weg führt über das Internet und das TI-Gateway in die TI."
       },
       {
         "from": "epa",
@@ -650,7 +650,7 @@
     ],
     "source": [
       "gemSpec_Aktensystem_ePAfueralle",
-      "gemSpec_ZETA",
+      "gemF_TI-Gateway",
       "Info_VSDM2_ZETA_PoPP"
     ],
     "status": "plausibel"

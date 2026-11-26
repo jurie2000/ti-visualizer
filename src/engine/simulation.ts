@@ -38,7 +38,7 @@ type Path = { nodes: string[]; edges: string[] };
 const DIRECT: Record<string, string[]> = {
   mkt: ["pvs", "kis", "avs", "pflege", "pc"],
   kim: ["kk"],
-  zeta: ["vsdm2", "epa"],
+  zeta: ["vsdm2"],
 };
 
 /** Der Teil des Wegs bis zur Störung: Gerät bis einschließlich, bei einer Kante bis zu ihr. */
@@ -159,8 +159,8 @@ function roleBinder(
           a && "nodes" in between(topology, a, c.id, catalog, lan, trigger.id),
       ),
     ) ?? (candidates.length === 1 ? candidates[0] : undefined);
-  // Die Signatur macht nur ein TI-Gateway mit HSM-B (#254), das Terminal bestimmt K dort nicht.
-  const hsmbFlow = flowId === "zetaHsmb";
+  // Signatur und ePA-Zugriff laufen über das TI-Gateway mit HSM-B (#254), das Terminal bestimmt K dort nicht.
+  const hsmbFlow = ["zetaHsmb", "epaGateway"].includes(flowId);
   const zugaenge = hsmbFlow
     ? hsmbGateways(topology, trigger, catalog)
     : topology.nodes.filter((n) => caps(catalog, n).includes("zugang"));

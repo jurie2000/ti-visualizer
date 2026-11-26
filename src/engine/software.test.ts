@@ -664,7 +664,6 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
             : link("zen", "netz", `${s}1`, "ti"),
         );
       }
-      t.edges.push(link("zeta1", "net", "epa1", "net"));
       t.nodes.push(
         node("kimcm1", "kimcm"),
         node("avs1", "avs"),
@@ -711,9 +710,9 @@ describe("#221 Cloud-Dienst im Rechenzentrum", () => {
           a.offeredBy.types.some((x) => types.includes(x)),
       );
 
-    // `zeta-anmelden-hsmb` braucht ein TI-Gateway mit HSM-B (Test in mobil.test.ts)
+    // Die HSM-B-Aktionen brauchen ein TI-Gateway mit HSM-B (Tests in mobil.test.ts)
     const aktionen = offered(["pvs", "avs"]).filter(
-      (a) => a.id !== "zeta-anmelden-hsmb",
+      (a) => !["zeta-anmelden-hsmb", "epa-gateway"].includes(a.id),
     );
     it("Fremdpraxis: auch mit Gateway-WAN am Internet führt kein TI-1.0-Weg in Praxis B", () => {
       const t = withPraxisB(cloud());

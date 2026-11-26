@@ -310,7 +310,9 @@ describe("T-402 availableActions: je Aktion aktiv und ausgegraut", () => {
         .map((a) => a.id)
         .filter(
           (id) =>
-            !["vsdm2-pruefen", "zeta-anmelden-hsmb", "epa-zeta"].includes(id),
+            !["vsdm2-pruefen", "zeta-anmelden-hsmb", "epa-gateway"].includes(
+              id,
+            ),
         )
         .sort(),
     );

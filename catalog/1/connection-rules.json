@@ -366,17 +366,6 @@
     "status": "plausibel"
   },
   {
-    "id": "erl-zeta-epa",
-    "a": {
-      "types": ["zeta"]
-    },
-    "b": {
-      "types": ["epa"]
-    },
-    "source": ["gemSpec_ZETA", "Info_VSDM2_ZETA_PoPP"],
-    "status": "Vereinfachung"
-  },
-  {
     "id": "erl-erpapp-erp",
     "a": {
       "types": ["erpapp"]

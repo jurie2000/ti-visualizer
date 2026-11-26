@@ -13,8 +13,12 @@ const preset = catalog.presets.find((p) => p.id === "hebamme-mobil")
   ?.topology as Topology;
 const node = (t: Topology, id: string) =>
   t.nodes.find((n) => n.id === id) as Node;
-const run = (t: Topology, id: string) => {
-  const a = availableActions(node(t, "mobil-1"), t, catalog).find(
+const run = (
+  t: Topology,
+  id: string,
+  mode: "simple" | "advanced" = "simple",
+) => {
+  const a = availableActions(node(t, "mobil-1"), t, catalog, mode).find(
     (x) => x.id === id,
   );
   if (!a) throw new Error(`Aktion ${id} fehlt`);
@@ -49,25 +53,45 @@ describe("Dienst-Smartphone (#254)", () => {
     expect(fehler.map((f) => f.id)).toEqual([]);
   });
 
-  it("Aktionsfolge: HSM-B, Access Token, PoPP-Token, VSDM 2.0 und ePA", () => {
-    let t = preset;
-    const folge = [
-      "zeta-anmelden-hsmb",
-      "popp-token-beantragen",
-      "vsdm2-pruefen",
-      "epa-zeta",
-    ];
-    // Vor dem ersten Token sind VSDM 2.0 und ePA gesperrt, die Token-Aktionen offen
-    expect(run(t, "vsdm2-pruefen").disabledReason).toContain("ZETA-Token");
-    expect(run(t, "epa-zeta").disabledReason).toContain("ZETA-Token");
-    for (const id of folge) {
-      const a = run(t, id);
-      expect(a.enabled, id).toBe(true);
-      const issues = actionOf(id).issues;
-      if (issues) t = issueToken(issues, node(t, "mobil-1"), t, catalog);
-    }
-    expect(t.tokens?.zeta).toBe(t.simDate);
-    expect(t.tokens?.popp).toHaveLength(1);
+  it.each(["simple", "advanced"] as const)(
+    "Aktionsfolge im Modus %s: HSM-B, Access Token, PoPP-Token, VSDM 2.0 und ePA, wie der Player sie ausführt",
+    (mode) => {
+      let t = preset;
+      const folge = [
+        "zeta-anmelden-hsmb",
+        "popp-token-beantragen",
+        "vsdm2-pruefen",
+        "epa-gateway",
+      ];
+      // Vor den Token sind VSDM 2.0 und ePA gesperrt, die beiden Token-Aktionen offen
+      expect(run(t, "vsdm2-pruefen", mode).disabledReason).toContain(
+        "ZETA-Token",
+      );
+      expect(run(t, "epa-gateway", mode).disabledReason).toContain(
+        "PoPP-Token",
+      );
+      for (const id of folge) {
+        const mobil = node(t, "mobil-1");
+        const a = run(t, id, mode);
+        expect(a.enabled, `${id}: ${a.disabledReason ?? ""}`).toBe(true);
+        // Der Player stellt das Token nur aus, wenn kein Schritt ein Problem hat
+        const steps = bindFlow(flowOf(actionOf(id).flow), mobil, t, catalog);
+        expect(
+          steps.map((x) => x.problem),
+          id,
+        ).toEqual(steps.map(() => undefined));
+        const issues = actionOf(id).issues;
+        if (issues) t = issueToken(issues, mobil, t, catalog);
+      }
+      expect(t.tokens?.zeta).toBe(t.simDate);
+      expect(t.tokens?.popp).toHaveLength(1);
+    },
+  );
+
+  it("das klassische VSDM 1.0 bleibt am Smartphone gesperrt (SMC-B oder HBA fehlen)", () => {
+    expect(run(preset, "vsdm-pruefen").disabledReason).toBe(
+      "Keine SMC-B gesteckt. Oder: Keine HBA gesteckt.",
+    );
   });
 
   it("jede Aktion bleibt gesperrt, solange ihre Voraussetzung fehlt", () => {
@@ -102,41 +126,24 @@ describe("Dienst-Smartphone (#254)", () => {
           : n,
       ),
     };
-    expect(run(without(bereit, "epa-1"), "epa-zeta").enabled).toBe(false);
-    expect(run(bereit, "epa-zeta").enabled).toBe(true);
+    expect(run(without(bereit, "epa-1"), "epa-gateway").enabled).toBe(false);
+    expect(run(bereit, "epa-gateway").enabled).toBe(true);
   });
 
-  it("das TI-Gateway ist vom Smartphone nur Signaturziel, kein Zugang in die TI", () => {
-    expect(resolvePath(preset, "mobil-1", "gateway-1", catalog, "ti").ok).toBe(
-      true,
-    );
-    // Auch mit TI-1.0-Diensten am Gateway: VSDM 1.0 bleibt unerreichbar
-    const mitVsdm: Topology = {
-      ...preset,
-      nodes: [
-        ...preset.nodes,
-        {
-          id: "vsdm-1",
-          type: "vsdm",
-          fault: false,
-          position: { x: 0, y: 0 },
-        },
-      ],
-      edges: [
-        ...preset.edges,
-        {
-          id: "e-x",
-          fault: false,
-          ends: [
-            { node: "gateway-1", port: "ti" },
-            { node: "vsdm-1", port: "ti" },
-          ],
-        },
-      ],
-    };
-    expect(resolvePath(mitVsdm, "mobil-1", "vsdm-1", catalog, "ti").ok).toBe(
-      false,
-    );
+  it("das TI-Gateway ist für das Smartphone der Zugang zur TI: Internet, Gateway, ePA", () => {
+    const r = resolvePath(preset, "mobil-1", "epa-1", catalog, "ti");
+    expect(r).toMatchObject({ ok: true, zugang: "gateway-1" });
+    expect(r.ok && r.nodes).toEqual([
+      "mobil-1",
+      "internet-1",
+      "gateway-1",
+      "epa-1",
+    ]);
+    // ohne Internetkante des Gateways kein Weg
+    expect(
+      resolvePath(cutAt(preset, "gateway-1"), "mobil-1", "epa-1", catalog, "ti")
+        .ok,
+    ).toBe(false);
   });
 
   it("Abläufe zetaHsmb und popp binden das Smartphone als Auslöser und Terminal", () => {
@@ -149,15 +156,22 @@ describe("Dienst-Smartphone (#254)", () => {
     expect(popp[0]?.nodes).toEqual(["mobil-1", "pvs-1"]);
   });
 
-  it("Ablauf epaZeta: ZETA Guard leitet zur ePA", () => {
+  it("Ablauf epaGateway: HSM-B im Gateway, dann über das Gateway zur ePA", () => {
     const steps = bindFlow(
-      flowOf("epaZeta"),
+      flowOf("epaGateway"),
       node(preset, "mobil-1"),
       preset,
       catalog,
     );
     expect(steps.every((s) => !s.problem)).toBe(true);
-    expect(steps[1]?.nodes).toEqual(["zeta-1", "epa-1"]);
+    expect(steps[0]?.nodes.at(-1)).toBe("gateway-1");
+    expect(steps[1]?.nodes).toEqual([
+      "pvs-1",
+      "mobil-1",
+      "internet-1",
+      "gateway-1",
+      "epa-1",
+    ]);
   });
 
   it("[V-21] Smartphone direkt an ZETA Guard ist verboten, an das Internet erlaubt", () => {
@@ -188,7 +202,7 @@ describe("Dienst-Smartphone (#254)", () => {
     tokens: tk,
   });
   // Die Internetkante des Geräts entfernen, nicht seine anderen Kanten
-  const cut = (t: Topology, id: string): Topology => ({
+  const cutAt = (t: Topology, id: string): Topology => ({
     ...t,
     edges: t.edges.filter(
       (e) =>
@@ -199,18 +213,20 @@ describe("Dienst-Smartphone (#254)", () => {
     ),
   });
 
-  it("epa-zeta braucht beide Token, ZETA Guard und ePA", () => {
+  it("epa-gateway braucht das PoPP-Token, kein ZETA-Token, aber das HSM-B und die ePA", () => {
     const nurZeta = tokens(preset, { zeta: preset.simDate });
-    expect(run(nurZeta, "epa-zeta").disabledReason).toBe(
+    expect(run(nurZeta, "epa-gateway").disabledReason).toBe(
       "Kein PoPP-Token für diese eGK ausgestellt.",
     );
     const nurPopp = tokens(preset, { popp: ["egk-1"] });
-    expect(run(nurPopp, "epa-zeta").disabledReason).toBe(
-      "Kein gültiger ZETA-Token für diesen Simulationstag.",
-    );
-    const bereit = tokens(preset, { zeta: preset.simDate, popp: ["egk-1"] });
-    expect(run(bereit, "epa-zeta").enabled).toBe(true);
-    expect(run(without(bereit, "zeta-1"), "epa-zeta").enabled).toBe(false);
+    expect(run(nurPopp, "epa-gateway").enabled).toBe(true);
+    expect(
+      run(
+        hsmbCard(nurPopp, () => []),
+        "epa-gateway",
+      ).disabledReason,
+    ).toBe("Kein HSM-B im TI-Gateway gesteckt.");
+    expect(run(without(nurPopp, "epa-1"), "epa-gateway").enabled).toBe(false);
   });
 
   it("ein PoPP-Token einer fremden eGK genügt nicht", () => {
@@ -230,20 +246,20 @@ describe("Dienst-Smartphone (#254)", () => {
 
   it("ohne Internetkante ist das Gateway nicht erreichbar", () => {
     expect(
-      run(cut(preset, "gateway-1"), "zeta-anmelden-hsmb").disabledReason,
+      run(cutAt(preset, "gateway-1"), "zeta-anmelden-hsmb").disabledReason,
     ).toBe("Das TI-Gateway mit HSM-B ist nicht erreichbar.");
   });
 
   it("ohne Internetkante sind alle vier Aktionen gesperrt", () => {
     const t = {
-      ...cut(preset, "mobil-1"),
+      ...cutAt(preset, "mobil-1"),
       tokens: { zeta: preset.simDate, popp: ["egk-1"] },
     };
     for (const id of [
       "zeta-anmelden-hsmb",
       "popp-token-beantragen",
       "vsdm2-pruefen",
-      "epa-zeta",
+      "epa-gateway",
     ])
       expect(run(withEgk(t, "egk-1"), id).enabled, id).toBe(false);
   });

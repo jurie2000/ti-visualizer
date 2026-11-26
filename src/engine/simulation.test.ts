@@ -45,7 +45,6 @@ const LINKS: [string, string][] = [
   ["internet", "popp"],
   ["internet", "zeta"],
   ["zeta", "vsdm2"],
-  ["zeta", "epa"],
   ["internet", "epa"],
   ...["vsdm", "erp", "kim", "epa", "vzd", "kk"].map((s): [string, string] => [
     "zentral",
@@ -106,31 +105,30 @@ const NO_PATH = new Set([
 ]);
 
 describe("bindFlow (Regelwerk 7, FR-8)", () => {
-  // `zetaHsmb` braucht ein TI-Gateway mit HSM-B, hier gibt es nur den Konnektor: Test in mobil.test.ts
-  it.each(catalog.flows.map((f) => f.id).filter((id) => id !== "zetaHsmb"))(
-    "Ablauf %s: Schrittfolge und Enden entsprechen dem Katalog",
-    (id) => {
-      const flow = catalog.flows.find((f) => f.id === id);
-      const trigger = TRIGGER[id] ?? "pvs";
-      const primary = trigger === "mkt" ? "pvs" : trigger;
-      const bound = bind(id, trigger);
-      expect(bound.map((s) => s.label)).toEqual(
-        flow?.steps.map((s) => s.label),
-      );
-      const node = (r: string) => (r === "P" ? primary : (ROLE[r] ?? r));
-      flow?.steps.forEach((s, i) => {
-        const nodes = bound[i]?.nodes ?? [];
-        if (NO_PATH.has(`${id}:${String(i)}`)) {
-          expect(nodes).toEqual([]);
-          return;
-        }
-        expect([nodes[0], nodes.at(-1)], `${id} Schritt ${String(i)}`).toEqual([
-          node(s.from),
-          node(s.to),
-        ]);
-      });
-    },
-  );
+  // `zetaHsmb` und `epaGateway` brauchen ein TI-Gateway mit HSM-B, hier gibt es nur den Konnektor: Tests in mobil.test.ts
+  it.each(
+    catalog.flows
+      .map((f) => f.id)
+      .filter((id) => !["zetaHsmb", "epaGateway"].includes(id)),
+  )("Ablauf %s: Schrittfolge und Enden entsprechen dem Katalog", (id) => {
+    const flow = catalog.flows.find((f) => f.id === id);
+    const trigger = TRIGGER[id] ?? "pvs";
+    const primary = trigger === "mkt" ? "pvs" : trigger;
+    const bound = bind(id, trigger);
+    expect(bound.map((s) => s.label)).toEqual(flow?.steps.map((s) => s.label));
+    const node = (r: string) => (r === "P" ? primary : (ROLE[r] ?? r));
+    flow?.steps.forEach((s, i) => {
+      const nodes = bound[i]?.nodes ?? [];
+      if (NO_PATH.has(`${id}:${String(i)}`)) {
+        expect(nodes).toEqual([]);
+        return;
+      }
+      expect([nodes[0], nodes.at(-1)], `${id} Schritt ${String(i)}`).toEqual([
+        node(s.from),
+        node(s.to),
+      ]);
+    });
+  });
 
   it("mobkt: P ist das per USB verbundene Primärsystem, nicht das mobile KT", () => {
     expect(bind("mobkt", "mkt")[1]).toMatchObject({
